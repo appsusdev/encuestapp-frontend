@@ -1,13 +1,14 @@
+import { FC } from 'react';
 import { Provider } from 'react-redux';
 
 import { store } from './store/store';
-import { UsersScreen } from './pages/poll/UsersScreen';
+import { AppRouter } from './router/AppRouter';
 import './styles/app.scss';
 
-const App = () => {
+const App: FC = () => {
   return (
     <Provider store={store}>
-      <UsersScreen/>
+      <AppRouter/>
     </Provider>
   );
 }
