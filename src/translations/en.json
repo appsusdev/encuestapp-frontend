@@ -1,8 +1,8 @@
 {
-    "users": "Users",
-    "polls": "Polls",
-    "configuration": "Configuration",
-    "statistics": "Statistics",
-    "login": "Login",
-    "recover": "Recover"
+    "Users": "Users",
+    "Polls": "Polls",
+    "Configuration": "Configuration",
+    "Statistics": "Statistics",
+    "Login": "Login",
+    "Recover": "Recover"
 }

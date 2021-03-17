@@ -10,7 +10,7 @@ import { useIntl } from 'react-intl';
 export const DashboardRouter: FC = () => {
     const intl = useIntl();
 
-    const routes = ["users", "polls", "configuration", "statistics"];
+    const routes = ["Users", "Polls", "Configuration", "Statistics"];
 
     const routesInt = routes.map( route => {
         return (intl.formatMessage({id: `${route}`}).normalize("NFD").replace(/[\u0300-\u036f]/g, "")).toLowerCase();
