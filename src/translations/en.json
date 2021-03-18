@@ -4,5 +4,14 @@
     "Configuration": "Configuration",
     "Statistics": "Statistics",
     "Login": "Login",
-    "Recover": "Recover"
+    "Recover": "Recover",
+    "Email": "Email",
+    "Password": "Password",
+    "RememberMe": "Remember Me",
+    "DontHaveAccount": "Don't have account?",
+    "Signup": "Signup",
+    "ForgetPassword": "ForgetPassword",
+    "InvalidEmail": "Invalid email",
+    "EmailRequired": "Email required",
+    "PasswordRequired": "Password required"
 }

@@ -5,6 +5,7 @@ import { Box, Card } from '@material-ui/core';
 import { Fonts } from '../../shared/constants/AppEnums';
 import logo from '../../assets/images/logo-white-with-name.png';
 import authBackground from '../../assets/images/auth-background.jpg';
+import { LoginForm } from '../../components/auth/LoginForm';
 
 const useStyles = makeStyles(theme => ({
     appAuth: {
@@ -35,6 +36,7 @@ const useStyles = makeStyles(theme => ({
       width: 140,
     },
     cardRoot: {
+      margin: -40,
       maxWidth: '36rem',
       width: '100%',
       overflow: 'hidden',
@@ -42,6 +44,7 @@ const useStyles = makeStyles(theme => ({
       textAlign: 'center',
       position: 'relative',
       paddingTop: 20,
+      marginBottom: 0,
       [theme.breakpoints.up('xl')]: {
         paddingTop: 32,
       },
@@ -55,6 +58,7 @@ const useStyles = makeStyles(theme => ({
         height: 9,
         borderBottomRightRadius: 80,
         borderBottomLeftRadius: 80,
+        
         marginRight: 'auto',
         marginLeft: 'auto',
         backgroundColor: '#0A8FDC',
@@ -87,15 +91,16 @@ export const LoginScreen: FC<{}> = () => {
                 <Card className={classes.cardRoot}>
                     <Box px={{xs: 6, sm: 10, xl: 15}}>
                         <Box
-                        component='h2'
-                        mb={{xs: 3, xl: 6}}
-                        color='text.primary'
-                        fontWeight={Fonts.REGULAR}
-                        fontSize={{xs: 24, xl: 26}}>
-                        <FormattedMessage id='Login' />
+                          component='h2'
+                          mb={{xs: 0, xl: 0}}
+                          color='text.primary'
+                          fontWeight={Fonts.REGULAR}
+                          fontSize={{xs: 24, xl: 26}}>
+                          <FormattedMessage id='Login' />
                         </Box>
                     </Box>
-                    {/* TODO: Form*/}
+                    
+                    <LoginForm />
                     </Card>
                 </Box>
             </Box>
