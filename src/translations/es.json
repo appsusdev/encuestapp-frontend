@@ -3,6 +3,15 @@
     "Polls": "Encuestas",
     "Configuration": "Configuración",
     "Statistics": "Estadísticas",
-    "Login": "Login",
-    "Recover": "Recuperar"
+    "Login": "Iniciar sesión",
+    "Recover": "Recuperar",
+    "Email": "Correo",
+    "Password": "Contraseña",
+    "RememberMe": "Recordarme",
+    "DontHaveAccount": "No tienes cuenta?",
+    "Signup": "Registrarse",
+    "ForgetPassword": "Olvidaste tu contraseña?",
+    "InvalidEmail": "Correo inválido",
+    "EmailRequired": "Correo obligatorio",
+    "PasswordRequired": "Contraseña obligatoria"
 }

@@ -7,7 +7,7 @@ import { AppRouter } from './router/AppRouter';
 import messages_es from './translations/es.json';
 import messages_en from './translations/en.json';
 
-import './styles/app.scss';
+import './shared/styles/index.scss';
 
 const App: FC = () => {
 
