@@ -58,13 +58,13 @@ const useStyles = makeStyles((theme: CremaTheme) => ({
     color: theme.palette.text.primary,
   },
   colorTextPrimary: {
-    color: theme.palette.primary.main,
+    color: '#0A8FDC',
   },
   underlineNone: {
     textDecoration: 'none',
   },
   textGrey: {
-    color: theme.palette.grey[500],
+    color: '#9E9E9E',
   },
 }));
 
@@ -84,19 +84,19 @@ const MyTextField = (props: any) => {
 interface UserSigninProps { }
 
 export const LoginForm: FC<UserSigninProps> = props => {
-  
+
   const intl = useIntl();
   const classes = useStyles(props);
-  
+
   const validationSchema = yup.object({
     email: yup
       .string()
-      .email(`${intl.formatMessage({id: 'InvalidEmail'})}`)
-      .required(`${intl.formatMessage({id: 'EmailRequired'})}`),
-      password: yup.string().required(`${intl.formatMessage({id: 'PasswordRequired'})}`),
-    });  
-    
-    return (
+      .email(`${intl.formatMessage({ id: 'InvalidEmail' })}`)
+      .required(`${intl.formatMessage({ id: 'EmailRequired' })}`),
+    password: yup.string().required(`${intl.formatMessage({ id: 'PasswordRequired' })}`),
+  });
+
+  return (
     <Box flex={1} display='flex' flexDirection='column'>
       <Box
         px={{ xs: 6, sm: 10, xl: 15 }}

@@ -10,8 +10,14 @@
     "RememberMe": "Remember Me",
     "DontHaveAccount": "Don't have account?",
     "Signup": "Signup",
-    "ForgetPassword": "ForgetPassword",
+    "ForgetPassword": "Forget Your Password?",
     "InvalidEmail": "Invalid email",
     "EmailRequired": "Email required",
-    "PasswordRequired": "Password required"
+    "PasswordRequired": "Password required",
+    "ForgetPasswordTextOne": "Forget your password? No need to worry.",
+    "ForgetPasswordTextTwo": "Tell us your email address and we will send you an email to recover your account.",
+    "EmailAddress": "Email Address",
+    "SendEmail": "Send Email",
+    "AlreadyHavePassword": "Have password?",
+    "EmailFormat": "The Email you entered is not a valid email!"
 }
