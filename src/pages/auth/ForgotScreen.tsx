@@ -1,9 +1,6 @@
-import { FormattedMessage } from "react-intl"
+import { FC } from "react";
+import { ForgotForm } from '../../components/auth/ForgotForm';
 
-export const ForgotScreen = () => {
-    return (
-        <div>
-            <h1><FormattedMessage id='Recover'/></h1>
-        </div>
-    )
+export const ForgotScreen: FC<{}> = () => {
+    return <ForgotForm />;
 }

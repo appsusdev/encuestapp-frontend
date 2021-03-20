@@ -8,10 +8,17 @@
     "Email": "Correo",
     "Password": "Contraseña",
     "RememberMe": "Recordarme",
-    "DontHaveAccount": "No tienes cuenta?",
+    "DontHaveAccount": "¿No tienes cuenta?",
     "Signup": "Registrarse",
-    "ForgetPassword": "Olvidaste tu contraseña?",
+    "ForgetPassword": "¿Olvidaste tu contraseña?",
     "InvalidEmail": "Correo inválido",
     "EmailRequired": "Correo obligatorio",
-    "PasswordRequired": "Contraseña obligatoria"
+    "PasswordRequired": "Contraseña obligatoria",
+    "ForgetPasswordTextOne": "¿Olvidaste tu contraseña? No te preocupes.",
+    "ForgetPasswordTextTwo": "Ingresa tu correo electrónico y te enviaremos un correo para recuperar tu cuenta.",
+    "EmailAddress": "Dirección de correo electrónico",
+    "SendEmail": "Envíar correo",
+    "AlreadyHavePassword": "¿Tienes contraseña?",
+    "EmailFormat": "¡El correo electrónico que ingresó no es un correo válido!"
+
 }
