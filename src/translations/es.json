@@ -15,7 +15,7 @@
     "EmailRequired": "Correo obligatorio",
     "PasswordRequired": "Contraseña obligatoria",
     "ForgetPasswordTextOne": "¿Olvidaste tu contraseña? No te preocupes.",
-    "ForgetPasswordTextTwo": "Dinos tu correo electrónico y te enviaremos un correo para recuperar tu cuenta.",
+    "ForgetPasswordTextTwo": "Ingresa tu correo electrónico y te enviaremos un correo para recuperar tu cuenta.",
     "EmailAddress": "Dirección de correo electrónico",
     "SendEmail": "Envíar correo",
     "AlreadyHavePassword": "¿Tienes contraseña?",

@@ -15,7 +15,7 @@
     "EmailRequired": "Email required",
     "PasswordRequired": "Password required",
     "ForgetPasswordTextOne": "Forget your password? No need to worry.",
-    "ForgetPasswordTextTwo": "Tell us your email address and we will send you an email to recover your account.",
+    "ForgetPasswordTextTwo": "Enter your email address and we will send you an email to recover your account.",
     "EmailAddress": "Email Address",
     "SendEmail": "Send Email",
     "AlreadyHavePassword": "Have password?",
