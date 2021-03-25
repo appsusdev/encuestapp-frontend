@@ -7,7 +7,7 @@ import {
   } from 'react-router-dom';
   
 import { AuthRouter } from './AuthRouter';
-import { DashboardRouter } from './DashboardRouter';
+import Layout from '../components/ui/Layout/Layout';
 
 export const AppRouter: FC = () => {
     return (
@@ -15,7 +15,7 @@ export const AppRouter: FC = () => {
             <div>
                 <Switch>
                     <Route path='/auth' component={ AuthRouter }/>
-                    <Route path='/' component={ DashboardRouter }/>
+                    <Route path='/' component={ Layout }/>
 
                     <Redirect to='/'/>
                 </Switch>

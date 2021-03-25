@@ -5,26 +5,21 @@ import { UsersScreen } from '../pages/poll/UsersScreen';
 import { PollsScreen } from '../pages/poll/PollsScreen';
 import { ConfigurationScreen } from '../pages/poll/ConfigurationScreen';
 import { StatisticsScreen } from '../pages/poll/StatisticsScreen';
-import { useIntl } from 'react-intl';
+import { Routes } from '../helpers/getRoutes';
 
 export const DashboardRouter: FC = () => {
-    const intl = useIntl();
 
-    const routes = ["Users", "Polls", "Configuration", "Statistics"];
-
-    const routesInt = routes.map( route => {
-        return (intl.formatMessage({id: `${route}`}).normalize("NFD").replace(/[\u0300-\u036f]/g, "")).toLowerCase();
-    });;
+    const routes = Routes();
 
     return (
         <div>
             <Switch>
-                <Route exact path={`/${routesInt[1]}`} component={ PollsScreen }/>
-                <Route exact path={`/${routesInt[2]}`} component={ ConfigurationScreen }/>
-                <Route exact path={`/${routesInt[3]}`} component={ StatisticsScreen }/>
-                <Route exact path={`/${routesInt[0]}`} component={ UsersScreen }/>
+                <Route exact path={`/${routes[1]}`} component={ PollsScreen }/>
+                <Route exact path={`/${routes[2]}`} component={ ConfigurationScreen }/>
+                <Route exact path={`/${routes[3]}`} component={ StatisticsScreen }/>
+                <Route exact path={`/${routes[0]}`} component={ UsersScreen }/>
 
-                <Redirect to={`/${routesInt[0]}`}/>
+                <Redirect to={`/${routes[0]}`}/>
             </Switch>
 
         </div>
