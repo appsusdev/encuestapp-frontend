@@ -1,6 +1,7 @@
 {
-    "Users": "Usuarios",
-    "Polls": "Encuestas",
+    "Home": "Inicio",
+    "Surveyors": "Encuestadores",
+    "Surveys": "Encuestas",
     "Configuration": "Configuración",
     "Statistics": "Estadísticas",
     "Login": "Iniciar sesión",
@@ -19,6 +20,37 @@
     "EmailAddress": "Dirección de correo electrónico",
     "SendEmail": "Envíar correo",
     "AlreadyHavePassword": "¿Tienes contraseña?",
-    "EmailFormat": "¡El correo electrónico que ingresó no es un correo válido!"
+    "EmailFormat": "¡El correo electrónico que ingresó no es un correo válido!",
+    "Cancel": "Cancelar",
+    "Save": "Guardar",
+    "See": "Ver",
+    "Edit": "Editar",
+    "Delete": "Eliminar",
+    "AssignSurveys": "Asignar encuestas",
+    "Search": "Buscar",
+    "AddNewSurveyor": "Agregar Nuevo Encuestador",
+    "RequiredFile": "Campo requerido",
+    "NumericValue": "Ingrese un valor numérico",
+    "CreateNewSurveyor": "Crear nuevo encuestador",
+    "EditSurveyor": "Editar encuestador",
+    "DocumentType": "Tipo documento",
+    "DocumentNumber": "Número de documento",
+    "FirstName": "Primer nombre",
+    "SecondName": "Segundo nombre",
+    "FirstLastName": "Primer apellido",
+    "SecondLastName": "Segundo apellido",
+    "Mobile": "Celular",
+    "Address": "Dirección",
+    "ProfileImage": "Imagen de perfil",
+    "SurveyorName": "Nombre encuestador",
+    "Name": "Nombre",
+    "Identification": "Identificación",
+    "State": "Estado",
+    "Actions": "Acciones",
+    "CitizenshipCard": "Cédula de ciudadania",
+    "ForeignersIdentityCard": "Cédula de extranjería",
+    "Passport": "Pasaporte"
+
+
 
 }
