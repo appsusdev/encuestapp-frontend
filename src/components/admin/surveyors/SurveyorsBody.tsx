@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { TableCell, TableBody, TableRow } from '@material-ui/core';
+import { TableCell, TableRow } from '@material-ui/core';
 import { CustomizedIcons } from '../../custom/CustomizedIcons';
 import { AntSwitch } from '../../custom/CustomizedSwitch';
 import { Surveyor } from '../../../models/Surveyor';
@@ -18,7 +18,7 @@ export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
     };
 
     return (
-        <TableBody >
+        <>
             <TableRow key={surveyor.username}>
                 <TableCell component="th" scope="row">
                     {surveyor.username}
@@ -40,6 +40,6 @@ export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
                     <CustomizedIcons editIcon deleteIcon assignIcon />
                 </TableCell>
             </TableRow>
-        </TableBody>
+        </>
     )
 }

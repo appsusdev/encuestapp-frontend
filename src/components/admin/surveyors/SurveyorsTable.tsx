@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { createMuiTheme, IconButton, Paper, Table, TableCell, TableContainer, TableFooter, TablePagination, TableRow, TableHead, ThemeProvider } from '@material-ui/core';
+import { createMuiTheme, IconButton, Paper, Table, TableCell, TableContainer, TableFooter, TablePagination, TableRow, TableHead, ThemeProvider, TableBody } from '@material-ui/core';
 import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
@@ -131,11 +131,13 @@ export const SurveyorsTable = () => {
                             <TableCell><FormattedMessage id="Actions" /> </TableCell>
                         </TableRow>
                     </TableHead>
+                    <TableBody>
                         {(rowsPerPage > 0
                             ? surveyors.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             : surveyors
                         ).map((surveyor) => (
-                            <SurveyorsBody key={surveyor.username} {...surveyor}/>
+
+                            <SurveyorsBody key={surveyor.username} {...surveyor} />
 
                         ))}
                         {emptyRows > 0 && (
@@ -143,6 +145,7 @@ export const SurveyorsTable = () => {
                                 <TableCell colSpan={6} />
                             </TableRow>
                         )}
+                    </TableBody>
                     <TableFooter>
                         <TableRow>
                             <TablePagination
