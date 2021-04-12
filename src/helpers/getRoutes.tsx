@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl';
 
-const routes = ["Users", "Polls", "Configuration", "Statistics"];
+const routes = ["Home", "Surveyors", "Surveys", "Configuration", "Statistics"];
 
 export const Routes = () => {
     const intl = useIntl();

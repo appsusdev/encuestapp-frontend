@@ -113,6 +113,7 @@ export const LoginForm: FC<UserSigninProps> = props => {
           }}
           validationSchema={validationSchema}
           onSubmit={(data, { setSubmitting }) => {
+            console.log(data);
             setSubmitting(true);
             // dispatch(login({email: data.email, password: data.password}));
             setSubmitting(false);
@@ -124,7 +125,7 @@ export const LoginForm: FC<UserSigninProps> = props => {
                 <MyTextField
                   placeholder={intl.formatMessage({ id: 'Email' })}
                   name='email'
-                  label={<FormattedMessage id='Email' />}
+                  // label={<FormattedMessage id='Email' />}
                   variant='outlined'
                   className={classes.myTextFieldRoot}
                 />
@@ -133,7 +134,7 @@ export const LoginForm: FC<UserSigninProps> = props => {
               <Box mb={{ xs: 3, lg: 4 }}>
                 <MyTextField
                   type='password'
-                  placeholder={intl.formatMessage({ id: 'Password' })}
+                  // placeholder={intl.formatMessage({ id: 'Password' })}
                   label={<FormattedMessage id='Password' />}
                   name='password'
                   variant='outlined'

@@ -91,6 +91,7 @@ export const ForgotForm: FC<ForgetPasswordProps> = () => {
                     label={<FormattedMessage id='EmailAddress' />}
                     className={classes.textField}
                     variant='outlined'
+                    autoComplete="off"
                   />
                 </Box>
                 <Box mb={3}>

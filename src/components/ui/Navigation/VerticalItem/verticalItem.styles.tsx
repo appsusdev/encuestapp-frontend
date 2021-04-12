@@ -4,7 +4,7 @@ const useStyles = makeStyles(() => {
     return {
         navItem: {
             fontFamily: 'Poppins',
-            height: 40,
+            height: 50,
             marginTop: 2,
             marginBottom: 2,
             cursor: 'pointer',
@@ -33,7 +33,8 @@ const useStyles = makeStyles(() => {
             '&:hover, &:focus': {
                 '& .nav-item-text': {
                     fontFamily: 'Poppins',
-                    fontSize: 14
+                    fontSize: 16,
+                    color: 'white'
                 }
             },
             '& .nav-item-icon': {
@@ -41,7 +42,7 @@ const useStyles = makeStyles(() => {
             },
             '& .nav-item-text': {
                 color: '#808183',
-                fontSize: 14,
+                fontSize: 16,
                 fontFamily: 'Poppins',
                 textTransform: 'capitalize'
             },

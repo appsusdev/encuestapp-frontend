@@ -4,6 +4,7 @@ import clsx from 'clsx';
 
 import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import List from '@material-ui/core/List';
+import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import PollOutlinedIcon from '@material-ui/icons/PollOutlined';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
@@ -20,10 +21,11 @@ const VerticalItem: React.FC<VerticalItemProps> = () => {
     const routes = Routes();
     const routesName = RoutesName();
     const items = [
-        { route: routes[0], name: routesName[0], component: (<PeopleOutlineIcon />) },
-        { route: routes[1], name: routesName[1], component: (<PollOutlinedIcon />) },
-        { route: routes[2], name: routesName[2], component: (<SettingsOutlinedIcon />) },
-        { route: routes[3], name: routesName[3], component: (<TrendingUpOutlinedIcon />) },
+        { route: routes[0], name: routesName[0], component: (<HomeOutlinedIcon />) },
+        { route: routes[1], name: routesName[1], component: (<PeopleOutlineIcon />) },
+        { route: routes[2], name: routesName[2], component: (<PollOutlinedIcon />) },
+        { route: routes[3], name: routesName[3], component: (<SettingsOutlinedIcon />) },
+        { route: routes[4], name: routesName[4], component: (<TrendingUpOutlinedIcon />) },
     ];
 
     return (
