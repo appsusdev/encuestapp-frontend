@@ -12,6 +12,7 @@ import { uiCloseModalAdd } from '../../../actions/ui';
 
 const useStyles = makeStyles((theme: Theme) => ({
     input: {
+        fontSize: 14,
         '& input::placeholder': {
             fontSize: 16,
             color: '#000',
