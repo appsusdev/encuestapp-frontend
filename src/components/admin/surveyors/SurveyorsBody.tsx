@@ -4,9 +4,13 @@ import { TableCell, TableRow } from '@material-ui/core';
 import { CustomizedIcons } from '../../custom/CustomizedIcons';
 import { AntSwitch } from '../../custom/CustomizedSwitch';
 import { Surveyor } from '../../../models/Surveyor';
+import { useDispatch } from 'react-redux';
+import { uiOpenModalEdit, uiOpenModalDelete, uiOpenModalAssign } from '../../../actions/ui';
 
 export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
- 
+
+    const dispatch = useDispatch();
+
     const [state, setState] = useState({
         checkedA: surveyor.state
     });
@@ -16,6 +20,18 @@ export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
         setState({ ...state, [ event.target.name ]: event.target.checked});
          // TODO: Actualizar en bd  
     };
+
+    const onEdit = () => {
+        dispatch( uiOpenModalEdit() );
+    }
+
+    const onDelete = () => {
+        dispatch( uiOpenModalDelete() );
+    }
+
+    const onAssign = () => {
+        dispatch( uiOpenModalAssign() );
+    }
 
     return (
         <>
@@ -37,7 +53,7 @@ export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
                     <AntSwitch checked={state.checkedA} name="checkedA" onChange={handleChange} />
                 </TableCell>
                 <TableCell style={{ width: 160 }} align="center">
-                    <CustomizedIcons editIcon deleteIcon assignIcon />
+                    <CustomizedIcons editIcon deleteIcon assignIcon onEdit={onEdit} onDelete={onDelete} onAssign={onAssign}/>
                 </TableCell>
             </TableRow>
         </>

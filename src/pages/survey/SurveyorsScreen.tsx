@@ -5,11 +5,14 @@ import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import { CustomizedSearch } from '../../components/custom/CustomizedSearch';
 import { Fonts } from '../../shared/constants/AppEnums';
 import { AppState } from '../../reducers/rootReducer';
-import { uiOpenModalAdd, uiCloseModalAdd } from '../../actions/ui';
+import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalDelete, uiCloseModalAssign } from '../../actions/ui';
 import { FormAddSurveyor } from '../../components/admin/surveyors/FormAddSurveyor';
 import { SurveyorsTable } from '../../components/admin/surveyors/SurveyorsTable';
 import CustomizedDialog from '../../components/custom/CustomizedDialog';
 import AppAnimate from '../../components/ui/AppAnimate/AppAnimate';
+import { FormEditSurveyor } from '../../components/admin/surveyors/FormEditSurveyor';
+import { DeleteSurveyor } from '../../components/admin/surveyors/DeleteSurveyor';
+import { AssignSurvey } from '../../components/admin/surveyors/AssignSurvey';
 
 const useStyles = makeStyles((theme) => ({
   btnRoot: {
@@ -35,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 export const SurveyorsScreen = () => {
   const classes = useStyles();
   const intl = useIntl();
-  const { modalAddOpen } = useSelector<AppState, AppState['ui']>(state => state.ui);
+  const { modalAddOpen, modalEditOpen, modalDeleteOpen, modalAssignOpen } = useSelector<AppState, AppState['ui']>(state => state.ui);
   const dispatch = useDispatch();
 
   const openAddSurveyor = () => {
@@ -43,9 +46,21 @@ export const SurveyorsScreen = () => {
   }
 
   const onDenyAdd = () => {
-    dispatch(uiCloseModalAdd());
+    dispatch( uiCloseModalAdd() );
   }
 
+  const onDenyEdit = () => {
+    dispatch( uiCloseModalEdit() );
+  }
+
+  const onDenyDelete = () => {
+    dispatch( uiCloseModalDelete() );
+  }
+
+  const onDenyAssign = () => {
+    dispatch( uiCloseModalAssign() );
+  }
+  
 
   return (
     <AppAnimate animation='transition.slideUpIn' delay={200}>
@@ -68,7 +83,10 @@ export const SurveyorsScreen = () => {
         </Box>
 
         <SurveyorsTable />
-        <CustomizedDialog open={modalAddOpen} cancelBtn={true} onDeny={onDenyAdd} title={`${intl.formatMessage({ id: 'CreateNewSurveyor' })}`} content={<FormAddSurveyor />} />
+        <CustomizedDialog open={modalAddOpen} cancelBtn={true} onDeny={onDenyAdd} title={`${intl.formatMessage({ id: 'CreateNewSurveyor' })}`} content={<FormAddSurveyor />} width textButton="Accept"/>
+        <CustomizedDialog open={modalEditOpen} cancelBtn={true} onDeny={onDenyEdit} title={`${intl.formatMessage({ id: 'EditSurveyor' })}`} content={<FormEditSurveyor />} width textButton="Accept"/>
+        <CustomizedDialog open={modalDeleteOpen} cancelBtn={true} onDeny={onDenyDelete} title={`${intl.formatMessage({ id: 'DeleteSurveyor' })}`} content={<DeleteSurveyor />} seeActions textButton="Accept"/>
+        <CustomizedDialog open={modalAssignOpen} cancelBtn={true} onDeny={onDenyAssign} title={`${intl.formatMessage({ id: 'AssignSurvey' })}`} content={<AssignSurvey />} seeActions textButton="Accept"/>
         
       </Box>
     </AppAnimate>

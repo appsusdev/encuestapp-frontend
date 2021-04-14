@@ -33,6 +33,7 @@
     "NumericValue": "Enter a numeric value",
     "CreateNewSurveyor": "Create new surveyor",
     "EditSurveyor": "Edit surveyor",
+    "DeleteSurveyor": "Delete surveyor",
     "DocumentType": "Document type",
     "DocumentNumber": "Document number",
     "FirstName": "First name",
@@ -49,5 +50,16 @@
     "Actions": "Actions",
     "CitizenshipCard": "Citizenship card",
     "ForeignersIdentityCard": "Foreigner's identity card",
-    "Passport": "Pasaporte"
+    "Passport": "Pasaporte",
+    "Image": "Image",
+    "Data": "Data",
+    "UserType": "User type",
+    "SearchImage": "Search image",
+    "Accept": "Accept",
+    "MessageOne": "Are you sure you want the surveyor?",
+    "MessageTwo": "If you delete this surveyor, the following surveys will be deleted:",
+    "MessageThree": "The best option is to disable the surveyor without deleting it, so that the surveys already conducted by the surveyor will be preserved.",
+    "AssignSurvey": "Assign survey",
+    "SelectSurvey": "Select survey",
+    "Assign": "Assign"
 }
