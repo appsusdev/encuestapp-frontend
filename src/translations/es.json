@@ -33,6 +33,7 @@
     "NumericValue": "Ingrese un valor numérico",
     "CreateNewSurveyor": "Crear nuevo encuestador",
     "EditSurveyor": "Editar encuestador",
+    "DeleteSurveyor": "Eliminar encuestador",
     "DocumentType": "Tipo documento",
     "DocumentNumber": "Número de documento",
     "FirstName": "Primer nombre",
@@ -49,8 +50,18 @@
     "Actions": "Acciones",
     "CitizenshipCard": "Cédula de ciudadania",
     "ForeignersIdentityCard": "Cédula de extranjería",
-    "Passport": "Pasaporte"
-
-
-
+    "Passport": "Pasaporte",
+    "Image": "Imagen",
+    "Data": "Datos",
+    "UserType": "Tipo usuario",
+    "SearchImage": "Buscar imagen",
+    "Accept": "Aceptar",
+    "MessageOne": "¿Está seguro que desea eliminar el encuestador?",
+    "MessageTwo": "Si elimina este encuestador se eliminaran las siguientes encuestas:",
+    "MessageThree": "La mejor opción es que deshabilite el encuestador sin eliminarlo, así se conservarán las encuestas que este ya realizó.",
+    "AssignSurvey": "Asignar encuesta",
+    "SelectSurvey": "Seleccionar encuesta:",
+    "Assign": "Asignar",
+    "AssignedSurveys": "Encuestas asignadas"
 }
+

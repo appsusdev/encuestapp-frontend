@@ -4,7 +4,7 @@ import { useIntl, FormattedMessage } from 'react-intl';
 import * as yup from 'yup';
 import clsx from 'clsx';
 
-import { Box, Button, Grid, makeStyles, MenuItem, IconButton, TextField } from '@material-ui/core';
+import { Box, Button, Grid, makeStyles, MenuItem, IconButton, TextField, Tooltip } from '@material-ui/core';
 import { Theme } from '@material-ui/core/styles';
 import { PhotoCamera } from '@material-ui/icons';
 import { Fonts } from '../../../shared/constants/AppEnums';
@@ -247,10 +247,11 @@ export const FormAddSurveyor = () => {
 
                             <Grid item xs={6}>
                                 <Box mt={3} ml={-2}>
+                                    <Tooltip title={`${intl.formatMessage({ id: 'SearchImage' })}`}>
                                     <label htmlFor="icon-button-file">
                                         <IconButton component="span"><PhotoCamera /></IconButton>
                                     </label>
-
+                                    </Tooltip>
                                 </Box>
                             </Grid>
                         </Grid>

@@ -99,6 +99,8 @@ const DialogActions = withStyles((theme: Theme) => ({
 }))(MuiDialogActions);
 
 interface ConfirmationDialogProps extends WithStyles<typeof styles> {
+    width?: boolean;
+    textButton?: string;
     open: boolean;
     title: string;
     content: any;
@@ -109,11 +111,38 @@ interface ConfirmationDialogProps extends WithStyles<typeof styles> {
 }
 
 export const CustomizedDialog = withStyles(styles)((props: ConfirmationDialogProps) => {
-    const { open, title, content, cancelBtn, seeActions, onDeny, onConfirm, classes } = props;
+    const { open, title, content, cancelBtn, seeActions, onDeny, onConfirm, classes, width, textButton } = props;
 
     return (
         <>
-            <Dialog maxWidth="md" fullWidth onClose={() => onDeny(false)} aria-labelledby="customized-dialog-title" open={open}>
+            {
+                (width) ? 
+                <Dialog maxWidth="md" fullWidth onClose={() => onDeny(false)} aria-labelledby="customized-dialog-title" open={open}>
+                    <DialogTitle id="customized-dialog-title" onClose={() => onDeny(false)}>
+                        {title}
+                    </DialogTitle>
+                    <DialogContent dividers>
+                        {content}
+                    </DialogContent>
+                    {
+                        (seeActions) &&
+                        <DialogActions>
+                            {
+                                (cancelBtn) &&
+                                <Button className={clsx(classes.btn, classes.cancel)} onClick={() => onDeny(false)}>
+                                    <FormattedMessage id="Cancel" />
+                                </Button>
+                            }
+                            <Button className={clsx(classes.btn, classes.save)} autoFocus onClick={onConfirm}>
+                                <FormattedMessage id="Save" />
+                            </Button>
+                        </DialogActions>
+                    }
+                </Dialog>
+                
+                :
+
+                <Dialog maxWidth="sm" fullWidth onClose={() => onDeny(false)} aria-labelledby="customized-dialog-title" open={open}>
                 <DialogTitle id="customized-dialog-title" onClose={() => onDeny(false)}>
                     {title}
                 </DialogTitle>
@@ -129,12 +158,21 @@ export const CustomizedDialog = withStyles(styles)((props: ConfirmationDialogPro
                                 <FormattedMessage id="Cancel" />
                             </Button>
                         }
-                        <Button className={clsx(classes.btn, classes.save)} autoFocus onClick={onConfirm}>
-                            <FormattedMessage id="Save" />
-                        </Button>
+                        {
+                            (textButton) ?
+                            <Button className={clsx(classes.btn, classes.save)} autoFocus onClick={onConfirm}>
+                                <FormattedMessage id={`${textButton}`} />
+                            </Button>
+                            :
+                            <Button className={clsx(classes.btn, classes.save)} autoFocus onClick={onConfirm}>
+                                <FormattedMessage id="Save"/>
+                            </Button>
+
+                        }
                     </DialogActions>
                 }
             </Dialog>
+            }
         </>
     );
 });
