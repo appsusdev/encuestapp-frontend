@@ -1,15 +1,16 @@
 import { useDispatch } from 'react-redux';
-import { Form, Formik, useField } from 'formik';
+import { Form, Formik } from 'formik';
 import { useIntl, FormattedMessage } from 'react-intl';
 import * as yup from 'yup';
 import clsx from 'clsx';
 
-import { Box, Button, Grid, makeStyles, IconButton, TextField, Card, CardMedia, Tooltip, MenuItem } from '@material-ui/core';
+import { Box, Button, Grid, makeStyles, IconButton, Card, CardMedia, Tooltip, MenuItem } from '@material-ui/core';
 import { Theme } from '@material-ui/core/styles';
 import { PhotoCamera } from '@material-ui/icons';
 import { Fonts } from '../../../shared/constants/AppEnums';
 import { uiCloseModalEdit } from '../../../actions/ui';
 import logo from '../../../assets/images/user.jpg'
+import { MyTextField } from '../../custom/MyTextField';
 
 const useStyles = makeStyles((theme: Theme) => ({
     input: {
@@ -80,21 +81,6 @@ interface MyFormValues {
     address: string;
     profileImage: string;
 }
-
-const MyTextField = (props: any) => {
-    const [field, meta] = useField(props);
-    const errorText = meta.error && meta.touched ? meta.error : '';
-    return (
-        <TextField
-            size="small"
-            {...props}
-            {...field}
-            helperText={errorText}
-            error={!!errorText}
-            autoComplete="off"
-        />
-    );
-};
 
 export const FormEditSurveyor = () => {
 
@@ -205,7 +191,7 @@ export const FormEditSurveyor = () => {
                                         name="userType"
                                         variant='outlined'
                                         className={classes.myTextFieldRoot}
-                                        placeholder="Encuestador"
+                                        placeholder={`${intl.formatMessage({ id: 'Surveyor'})}`}
                                         disabled
                                     />
                                 </Grid>

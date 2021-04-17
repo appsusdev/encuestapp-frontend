@@ -1,24 +1,29 @@
 import { useIntl } from 'react-intl';
-import { Tooltip } from '@material-ui/core';
+import { IconButton, Tooltip } from '@material-ui/core';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
+import FormatListNumberedOutlinedIcon from '@material-ui/icons/FormatListNumberedOutlined';
+import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
-import IconButton from '@material-ui/core/IconButton';
 
 interface Icons {
     seeIcon?: true,
     editIcon?: true,
     deleteIcon?: true,
     assignIcon?: true,
+    chapterIcon?: true,
+    questionIcon?: true,
     onSee?: () => void;
     onEdit?: () => void;
     onDelete?: () => void;
     onAssign?: () => void;
+    onChapter?: () => void;
+    onQuestion?: () => void;
 }
 
 export const CustomizedIcons = (props: Icons) => {
-    const { seeIcon, editIcon, deleteIcon, assignIcon, onSee, onEdit, onDelete, onAssign } = props;
+    const { seeIcon, editIcon, deleteIcon, assignIcon, chapterIcon, questionIcon, onSee, onEdit, onDelete, onAssign, onChapter, onQuestion } = props;
     const intl = useIntl();
 
     return (
@@ -48,6 +53,20 @@ export const CustomizedIcons = (props: Icons) => {
                 (assignIcon) && (
                     <Tooltip title={`${intl.formatMessage({ id: 'AssignSurveys' })}`}>
                         <IconButton aria-label="expand row" size="small" onClick={ onAssign }> <DescriptionOutlinedIcon /> </IconButton>
+                    </Tooltip>
+                )
+            }
+            {
+                (chapterIcon) && (
+                    <Tooltip title={`${intl.formatMessage({ id: 'AddChapters' })}`}>
+                        <IconButton aria-label="expand row" size="small" onClick={ onChapter }> <FormatListNumberedOutlinedIcon /> </IconButton>
+                    </Tooltip>
+                )
+            }
+                        {
+                (questionIcon) && (
+                    <Tooltip title={`${intl.formatMessage({ id: 'AddQuestions' })}`}>
+                        <IconButton aria-label="expand row" size="small" onClick={ onQuestion }> <HelpOutlineOutlinedIcon /></IconButton>
                     </Tooltip>
                 )
             }
