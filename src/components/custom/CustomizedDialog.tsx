@@ -117,7 +117,7 @@ export const CustomizedDialog = withStyles(styles)((props: ConfirmationDialogPro
         <>
             {
                 (width) ? 
-                <Dialog maxWidth="md" fullWidth onClose={() => onDeny(false)} aria-labelledby="customized-dialog-title" open={open}>
+                <Dialog disableBackdropClick disableEscapeKeyDown maxWidth="md" fullWidth aria-labelledby="customized-dialog-title" open={open}>
                     <DialogTitle id="customized-dialog-title" onClose={() => onDeny(false)}>
                         {title}
                     </DialogTitle>
@@ -142,7 +142,7 @@ export const CustomizedDialog = withStyles(styles)((props: ConfirmationDialogPro
                 
                 :
 
-                <Dialog maxWidth="sm" fullWidth onClose={() => onDeny(false)} aria-labelledby="customized-dialog-title" open={open}>
+                <Dialog disableBackdropClick disableEscapeKeyDown maxWidth="sm" fullWidth aria-labelledby="customized-dialog-title" open={open}>
                 <DialogTitle id="customized-dialog-title" onClose={() => onDeny(false)}>
                     {title}
                 </DialogTitle>

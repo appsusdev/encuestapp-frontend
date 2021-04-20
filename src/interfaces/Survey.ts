@@ -35,7 +35,7 @@ export enum DirectedToQuestion {
 
 export interface QuestionOptions {
     label: string;
-    value?: string;
+    value?: number;
     description?: boolean;
     textDescription?: string;
     typeDescription?: Partial<TypeEnum>

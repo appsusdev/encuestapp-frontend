@@ -4,13 +4,15 @@ import { useIntl, FormattedMessage } from 'react-intl';
 import * as yup from 'yup';
 import clsx from 'clsx';
 
-import { Box, Button, Grid, makeStyles, MenuItem, Checkbox } from '@material-ui/core';
+import { Box, Button, Grid, makeStyles, MenuItem, Checkbox, Tooltip, IconButton } from '@material-ui/core';
 import { Theme } from '@material-ui/core/styles';
 import { Fonts } from '../../../shared/constants/AppEnums';
 import { uiCloseModalAdd } from '../../../actions/ui';
 import { MyTextField } from '../../custom/MyTextField';
-import { TypeEnum } from '../../../interfaces/Survey';
+import { TypeEnum, QuestionOptions } from '../../../interfaces/Survey';
 import { useState } from 'react';
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import { Alert } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme: Theme) => ({
     input: {
@@ -52,17 +54,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const FormAddQuestion = () => {
 
-    interface Options {
-        label: string;
-        description?: boolean;
-        textDescription?: string;
-        typeDescription?: Partial<TypeEnum>
-    }
-
     const intl = useIntl();
     const classes = useStyles();
     const dispatch = useDispatch();
-    const [options, setOptions] = useState<Options[]>([]);
+    const [options, setOptions] = useState<QuestionOptions[]>([]);
+
+    const [state, setState] = useState(false);
 
     const validationSchema = yup.object({
         chapter: yup.string(),
@@ -84,6 +81,7 @@ export const FormAddQuestion = () => {
         directedTo: number,
         chart: boolean,
         type: TypeEnum,
+        options: QuestionOptions[],
         label: string,
         description: boolean,
         textDescription: string,
@@ -104,6 +102,7 @@ export const FormAddQuestion = () => {
         typeDescription: TypeEnum.TEXT_INPUT,
         department: false,
         town: false,
+        options: options
     }
 
     const onClose = () => {
@@ -111,19 +110,29 @@ export const FormAddQuestion = () => {
     }
 
     const addOptions = (values: Partial<myFormValues>) => {
+
         const label = values.label;
+        const value = options.length;
         const description = values.description;
         const typeDescription = values.typeDescription;
         const textDescription = values.textDescription;
         if(label) {
-            console.log(options);
-            const newOption = { label, description, typeDescription, textDescription }
-            setOptions([...options, newOption])
-            return console.log('Option', newOption)
+            setState(false);
+            const newOption = { label, value, description, typeDescription, textDescription }
+            setOptions([...options, newOption]);
+            values.label = "";
+            values.description = false;
+            values.textDescription = "";
         } else {
-            console.log('No existe label');
+            setState(true);
         }
     }
+
+    const deleteOption = (option: QuestionOptions) => {
+        const newOptions = options.filter( item => item.value !== option.value)
+        setOptions(newOptions);
+    }
+
     return (
         <Box m={1}>
             <Formik
@@ -131,14 +140,15 @@ export const FormAddQuestion = () => {
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={(data, { setSubmitting }) => {
+                    data.options = options;
                     console.log(data);
                     setSubmitting(true);
                     // dispatch( guardar en BD);
                     setSubmitting(false);
                 }}>
-                {({ values, isSubmitting, handleChange }) => (
+                {({ values, isSubmitting, handleChange, handleSubmit }) => (
 
-                    <Form className={classes.input}>
+                    <Form className={classes.input} onSubmit={handleSubmit}>
 
                         <Grid container spacing={2}>
 
@@ -179,13 +189,17 @@ export const FormAddQuestion = () => {
 
                             <Grid item xs={3}>
                                 <Box mt={2}>
+                                <Tooltip title={`${intl.formatMessage({ id: 'MessageSix' })}`}> 
+                                
                                     <Checkbox
                                         checked={values.chart}
                                         name="chart"
                                         onChange={handleChange}
                                         color="default"
+                                        disabled={(values.type === 'TEXT_INPUT') || (values.type === 'TEXT_AREA') || (values.type === 'REGION') || (values.type === 'FILE') || (values.type === 'GEOLOCATION') || (values.type === 'PICTURE')}
                                         inputProps={{ 'aria-label': 'primary checkbox' }}
                                     />
+                                </Tooltip>
                                     <label className="form-text"><FormattedMessage id='Chart' /></label>
                                 </Box>
                             </Grid>
@@ -275,6 +289,54 @@ export const FormAddQuestion = () => {
                                             <FormattedMessage id='AddOption' />
                                         </Button>
                                     </Grid>
+                                    <Grid item xs={3}></Grid>
+                                    {
+                                        (state === true) &&
+                                        <Grid item xs={12}>
+                                            <Alert severity="error" color="error">
+                                                Debe agregar una opción válida
+                                            </Alert>
+                                        </Grid>
+                                    }
+                                    {
+                                        (options.length > 0) &&
+                                        options.map((option, index) => {
+                                            return (
+                                            <Grid container key={index} style={{marginTop: '10px'}}>
+                                            
+                                                <Grid item xs={3}>
+                                                    <Checkbox
+                                                        color="default"
+                                                        disabled
+                                                        inputProps={{ 'aria-label': 'primary checkbox' }}
+                                                    />
+                                                    <label className="form-text">{option.label}</label>
+                                                </Grid>
+                                                <Grid item xs={3}>
+                                                    <Box style={{marginTop: '10px'}}>
+                                                        {option.textDescription} 
+                                                    </Box>
+                                                </Grid>
+                                                <Grid item xs={5}>
+                                                {
+                                                    (option.description) &&
+                                                     <MyTextField 
+                                                        name="option"
+                                                        variant="outlined"
+                                                        disabled
+                                                        type="number"
+                                                     />
+                                                }
+                                                </Grid>
+                                                <Grid item xs={1}>
+                                                    <Tooltip title={`${intl.formatMessage({ id: 'Delete' })}`}>
+                                                        <IconButton aria-label="expand row" size="small" style={{marginLeft: '5px'}} onClick={() => deleteOption(option) }> <DeleteOutlineOutlinedIcon /> </IconButton>
+                                                    </Tooltip>
+                                                </Grid>
+                                            </Grid>
+                                            )
+                                        })
+                                    }
                                 </>
                             }
                             {
@@ -317,6 +379,7 @@ export const FormAddQuestion = () => {
                         <Box mt={3} display="flex" flexDirection="row-reverse">
                             <Button className={clsx(classes.btn, classes.save)} autoFocus
                                 type='submit'
+                                // onClick={handleSubmit}
                                 disabled={isSubmitting} >
                                 <FormattedMessage id="Save" />
                             </Button>

@@ -88,6 +88,12 @@
     "Department": "Departamento",
     "Town": "Municipio",
     "MessageFour": "*En caso de que sea Select, Radio, Checkbox*",
-    "MessageFive": "*En caso de que sea Región*"
+    "MessageFive": "*En caso de que sea Región*",
+    "MessageSix": "Tener en cuenta que las estadísticas solo se pueden de los campos: Número, Select, Checkbox, Radio y Fecha",
+    "UploadCitizenDB": "Subir base de datos ciudadano",
+    "UploadExcel": "Subir archivo excel",
+    "Attach": "Adjuntar",
+    "Homes": "Hogares",
+    "Georeferencing": "Georreferenciación"
 }
 

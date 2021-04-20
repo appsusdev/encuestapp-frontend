@@ -2,11 +2,10 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 
 import { AppBar, Tab, Tabs } from '@material-ui/core';
-import { FormAddSurvey } from './FormAddSurvey';
-import { SurveyorsData } from './SurveyorsData';
 import { a11yProps, TabPanel, useStyles } from '../../custom/Tabs';
+import { Home } from './Home';
 
-export const SurveysTabs = () => {
+export const HomeTabs = () => {
   const classes = useStyles();
   const intl = useIntl();
   const [value, setValue] = React.useState(0);
@@ -29,20 +28,15 @@ export const SurveysTabs = () => {
                   }
                 }}
               >
-                  <Tab className={classes.tab} label={`${intl.formatMessage({ id: 'GeneralData'})}`} {...a11yProps(0)} />
-                  <Tab className={classes.tab} label={`${intl.formatMessage({ id: 'Surveyors'})}`} {...a11yProps(1)} />
-                  <Tab className={classes.tab} label={`${intl.formatMessage({ id: 'PreviewSurvey'})}`} {...a11yProps(2)} />
+                  <Tab className={classes.tab} label={`${intl.formatMessage({ id: 'Homes'})}`} {...a11yProps(0)} />
+                  <Tab className={classes.tab} label={`${intl.formatMessage({ id: 'Georeferencing'})}`} {...a11yProps(1)} />
               </Tabs>
           </AppBar>
           <TabPanel value={value} index={0}>
-
-              <FormAddSurvey />
+                <Home />
           </TabPanel>
           <TabPanel value={value} index={1}>
-              <SurveyorsData />
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-              {/* <ReporteComercios/> */}
+              {/* <SurveyorsData /> */}
           </TabPanel>
       </div>
   );

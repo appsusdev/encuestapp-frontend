@@ -81,11 +81,11 @@ export const AssignSurvey = () => {
     };
 
     const handleAssign = () => {
-        console.log(survey);
+        // console.log(survey);
     }
 
     const onDelete = () => {
-        console.log('Eliminar encuesta');
+        // console.log('Eliminar encuesta');
     }
 
     return (

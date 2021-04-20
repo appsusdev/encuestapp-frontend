@@ -88,5 +88,11 @@
     "Department": "Department",
     "Town": "Town",
     "MessageFour": "*In case it is Select, Radio, Checkbox*",
-    "MessageFive": "*In case it is Region*"
+    "MessageFive": "*In case it is Region*",
+    "MessageSix": "Please note that the statistics can only be taken from the fields: Number, Select, Checkbox, Radius and Date",
+    "UploadCitizenDB": "Upload citizen database",
+    "UploadExcel": "Upload excel file",
+    "Attach": "Attach",
+    "Homes": "Homes",
+    "Georeferencing": "Georeferencing"
 }
