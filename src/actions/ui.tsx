@@ -15,3 +15,7 @@ export const uiCloseModalDelete = () => ({ type: types.uiCloseModalDelete });
 export const uiOpenModalAssign = () => ({ type: types.uiOpenModalAssign });
 
 export const uiCloseModalAssign = () => ({ type: types.uiCloseModalAssign });
+
+export const startLoading = () => ({ type: types.uiStartLoading });
+
+export const finishLoading = () => ({ type: types.uiFinishLoading });

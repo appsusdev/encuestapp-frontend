@@ -42,8 +42,8 @@ export const useStyles = makeStyles((theme) => ({
     height: 'auto',
   },
   tabs: {  
-      color: '#212529',
-      backgroundColor: theme.palette.text.primary,
+      color: theme.palette.info.dark,
+      backgroundColor: theme.palette.common.white,
       indicatorColor: theme.palette.info.main, 
       
   },
@@ -54,7 +54,7 @@ export const useStyles = makeStyles((theme) => ({
     ].join(','),
     '&:hover': {
       color: theme.palette.info.main,
-      opacity: 1,
+      opacity: 2,
       borderColor: 'primary'
     },
     '&:focus': {

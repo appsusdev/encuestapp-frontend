@@ -1,17 +1,17 @@
 import { AuthAction, IAuth, types } from '../types/types';
 
 const initialState = {
-    uid: '123',
-    name: 'Natalia Meneses',
-    email: 'nmeneses8@gmail.com'
+    uid: '',
+    displayName: '',
+    email: ''
 }
 
-export const authReducer = ( state: IAuth = initialState, action: AuthAction) => {
+export const authReducer = ( state: Partial<IAuth> = initialState, action: AuthAction) => {
     switch (action.type) {
         case types.login:
             return {
                 uid: action.payload.uid,
-                name: action.payload.name,
+                displayName: action.payload.displayName,
                 email: action.payload.email
             }
         

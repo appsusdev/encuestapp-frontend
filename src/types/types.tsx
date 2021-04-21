@@ -17,13 +17,15 @@ export const types = {
     uiCloseModalDelete: '[ui] Close modal delete',
     uiOpenModalAssign: '[ui] Open modal assign',
     uiCloseModalAssign: '[ui] Close modal assign',
+    uiStartLoading: '[ui] Start loading',
+    uiFinishLoading: '[ui] Finish loading',
 }
 
 // Auth
 export interface IAuth {
-    uid: string,
-    name: string,
-    email: string,
+    uid: string | undefined | null,
+    displayName: string | undefined | null,
+    email: string | undefined | null
 }
 
 export type AuthAction = {
@@ -37,6 +39,7 @@ export interface IUi {
   modalEditOpen: boolean,
   modalDeleteOpen: boolean,
   modalAssignOpen: boolean,
+  loading: boolean,
 }
 
 export type UiAction = {

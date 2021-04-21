@@ -9,6 +9,8 @@ import { CremaTheme } from '../../types/AppContextPropsType';
 import { Fonts } from '../../shared/constants/AppEnums';
 import { Box, Button, Checkbox } from '@material-ui/core';
 import { MyTextField } from '../custom/MyTextField';
+import { startLoginCorreoPassword } from '../../actions/auth';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme: CremaTheme) => ({
   formRoot: {
@@ -32,7 +34,7 @@ const useStyles = makeStyles((theme: CremaTheme) => ({
     cursor: 'pointer',
   },
   btnRoot: {
-    background: '#F04F47',
+    background: theme.palette.error.main,
     borderRadius: '4px',
     width: '10rem',
     fontWeight: Fonts.REGULAR,
@@ -40,7 +42,7 @@ const useStyles = makeStyles((theme: CremaTheme) => ({
     marginTop: -15,
     textTransform: 'none',
     '&:hover': {
-      background: '#D94040'
+      background: theme.palette.error.dark,
     }
   },
   btnRootFull: {
@@ -58,13 +60,13 @@ const useStyles = makeStyles((theme: CremaTheme) => ({
     color: theme.palette.text.primary,
   },
   colorTextPrimary: {
-    color: '#0A8FDC',
+    color: theme.palette.info.main,
   },
   underlineNone: {
     textDecoration: 'none',
   },
   textGrey: {
-    color: '#9E9E9E',
+    color: theme.palette.action.disabled,
   },
 }));
 
@@ -74,6 +76,7 @@ export const LoginForm: FC<UserSigninProps> = props => {
 
   const intl = useIntl();
   const classes = useStyles(props);
+  const dispatch = useDispatch();
 
   const validationSchema = yup.object({
     email: yup
@@ -100,9 +103,9 @@ export const LoginForm: FC<UserSigninProps> = props => {
           }}
           validationSchema={validationSchema}
           onSubmit={(data, { setSubmitting }) => {
-            console.log(data);
+            // console.log(data);
             setSubmitting(true);
-            // dispatch(login({email: data.email, password: data.password}));
+            dispatch(startLoginCorreoPassword(data.email, data.password));
             setSubmitting(false);
           }}>
           {({ isSubmitting }) => (
@@ -112,7 +115,6 @@ export const LoginForm: FC<UserSigninProps> = props => {
                 <MyTextField
                   placeholder={intl.formatMessage({ id: 'Email' })}
                   name='email'
-                  // label={<FormattedMessage id='Email' />}
                   variant='outlined'
                   className={classes.myTextFieldRoot}
                 />
@@ -120,9 +122,8 @@ export const LoginForm: FC<UserSigninProps> = props => {
 
               <Box mb={{ xs: 3, lg: 4 }}>
                 <MyTextField
+                  placeholder={intl.formatMessage({ id: 'Password' })}
                   type='password'
-                  // placeholder={intl.formatMessage({ id: 'Password' })}
-                  label={<FormattedMessage id='Password' />}
                   name='password'
                   variant='outlined'
                   className={classes.myTextFieldRoot}

@@ -5,6 +5,7 @@ const initialState = {
     modalEditOpen: false,
     modalDeleteOpen: false,
     modalAssignOpen: false,
+    loading: false,
 }
 
 export const uiReducer = ( state: IUi = initialState, action: UiAction) => {
@@ -56,6 +57,19 @@ export const uiReducer = ( state: IUi = initialState, action: UiAction) => {
                 ...state,
                 modalAssignOpen: false
             }
+        
+        case types.uiStartLoading:
+            return {
+                ...state,
+                loading: true
+            }
+
+        case types.uiFinishLoading:
+            return {
+                ...state,
+                loading: false
+            }
+    
 
         default:
             return state;
