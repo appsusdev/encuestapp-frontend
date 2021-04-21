@@ -7,17 +7,18 @@ import { useIntl } from 'react-intl';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        padding: '2px 4px',
+        // padding: '2px 4px',
         display: 'flex',
-        minWidth: 100,
-        width: 400,
-        height: '42px',
-        position: 'absolute',
-        left: '100%',
-        transform: 'translate(-100%, 0)',
-        [theme.breakpoints.down('sm')]: {
-            width: '60%',
-        },
+        // minWidth: 100,
+        width: "100%",
+        // height: '42px',
+        // // position: 'relative',
+        // // right: 0,
+        // // left: '68%',
+        // transform: 'translate(-100%, 0)',
+        // [theme.breakpoints.down('sm')]: {
+        //     width: '60%',
+        // },
     },
     input: {
         marginLeft: theme.spacing(1),

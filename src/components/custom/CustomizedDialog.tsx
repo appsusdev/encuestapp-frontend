@@ -1,76 +1,38 @@
 import React from 'react';
 import clsx from 'clsx';
 
-import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
+import { Theme, withStyles } from '@material-ui/core/styles';
+import { Button, Dialog, IconButton, Typography } from '@material-ui/core';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
-import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import Typography from '@material-ui/core/Typography';
-import { Fonts } from '../../shared/constants/AppEnums';
 import { FormattedMessage } from 'react-intl';
+import { useStyles } from '../../shared/styles/useStyles';
+import { makeStyles } from '@material-ui/core';
 
-const styles = (theme: Theme) =>
-    createStyles({
-        root: {
-            margin: 0,
-            padding: theme.spacing(2),
-            fontFamily: 'Poppins',
-        },
-        closeButton: {
-            position: 'absolute',
-            right: theme.spacing(1),
-            top: theme.spacing(1),
-            color: theme.palette.grey[500],
-        },
-        btn: {
-            width: '20%',
-            height: '100%',
-            fontWeight: Fonts.REGULAR,
-            textTransform: 'capitalize',
-            color: 'white',
-            fontSize: 14,
-            paddingTop: 12,
-            paddingBottom: 12,
-            borderRadius: '4px'
-        },
-        cancel: {
+const styles = makeStyles(() => ({
+         cancel: {
             position: 'absolute',
             height: '70%',
             left: '15px',
-            background: '#F04F47',
-            '&:hover': {
-                background: '#D94040'
-            },
         },
         save: {
             position: 'absolute',
             height: '70%',
             right: '15px',
-            background: '#0A8FDC',
-            '&:hover': {
-                background: '#0A6DDC'
-            }
         },
-        title: {
-            fontFamily: 'Poppins',
-            fontSize: 18,
-            fontWeight: Fonts.MEDIUM,
-            color: theme.palette.grey[800]
-        },
-    });
+}));
 
-export interface DialogTitleProps extends WithStyles<typeof styles> {
+export interface DialogTitleProps {
     id: string;
     children: React.ReactNode;
     onClose: () => void;
 }
 
-const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
-    const { children, classes, onClose, ...other } = props;
+const DialogTitle = ((props: DialogTitleProps) => {
+    const classes = useStyles();
+    const { children, onClose, ...other } = props;
     return (
         <MuiDialogTitle disableTypography className={classes.root} {...other}>
             <Typography className={classes.title} variant="h6">{children}</Typography>
@@ -98,7 +60,7 @@ const DialogActions = withStyles((theme: Theme) => ({
     },
 }))(MuiDialogActions);
 
-interface ConfirmationDialogProps extends WithStyles<typeof styles> {
+interface ConfirmationDialogProps {
     width?: boolean;
     textButton?: string;
     open: boolean;
@@ -110,14 +72,16 @@ interface ConfirmationDialogProps extends WithStyles<typeof styles> {
     onConfirm?: () => void;
 }
 
-export const CustomizedDialog = withStyles(styles)((props: ConfirmationDialogProps) => {
-    const { open, title, content, cancelBtn, seeActions, onDeny, onConfirm, classes, width, textButton } = props;
+export const CustomizedDialog = ((props: ConfirmationDialogProps) => {
+    const classes = useStyles();
+    const btn = styles();
+    const { open, title, content, cancelBtn, seeActions, onDeny, onConfirm, width, textButton } = props;
 
     return (
         <>
             {
                 (width) ? 
-                <Dialog maxWidth="md" fullWidth onClose={() => onDeny(false)} aria-labelledby="customized-dialog-title" open={open}>
+                <Dialog disableBackdropClick disableEscapeKeyDown maxWidth="md" fullWidth aria-labelledby="customized-dialog-title" open={open}>
                     <DialogTitle id="customized-dialog-title" onClose={() => onDeny(false)}>
                         {title}
                     </DialogTitle>
@@ -129,11 +93,11 @@ export const CustomizedDialog = withStyles(styles)((props: ConfirmationDialogPro
                         <DialogActions>
                             {
                                 (cancelBtn) &&
-                                <Button className={clsx(classes.btn, classes.cancel)} onClick={() => onDeny(false)}>
+                                <Button className={clsx(classes.btn, classes.cancel, btn.cancel)} onClick={() => onDeny(false)}>
                                     <FormattedMessage id="Cancel" />
                                 </Button>
                             }
-                            <Button className={clsx(classes.btn, classes.save)} autoFocus onClick={onConfirm}>
+                            <Button className={clsx(classes.btn, classes.save, btn.save)} autoFocus onClick={onConfirm}>
                                 <FormattedMessage id="Save" />
                             </Button>
                         </DialogActions>
@@ -142,7 +106,7 @@ export const CustomizedDialog = withStyles(styles)((props: ConfirmationDialogPro
                 
                 :
 
-                <Dialog maxWidth="sm" fullWidth onClose={() => onDeny(false)} aria-labelledby="customized-dialog-title" open={open}>
+                <Dialog disableBackdropClick disableEscapeKeyDown maxWidth="sm" fullWidth aria-labelledby="customized-dialog-title" open={open}>
                 <DialogTitle id="customized-dialog-title" onClose={() => onDeny(false)}>
                     {title}
                 </DialogTitle>
@@ -154,17 +118,17 @@ export const CustomizedDialog = withStyles(styles)((props: ConfirmationDialogPro
                     <DialogActions>
                         {
                             (cancelBtn) &&
-                            <Button className={clsx(classes.btn, classes.cancel)} onClick={() => onDeny(false)}>
+                            <Button className={clsx(classes.btn, classes.cancel, btn.cancel)} onClick={() => onDeny(false)}>
                                 <FormattedMessage id="Cancel" />
                             </Button>
                         }
                         {
                             (textButton) ?
-                            <Button className={clsx(classes.btn, classes.save)} autoFocus onClick={onConfirm}>
+                            <Button className={clsx(classes.btn, classes.save, btn.save)} autoFocus onClick={onConfirm}>
                                 <FormattedMessage id={`${textButton}`} />
                             </Button>
                             :
-                            <Button className={clsx(classes.btn, classes.save)} autoFocus onClick={onConfirm}>
+                            <Button className={clsx(classes.btn, classes.save, btn.save)} autoFocus onClick={onConfirm}>
                                 <FormattedMessage id="Save"/>
                             </Button>
 

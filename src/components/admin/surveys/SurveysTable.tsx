@@ -2,17 +2,13 @@ import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { createMuiTheme, Paper, Table, TableCell, TableContainer, TableFooter, TablePagination, TableRow, TableHead, ThemeProvider, TableBody } from '@material-ui/core';
-import { SurveyorsBody } from './SurveyorsBody';
 import { TablePaginationAct } from '../../custom/TablePaginationAct';
 import { useStyles } from '../../../shared/styles/useStyles';
+import { SurveysBody } from './SurveysBody';
 
-const surveyors = [
-    { username: 'Usuario 1', typeDoc: 'CC', document: 1061787572, email: 'test1@gmail.com', state: true },
-    { username: 'Usuario 2', typeDoc: 'CC', document: 1061787572, email: 'test2@gmail.com', state: false },
-    { username: 'Usuario 3', typeDoc: 'CC', document: 1061787572, email: 'test3@gmail.com', state: false },
-    { username: 'Usuario 4', typeDoc: 'CC', document: 1061787572, email: 'test4@gmail.com', state: true },
-    { username: 'Usuario 5', typeDoc: 'CC', document: 1061787572, email: 'test5@gmail.com', state: false },
-    { username: 'Usuario 6', typeDoc: 'CC', document: 1061787572, email: 'test6@gmail.com', state: true },
+const surveys = [
+    { code: '111ABC', name: 'LEVANTAMIENTO DE LÍNEA BASE', creationDate: "15/04/2021", state: true },
+    { code: '222ABC', name: 'CREACIÓN DE POBLACIÓN VICTIMA', creationDate: "15/04/2021", state: false },
 ];
 
 const theme = createMuiTheme({
@@ -22,14 +18,14 @@ const theme = createMuiTheme({
     },
 });
 
-export const SurveyorsTable = () => {
+export const SurveysTable = () => {
 
     const classes = useStyles();
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(4);
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, surveyors.length - page * rowsPerPage);
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, surveys.length - page * rowsPerPage);
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         setPage(newPage);
@@ -49,20 +45,18 @@ export const SurveyorsTable = () => {
                     <TableHead>
                         <TableRow >
                             <TableCell><FormattedMessage id="Name" /> </TableCell>
-                            <TableCell><FormattedMessage id="DocumentType" /> </TableCell>
-                            <TableCell><FormattedMessage id="Identification" /> </TableCell>
-                            <TableCell><FormattedMessage id="Email" /> </TableCell>
+                            <TableCell><FormattedMessage id="CreationDate" /> </TableCell>
                             <TableCell align="center"><FormattedMessage id="State" /> </TableCell>
                             <TableCell align="center"><FormattedMessage id="Actions" /> </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {(rowsPerPage > 0
-                            ? surveyors.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            : surveyors
-                        ).map((surveyor) => (
-
-                            <SurveyorsBody key={surveyor.username} {...surveyor}/>
+                            ? surveys.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            : surveys
+                        ).map((survey) => (
+                            <SurveysBody key={survey.code} {...survey}/>
+                            // <SurveyorsBody key={surveyor.username} {...surveyor}/>
 
                         ))}
                         {emptyRows > 0 && (
@@ -76,7 +70,7 @@ export const SurveyorsTable = () => {
                             <TablePagination
                                 rowsPerPageOptions={[4]}
                                 colSpan={6}
-                                count={surveyors.length}
+                                count={surveys.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 SelectProps={{

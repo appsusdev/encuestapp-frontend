@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => {
+const useStyles = makeStyles((theme) => {
     return {
         navItem: {
             fontFamily: 'Poppins',
@@ -19,13 +19,13 @@ const useStyles = makeStyles(() => {
                 pointerEvents: 'none',
                 transition: 'border-radius .15s cubic-bezier(0.4,0.0,0.2,1)',
                 '& .nav-item-text': {
-                    color: 'white',
+                    color: theme.palette.common.white,
                     fontSize: 16,
                     fontFamily: 'Poppins',
                     textTransform: 'capitalize'
                 },
                 '& .nav-item-icon': {
-                    color: 'white',
+                    color: theme.palette.common.white,
                     fontFamily: 'Poppins'
                 },
             },
@@ -34,7 +34,7 @@ const useStyles = makeStyles(() => {
                 '& .nav-item-text': {
                     fontFamily: 'Poppins',
                     fontSize: 16,
-                    color: 'white'
+                    color: theme.palette.common.white
                 }
             },
             '& .nav-item-icon': {
@@ -56,7 +56,7 @@ const useStyles = makeStyles(() => {
             whiteSpace: 'nowrap',
         },
         icon: {
-            color: 'white'
+            color: theme.palette.common.white
         }
     };
 });

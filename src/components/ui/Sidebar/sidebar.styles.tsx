@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: CremaTheme) => {
                 props.themeMode === ThemeMode.SEMI_DARK
                     ? '#313541'
                     : props.themeMode === ThemeMode.LIGHT
-                        ? 'white'
+                        ? theme.palette.common.white
                         : '#495057',
         },
         scrollAppSidebar: {
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: CremaTheme) => {
         sidebarStandard: {
             height: '100%',
             width: '100%',
-            color: 'white',
+            color: theme.palette.common.white,
             overflow: 'hidden',
         },
     };

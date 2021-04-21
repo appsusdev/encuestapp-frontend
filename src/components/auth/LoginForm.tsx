@@ -1,14 +1,14 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
-
-import { Form, Formik, useField } from 'formik';
+import { Form, Formik } from 'formik';
 import * as yup from 'yup';
-import { useIntl } from 'react-intl';
-import { FormattedMessage } from 'react-intl';
+import { useIntl, FormattedMessage } from 'react-intl';
+
 import { makeStyles } from '@material-ui/core/styles';
 import { CremaTheme } from '../../types/AppContextPropsType';
 import { Fonts } from '../../shared/constants/AppEnums';
-import { Box, Button, Checkbox, TextField } from '@material-ui/core';
+import { Box, Button, Checkbox } from '@material-ui/core';
+import { MyTextField } from '../custom/MyTextField';
 
 const useStyles = makeStyles((theme: CremaTheme) => ({
   formRoot: {
@@ -67,19 +67,6 @@ const useStyles = makeStyles((theme: CremaTheme) => ({
     color: '#9E9E9E',
   },
 }));
-
-const MyTextField = (props: any) => {
-  const [field, meta] = useField(props);
-  const errorText = meta.error && meta.touched ? meta.error : '';
-  return (
-    <TextField
-      {...props}
-      {...field}
-      helperText={errorText}
-      error={!!errorText}
-    />
-  );
-};
 
 interface UserSigninProps { }
 

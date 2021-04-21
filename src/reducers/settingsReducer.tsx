@@ -1,4 +1,4 @@
-import { Setting } from '../models/Setting';
+import { Setting } from '../interfaces/Setting';
 import { SettingsActionTypes, types } from '../types/types';
 
 const initialSettings: Setting = {

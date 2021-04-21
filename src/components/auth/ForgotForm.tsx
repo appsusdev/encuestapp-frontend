@@ -1,8 +1,7 @@
 import { FC } from 'react';
 import Card from '@material-ui/core/Card';
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { Form, Formik, useField } from 'formik';
+import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -12,19 +11,7 @@ import clsx from 'clsx';
 import { FormattedMessage, useIntl } from 'react-intl';
 import logo from '../../assets/images/logo-white-with-name.png';
 import useStylesAuth from './auth.styles';
-
-const MyTextField = (props: any) => {
-  const [field, meta] = useField(props);
-  const errorText = meta.error && meta.touched ? meta.error : '';
-  return (
-    <TextField
-      {...props}
-      {...field}
-      helperText={errorText}
-      error={!!errorText}
-    />
-  );
-};
+import { MyTextField } from '../custom/MyTextField';
 
 interface ForgetPasswordProps { }
 

@@ -1,52 +1,14 @@
 import { useDispatch } from 'react-redux';
-import { Form, Formik, useField } from 'formik';
+import { Form, Formik } from 'formik';
 import { useIntl, FormattedMessage } from 'react-intl';
 import * as yup from 'yup';
 import clsx from 'clsx';
 
-import { Box, Button, Grid, makeStyles, MenuItem, IconButton, TextField, Tooltip } from '@material-ui/core';
-import { Theme } from '@material-ui/core/styles';
+import { Box, Button, Grid, MenuItem, IconButton, Tooltip } from '@material-ui/core';
 import { PhotoCamera } from '@material-ui/icons';
-import { Fonts } from '../../../shared/constants/AppEnums';
 import { uiCloseModalAdd } from '../../../actions/ui';
-
-const useStyles = makeStyles((theme: Theme) => ({
-    input: {
-        fontSize: 14,
-        '& input::placeholder': {
-            fontSize: 16,
-            color: '#000',
-            fontWeight: Fonts.MEDIUM,
-        },
-    },
-    myTextFieldRoot: {
-        width: '100%',
-        marginTop: 8,
-    },
-    btn: {
-        fontWeight: Fonts.REGULAR,
-        textTransform: 'capitalize',
-        color: 'white',
-        fontSize: 14,
-        paddingTop: 12,
-        paddingBottom: 12,
-        borderRadius: '4px',
-        width: '10vw',
-        marginLeft: '5px'
-    },
-    cancel: {
-        background: '#F04F47',
-        '&:hover': {
-            background: '#D94040'
-        },
-    },
-    save: {
-        background: '#0A8FDC',
-        '&:hover': {
-            background: '#0A6DDC'
-        }
-    }
-}));
+import { MyTextField } from '../../custom/MyTextField';
+import { useStyles } from '../../../shared/styles/useStyles';
 
 interface MyFormValues {
     typeDoc: string;
@@ -61,21 +23,6 @@ interface MyFormValues {
     address: string;
     profileImage: string;
 }
-
-const MyTextField = (props: any) => {
-    const [field, meta] = useField(props);
-    const errorText = meta.error && meta.touched ? meta.error : '';
-    return (
-        <TextField
-            size="small"
-            {...props}
-            {...field}
-            helperText={errorText}
-            error={!!errorText}
-            autoComplete="off"
-        />
-    );
-};
 
 export const FormAddSurveyor = () => {
 

@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
 import clsx from 'clsx';
 
-import { Box, Button, Grid, MenuItem, TextField, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, TableFooter, TablePagination, Tooltip, IconButton, createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { Box, Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, TableFooter, TablePagination, Tooltip, IconButton, createMuiTheme, ThemeProvider, Button } from '@material-ui/core';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { TablePaginationAct } from '../../custom/TablePaginationAct';
+import { CustomizedSearch } from '../../custom/CustomizedSearch';
+import { uiCloseModalEdit } from '../../../actions/ui';
 import { useStyles } from '../../../shared/styles/useStyles';
 
 const theme = createMuiTheme({
@@ -16,25 +19,24 @@ const theme = createMuiTheme({
 
 const defaultProps = {
     bgcolor: 'background.paper',
-    // m: 1,
-    border: 1,
     style: { width: '100%', height: '100%' },
 };
 
-const surveys = [
-    { name: 'Caracterización población victima 2020' },
-    { name: 'Línea Base agropecuaria 2021' }
+const surveyors = [
+    { name: 'Encuestador 1', typeDoc: 'CC', document: 1061715070 },
+    { name: 'Encuestador 2', typeDoc: 'CC', document: 1061715071 },
+    { name: 'Encuestador 2', typeDoc: 'CC', document: 1061715072 },
 ]
 
-export const AssignSurvey = () => {
+export const SurveyorsData = () => {
     const classes = useStyles();
     const intl = useIntl();
+    const dispatch = useDispatch();
 
-    const [survey, setSurvey] = useState('');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(3);
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, surveys.length - page * rowsPerPage);
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, surveyors.length - page * rowsPerPage);
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         setPage(newPage);
@@ -47,47 +49,26 @@ export const AssignSurvey = () => {
         setPage(0);
     };
 
-    const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setSurvey(event.target.value as string);
-    };
-
-    const handleAssign = () => {
-        // console.log(survey);
+    const onDelete = () => {
+        console.log('Eliminar encuesta');
     }
 
-    const onDelete = () => {
-        // console.log('Eliminar encuesta');
+    const onClose = () => {
+        dispatch( uiCloseModalEdit() );
     }
 
     return (
-        <Box m={1}>
+        <Box >
 
-            <Box mb={2}>
-                <Grid container spacing={4}>
+            <Grid container>
+                <Grid item xs={8}>
 
-                    <Grid item xs={9} className={classes.typography}>
-                        <label className="form-text"><FormattedMessage id='SelectSurvey' /></label>
-                        <TextField
-                            className={classes.inputSelect}
-                            onChange={handleChange}
-                            value={survey}
-                            select
-                            size="small"
-                            variant="outlined"
-                        >
-                            <MenuItem className={classes.typography} value={10}>Caracterización población victima 2020</MenuItem>
-                            <MenuItem className={classes.typography} value={20}>Linea Base Agropecuaria 2021</MenuItem>
-                        </TextField>
-                    </Grid>
+                    <Box mt={2} mb={2}>
 
-                    <Grid item xs={3}>
-                        <Button size="medium" className={clsx(classes.btnAction, classes.save)} onClick={handleAssign}>
-                            <FormattedMessage id='Assign' />
-                        </Button>
-                    </Grid>
-
+                        <CustomizedSearch />
+                    </Box>
                 </Grid>
-            </Box>
+            </Grid>
 
             <ThemeProvider theme={theme}>
                 <Box borderColor="grey.400" borderRadius={4} {...defaultProps}>
@@ -97,18 +78,26 @@ export const AssignSurvey = () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell><FormattedMessage id="AssignedSurveys" /> </TableCell>
+                                    <TableCell><FormattedMessage id="DocumentType" /> </TableCell>
+                                    <TableCell><FormattedMessage id="Document" /> </TableCell>
                                     <TableCell align="center"><FormattedMessage id="Delete" /> </TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {(rowsPerPage > 0
-                                    ? surveys.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    : surveys
-                                ).map((survey) => (
+                                    ? surveyors.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    : surveyors
+                                ).map((surveyor) => (
 
-                                    <TableRow key={survey.name}>
+                                    <TableRow key={surveyor.document}>
                                         <TableCell size="small" component="th" scope="row">
-                                            {survey.name}
+                                            {surveyor.name}
+                                        </TableCell>
+                                        <TableCell style={{ width: 140 }}>
+                                            {surveyor.typeDoc}
+                                        </TableCell>
+                                        <TableCell style={{ width: 120 }}>
+                                            {surveyor.document}
                                         </TableCell>
                                         <TableCell size="small" align="center">
                                             <Tooltip title={`${intl.formatMessage({ id: 'Delete' })}`}>
@@ -129,7 +118,7 @@ export const AssignSurvey = () => {
                                     <TablePagination
                                         rowsPerPageOptions={[3]}
                                         colSpan={6}
-                                        count={surveys.length}
+                                        count={surveyors.length}
                                         rowsPerPage={rowsPerPage}
                                         page={page}
                                         SelectProps={{
@@ -146,6 +135,15 @@ export const AssignSurvey = () => {
                     </TableContainer>
                 </Box>
             </ThemeProvider>
+
+            <Box mt={2} display="flex" flexDirection="row-reverse">
+                <Button className={clsx(classes.btn, classes.save)} autoFocus onClick={onClose}>
+                    <FormattedMessage id="Accept" />
+                </Button>
+                <Button className={clsx(classes.btn, classes.cancel)} onClick={onClose}>
+                    <FormattedMessage id="Cancel" />
+                </Button>
+            </Box>
 
         </Box >
     )

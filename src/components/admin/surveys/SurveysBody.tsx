@@ -3,16 +3,16 @@ import { useState } from 'react';
 import { TableCell, TableRow } from '@material-ui/core';
 import { CustomizedIcons } from '../../custom/CustomizedIcons';
 import { AntSwitch } from '../../custom/CustomizedSwitch';
-import { Surveyor } from '../../../interfaces/Surveyor';
 import { useDispatch } from 'react-redux';
-import { uiOpenModalEdit, uiOpenModalDelete, uiOpenModalAssign } from '../../../actions/ui';
+import { Survey } from '../../../interfaces/Survey';
+import { uiOpenModalEdit, uiOpenModalAssign } from '../../../actions/ui';
 
-export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
+export const SurveysBody = (survey: Partial<Survey>) => {
 
     const dispatch = useDispatch();
 
     const [state, setState] = useState({
-        checkedA: surveyor.state
+        checkedA: survey.state
     });
 
     // Función para cambiar estado
@@ -25,35 +25,29 @@ export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
         dispatch( uiOpenModalEdit() );
     }
 
-    const onDelete = () => {
-        dispatch( uiOpenModalDelete() );
-    }
-
-    const onAssign = () => {
+    const onQuestion = () => {
         dispatch( uiOpenModalAssign() );
     }
 
+    // const onDelete = () => {
+    //     dispatch( uiOpenModalDelete() );
+    // }
+
     return (
         <>
-            <TableRow key={surveyor.username}>
+            <TableRow key={survey.code}>
                 <TableCell component="th" scope="row">
-                    {surveyor.username}
+                    {survey.name}
                 </TableCell>
-                <TableCell style={{ width: 160 }}>
-                    {surveyor.typeDoc}
-                </TableCell>
-                <TableCell style={{ width: 160 }}>
-                    {surveyor.document}
-                </TableCell>
-                <TableCell style={{ width: 160 }}>
-                    {surveyor.email}
+                <TableCell style={{ width: 220 }}>
+                    {survey.creationDate}
                 </TableCell>
                 <TableCell style={{ width: 160 }} align="center">
                 
                     <AntSwitch checked={state.checkedA} name="checkedA" onChange={handleChange} />
                 </TableCell>
-                <TableCell style={{ width: 160 }} align="center">
-                    <CustomizedIcons editIcon deleteIcon assignIcon onEdit={onEdit} onDelete={onDelete} onAssign={onAssign}/>
+                <TableCell style={{ width: 200 }} align="center">
+                    <CustomizedIcons editIcon deleteIcon chapterIcon questionIcon onEdit={onEdit} onQuestion={onQuestion}/>
                 </TableCell>
             </TableRow>
         </>
