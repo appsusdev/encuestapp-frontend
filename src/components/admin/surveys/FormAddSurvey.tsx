@@ -4,49 +4,11 @@ import { useIntl, FormattedMessage } from 'react-intl';
 import * as yup from 'yup';
 import clsx from 'clsx';
 
-import { Box, Button, Grid, makeStyles } from '@material-ui/core';
-import { Fonts } from '../../../shared/constants/AppEnums';
+import { Box, Button, Grid } from '@material-ui/core';
 import { uiCloseModalAdd } from '../../../actions/ui';
 import { AntSwitch } from '../../custom/CustomizedSwitch';
 import { MyTextField } from '../../custom/MyTextField';
-
-const useStyles = makeStyles(() => ({
-    input: {
-        fontSize: 14,
-        '& input::placeholder': {
-            fontSize: 16,
-            color: '#000',
-            fontWeight: Fonts.MEDIUM,
-        },
-    },
-    myTextFieldRoot: {
-        width: '100%',
-        marginTop: 8,
-    },
-    btn: {
-        fontWeight: Fonts.REGULAR,
-        textTransform: 'capitalize',
-        color: 'white',
-        fontSize: 14,
-        paddingTop: 12,
-        paddingBottom: 12,
-        borderRadius: '4px',
-        width: '10vw',
-        marginLeft: '5px'
-    },
-    cancel: {
-        background: '#F04F47',
-        '&:hover': {
-            background: '#D94040'
-        },
-    },
-    save: {
-        background: '#0A8FDC',
-        '&:hover': {
-            background: '#0A6DDC'
-        }
-    }
-}));
+import { useStyles } from '../../../shared/styles/useStyles';
 
 interface MyFormValues {
     code: string;
@@ -54,7 +16,6 @@ interface MyFormValues {
     state: boolean;
     name: string;
 }
-
 
 export const FormAddSurvey = () => {
 

@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { createMuiTheme, Paper, Table, TableCell, TableContainer, TableFooter, TablePagination, TableRow, TableHead, ThemeProvider, TableBody } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { SurveyorsBody } from './SurveyorsBody';
 import { TablePaginationAct } from '../../custom/TablePaginationAct';
+import { useStyles } from '../../../shared/styles/useStyles';
 
 const surveyors = [
     { username: 'Usuario 1', typeDoc: 'CC', document: 1061787572, email: 'test1@gmail.com', state: true },
@@ -15,12 +15,6 @@ const surveyors = [
     { username: 'Usuario 6', typeDoc: 'CC', document: 1061787572, email: 'test6@gmail.com', state: true },
 ];
 
-const useStyles2 = makeStyles({
-    table: {
-        minWidth: 500,
-    },
-});
-
 const theme = createMuiTheme({
     typography: {
         fontFamily: 'Poppins',
@@ -30,7 +24,7 @@ const theme = createMuiTheme({
 
 export const SurveyorsTable = () => {
 
-    const classes = useStyles2();
+    const classes = useStyles();
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(4);

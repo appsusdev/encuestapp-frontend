@@ -1,62 +1,8 @@
-import { Divider, Paper, Box, makeStyles, Grid, TextField, Link } from '@material-ui/core';
 import clsx from 'clsx';
-import { Fonts } from '../../../shared/constants/AppEnums';
 import { FormattedMessage } from 'react-intl';
-import Button from '@material-ui/core/Button';
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        margin: 0,
-        padding: theme.spacing(2),
-        fontFamily: 'Poppins',
-    },
-    title: {
-        fontFamily: 'Poppins',
-        fontSize: 18,
-        fontWeight: Fonts.MEDIUM,
-        color: theme.palette.grey[800]
-    },
-    inputSelect: {
-        width: '100%',
-        marginTop: 8,
-    },
-    typography: {
-        fontFamily: 'Poppins',
-        fontSize: 14,
-    },
-    btn: {
-        width: '100%',
-        fontWeight: Fonts.REGULAR,
-        textTransform: 'capitalize',
-        color: 'white',
-        fontSize: 14,
-        marginTop: '28px',
-        borderRadius: '4px'
-    },
-    buttons: {
-        fontWeight: Fonts.REGULAR,
-        textTransform: 'capitalize',
-        color: 'white',
-        fontSize: 14,
-        // paddingTop: 12,
-        // paddingBottom: 12,
-        borderRadius: '4px',
-        width: '10vw',
-        marginLeft: '5px'
-    },
-    cancel: {
-        background: '#F04F47',
-        '&:hover': {
-            background: '#D94040'
-        },
-    },
-    save: {
-        background: '#0A8FDC',
-        '&:hover': {
-            background: '#0A6DDC'
-        }
-    },
-}));
+import { Button, Divider, Paper, Box, Grid, TextField, Link } from '@material-ui/core';
+import { useStyles } from '../../../shared/styles/useStyles';
 
 export const UploadDB = () => {
     const classes = useStyles();
@@ -110,10 +56,10 @@ export const UploadDB = () => {
                     </Grid>
 
                     <Box mt={2} display="flex" flexDirection="row-reverse">
-                        <Button className={clsx(classes.buttons, classes.save)} >
+                        <Button className={clsx(classes.btnAction, classes.save)} >
                             <FormattedMessage id="Save" />
                         </Button>
-                        <Button className={clsx(classes.buttons, classes.cancel)} >
+                        <Button className={clsx(classes.btnAction, classes.cancel)} >
                             <FormattedMessage id="Cancel" />
                         </Button>
                     </Box>

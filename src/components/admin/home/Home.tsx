@@ -1,42 +1,9 @@
-import { Box, Grid, TextField, createMuiTheme, ThemeProvider, TableContainer, Table, TableHead, Paper, TableRow, TableCell, TableBody, Divider } from '@material-ui/core';
-import React from 'react'
-import { FormattedMessage } from 'react-intl'
-import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
-import { Fonts } from '../../../shared/constants/AppEnums';
+import React from 'react';
 import clsx from 'clsx';
+import { FormattedMessage } from 'react-intl';
 
-const useStyles = makeStyles(() => ({
-    inputSelect: {
-        width: '100%',
-        marginTop: 8,
-    },
-    btn: {
-        width: '100%',
-        fontWeight: Fonts.REGULAR,
-        textTransform: 'capitalize',
-        color: 'white',
-        fontSize: 14,
-        marginTop: '30px',
-        borderRadius: '4px'
-    },
-    save: {
-        background: '#0A8FDC',
-        '&:hover': {
-            background: '#0A6DDC'
-        }
-    },
-    typography: {
-        fontFamily: 'Poppins',
-        fontSize: 14,
-    },
-    table: {
-        minWidth: 500,
-    },
-    paper: {
-        minHeight: '400px'
-    }
-}));
+import { Box, Button, Grid, TextField, createMuiTheme, ThemeProvider, TableContainer, Table, TableHead, Paper, TableRow, TableCell, TableBody, Divider } from '@material-ui/core';
+import { useStyles } from '../../../shared/styles/useStyles';
 
 const theme = createMuiTheme({
     typography: {

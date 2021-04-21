@@ -2,20 +2,14 @@ import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { createMuiTheme, Paper, Table, TableCell, TableContainer, TableFooter, TablePagination, TableRow, TableHead, ThemeProvider, TableBody } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { TablePaginationAct } from '../../custom/TablePaginationAct';
+import { useStyles } from '../../../shared/styles/useStyles';
 import { SurveysBody } from './SurveysBody';
 
 const surveys = [
     { code: '111ABC', name: 'LEVANTAMIENTO DE LÍNEA BASE', creationDate: "15/04/2021", state: true },
     { code: '222ABC', name: 'CREACIÓN DE POBLACIÓN VICTIMA', creationDate: "15/04/2021", state: false },
- ];
-
-const useStyles2 = makeStyles({
-    table: {
-        minWidth: 500,
-    },
-});
+];
 
 const theme = createMuiTheme({
     typography: {
@@ -26,7 +20,7 @@ const theme = createMuiTheme({
 
 export const SurveysTable = () => {
 
-    const classes = useStyles2();
+    const classes = useStyles();
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(4);

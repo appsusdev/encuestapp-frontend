@@ -1,56 +1,17 @@
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Form, Formik } from 'formik';
 import { useIntl, FormattedMessage } from 'react-intl';
 import * as yup from 'yup';
 import clsx from 'clsx';
 
-import { Box, Button, Grid, makeStyles, MenuItem, Checkbox, Tooltip, IconButton } from '@material-ui/core';
-import { Theme } from '@material-ui/core/styles';
-import { Fonts } from '../../../shared/constants/AppEnums';
-import { uiCloseModalAdd } from '../../../actions/ui';
-import { MyTextField } from '../../custom/MyTextField';
-import { TypeEnum, QuestionOptions } from '../../../interfaces/Survey';
-import { useState } from 'react';
+import { Box, Button, Grid, MenuItem, Checkbox, Tooltip, IconButton } from '@material-ui/core';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { Alert } from '@material-ui/lab';
-
-const useStyles = makeStyles((theme: Theme) => ({
-    input: {
-        fontSize: 14,
-        '& input::placeholder': {
-            fontSize: 16,
-            color: '#000',
-            fontWeight: Fonts.MEDIUM,
-        },
-    },
-    myTextFieldRoot: {
-        width: '100%',
-        marginTop: 8,
-    },
-    btn: {
-        fontWeight: Fonts.REGULAR,
-        textTransform: 'capitalize',
-        color: 'white',
-        fontSize: 14,
-        paddingTop: 12,
-        paddingBottom: 12,
-        borderRadius: '4px',
-        width: '10vw',
-        marginLeft: '5px'
-    },
-    cancel: {
-        background: '#F04F47',
-        '&:hover': {
-            background: '#D94040'
-        },
-    },
-    save: {
-        background: '#0A8FDC',
-        '&:hover': {
-            background: '#0A6DDC'
-        }
-    }
-}));
+import { MyTextField } from '../../custom/MyTextField';
+import { uiCloseModalAdd } from '../../../actions/ui';
+import { TypeEnum, QuestionOptions } from '../../../interfaces/Survey';
+import { useStyles } from '../../../shared/styles/useStyles';
 
 export const FormAddQuestion = () => {
 

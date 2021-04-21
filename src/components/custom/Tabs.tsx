@@ -36,15 +36,15 @@ export const a11yProps = (index: any) => {
   };
 }
 
-export const useStyles = makeStyles(() => ({
+export const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     height: 'auto',
   },
   tabs: {  
       color: '#212529',
-      backgroundColor: 'white',
-      indicatorColor: '#33b35a', 
+      backgroundColor: theme.palette.text.primary,
+      indicatorColor: theme.palette.info.main, 
       
   },
   tab: {
@@ -53,12 +53,12 @@ export const useStyles = makeStyles(() => ({
       'Poppins',
     ].join(','),
     '&:hover': {
-      color: '#0A8FDC',
+      color: theme.palette.info.main,
       opacity: 1,
       borderColor: 'primary'
     },
     '&:focus': {
-      color: '#0A8FDC',
+      color: theme.palette.info.main,
     },
   }
 }));

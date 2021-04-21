@@ -1,51 +1,14 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
+import clsx from 'clsx';
 
-import { Box, Grid, makeStyles, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, TableFooter, TablePagination, Tooltip, IconButton, createMuiTheme, ThemeProvider, Button } from '@material-ui/core';
+import { Box, Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, TableFooter, TablePagination, Tooltip, IconButton, createMuiTheme, ThemeProvider, Button } from '@material-ui/core';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
-import { Fonts } from '../../../shared/constants/AppEnums';
 import { TablePaginationAct } from '../../custom/TablePaginationAct';
 import { CustomizedSearch } from '../../custom/CustomizedSearch';
-import clsx from 'clsx';
-import { useDispatch } from 'react-redux';
 import { uiCloseModalEdit } from '../../../actions/ui';
-
-const useStyles = makeStyles(() => ({
-    inputSelect: {
-        width: '100%',
-        marginTop: 8,
-    },
-    btn: {
-        fontWeight: Fonts.REGULAR,
-        textTransform: 'capitalize',
-        color: 'white',
-        fontSize: 14,
-        paddingTop: 12,
-        paddingBottom: 12,
-        borderRadius: '4px',
-        width: '10vw',
-        marginLeft: '5px'
-    },
-    cancel: {
-        background: '#F04F47',
-        '&:hover': {
-            background: '#D94040'
-        },
-    },
-    save: {
-        background: '#0A8FDC',
-        '&:hover': {
-            background: '#0A6DDC'
-        }
-    },
-    typography: {
-        fontFamily: 'Poppins',
-        fontSize: 14,
-    },
-    table: {
-        minWidth: 500,
-    },
-}));
+import { useStyles } from '../../../shared/styles/useStyles';
 
 const theme = createMuiTheme({
     typography: {

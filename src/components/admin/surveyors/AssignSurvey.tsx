@@ -1,40 +1,11 @@
 import { useState } from 'react';
-import clsx from 'clsx';
 import { FormattedMessage, useIntl } from 'react-intl';
+import clsx from 'clsx';
 
-import { Box, Button, Grid, makeStyles, MenuItem, TextField, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, TableFooter, TablePagination, Tooltip, IconButton, createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { Box, Button, Grid, MenuItem, TextField, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, TableFooter, TablePagination, Tooltip, IconButton, createMuiTheme, ThemeProvider } from '@material-ui/core';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
-import { Fonts } from '../../../shared/constants/AppEnums';
 import { TablePaginationAct } from '../../custom/TablePaginationAct';
-
-const useStyles = makeStyles(() => ({
-    inputSelect: {
-        width: '100%',
-        marginTop: 8,
-    },
-    btn: {
-        width: '100%',
-        fontWeight: Fonts.REGULAR,
-        textTransform: 'capitalize',
-        color: 'white',
-        fontSize: 14,
-        marginTop: '30px',
-        borderRadius: '4px'
-    },
-    save: {
-        background: '#0A8FDC',
-        '&:hover': {
-            background: '#0A6DDC'
-        }
-    },
-    typography: {
-        fontFamily: 'Poppins',
-        fontSize: 14,
-    },
-    table: {
-        minWidth: 500,
-    },
-}));
+import { useStyles } from '../../../shared/styles/useStyles';
 
 const theme = createMuiTheme({
     typography: {
@@ -110,7 +81,7 @@ export const AssignSurvey = () => {
                     </Grid>
 
                     <Grid item xs={3}>
-                        <Button size="medium" className={clsx(classes.btn, classes.save)} onClick={handleAssign}>
+                        <Button size="medium" className={clsx(classes.btnAction, classes.save)} onClick={handleAssign}>
                             <FormattedMessage id='Assign' />
                         </Button>
                     </Grid>

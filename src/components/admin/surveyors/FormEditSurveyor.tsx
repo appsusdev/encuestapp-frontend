@@ -4,69 +4,12 @@ import { useIntl, FormattedMessage } from 'react-intl';
 import * as yup from 'yup';
 import clsx from 'clsx';
 
-import { Box, Button, Grid, makeStyles, IconButton, Card, CardMedia, Tooltip, MenuItem } from '@material-ui/core';
-import { Theme } from '@material-ui/core/styles';
+import { Box, Button, Grid, IconButton, Card, CardMedia, Tooltip, MenuItem } from '@material-ui/core';
 import { PhotoCamera } from '@material-ui/icons';
-import { Fonts } from '../../../shared/constants/AppEnums';
 import { uiCloseModalEdit } from '../../../actions/ui';
 import logo from '../../../assets/images/user.jpg'
 import { MyTextField } from '../../custom/MyTextField';
-
-const useStyles = makeStyles((theme: Theme) => ({
-    input: {
-        fontSize: 14,
-        '& input::placeholder': {
-            fontSize: 16,
-            color: '#000',
-            fontWeight: Fonts.MEDIUM,
-        },
-    },
-    myTextFieldRoot: {
-        width: '100%',
-        marginTop: 8,
-        '& label': {
-            color: `${theme.palette.grey[800]} !important`,
-            fontFamily: 'Poppins',
-            fontSize: 15,
-            fontWeight: Fonts.BOLD,
-        }
-    },
-    btn: {
-        fontWeight: Fonts.REGULAR,
-        textTransform: 'capitalize',
-        color: 'white',
-        fontSize: 14,
-        paddingTop: 12,
-        paddingBottom: 12,
-        borderRadius: '4px',
-        width: '10vw',
-        marginLeft: '5px'
-    },
-    cancel: {
-        background: '#F04F47',
-        '&:hover': {
-            background: '#D94040'
-        },
-    },
-    save: {
-        background: '#0A8FDC',
-        '&:hover': {
-            background: '#0A6DDC'
-        }
-    },
-    media: {
-        width: '100%',
-        height: '100%',
-    },
-    card: {
-        height: '247px !important',
-        // height: '10%',
-        // width: 345,
-        marginTop: '12px',
-        maxWidth: 345,
-
-    }
-}));
+import { useStyles } from '../../../shared/styles/useStyles';
 
 interface MyFormValues {
     typeDoc: string;
