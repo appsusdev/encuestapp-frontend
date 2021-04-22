@@ -81,7 +81,7 @@ export const ForgotForm: FC<ForgetPasswordProps> = () => {
                     autoComplete="off"
                   />
                 </Box>
-                <Box mb={3}>
+                <Box  mt={2} mb={3}>
                   <Button
                     variant='contained'
                     color='secondary'

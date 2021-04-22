@@ -94,6 +94,7 @@
     "UploadExcel": "Subir archivo excel",
     "Attach": "Adjuntar",
     "Homes": "Hogares",
-    "Georeferencing": "Georreferenciación"
+    "Georeferencing": "Georreferenciación",
+    "IncorrectEmailPassword": "Correo o contraseña incorrectos"
 }
 
