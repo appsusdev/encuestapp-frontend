@@ -94,5 +94,6 @@
     "UploadExcel": "Upload excel file",
     "Attach": "Attach",
     "Homes": "Homes",
-    "Georeferencing": "Georeferencing"
+    "Georeferencing": "Georeferencing",
+    "IncorrectEmailPassword": "Incorrect email or password"
 }

@@ -19,6 +19,8 @@ export const types = {
     uiCloseModalAssign: '[ui] Close modal assign',
     uiStartLoading: '[ui] Start loading',
     uiFinishLoading: '[ui] Finish loading',
+    uiOpenAlert: '[ui] Open alert',
+    uiCloseAlert: '[ui] Close alert',
 }
 
 // Auth
@@ -40,6 +42,7 @@ export interface IUi {
   modalDeleteOpen: boolean,
   modalAssignOpen: boolean,
   loading: boolean,
+  alert: boolean,
 }
 
 export type UiAction = {

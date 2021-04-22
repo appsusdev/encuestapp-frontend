@@ -1,7 +1,6 @@
 import { firebase } from '../config/firebase/firebase-config';
 import { types, IAuth } from '../types/types';
-import Swal from 'sweetalert2';
-import { finishLoading, startLoading } from './ui';
+import { finishLoading, startLoading, uiOpenAlert } from './ui';
 
 export const startLoginCorreoPassword = ( email:string, password: string) => {
 
@@ -20,7 +19,7 @@ export const startLoginCorreoPassword = ( email:string, password: string) => {
                 dispatch( finishLoading() );
             })
             .catch( e => {
-                Swal.fire({title: 'Error!', text: 'Correo o contraseña incorrectos'});
+                dispatch( uiOpenAlert() );
                 dispatch( finishLoading() );
             });
     }
