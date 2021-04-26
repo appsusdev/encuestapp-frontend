@@ -12,15 +12,20 @@ import TrendingUpOutlinedIcon from '@material-ui/icons/TrendingUpOutlined';
 import { Routes, RoutesName } from '../../../../helpers/getRoutes';
 import useStyles from './verticalItem.styles';
 import '../../../../shared/styles/app.scss'
+import { useSelector } from 'react-redux';
+import { AppState } from '../../../../reducers/rootReducer';
+import { TypeUser } from '../../../../types/types';
 
 interface VerticalItemProps {}
 
 const VerticalItem: React.FC<VerticalItemProps> = () => {
     const classes = useStyles();
+    const { role } = useSelector<AppState, AppState['ui']>(state => state.ui);
 
     const routes = Routes();
     const routesName = RoutesName();
-    const items = [
+
+    const itemsAdmin = [
         { route: routes[0], name: routesName[0], component: (<HomeOutlinedIcon />) },
         { route: routes[1], name: routesName[1], component: (<PeopleOutlineIcon />) },
         { route: routes[2], name: routesName[2], component: (<PollOutlinedIcon />) },
@@ -28,11 +33,23 @@ const VerticalItem: React.FC<VerticalItemProps> = () => {
         { route: routes[4], name: routesName[4], component: (<TrendingUpOutlinedIcon />) },
     ];
 
+    const itemsSuper = [
+        { route: routes[0], name: routesName[0], component: (<HomeOutlinedIcon />) },
+    ];
+
     return (
         <>
             <List >
                 {
-                    items.map((item) => (
+                    (role === TypeUser.ADMIN) ?
+                    itemsAdmin.map((item) => (
+                        <ListItem key={item.name} activeClassName='active' className={clsx(classes.navItem, 'nav-item')} component={NavLink} to={item.route}>
+                            <ListItemIcon className={clsx(classes.listIcon, 'nav-item-icon')}>{item.component}</ListItemIcon>
+                            <ListItemText classes={{ primary: 'nav-item-text' }} primary={item.name} />
+                        </ListItem>
+                    ))
+                    :
+                    itemsSuper.map((item) => (
                         <ListItem key={item.name} activeClassName='active' className={clsx(classes.navItem, 'nav-item')} component={NavLink} to={item.route}>
                             <ListItemIcon className={clsx(classes.listIcon, 'nav-item-icon')}>{item.component}</ListItemIcon>
                             <ListItemText classes={{ primary: 'nav-item-text' }} primary={item.name} />

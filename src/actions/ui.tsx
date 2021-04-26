@@ -1,4 +1,4 @@
-import { types } from '../types/types';
+import { types, TypeUser } from '../types/types';
 
 export const uiOpenModalAdd = () => ({ type: types.uiOpenModalAdd });
 
@@ -23,3 +23,8 @@ export const finishLoading = () => ({ type: types.uiFinishLoading });
 export const uiOpenAlert = () => ({ type: types.uiOpenAlert });
 
 export const uiCloseAlert = () => ({ type: types.uiCloseAlert });
+
+export const uiChangeRole = (role: TypeUser) => ({ 
+    type: types.uiChangeRole,
+    payload: role
+});

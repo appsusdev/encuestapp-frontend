@@ -2,21 +2,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Box, Button, Grid, makeStyles } from '@material-ui/core';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-import { CustomizedSearch } from '../../components/custom/CustomizedSearch';
-import { Fonts } from '../../shared/constants/AppEnums';
-import { AppState } from '../../reducers/rootReducer';
-import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalDelete, uiCloseModalAssign } from '../../actions/ui';
-import { FormAddSurveyor } from '../../components/admin/surveyors/FormAddSurveyor';
-import { SurveyorsTable } from '../../components/admin/surveyors/SurveyorsTable';
-import CustomizedDialog from '../../components/custom/CustomizedDialog';
-import AppAnimate from '../../components/ui/AppAnimate/AppAnimate';
-import { FormEditSurveyor } from '../../components/admin/surveyors/FormEditSurveyor';
-import { DeleteSurveyor } from '../../components/admin/surveyors/DeleteSurveyor';
-import { AssignSurvey } from '../../components/admin/surveyors/AssignSurvey';
+import { CustomizedSearch } from '../../../components/custom/CustomizedSearch';
+import { Fonts } from '../../../shared/constants/AppEnums';
+import { AppState } from '../../../reducers/rootReducer';
+import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalDelete, uiCloseModalAssign } from '../../../actions/ui';
+import { FormAddSurveyor } from '../../../components/admin/surveyors/FormAddSurveyor';
+import { SurveyorsTable } from '../../../components/admin/surveyors/SurveyorsTable';
+import CustomizedDialog from '../../../components/custom/CustomizedDialog';
+import AppAnimate from '../../../components/ui/AppAnimate/AppAnimate';
+import { FormEditSurveyor } from '../../../components/admin/surveyors/FormEditSurveyor';
+import { DeleteSurveyor } from '../../../components/admin/surveyors/DeleteSurveyor';
+import { AssignSurvey } from '../../../components/admin/surveyors/AssignSurvey';
 
 export const useStyles = makeStyles((theme) => ({
   btnRoot: {
-    background: '#F04F47',
+    background: theme.palette.error.main,
     display: 'flex',
     borderRadius: '4px',
     width: '20rem',
@@ -24,7 +24,7 @@ export const useStyles = makeStyles((theme) => ({
     fontSize: 16,
     textTransform: 'none',
     '&:hover': {
-      background: '#D94040'
+      background: theme.palette.error.dark
     },
     [theme.breakpoints.down('sm')]: {
       width: '20%',

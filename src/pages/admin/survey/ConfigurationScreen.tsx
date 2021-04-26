@@ -1,6 +1,6 @@
 import { Box } from '@material-ui/core';
-import AppAnimate from '../../components/ui/AppAnimate/AppAnimate';
-import { UploadDB } from '../../components/admin/configuration/UploadDB';
+import AppAnimate from '../../../components/ui/AppAnimate/AppAnimate';
+import { UploadDB } from '../../../components/admin/configuration/UploadDB';
 
 export const ConfigurationScreen = () => {
     return (

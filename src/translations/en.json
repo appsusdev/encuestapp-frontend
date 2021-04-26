@@ -95,5 +95,7 @@
     "Attach": "Attach",
     "Homes": "Homes",
     "Georeferencing": "Georeferencing",
-    "IncorrectEmailPassword": "Incorrect email or password"
+    "IncorrectEmailPassword": "Incorrect email or password",
+    "Logout": "Logout",
+    "MyAccount": "My account"
 }

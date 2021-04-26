@@ -12,6 +12,9 @@ import AppContext from '../../../context/AppContext';
 import AppContextPropsType from '../../../types/AppContextPropsType';
 import { Fonts, ThemeMode } from '../../../shared/constants/AppEnums';
 import user from '../../../assets/images/user.jpg'
+import { FormattedMessage } from 'react-intl';
+import { useDispatch } from 'react-redux';
+import { startLogout } from '../../../actions/auth';
 
 const useStyles = makeStyles(theme => {
     return {
@@ -59,6 +62,8 @@ const useStyles = makeStyles(theme => {
 
 const UserInfo: React.FC<{}> = () => {
     const { themeMode } = useContext<AppContextPropsType>(AppContext);
+    const classes = useStyles({ themeMode });
+    const dispatch = useDispatch();
 
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -70,7 +75,10 @@ const UserInfo: React.FC<{}> = () => {
         setAnchorEl(null);
     };
 
-    const classes = useStyles({ themeMode });
+    const handleLogout = () => {
+        dispatch( startLogout() );
+    }
+
 
     return (
         <Box
@@ -97,10 +105,11 @@ const UserInfo: React.FC<{}> = () => {
                                 keepMounted
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}>
-                                <MenuItem>My account</MenuItem>
-                                {/* <MenuItem onClick={() => dispatch(onJWTAuthSignout())}> */}
-                                <MenuItem >
-                                    Logout
+                                <MenuItem>
+                                    <FormattedMessage id='MyAccount'/>
+                                </MenuItem>
+                                <MenuItem onClick={handleLogout}>
+                                    <FormattedMessage id='Logout'/>
                                 </MenuItem>
                             </Menu>
                         </Box>

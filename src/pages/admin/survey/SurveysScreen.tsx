@@ -1,17 +1,17 @@
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Box, Button, Grid } from '@material-ui/core';
-import AppAnimate from '../../components/ui/AppAnimate/AppAnimate';
+import AppAnimate from '../../../components/ui/AppAnimate/AppAnimate';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-import { useStyles } from '../survey/SurveyorsScreen';
-import { CustomizedSearch } from '../../components/custom/CustomizedSearch';
-import { SurveysTable } from '../../components/admin/surveys/SurveysTable';
-import CustomizedDialog from '../../components/custom/CustomizedDialog';
+import { useStyles } from './SurveyorsScreen';
+import { CustomizedSearch } from '../../../components/custom/CustomizedSearch';
+import { SurveysTable } from '../../../components/admin/surveys/SurveysTable';
+import CustomizedDialog from '../../../components/custom/CustomizedDialog';
 import { useSelector, useDispatch } from 'react-redux';
-import { AppState } from '../../reducers/rootReducer';
-import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalAssign } from '../../actions/ui';
-import { FormAddSurvey } from '../../components/admin/surveys/FormAddSurvey';
-import { SurveysTabs } from '../../components/admin/surveys/SurveysTabs';
-import { FormAddQuestion } from '../../components/admin/surveys/FormAddQuestion';
+import { AppState } from '../../../reducers/rootReducer';
+import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalAssign } from '../../../actions/ui';
+import { FormAddSurvey } from '../../../components/admin/surveys/FormAddSurvey';
+import { SurveysTabs } from '../../../components/admin/surveys/SurveysTabs';
+import { FormAddQuestion } from '../../../components/admin/surveys/FormAddQuestion';
 
 export const SurveysScreen = () => {
 
