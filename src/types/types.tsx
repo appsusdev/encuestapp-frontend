@@ -45,7 +45,13 @@ export interface IUi {
   modalAssignOpen: boolean,
   loading: boolean,
   alert: boolean,
-  role: string,
+  role: TypeUser,
+}
+
+export enum TypeUser {
+  ADMIN = 'ADMIN',
+  SUPER_ADMIN = 'SUPER_ADMIN',
+  SURVEYOR = 'ENCUESTADOR',
 }
 
 export type UiAction = {

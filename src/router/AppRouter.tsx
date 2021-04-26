@@ -14,6 +14,7 @@ import { getUserRole } from '../services/auth/auth';
 import { PublicRoute } from './PublicRoute';
 import { PrivateRoute } from './PrivateRoute';
 import { uiChangeRole } from '../actions/ui';
+import { TypeUser } from '../types/types';
 
 export const AppRouter: FC = () => {
     const dispatch = useDispatch();
@@ -27,7 +28,7 @@ export const AppRouter: FC = () => {
                 const { rol } = await getUserRole(user.email);
                 
                 
-                if(rol === 'ADMIN' || rol === 'SUPER_ADMIN') {
+                if(rol === TypeUser.ADMIN || rol === TypeUser.SUPER_ADMIN) {
                     dispatch( uiChangeRole(rol) );
                     const userMain = {
                         uid: user.uid,

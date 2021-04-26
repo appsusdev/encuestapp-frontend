@@ -1,4 +1,4 @@
-import { IUi, types, UiAction } from '../types/types';
+import { IUi, types, UiAction, TypeUser } from '../types/types';
 
 const initialState = {
     modalAddOpen: false,
@@ -7,7 +7,7 @@ const initialState = {
     modalAssignOpen: false,
     loading: false,
     alert: false,
-    role: '',
+    role: TypeUser.ADMIN,
 }
 
 export const uiReducer = ( state: IUi = initialState, action: UiAction) => {

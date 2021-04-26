@@ -14,6 +14,7 @@ import useStyles from './verticalItem.styles';
 import '../../../../shared/styles/app.scss'
 import { useSelector } from 'react-redux';
 import { AppState } from '../../../../reducers/rootReducer';
+import { TypeUser } from '../../../../types/types';
 
 interface VerticalItemProps {}
 
@@ -40,7 +41,7 @@ const VerticalItem: React.FC<VerticalItemProps> = () => {
         <>
             <List >
                 {
-                    (role === "ADMIN") ?
+                    (role === TypeUser.ADMIN) ?
                     itemsAdmin.map((item) => (
                         <ListItem key={item.name} activeClassName='active' className={clsx(classes.navItem, 'nav-item')} component={NavLink} to={item.route}>
                             <ListItemIcon className={clsx(classes.listIcon, 'nav-item-icon')}>{item.component}</ListItemIcon>

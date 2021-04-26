@@ -10,6 +10,7 @@ import { HomeScreen } from '../pages/admin/survey/HomeScreen';
 import { HomeScreen as Home } from '../pages/super-admin/HomeScreen';
 import { useSelector } from 'react-redux';
 import { AppState } from '../reducers/rootReducer';
+import { TypeUser } from '../types/types';
 
 export const DashboardRouter: FC = () => {
 
@@ -19,7 +20,7 @@ export const DashboardRouter: FC = () => {
     return (
         <div>
             {
-                (role === "ADMIN")?
+                (role === TypeUser.ADMIN)?
 
                 <Switch>
                     <Route exact path={`/${routes[1]}`} component={ SurveyorsScreen }/>
