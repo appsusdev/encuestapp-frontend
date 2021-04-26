@@ -47,7 +47,7 @@ export const UploadDB = () => {
                             
                             />
                             <label htmlFor="contained-button-file">
-                                <Button className={clsx(classes.btn, classes.save)}  size="medium" component="span" onClick={handleUpload}>
+                                <Button className={clsx(classes.btnAction, classes.save)}  size="medium" component="span" onClick={handleUpload}>
                                 <FormattedMessage id='Attach' />
                                 </Button>
                             </label>
@@ -56,10 +56,10 @@ export const UploadDB = () => {
                     </Grid>
 
                     <Box mt={2} display="flex" flexDirection="row-reverse">
-                        <Button className={clsx(classes.btnAction, classes.save)} >
+                        <Button className={clsx(classes.btn, classes.save)} >
                             <FormattedMessage id="Save" />
                         </Button>
-                        <Button className={clsx(classes.btnAction, classes.cancel)} >
+                        <Button className={clsx(classes.btn, classes.cancel)} >
                             <FormattedMessage id="Cancel" />
                         </Button>
                     </Box>

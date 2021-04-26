@@ -23,3 +23,8 @@ export const finishLoading = () => ({ type: types.uiFinishLoading });
 export const uiOpenAlert = () => ({ type: types.uiOpenAlert });
 
 export const uiCloseAlert = () => ({ type: types.uiCloseAlert });
+
+export const uiChangeRole = (role: string) => ({ 
+    type: types.uiChangeRole,
+    payload: role
+});

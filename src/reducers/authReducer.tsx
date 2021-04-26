@@ -3,7 +3,8 @@ import { AuthAction, IAuth, types } from '../types/types';
 const initialState = {
     uid: '',
     displayName: '',
-    email: ''
+    email: '',
+    rol: ''
 }
 
 export const authReducer = ( state: Partial<IAuth> = initialState, action: AuthAction) => {
@@ -12,11 +13,12 @@ export const authReducer = ( state: Partial<IAuth> = initialState, action: AuthA
             return {
                 uid: action.payload.uid,
                 displayName: action.payload.displayName,
-                email: action.payload.email
+                email: action.payload.email, 
+                rol: action.payload.rol
             }
         
         case types.logout:
-            return {}
+            return { }
     
         default:
             return state;

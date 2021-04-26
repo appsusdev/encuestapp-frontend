@@ -1,6 +1,6 @@
 import { Box } from '@material-ui/core';
-import AppAnimate from '../../components/ui/AppAnimate/AppAnimate';
-import { HomeTabs } from '../../components/admin/home/HomeTabs';
+import AppAnimate from '../../../components/ui/AppAnimate/AppAnimate';
+import { HomeTabs } from '../../../components/admin/home/HomeTabs';
 
 export const HomeScreen = () => {
 

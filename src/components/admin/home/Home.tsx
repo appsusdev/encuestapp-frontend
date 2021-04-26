@@ -49,7 +49,7 @@ export const Home = () => {
                     </Grid>
 
                     <Grid item xs={3}>
-                        <Button size="medium" className={clsx(classes.btn, classes.save)} onClick={handleSearch}>
+                        <Button size="medium" className={clsx(classes.btnAction, classes.save)} onClick={handleSearch}>
                             <FormattedMessage id='Search' />
                         </Button>
                     </Grid>

@@ -21,13 +21,15 @@ export const types = {
     uiFinishLoading: '[ui] Finish loading',
     uiOpenAlert: '[ui] Open alert',
     uiCloseAlert: '[ui] Close alert',
+    uiChangeRole: '[ui] Change role',
 }
 
 // Auth
 export interface IAuth {
     uid: string | undefined | null,
     displayName: string | undefined | null,
-    email: string | undefined | null
+    email: string | undefined | null,
+    rol: string | undefined | null,
 }
 
 export type AuthAction = {
@@ -43,6 +45,7 @@ export interface IUi {
   modalAssignOpen: boolean,
   loading: boolean,
   alert: boolean,
+  role: string,
 }
 
 export type UiAction = {

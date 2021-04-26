@@ -6,7 +6,8 @@ const initialState = {
     modalDeleteOpen: false,
     modalAssignOpen: false,
     loading: false,
-    alert: false
+    alert: false,
+    role: '',
 }
 
 export const uiReducer = ( state: IUi = initialState, action: UiAction) => {
@@ -81,6 +82,12 @@ export const uiReducer = ( state: IUi = initialState, action: UiAction) => {
             return {
                 ...state,
                 alert: false
+            }
+
+        case types.uiChangeRole:
+            return {
+                ...state,
+                role: action.payload
             }
     
 

@@ -1,4 +1,5 @@
 import { firebase } from '../config/firebase/firebase-config';
+import { getUserRole } from '../services/auth/auth';
 import { types, IAuth } from '../types/types';
 import { finishLoading, startLoading, uiOpenAlert } from './ui';
 
@@ -8,14 +9,21 @@ export const startLoginCorreoPassword = ( email:string, password: string) => {
         dispatch( startLoading() );
 
         firebase.auth().signInWithEmailAndPassword( email, password )
-            .then( ({ user }) => {
-                const userAuth = {
-                    uid: user?.uid,
-                    displayName: user?.displayName,
-                    email: user?.email
-                }
+            .then( async({ user }) => {
 
-                dispatch( login(userAuth));
+                const { rol } = await getUserRole(user?.email);
+                 
+                if( rol === 'ADMIN' || rol === 'SUPER_ADMIN') {
+                    const userAuth = {
+                        uid: user?.uid,
+                        displayName: user?.displayName,
+                        email: user?.email,
+                        rol: rol
+                    }
+                    dispatch( login(userAuth) );
+                } else {
+                    dispatch( uiOpenAlert() );
+                }
                 dispatch( finishLoading() );
             })
             .catch( e => {
@@ -25,13 +33,24 @@ export const startLoginCorreoPassword = ( email:string, password: string) => {
     }
 };
 
-const login = (user: IAuth) => ({
+export const login = (user: IAuth) => ({
     type: types.login,
     payload: {
         uid: user.uid,
         displayName: user.displayName,
-        email: user.email
+        email: user.email,
+        rol: user.rol
     }
 });
+
+export const startLogout = () => {
+    return async(dispatch: any) => {
+        await firebase.auth().signOut();
+
+        dispatch( logout() );
+
+    }
+};
+
 
 export const logout = () => ({ type: types.logout });
