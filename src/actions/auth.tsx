@@ -1,6 +1,6 @@
 import { firebase } from '../config/firebase/firebase-config';
 import { getUserRole } from '../services/auth/auth';
-import { types, IAuth } from '../types/types';
+import { types, IAuth, TypeUser } from '../types/types';
 import { finishLoading, startLoading, uiOpenAlert } from './ui';
 
 export const startLoginCorreoPassword = ( email:string, password: string) => {
@@ -13,7 +13,7 @@ export const startLoginCorreoPassword = ( email:string, password: string) => {
 
                 const { rol } = await getUserRole(user?.email);
                  
-                if( rol === 'ADMIN' || rol === 'SUPER_ADMIN') {
+                if( rol === TypeUser.ADMIN || rol === TypeUser.SUPER_ADMIN) {
                     const userAuth = {
                         uid: user?.uid,
                         displayName: user?.displayName,
