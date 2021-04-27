@@ -1,14 +1,17 @@
+import { TypeUser } from "../../enums/enums";
+import { Surveyor } from "../../interfaces/Surveyor";
+
 export const types = {
-    //auth
+    // auth
     login: '[Auth] Login',
     logout: '[Auth] Logout',
 
-    //setting
+    // setting
     TOGGLE_NAV_COLLAPSED: 'TOGGLE_NAV_COLLAPSED',
     SET_INITIAL_PATH: 'SET_INITIAL_PATH',
     ROUTE_CHANGE: '@@router/LOCATION_CHANGE',
     
-    //ui
+    // ui
     uiOpenModalAdd: '[ui] Open modal add',
     uiCloseModalAdd: '[ui] Close modal add',
     uiOpenModalEdit: '[ui] Open modal edit',
@@ -22,6 +25,14 @@ export const types = {
     uiOpenAlert: '[ui] Open alert',
     uiCloseAlert: '[ui] Close alert',
     uiChangeRole: '[ui] Change role',
+
+    // surveyors
+    surveyorAddNew: '[surveyor] New surveyor',
+    surveyorActive: '[surveyor] Set active surveyor',
+    surveyorsLoad: '[surveyor] Load surveyors',
+    surveyorUpdated: '[surveyor] Updated surveyor',
+    surveyorDelete: '[surveyor] Delete surveyor',
+    surveyorsLogoutCleaning: '[surveyor] Cleaning surveyors',
 }
 
 // Auth
@@ -48,15 +59,20 @@ export interface IUi {
   role: TypeUser,
 }
 
-export enum TypeUser {
-  ADMIN = 'ADMIN',
-  SUPER_ADMIN = 'SUPER_ADMIN',
-  SURVEYOR = 'ENCUESTADOR',
-}
-
 export type UiAction = {
   type: string,
   payload: IAuth
+}
+
+// Auth
+export interface ISurveyor {
+  surveyors: Partial<Surveyor>[],
+  activeSurveyor: Partial<Surveyor> | null
+}
+
+export type SurveyorsAction = {
+  type: string,
+  payload: ISurveyor
 }
 
 // Settings

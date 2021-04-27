@@ -8,7 +8,7 @@ import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import Toolbar from '@material-ui/core/Toolbar';
 import MenuIcon from '@material-ui/icons/Menu';
-import { toggleNavCollapsed } from '../../../actions/setting';
+import { toggleNavCollapsed } from '../../../redux/actions/settingActions';
 import Logo from '../Logo/Logo';
 import useStyles from './header.styles';
 

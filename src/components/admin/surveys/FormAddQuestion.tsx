@@ -9,7 +9,7 @@ import { Box, Button, Grid, MenuItem, Checkbox, Tooltip, IconButton } from '@mat
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { Alert } from '@material-ui/lab';
 import { MyTextField } from '../../custom/MyTextField';
-import { uiCloseModalAdd } from '../../../actions/ui';
+import { uiCloseModalAdd } from '../../../redux/actions/uiActions';
 import { TypeEnum, QuestionOptions } from '../../../interfaces/Survey';
 import { useStyles } from '../../../shared/styles/useStyles';
 

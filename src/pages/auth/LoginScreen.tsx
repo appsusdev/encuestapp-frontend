@@ -7,8 +7,8 @@ import { Alert } from '@material-ui/lab';
 import { LoginForm } from '../../components/auth/LoginForm';
 import useStylesAuth from '../../components/auth/auth.styles';
 import { Fonts } from '../../shared/constants/AppEnums';
-import { AppState } from '../../reducers/rootReducer';
-import { uiCloseAlert } from '../../actions/ui';
+import { AppState } from '../../redux/reducers/rootReducer';
+import { uiCloseAlert } from '../../redux/actions/uiActions';
 import logo from '../../assets/images/logo-white-with-name.png';
 
 export const LoginScreen: FC<{}> = () => {

@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import clsx from 'clsx';
 
 import { Box, Button, Grid } from '@material-ui/core';
-import { uiCloseModalAdd } from '../../../actions/ui';
+import { uiCloseModalAdd } from '../../../redux/actions/uiActions';
 import { AntSwitch } from '../../custom/CustomizedSwitch';
 import { MyTextField } from '../../custom/MyTextField';
 import { useStyles } from '../../../shared/styles/useStyles';

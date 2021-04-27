@@ -1,4 +1,5 @@
-import { types, TypeUser } from '../types/types';
+import { TypeUser } from '../../enums/enums';
+import { types } from '../types/types';
 
 export const uiOpenModalAdd = () => ({ type: types.uiOpenModalAdd });
 

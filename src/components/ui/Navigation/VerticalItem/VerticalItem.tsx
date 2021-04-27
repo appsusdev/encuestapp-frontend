@@ -13,8 +13,8 @@ import { Routes, RoutesName } from '../../../../helpers/getRoutes';
 import useStyles from './verticalItem.styles';
 import '../../../../shared/styles/app.scss'
 import { useSelector } from 'react-redux';
-import { AppState } from '../../../../reducers/rootReducer';
-import { TypeUser } from '../../../../types/types';
+import { AppState } from '../../../../redux/reducers/rootReducer';
+import { TypeUser } from '../../../../enums/enums';
 
 interface VerticalItemProps {}
 

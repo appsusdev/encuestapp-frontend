@@ -4,17 +4,17 @@ import {
     Switch,
     Redirect
   } from 'react-router-dom';
+  import { useDispatch } from 'react-redux';
   
 import { AuthRouter } from './AuthRouter';
 import Layout from '../components/ui/Layout/Layout';
 import { firebase } from '../config/firebase/firebase-config';
-import { useDispatch } from 'react-redux';
-import { login } from '../actions/auth';
-import { getUserRole } from '../services/auth/auth';
+import { TypeUser } from '../enums/enums';
 import { PublicRoute } from './PublicRoute';
 import { PrivateRoute } from './PrivateRoute';
-import { uiChangeRole } from '../actions/ui';
-import { TypeUser } from '../types/types';
+import { login } from '../redux/actions/authActions';
+import { uiChangeRole } from '../redux/actions/uiActions';
+import { getUserRole } from '../services/auth/auth';
 
 export const AppRouter: FC = () => {
     const dispatch = useDispatch();

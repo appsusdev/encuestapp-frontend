@@ -6,8 +6,8 @@ import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import Box from '@material-ui/core/Box';
 
-import { toggleNavCollapsed } from '../../../actions/setting';
-import { AppState } from '../../../reducers/rootReducer';
+import { toggleNavCollapsed } from '../../../redux/actions/settingActions';
+import { AppState } from '../../../redux/reducers/rootReducer';
 import AppContext from '../../../context/AppContext';
 import AppContextPropsType from '../../../types/AppContextPropsType';
 import UserInfo from '../../../components/ui/UserInfo/UserInfo';
