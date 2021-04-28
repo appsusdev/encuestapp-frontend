@@ -6,23 +6,11 @@ import clsx from 'clsx';
 
 import { Box, Button, Grid, MenuItem, IconButton, Tooltip } from '@material-ui/core';
 import { PhotoCamera } from '@material-ui/icons';
-import { uiCloseModalAdd } from '../../../actions/ui';
+import { uiCloseModalAdd } from '../../../redux/actions/uiActions';
 import { MyTextField } from '../../custom/MyTextField';
 import { useStyles } from '../../../shared/styles/useStyles';
-
-interface MyFormValues {
-    typeDoc: string;
-    document: number | '';
-    firstName: string;
-    secondName: string;
-    firstLastName: string;
-    secondLastName: string;
-    username: string;
-    email: string;
-    mobilePhone: number | '';
-    address: string;
-    profileImage: string;
-}
+import { Surveyor } from '../../../interfaces/Surveyor';
+import { TypeDoc } from '../../../enums/enums';
 
 export const FormAddSurveyor = () => {
 
@@ -44,7 +32,7 @@ export const FormAddSurveyor = () => {
         profileImage: yup.mixed()
     });
 
-    const initialValues: MyFormValues = {
+    const initialValues: Partial<Surveyor> = {
         typeDoc: '',
         document: '',
         firstName: '',
@@ -62,6 +50,11 @@ export const FormAddSurveyor = () => {
         dispatch(uiCloseModalAdd());
     }
 
+    const handleFileUpload = (event: any) => {
+        const nameFile = event.currentTarget.files[0];
+        console.log(nameFile);
+    }
+
     return (
         <Box m={1}>
             <Formik
@@ -69,9 +62,8 @@ export const FormAddSurveyor = () => {
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={(data, { setSubmitting }) => {
-                    console.log(data);
                     setSubmitting(true);
-                    // dispatch( guardar en BD);
+                    // dispatch( startNewSurveyor(data) );
                     setSubmitting(false);
                 }}>
                 {({ values, isSubmitting }) => (
@@ -88,9 +80,9 @@ export const FormAddSurveyor = () => {
                                     select
                                     className={classes.myTextFieldRoot}
                                 >
-                                    <MenuItem value={1}><FormattedMessage id='CitizenshipCard' /></MenuItem>
-                                    <MenuItem value={2}><FormattedMessage id='ForeignersIdentityCard' /></MenuItem>
-                                    <MenuItem value={3}><FormattedMessage id='Passport' /></MenuItem>
+                                    <MenuItem value={TypeDoc.CC}><FormattedMessage id='CitizenshipCard' /></MenuItem>
+                                    <MenuItem value={TypeDoc.CE}><FormattedMessage id='ForeignersIdentityCard' /></MenuItem>
+                                    <MenuItem value={TypeDoc.PASSPORT}><FormattedMessage id='Passport' /></MenuItem>
                                 </MyTextField>
                             </Grid>
 
@@ -146,7 +138,7 @@ export const FormAddSurveyor = () => {
                                     name="username"
                                     variant='outlined'
                                     className={classes.myTextFieldRoot}
-                                    placeholder={`${values.firstName} ${values.secondName} ${values.firstLastName} ${values.secondLastName}`}
+                                    label={`${values.firstName} ${values.secondName} ${values.firstLastName} ${values.secondLastName}`}
                                     disabled={true}
                                     style={{ color: 'black' }}
                                 />
@@ -188,7 +180,7 @@ export const FormAddSurveyor = () => {
                                     id="icon-button-file"
                                     style={{ display: 'none' }}
                                 />
-                                <MyTextField disabled={true} variant="outlined" style={{ color: 'black' }} placeholder={values.profileImage} name='hola' className={classes.myTextFieldRoot} />
+                                <MyTextField disabled={true} onChange={handleFileUpload} variant="outlined" style={{ color: 'black' }} label={values.profileImage} name='hola' className={classes.myTextFieldRoot} />
                             </Grid>
 
 

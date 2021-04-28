@@ -1,7 +1,8 @@
-import { firebase } from '../config/firebase/firebase-config';
-import { getUserRole } from '../services/auth/auth';
-import { types, IAuth, TypeUser } from '../types/types';
-import { finishLoading, startLoading, uiOpenAlert } from './ui';
+import { firebase } from '../../config/firebase/firebase-config';
+import { TypeUser } from '../../enums/enums';
+import { getUserRole } from '../../services/auth/auth';
+import { types, IAuth } from '../types/types';
+import { finishLoading, startLoading, uiOpenAlert } from './uiActions';
 
 export const startLoginCorreoPassword = ( email:string, password: string) => {
 

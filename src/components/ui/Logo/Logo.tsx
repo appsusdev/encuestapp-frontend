@@ -1,7 +1,7 @@
 import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
-import logo from '../../../assets/images/logo-with-name.png'
+import logo from '../../../assets/images/mi-alcaldia-logo.png'
 
 const Logo = () => {
     const useStyles = makeStyles(() => ({
@@ -12,7 +12,7 @@ const Logo = () => {
             right: 5,
         },
         logo: {
-            height: 36,
+            height: 50,
             marginRight: 10,
             marginTop: 3
         },

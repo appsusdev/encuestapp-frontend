@@ -5,7 +5,7 @@ import { CustomizedIcons } from '../../custom/CustomizedIcons';
 import { AntSwitch } from '../../custom/CustomizedSwitch';
 import { useDispatch } from 'react-redux';
 import { Survey } from '../../../interfaces/Survey';
-import { uiOpenModalEdit, uiOpenModalAssign } from '../../../actions/ui';
+import { uiOpenModalEdit, uiOpenModalAssign } from '../../../redux/actions/uiActions';
 
 export const SurveysBody = (survey: Partial<Survey>) => {
 

@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { useIntl, FormattedMessage } from 'react-intl';
@@ -9,8 +10,7 @@ import { CremaTheme } from '../../types/AppContextPropsType';
 import { Fonts } from '../../shared/constants/AppEnums';
 import { Box, Button, Checkbox } from '@material-ui/core';
 import { MyTextField } from '../custom/MyTextField';
-import { startLoginCorreoPassword } from '../../actions/auth';
-import { useDispatch } from 'react-redux';
+import { startLoginCorreoPassword } from '../../redux/actions/authActions';
 
 const useStyles = makeStyles((theme: CremaTheme) => ({
   formRoot: {

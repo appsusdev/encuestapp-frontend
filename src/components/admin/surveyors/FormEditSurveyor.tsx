@@ -6,7 +6,7 @@ import clsx from 'clsx';
 
 import { Box, Button, Grid, IconButton, Card, CardMedia, Tooltip, MenuItem } from '@material-ui/core';
 import { PhotoCamera } from '@material-ui/icons';
-import { uiCloseModalEdit } from '../../../actions/ui';
+import { uiCloseModalEdit } from '../../../redux/actions/uiActions';
 import logo from '../../../assets/images/user.jpg'
 import { MyTextField } from '../../custom/MyTextField';
 import { useStyles } from '../../../shared/styles/useStyles';

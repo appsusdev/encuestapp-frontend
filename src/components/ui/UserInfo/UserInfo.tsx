@@ -14,7 +14,7 @@ import { Fonts, ThemeMode } from '../../../shared/constants/AppEnums';
 import user from '../../../assets/images/user.jpg'
 import { FormattedMessage } from 'react-intl';
 import { useDispatch } from 'react-redux';
-import { startLogout } from '../../../actions/auth';
+import { startLogout } from '../../../redux/actions/authActions';
 
 const useStyles = makeStyles(theme => {
     return {

@@ -1,4 +1,5 @@
-import { IUi, types, UiAction, TypeUser } from '../types/types';
+import { TypeUser } from '../../enums/enums';
+import { IUi, types, UiAction } from '../types/types';
 
 const initialState = {
     modalAddOpen: false,

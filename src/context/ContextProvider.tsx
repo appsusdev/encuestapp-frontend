@@ -1,7 +1,7 @@
 import React, { useCallback, useReducer } from 'react';
 import defaultConfig from './defaultConfig';
 import AppContext from './AppContext';
-import { contextReducer, ThemeSetting } from '../reducers/contextReducer';
+import { contextReducer, ThemeSetting } from '../redux/reducers/contextReducer';
 import { CremaTheme } from '../types/AppContextPropsType';
 import {
   FooterType,

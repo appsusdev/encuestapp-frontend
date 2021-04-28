@@ -9,8 +9,8 @@ import { Routes } from '../helpers/getRoutes';
 import { HomeScreen } from '../pages/admin/survey/HomeScreen';
 import { HomeScreen as Home } from '../pages/super-admin/HomeScreen';
 import { useSelector } from 'react-redux';
-import { AppState } from '../reducers/rootReducer';
-import { TypeUser } from '../types/types';
+import { AppState } from '../redux/reducers/rootReducer';
+import { TypeUser } from '../enums/enums';
 
 export const DashboardRouter: FC = () => {
 

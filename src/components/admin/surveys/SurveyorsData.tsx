@@ -7,7 +7,7 @@ import { Box, Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { TablePaginationAct } from '../../custom/TablePaginationAct';
 import { CustomizedSearch } from '../../custom/CustomizedSearch';
-import { uiCloseModalEdit } from '../../../actions/ui';
+import { uiCloseModalEdit } from '../../../redux/actions/uiActions';
 import { useStyles } from '../../../shared/styles/useStyles';
 
 const theme = createMuiTheme({

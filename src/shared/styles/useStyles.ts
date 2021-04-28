@@ -22,7 +22,6 @@ export const useStyles = makeStyles((theme: Theme) => ({
             color: `${theme.palette.grey[800]} !important`,
             fontFamily: 'Poppins',
             fontSize: 15,
-            fontWeight: Fonts.BOLD,
         }
     },
     btn: {

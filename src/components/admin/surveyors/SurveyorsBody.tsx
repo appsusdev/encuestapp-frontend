@@ -5,7 +5,7 @@ import { CustomizedIcons } from '../../custom/CustomizedIcons';
 import { AntSwitch } from '../../custom/CustomizedSwitch';
 import { Surveyor } from '../../../interfaces/Surveyor';
 import { useDispatch } from 'react-redux';
-import { uiOpenModalEdit, uiOpenModalDelete, uiOpenModalAssign } from '../../../actions/ui';
+import { uiOpenModalEdit, uiOpenModalDelete, uiOpenModalAssign } from '../../../redux/actions/uiActions';
 
 export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
 

@@ -1,4 +1,4 @@
-import { ThemeMode } from '../shared/constants/AppEnums';
+import { ThemeMode } from '../../shared/constants/AppEnums';
 
 export const ThemeSetting = {
     UPDATE_THEME: 'UPDATE_THEME',
