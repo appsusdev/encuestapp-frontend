@@ -25,6 +25,15 @@ export const uiOpenAlert = () => ({ type: types.uiOpenAlert });
 
 export const uiCloseAlert = () => ({ type: types.uiCloseAlert });
 
+export const uiOpenSuccessAlert = () => ({ type: types.uiOpenSuccessAlert });
+
+export const uiCloseSuccessAlert = () => ({ type: types.uiCloseSuccessAlert });
+
+export const uiOpenErrorAlert = () => ({ type: types.uiOpenErrorAlert });
+
+export const uiCloseErrorAlert = () => ({ type: types.uiCloseErrorAlert });
+
+
 export const uiChangeRole = (role: TypeUser) => ({ 
     type: types.uiChangeRole,
     payload: role

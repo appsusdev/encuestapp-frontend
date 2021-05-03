@@ -94,5 +94,16 @@ export const useStyles = makeStyles((theme: Theme) => ({
     },
     swal: {
         height: '50hv'
-    }
+    },
+    colorLoading: {
+        color: theme.palette.info.main,
+    },
+    rootLoading: {
+        flexGrow: 1
+    },
+    paperLoading: {
+        height: '100%',
+        width: '100%'
+    },
+
 }));

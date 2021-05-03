@@ -1,13 +1,15 @@
-import { db } from "../../config/firebase/firebase-config";
+import { firebase, db } from "../../config/firebase/firebase-config";
 
 export interface IUserInfo {
   activo: boolean;
   nombres: string;
   apellidos: string;
   avatar: string;
-  fechaNacimiento: string;
-  identificacion: string;
+  celular: number;
+  direccion: string;
+  identificacion: number;
   rol: string;
+  municipios: string[]
 }
 
 export const getUserRole = (email:string | null | undefined): Promise<IUserInfo> => {
@@ -27,3 +29,7 @@ export const getUserRole = (email:string | null | undefined): Promise<IUserInfo>
     .catch( err => console.log(err));
 
 };
+
+export const registerWithEmailPassword = async(email:string , password: string ) => {
+  return await firebase.auth().createUserWithEmailAndPassword(email, password);
+}

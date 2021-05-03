@@ -48,6 +48,7 @@
     "SurveyorName": "Surveyor name",
     "Name": "Name",
     "Identification": "Identification",
+    "MinimumPassword": "Must be a minimum of 6 characters",
     "State": "State",
     "Actions": "Actions",
     "CitizenshipCard": "Citizenship card",
@@ -97,5 +98,10 @@
     "Georeferencing": "Georeferencing",
     "IncorrectEmailPassword": "Incorrect email or password",
     "Logout": "Logout",
-    "MyAccount": "My account"
+    "MyAccount": "My account",
+    "ValidFiles": "Valid files: png, jpg, jpeg",
+    "MessageExistsSurveyor": "There is already a registered surveyor with the email:",
+    "MessageExistsSurveyorTown": "There is already a registered surveyor in your town with the email you entered",
+    "MessageAddSurveyor": "Do you want to add this surveyor to your town?",
+    "SurveyorAddSuccess": "Surveyor added successfully"
 }

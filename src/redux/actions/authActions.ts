@@ -1,8 +1,8 @@
 import { firebase } from '../../config/firebase/firebase-config';
 import { TypeUser } from '../../enums/enums';
-import { getUserRole } from '../../services/auth/auth';
+import { getUserRole } from '../../services/firebase/auth';
 import { types, IAuth } from '../types/types';
-import { finishLoading, startLoading, uiOpenAlert } from './uiActions';
+import { finishLoading, startLoading, uiOpenErrorAlert } from './uiActions';
 
 export const startLoginCorreoPassword = ( email:string, password: string) => {
 
@@ -12,23 +12,29 @@ export const startLoginCorreoPassword = ( email:string, password: string) => {
         firebase.auth().signInWithEmailAndPassword( email, password )
             .then( async({ user }) => {
 
-                const { rol } = await getUserRole(user?.email);
-                 
-                if( rol === TypeUser.ADMIN || rol === TypeUser.SUPER_ADMIN) {
-                    const userAuth = {
-                        uid: user?.uid,
-                        displayName: user?.displayName,
-                        email: user?.email,
-                        rol: rol
+                const { rol, municipios } = await getUserRole(user?.email);
+                if(rol) {
+
+                    if( rol === TypeUser.ADMIN || rol === TypeUser.SUPER_ADMIN) {
+                        const userAuth = {
+                            uid: user?.uid,
+                            displayName: user?.displayName,
+                            email: user?.email,
+                            rol: rol,
+                            municipios: municipios        
+                        }
+                        dispatch( login(userAuth) );
+                    } else {
+                        dispatch( uiOpenErrorAlert() );
                     }
-                    dispatch( login(userAuth) );
+                    dispatch( finishLoading() );
                 } else {
-                    dispatch( uiOpenAlert() );
+                    dispatch( uiOpenErrorAlert() );
                 }
-                dispatch( finishLoading() );
+                 
             })
             .catch( e => {
-                dispatch( uiOpenAlert() );
+                dispatch( uiOpenErrorAlert() );
                 dispatch( finishLoading() );
             });
     }
@@ -40,7 +46,8 @@ export const login = (user: IAuth) => ({
         uid: user.uid,
         displayName: user.displayName,
         email: user.email,
-        rol: user.rol
+        rol: user.rol,
+        municipios: user.municipios
     }
 });
 

@@ -24,10 +24,15 @@ export const types = {
     uiFinishLoading: '[ui] Finish loading',
     uiOpenAlert: '[ui] Open alert',
     uiCloseAlert: '[ui] Close alert',
+    uiOpenSuccessAlert: '[ui] Open success alert',
+    uiCloseSuccessAlert: '[ui] Close success alert',
+    uiOpenErrorAlert: '[ui] Open error alert',
+    uiCloseErrorAlert: '[ui] Close error alert',
     uiChangeRole: '[ui] Change role',
 
     // surveyors
     surveyorAddNew: '[surveyor] New surveyor',
+    surveyorFromDB: '[surveyor] Surveyor from DB',
     surveyorActive: '[surveyor] Set active surveyor',
     surveyorsLoad: '[surveyor] Load surveyors',
     surveyorUpdated: '[surveyor] Updated surveyor',
@@ -41,6 +46,7 @@ export interface IAuth {
     displayName: string | undefined | null,
     email: string | undefined | null,
     rol: string | undefined | null,
+    municipios: string[]
 }
 
 export type AuthAction = {
@@ -56,6 +62,8 @@ export interface IUi {
   modalAssignOpen: boolean,
   loading: boolean,
   alert: boolean,
+  successAlert: boolean,
+  errorAlert: boolean,
   role: TypeUser,
 }
 
@@ -67,12 +75,13 @@ export type UiAction = {
 // Auth
 export interface ISurveyor {
   surveyors: Partial<Surveyor>[],
-  activeSurveyor: Partial<Surveyor> | null
+  activeSurveyor: Partial<Surveyor> | null,
+  surveyorFromToDB: any
 }
 
 export type SurveyorsAction = {
   type: string,
-  payload: ISurveyor
+  payload: any
 }
 
 // Settings
