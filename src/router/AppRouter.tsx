@@ -3,9 +3,10 @@ import {
     BrowserRouter as Router,
     Switch,
     Redirect
-  } from 'react-router-dom';
-  import { useDispatch } from 'react-redux';
+} from 'react-router-dom';
+import { useDispatch } from 'react-redux';
   
+import CircularProgress from '@material-ui/core/CircularProgress'; 
 import { AuthRouter } from './AuthRouter';
 import Layout from '../components/ui/Layout/Layout';
 import { firebase } from '../config/firebase/firebase-config';
@@ -14,31 +15,42 @@ import { PublicRoute } from './PublicRoute';
 import { PrivateRoute } from './PrivateRoute';
 import { login } from '../redux/actions/authActions';
 import { uiChangeRole } from '../redux/actions/uiActions';
-import { getUserRole } from '../services/auth/auth';
+import { getUserRole } from '../services/firebase/auth';
+import { Box, Grid } from '@material-ui/core';
+import { useStyles } from '../shared/styles/useStyles';
 
 export const AppRouter: FC = () => {
     const dispatch = useDispatch();
+    const classes = useStyles();
     const [checking, setChecking] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
-
+        let isAuthFlag = true;
         firebase.auth().onAuthStateChanged(async(user) => {
             if (user?.uid) {
-                const { rol } = await getUserRole(user.email);
-                
-                
-                if(rol === TypeUser.ADMIN || rol === TypeUser.SUPER_ADMIN) {
-                    dispatch( uiChangeRole(rol) );
-                    const userMain = {
-                        uid: user.uid,
-                        displayName: user.displayName,
-                        email: user.email,
-                        rol: rol
+                if( isAuthFlag ) {
+                    isAuthFlag = false;
+                    const resp = await getUserRole(user.email);
+
+                    if(resp){
+                        const { rol, municipios } = resp;
+                        if(rol === TypeUser.ADMIN || rol === TypeUser.SUPER_ADMIN) {
+                            dispatch( uiChangeRole(rol) );
+                            const userMain = {
+                                uid: user.uid,
+                                displayName: user.displayName,
+                                email: user.email,
+                                rol: rol,
+                                municipios: municipios
+                            }
+                            dispatch( login(userMain));
+                            setIsLoggedIn(true);
+                        } 
+                    } else {
+                        setIsLoggedIn(false);
                     }
-                    dispatch( login(userMain));
-                    setIsLoggedIn(true);
-                } 
+                }
             } else {
                 setIsLoggedIn(false);
             }
@@ -48,9 +60,13 @@ export const AppRouter: FC = () => {
 
     if (checking) {
         return ( 
-            <div>
-                <p className = "mt-2"> Cargando</p> 
-            </div >
+            <div className={classes.rootLoading}>
+                <Grid container className={classes.paperLoading}>
+                    <Box mx='auto' my='45vh' >
+                        <CircularProgress className={classes.colorLoading}/> 
+                    </Box>
+                </Grid>
+            </div>
         )
     }
 

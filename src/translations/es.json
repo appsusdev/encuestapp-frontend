@@ -48,6 +48,7 @@
     "SurveyorName": "Nombre encuestador",
     "Name": "Nombre",
     "Identification": "Identificación",
+    "MinimumPassword": "Debe tener mínimo 6 caracteres",
     "State": "Estado",
     "Actions": "Acciones",
     "CitizenshipCard": "Cédula de ciudadania",
@@ -97,6 +98,11 @@
     "Georeferencing": "Georreferenciación",
     "IncorrectEmailPassword": "Correo o contraseña incorrectos",
     "Logout": "Cerrar sesión",
-    "MyAccount": "Mi cuenta"
+    "MyAccount": "Mi cuenta",
+    "ValidFiles": "Archivos válidos: png, jpg, jpeg",
+    "MessageExistsSurveyor": "Ya existe un encuestador registrado con el correo:",
+    "MessageExistsSurveyorTown": "Ya existe un encuestador registrado en su municipio con el correo ingresado",
+    "MessageAddSurveyor": "¿Desea agregar este encuestador a su municipio?",
+    "SurveyorAddSuccess": "Encuestador registrado correctamente"
 }
 

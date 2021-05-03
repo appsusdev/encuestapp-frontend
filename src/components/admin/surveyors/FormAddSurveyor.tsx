@@ -1,37 +1,24 @@
-import { useDispatch } from 'react-redux';
+
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Formik } from 'formik';
 import { useIntl, FormattedMessage } from 'react-intl';
 import * as yup from 'yup';
 import clsx from 'clsx';
 
-import { Box, Button, Grid, MenuItem, IconButton, Tooltip } from '@material-ui/core';
+import { Box, Button, Grid, MenuItem, IconButton, Tooltip, Dialog, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import { PhotoCamera } from '@material-ui/icons';
-import { uiCloseModalAdd } from '../../../redux/actions/uiActions';
+import { uiCloseModalAdd, uiCloseAlert, uiCloseSuccessAlert, uiCloseErrorAlert, uiOpenSuccessAlert } from '../../../redux/actions/uiActions';
 import { MyTextField } from '../../custom/MyTextField';
 import { useStyles } from '../../../shared/styles/useStyles';
 import { Surveyor } from '../../../interfaces/Surveyor';
 import { TypeDoc } from '../../../enums/enums';
+import { useState } from 'react';
+import { startNewSurveyor } from '../../../redux/actions/surveyorsActions';
+import { AppState } from '../../../redux/reducers/rootReducer';
+import { MyAlert } from '../../custom/MyAlert';
+import { addSurveyorToTown, updateTowns } from '../../../services/firebase/surveyors';
 
 export const FormAddSurveyor = () => {
-
-    const intl = useIntl();
-    const classes = useStyles();
-    const dispatch = useDispatch();
-
-    const validationSchema = yup.object({
-        typeDoc: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
-        document: yup.number().typeError(`${intl.formatMessage({ id: 'NumericValue' })}`).required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
-        firstName: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
-        secondName: yup.string(),
-        firstLastName: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
-        secondLastName: yup.string(),
-        username: yup.string(),
-        email: yup.string().email(`${intl.formatMessage({ id: 'InvalidEmail' })}`).required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
-        mobilePhone: yup.number().typeError(`${intl.formatMessage({ id: 'NumericValue' })}`).required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
-        address: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
-        profileImage: yup.mixed()
-    });
-
     const initialValues: Partial<Surveyor> = {
         typeDoc: '',
         document: '',
@@ -46,13 +33,80 @@ export const FormAddSurveyor = () => {
         profileImage: ''
     }
 
+    const intl = useIntl();
+    const classes = useStyles();
+
+    const dispatch = useDispatch();
+    const [noValid, setNoValid] = useState(false);
+    const [labelImage, setLabelImage] = useState('');
+    const [email, setEmail] = useState<string | undefined>('');
+    const { alert, errorAlert, successAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
+    const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
+    const { surveyorFromDB } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
+
+    const SUPPORTED_FORMATS = ['jpg', 'jpeg', 'png'];
+
+    const validationSchema = yup.object({
+        typeDoc: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
+        document: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`).min(6,`${intl.formatMessage({ id: 'MinimumPassword' })}`),
+        firstName: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
+        secondName: yup.string(),
+        firstLastName: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
+        secondLastName: yup.string(),
+        username: yup.string(),
+        email: yup.string().email(`${intl.formatMessage({ id: 'InvalidEmail' })}`).required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
+        mobilePhone: yup.number().typeError(`${intl.formatMessage({ id: 'NumericValue' })}`).required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
+        address: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
+        profileImage: yup.mixed().test(
+            'fileFormat',
+            'Archivo no soportado',
+            (value) => { 
+                setLabelImage(value?.split('\\').pop());
+                const file = value?.split('\\').pop()?.split('.');
+                let fileType = '';
+                if(file) {
+                    fileType = file[file.length-1];
+                    (!SUPPORTED_FORMATS.includes(fileType)) ? setNoValid(true) : setNoValid(false);
+                } 
+                if(!value) return true
+                return SUPPORTED_FORMATS.includes(fileType)
+            }
+          )
+    });
+
+
     const onClose = () => {
         dispatch(uiCloseModalAdd());
     }
 
-    const handleFileUpload = (event: any) => {
-        const nameFile = event.currentTarget.files[0];
-        console.log(nameFile);
+    const handleAddSurveyor = async() => {
+        const surveyorTown = { email: email, encuestasAsignadas: [] };
+
+        if(surveyorFromDB) {
+            const townsSurveyor: string[] = surveyorFromDB.municipios;
+            municipios?.forEach( (town: string) => {
+                townsSurveyor.push(town);
+            });
+
+            const updateSurveyor = { municipios: townsSurveyor}
+            await updateTowns(email, updateSurveyor);
+        }
+
+        if(municipios) {
+            await addSurveyorToTown(municipios, email, surveyorTown);
+            dispatch( uiCloseAlert() );
+            dispatch( uiOpenSuccessAlert() );
+        }
+    }
+
+    const closeDialog = () => {
+        dispatch( uiCloseAlert() );
+        dispatch( uiCloseErrorAlert() );
+    }
+
+    const closeSuccess = () => {
+        dispatch( uiCloseSuccessAlert() );
+        dispatch( uiCloseModalAdd() );
     }
 
     return (
@@ -61,12 +115,14 @@ export const FormAddSurveyor = () => {
                 validateOnChange={true}
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={(data, { setSubmitting }) => {
+                onSubmit={(values, { setSubmitting }) => {
                     setSubmitting(true);
-                    // dispatch( startNewSurveyor(data) );
+                    setEmail(values.email);
+                    console.log(values)
+                    dispatch( startNewSurveyor(values) );
                     setSubmitting(false);
                 }}>
-                {({ values, isSubmitting }) => (
+                {({ values, isSubmitting, setFieldValue }) => (
 
                     <Form className={classes.input}>
 
@@ -91,6 +147,7 @@ export const FormAddSurveyor = () => {
                                 <MyTextField
                                     name="document"
                                     variant='outlined'
+                                    type='number'
                                     className={classes.myTextFieldRoot}
                                 />
                             </Grid>
@@ -175,12 +232,13 @@ export const FormAddSurveyor = () => {
                                 <label className="form-text"><FormattedMessage id='ProfileImage' /></label>
                                 <MyTextField
                                     accept="image/*"
-                                    type="file"
                                     name="profileImage"
+                                    type="file"
                                     id="icon-button-file"
                                     style={{ display: 'none' }}
                                 />
-                                <MyTextField disabled={true} onChange={handleFileUpload} variant="outlined" style={{ color: 'black' }} label={values.profileImage} name='hola' className={classes.myTextFieldRoot} />
+                                <MyTextField 
+                                    disabled={true} variant="outlined" style={{ color: 'black' }} label={labelImage} name='hola' className={classes.myTextFieldRoot} />
                             </Grid>
 
 
@@ -193,8 +251,15 @@ export const FormAddSurveyor = () => {
                                     </Tooltip>
                                 </Box>
                             </Grid>
+                            {
+                                (noValid) &&
+                                <Grid item xs={12}>
+                                    <Box mt={-2} ml={2} style={{ fontSize: 12, color: 'red'}}>
+                                        <FormattedMessage id='ValidFiles'/>
+                                    </Box>
+                                </Grid>
+                            }
                         </Grid>
-                        {/* <Divider/> */}
 
                         <Box mt={2} display="flex" flexDirection="row-reverse">
                             <Button className={clsx(classes.btn, classes.save)} autoFocus
@@ -210,6 +275,31 @@ export const FormAddSurveyor = () => {
                     </Form>
                 )}
             </Formik>
+            
+            <Dialog
+                open={alert}
+                onClose={closeDialog}
+                aria-labelledby="responsive-dialog-title"
+            >
+                <DialogContent>
+                    <DialogContentText>
+                        <FormattedMessage id='MessageExistsSurveyor'/> <br/>
+                        {email}<br/><br/>
+                        <FormattedMessage id='MessageAddSurveyor'/> 
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button autoFocus onClick={closeDialog} color="primary">
+                        <FormattedMessage id='Cancel'/> 
+                    </Button>
+                    <Button onClick={handleAddSurveyor} color="primary" autoFocus>
+                        <FormattedMessage id='Accept'/> 
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <MyAlert open={successAlert} typeAlert="success" message="SurveyorAddSuccess" time={2000} handleClose={closeSuccess}/>
+            <MyAlert open={errorAlert} typeAlert="error" message="MessageExistsSurveyorTown" time={2000} handleClose={closeDialog}/>
         </Box>
     )
 }

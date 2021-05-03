@@ -7,12 +7,12 @@ import { TablePaginationAct } from '../../custom/TablePaginationAct';
 import { useStyles } from '../../../shared/styles/useStyles';
 
 const surveyors = [
-    { username: 'Usuario 1', typeDoc: 'CC', document: 1061787572, email: 'test1@gmail.com', state: true },
-    { username: 'Usuario 2', typeDoc: 'CC', document: 1061787572, email: 'test2@gmail.com', state: false },
-    { username: 'Usuario 3', typeDoc: 'CC', document: 1061787572, email: 'test3@gmail.com', state: false },
-    { username: 'Usuario 4', typeDoc: 'CC', document: 1061787572, email: 'test4@gmail.com', state: true },
-    { username: 'Usuario 5', typeDoc: 'CC', document: 1061787572, email: 'test5@gmail.com', state: false },
-    { username: 'Usuario 6', typeDoc: 'CC', document: 1061787572, email: 'test6@gmail.com', state: true },
+    { username: 'Usuario 1', typeDoc: 'CC', document: "1061787572", email: 'test1@gmail.com', state: true },
+    { username: 'Usuario 2', typeDoc: 'CC', document: "1061787572", email: 'test2@gmail.com', state: false },
+    { username: 'Usuario 3', typeDoc: 'CC', document: "1061787572", email: 'test3@gmail.com', state: false },
+    { username: 'Usuario 4', typeDoc: 'CC', document: "1061787572", email: 'test4@gmail.com', state: true },
+    { username: 'Usuario 5', typeDoc: 'CC', document: "1061787572", email: 'test5@gmail.com', state: false },
+    { username: 'Usuario 6', typeDoc: 'CC', document: "1061787572", email: 'test6@gmail.com', state: true },
 ];
 
 const theme = createMuiTheme({

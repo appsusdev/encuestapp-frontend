@@ -8,6 +8,8 @@ const initialState = {
     modalAssignOpen: false,
     loading: false,
     alert: false,
+    successAlert: false,
+    errorAlert: false,
     role: TypeUser.ADMIN,
 }
 
@@ -83,6 +85,30 @@ export const uiReducer = ( state: IUi = initialState, action: UiAction) => {
             return {
                 ...state,
                 alert: false
+            }
+
+        case types.uiOpenSuccessAlert:
+        return {
+            ...state,
+            successAlert: true
+        }
+
+        case types.uiCloseSuccessAlert:
+            return {
+                ...state,
+                successAlert: false
+            }
+
+        case types.uiOpenErrorAlert:
+            return {
+                ...state,
+                errorAlert: true
+            }
+            
+        case types.uiCloseErrorAlert:
+            return {
+                ...state,
+                errorAlert: false
             }
 
         case types.uiChangeRole:
