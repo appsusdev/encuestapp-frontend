@@ -18,6 +18,7 @@ import { uiChangeRole } from '../redux/actions/uiActions';
 import { getUserRole } from '../services/firebase/auth';
 import { Box, Grid } from '@material-ui/core';
 import { useStyles } from '../shared/styles/useStyles';
+import { startLoadingSurveyors } from '../redux/actions/surveyorsActions';
 
 export const AppRouter: FC = () => {
     const dispatch = useDispatch();
@@ -27,6 +28,7 @@ export const AppRouter: FC = () => {
 
     useEffect(() => {
         let isAuthFlag = true;
+
         firebase.auth().onAuthStateChanged(async(user) => {
             if (user?.uid) {
                 if( isAuthFlag ) {
@@ -35,6 +37,8 @@ export const AppRouter: FC = () => {
 
                     if(resp){
                         const { rol, municipios } = resp;
+
+                        dispatch( startLoadingSurveyors(municipios[0]));
                         if(rol === TypeUser.ADMIN || rol === TypeUser.SUPER_ADMIN) {
                             dispatch( uiChangeRole(rol) );
                             const userMain = {
@@ -50,7 +54,7 @@ export const AppRouter: FC = () => {
                     } else {
                         setIsLoggedIn(false);
                     }
-                }
+                } 
             } else {
                 setIsLoggedIn(false);
             }

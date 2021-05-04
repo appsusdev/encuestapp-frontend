@@ -1,5 +1,6 @@
 import { TypeDoc } from '../enums/enums';
 export interface Surveyor {
+    id: string,
     typeDoc: string,
     document: string,
     firstName: string,

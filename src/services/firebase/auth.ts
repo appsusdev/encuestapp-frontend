@@ -2,8 +2,11 @@ import { firebase, db } from "../../config/firebase/firebase-config";
 
 export interface IUserInfo {
   activo: boolean;
-  nombres: string;
-  apellidos: string;
+  primerNombre: string;
+  segundoNombre: string;
+  primerApellido: string;
+  segundoApellido: string;
+  nombreCompleto: string;
   avatar: string;
   celular: number;
   direccion: string;

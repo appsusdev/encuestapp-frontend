@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Formik } from 'formik';
 import { useIntl, FormattedMessage } from 'react-intl';
 import * as yup from 'yup';
@@ -10,30 +10,22 @@ import { uiCloseModalEdit } from '../../../redux/actions/uiActions';
 import logo from '../../../assets/images/user.jpg'
 import { MyTextField } from '../../custom/MyTextField';
 import { useStyles } from '../../../shared/styles/useStyles';
-
-interface MyFormValues {
-    typeDoc: string;
-    document: number | '';
-    firstName: string;
-    secondName: string;
-    firstLastName: string;
-    secondLastName: string;
-    username: string;
-    email: string;
-    mobilePhone: number | '';
-    address: string;
-    profileImage: string;
-}
+import { AppState } from '../../../redux/reducers/rootReducer';
+import { TypeDoc } from '../../../enums/enums';
+import { startEditSurveyor } from '../../../redux/actions/surveyorsActions';
+import { Surveyor } from '../../../interfaces/Surveyor';
 
 export const FormEditSurveyor = () => {
 
     const intl = useIntl();
     const classes = useStyles();
     const dispatch = useDispatch();
+    const { activeSurveyor } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
+    const surveyor: any = activeSurveyor;
 
     const validationSchema = yup.object({
         typeDoc: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
-        document: yup.number().typeError(`${intl.formatMessage({ id: 'NumericValue' })}`).required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
+        document: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`).min(6,`${intl.formatMessage({ id: 'MinimumPassword' })}`),
         firstName: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
         secondName: yup.string(),
         firstLastName: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
@@ -45,18 +37,18 @@ export const FormEditSurveyor = () => {
         profileImage: yup.mixed()
     });
 
-    const initialValues: MyFormValues = {
-        typeDoc: '',
-        document: '',
-        firstName: '',
-        secondName: '',
-        firstLastName: '',
-        secondLastName: '',
+    const initialValues: Partial<Surveyor> = {
+        typeDoc: surveyor.typeDoc,
+        document: surveyor.document,
+        firstName: surveyor.firstName,
+        secondName: surveyor.secondName,
+        firstLastName: surveyor.firstLastName,
+        secondLastName: surveyor.secondLastName,
         username: '',
-        email: '',
-        mobilePhone: '',
-        address: '',
-        profileImage: ''
+        email: surveyor.email,
+        mobilePhone: surveyor.mobilePhone,
+        address: surveyor.address,
+        profileImage: surveyor.profileImage
     }
 
     const onClose = () => {
@@ -70,8 +62,13 @@ export const FormEditSurveyor = () => {
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={(data, { setSubmitting }) => {
-                    console.log(data);
+                    console.log(data)
                     setSubmitting(true);
+                    if(surveyor.email === data.email){
+                        dispatch(startEditSurveyor(data));
+                    } else {
+                        console.log('Actualizar correo');
+                    }
                     // dispatch( guardar en BD);
                     setSubmitting(false);
                 }}>
@@ -134,7 +131,7 @@ export const FormEditSurveyor = () => {
                                         name="userType"
                                         variant='outlined'
                                         className={classes.myTextFieldRoot}
-                                        placeholder={`${intl.formatMessage({ id: 'Surveyor'})}`}
+                                        label={`${intl.formatMessage({ id: 'Surveyor'})}`}
                                         disabled
                                     />
                                 </Grid>
@@ -195,10 +192,10 @@ export const FormEditSurveyor = () => {
                                         <MyTextField
                                             name="username"
                                             variant='outlined'
+                                            InputLabelProps={{ shrink: false }} 
                                             className={classes.myTextFieldRoot}
-                                            placeholder={`${values.firstName} ${values.secondName} ${values.firstLastName} ${values.secondLastName}`}
+                                            label={`${values.firstName} ${values.secondName} ${values.firstLastName} ${values.secondLastName}`}
                                             disabled={true}
-                                            style={{ color: 'black' }}
                                         />
                                     </Grid>
 
@@ -219,9 +216,9 @@ export const FormEditSurveyor = () => {
                                             select
                                             className={classes.myTextFieldRoot}
                                         >
-                                            <MenuItem value={1}><FormattedMessage id='CitizenshipCard' /></MenuItem>
-                                            <MenuItem value={2}><FormattedMessage id='ForeignersIdentityCard' /></MenuItem>
-                                            <MenuItem value={3}><FormattedMessage id='Passport' /></MenuItem>
+                                            <MenuItem value={TypeDoc.CC}><FormattedMessage id='CitizenshipCard' /></MenuItem>
+                                            <MenuItem value={TypeDoc.CE}><FormattedMessage id='ForeignersIdentityCard' /></MenuItem>
+                                            <MenuItem value={TypeDoc.PASSPORT}><FormattedMessage id='Passport' /></MenuItem>
                                         </MyTextField>
                                     </Grid>
 

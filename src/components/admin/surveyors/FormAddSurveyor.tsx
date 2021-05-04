@@ -43,6 +43,7 @@ export const FormAddSurveyor = () => {
     const { alert, errorAlert, successAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
     const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
     const { surveyorFromDB } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
+    const surveyorDB: any = surveyorFromDB;
 
     const SUPPORTED_FORMATS = ['jpg', 'jpeg', 'png'];
 
@@ -82,8 +83,8 @@ export const FormAddSurveyor = () => {
     const handleAddSurveyor = async() => {
         const surveyorTown = { email: email, encuestasAsignadas: [] };
 
-        if(surveyorFromDB) {
-            const townsSurveyor: string[] = surveyorFromDB.municipios;
+        if(surveyorDB) {
+            const townsSurveyor: string[] = surveyorDB.municipios;
             municipios?.forEach( (town: string) => {
                 townsSurveyor.push(town);
             });
@@ -122,7 +123,7 @@ export const FormAddSurveyor = () => {
                     dispatch( startNewSurveyor(values) );
                     setSubmitting(false);
                 }}>
-                {({ values, isSubmitting, setFieldValue }) => (
+                {({ values, isSubmitting }) => (
 
                     <Form className={classes.input}>
 
