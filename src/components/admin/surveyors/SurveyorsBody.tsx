@@ -10,7 +10,15 @@ import { activeSurveyors, startLoadingSurveyors } from '../../../redux/actions/s
 import { db } from '../../../config/firebase/firebase-config';
 import { AppState } from '../../../redux/reducers/rootReducer';
 
-export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
+interface Props {
+    page: number,
+    surveyor: Partial<Surveyor>,
+}
+
+export const SurveyorsBody = (props: Props) => {
+    const { page, surveyor } = props;
+    console.log(surveyor)
+    console.log(page);
 
     const dispatch = useDispatch();
     const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
@@ -22,13 +30,10 @@ export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
     // Función para cambiar estado
     const handleChange = async(event: React.ChangeEvent<HTMLInputElement>) => {
         setState({ ...state, [ event.target.name ]: event.target.checked});
-        console.log(surveyor.email);
         
         await db.collection('Usuarios').doc(surveyor.email).update({activo: !state.checkedA})
         dispatch( uiOpenSuccessAlert() );
-        if(municipios) {
-            dispatch( startLoadingSurveyors(municipios[0]));
-        }
+        (municipios) && dispatch( startLoadingSurveyors(municipios[0]));
     };
 
     const onEdit = () => {
@@ -60,7 +65,7 @@ export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
                     {surveyor.email}
                 </TableCell>
                 <TableCell style={{ width: 30 }} align="center">
-                    <AntSwitch id={surveyor.id} checked={surveyor.state} name="checkedA" onChange={handleChange} />
+                    <AntSwitch id={surveyor.id} checked={state.checkedA} name="checkedA" onChange={handleChange} />
                 </TableCell>
                 <TableCell style={{ width: 130 }} align="center">
                     <CustomizedIcons editIcon deleteIcon assignIcon onEdit={onEdit} onDelete={onDelete} onAssign={onAssign}/>

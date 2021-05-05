@@ -91,6 +91,7 @@ export const startEditSurveyor = (surveyor: Partial<Surveyor>) => {
         delete userToDB.municipios;
         
         await editSurveyor(userToDB);
+        dispatch( uiOpenAlert());
     }
 }
 

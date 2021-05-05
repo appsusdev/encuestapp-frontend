@@ -104,5 +104,6 @@
     "MessageExistsSurveyorTown": "There is already a registered surveyor in your town with the email you entered",
     "MessageAddSurveyor": "Do you want to add this surveyor to your town?",
     "SurveyorAddSuccess": "Surveyor added successfully",
-    "StateSurveyorUpdated": "The state of the surveyor has been updated"
+    "StateSurveyorUpdated": "The state of the surveyor has been updated",
+    "UpdatedSurveyor": "Successfully updated surveyor"
 }

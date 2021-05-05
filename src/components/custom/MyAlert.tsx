@@ -31,7 +31,7 @@ export const MyAlert = (props: PropsAlert) => {
         <div className={classes.root}>
         <Snackbar  
                 open={ open } 
-                style={{ maxWidth: '30vw', marginLeft: '40px'}}
+                style={{ width: 'auto', maxWidth: '30vw', marginLeft: '40px'}}
                 anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'right',

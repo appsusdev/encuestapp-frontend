@@ -6,14 +6,15 @@ import clsx from 'clsx';
 
 import { Box, Button, Grid, IconButton, Card, CardMedia, Tooltip, MenuItem } from '@material-ui/core';
 import { PhotoCamera } from '@material-ui/icons';
-import { uiCloseModalEdit } from '../../../redux/actions/uiActions';
-import logo from '../../../assets/images/user.jpg'
+import { uiCloseModalEdit, uiCloseAlert } from '../../../redux/actions/uiActions';
 import { MyTextField } from '../../custom/MyTextField';
 import { useStyles } from '../../../shared/styles/useStyles';
 import { AppState } from '../../../redux/reducers/rootReducer';
 import { TypeDoc } from '../../../enums/enums';
-import { startEditSurveyor } from '../../../redux/actions/surveyorsActions';
+import { startEditSurveyor, startLoadingSurveyors } from '../../../redux/actions/surveyorsActions';
 import { Surveyor } from '../../../interfaces/Surveyor';
+import { MyAlert } from '../../custom/MyAlert';
+import logo from '../../../assets/images/user.jpg'
 
 export const FormEditSurveyor = () => {
 
@@ -21,7 +22,10 @@ export const FormEditSurveyor = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { activeSurveyor } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
+    const { alert } = useSelector<AppState, AppState['ui']>(state => state.ui);
+    const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
     const surveyor: any = activeSurveyor;
+
 
     const validationSchema = yup.object({
         typeDoc: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
@@ -55,6 +59,12 @@ export const FormEditSurveyor = () => {
         dispatch(uiCloseModalEdit());
     }
 
+    const closeSuccess = () => {
+        dispatch( uiCloseAlert() );
+        dispatch( uiCloseModalEdit() );
+        (municipios) && dispatch( startLoadingSurveyors(municipios[0]));
+    }
+
     return (
         <Box m={1}>
             <Formik
@@ -62,14 +72,8 @@ export const FormEditSurveyor = () => {
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={(data, { setSubmitting }) => {
-                    console.log(data)
                     setSubmitting(true);
-                    if(surveyor.email === data.email){
-                        dispatch(startEditSurveyor(data));
-                    } else {
-                        console.log('Actualizar correo');
-                    }
-                    // dispatch( guardar en BD);
+                    dispatch(startEditSurveyor(data));
                     setSubmitting(false);
                 }}>
                 {({ values, isSubmitting }) => (
@@ -205,6 +209,7 @@ export const FormEditSurveyor = () => {
                                             name="email"
                                             variant='outlined'
                                             className={classes.myTextFieldRoot}
+                                            disabled
                                         />
                                     </Grid>
 
@@ -251,12 +256,8 @@ export const FormEditSurveyor = () => {
 
                                 </Grid>
 
-
-
-
                             </Grid>
                         </Grid>
-                        {/* <Divider/> */}
 
                         <Box mt={2} display="flex" flexDirection="row-reverse">
                             <Button className={clsx(classes.btn, classes.save)} autoFocus
@@ -272,6 +273,8 @@ export const FormEditSurveyor = () => {
                     </Form>
                 )}
             </Formik>
+
+            <MyAlert open={alert} typeAlert="success" message="UpdatedSurveyor" time={2000} handleClose={closeSuccess}/>
         </Box>
     )
 }

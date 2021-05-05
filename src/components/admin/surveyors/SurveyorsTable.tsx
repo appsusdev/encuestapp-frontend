@@ -56,9 +56,7 @@ export const SurveyorsTable = () => {
                             ? list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             : list
                         ).map((surveyor, index) => (
-
-                            <SurveyorsBody key={index} {...surveyor} />
-
+                                <SurveyorsBody key={index} surveyor={surveyor} page={page}/>
                         ))}
                         {emptyRows > 0 && (
                             <TableRow style={{ height: 53 * emptyRows }}>

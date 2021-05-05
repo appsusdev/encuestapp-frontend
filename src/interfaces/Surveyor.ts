@@ -13,4 +13,5 @@ export interface Surveyor {
     address: string,
     profileImage: string,
     state: boolean,
+    page: number
 }
