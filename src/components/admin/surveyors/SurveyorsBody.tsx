@@ -17,8 +17,6 @@ interface Props {
 
 export const SurveyorsBody = (props: Props) => {
     const { page, surveyor } = props;
-    console.log(surveyor)
-    console.log(page);
 
     const dispatch = useDispatch();
     const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
