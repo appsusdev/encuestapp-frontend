@@ -5,15 +5,8 @@ import { createMuiTheme, Paper, Table, TableCell, TableContainer, TableFooter, T
 import { SurveyorsBody } from './SurveyorsBody';
 import { TablePaginationAct } from '../../custom/TablePaginationAct';
 import { useStyles } from '../../../shared/styles/useStyles';
-
-const surveyors = [
-    { username: 'Usuario 1', typeDoc: 'CC', document: "1061787572", email: 'test1@gmail.com', state: true },
-    { username: 'Usuario 2', typeDoc: 'CC', document: "1061787572", email: 'test2@gmail.com', state: false },
-    { username: 'Usuario 3', typeDoc: 'CC', document: "1061787572", email: 'test3@gmail.com', state: false },
-    { username: 'Usuario 4', typeDoc: 'CC', document: "1061787572", email: 'test4@gmail.com', state: true },
-    { username: 'Usuario 5', typeDoc: 'CC', document: "1061787572", email: 'test5@gmail.com', state: false },
-    { username: 'Usuario 6', typeDoc: 'CC', document: "1061787572", email: 'test6@gmail.com', state: true },
-];
+import { useSelector } from 'react-redux';
+import { AppState } from '../../../redux/reducers/rootReducer';
 
 const theme = createMuiTheme({
     typography: {
@@ -27,9 +20,11 @@ export const SurveyorsTable = () => {
     const classes = useStyles();
 
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(4);
+    const [rowsPerPage, setRowsPerPage] = useState(3);
+    const { surveyors } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
+    const list: any[] = surveyors;
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, surveyors.length - page * rowsPerPage);
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, list.length - page * rowsPerPage);
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         setPage(newPage);
@@ -45,7 +40,7 @@ export const SurveyorsTable = () => {
     return (
         <ThemeProvider theme={theme}>
             <TableContainer component={Paper} >
-                <Table className={classes.table} aria-label="custom pagination table">
+                <Table className={classes.table} aria-label="custom pagination table" style={{ tableLayout: "auto" }}>
                     <TableHead>
                         <TableRow >
                             <TableCell><FormattedMessage id="Name" /> </TableCell>
@@ -58,12 +53,10 @@ export const SurveyorsTable = () => {
                     </TableHead>
                     <TableBody>
                         {(rowsPerPage > 0
-                            ? surveyors.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            : surveyors
-                        ).map((surveyor) => (
-
-                            <SurveyorsBody key={surveyor.username} {...surveyor}/>
-
+                            ? list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            : list
+                        ).map((surveyor, index) => (
+                                <SurveyorsBody key={index} surveyor={surveyor} page={page}/>
                         ))}
                         {emptyRows > 0 && (
                             <TableRow style={{ height: 53 * emptyRows }}>
@@ -74,9 +67,9 @@ export const SurveyorsTable = () => {
                     <TableFooter>
                         <TableRow>
                             <TablePagination
-                                rowsPerPageOptions={[4]}
+                                rowsPerPageOptions={[3]}
                                 colSpan={6}
-                                count={surveyors.length}
+                                count={list.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 SelectProps={{

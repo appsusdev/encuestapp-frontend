@@ -12,6 +12,21 @@ export const surveyorsReducer = ( state = initialState, action: SurveyorsAction 
                 ...state,
                 surveyorFromDB: {...action.payload}
             }
+
+        case types.surveyorsLoad:
+            return {
+                ...state,
+                surveyors: [...action.payload]
+            }
+
+        case types.surveyorActive:
+            return {
+                ...state,
+                activeSurveyor: {
+                    ...action.payload
+                }
+            }
+    
         default:
             return state;
     }

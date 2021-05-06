@@ -4,24 +4,38 @@ import { TableCell, TableRow } from '@material-ui/core';
 import { CustomizedIcons } from '../../custom/CustomizedIcons';
 import { AntSwitch } from '../../custom/CustomizedSwitch';
 import { Surveyor } from '../../../interfaces/Surveyor';
-import { useDispatch } from 'react-redux';
-import { uiOpenModalEdit, uiOpenModalDelete, uiOpenModalAssign } from '../../../redux/actions/uiActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { uiOpenModalEdit, uiOpenModalDelete, uiOpenModalAssign, uiOpenAlert } from '../../../redux/actions/uiActions';
+import { activeSurveyors, startLoadingSurveyors } from '../../../redux/actions/surveyorsActions';
+import { db } from '../../../config/firebase/firebase-config';
+import { AppState } from '../../../redux/reducers/rootReducer';
 
-export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
+interface Props {
+    page: number,
+    surveyor: Partial<Surveyor>,
+}
+
+export const SurveyorsBody = (props: Props) => {
+    const { page, surveyor } = props;
 
     const dispatch = useDispatch();
+    const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
 
     const [state, setState] = useState({
         checkedA: surveyor.state
     });
 
     // Función para cambiar estado
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = async(event: React.ChangeEvent<HTMLInputElement>) => {
         setState({ ...state, [ event.target.name ]: event.target.checked});
-         // TODO: Actualizar en bd  
+        
+        await db.collection('Usuarios').doc(surveyor.email).update({activo: !state.checkedA})
+        dispatch( uiOpenAlert() );
+        (municipios) && dispatch( startLoadingSurveyors(municipios[0]));
     };
 
     const onEdit = () => {
+        dispatch( activeSurveyors(surveyor.email, surveyor));
         dispatch( uiOpenModalEdit() );
     }
 
@@ -36,23 +50,22 @@ export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
     return (
         <>
             <TableRow key={surveyor.username}>
-                <TableCell component="th" scope="row">
-                    {surveyor.username}
+                <TableCell component="th" scope="row" style={{ width: 170, textTransform: 'capitalize' }}>
+                    {(surveyor.username)}
                 </TableCell>
                 <TableCell style={{ width: 160 }}>
                     {surveyor.typeDoc}
                 </TableCell>
-                <TableCell style={{ width: 160 }}>
+                <TableCell style={{ width: 120 }}>
                     {surveyor.document}
                 </TableCell>
                 <TableCell style={{ width: 160 }}>
                     {surveyor.email}
                 </TableCell>
-                <TableCell style={{ width: 160 }} align="center">
-                
-                    <AntSwitch checked={state.checkedA} name="checkedA" onChange={handleChange} />
+                <TableCell style={{ width: 30 }} align="center">
+                    <AntSwitch id={surveyor.id} checked={state.checkedA} name="checkedA" onChange={handleChange} />
                 </TableCell>
-                <TableCell style={{ width: 160 }} align="center">
+                <TableCell style={{ width: 130 }} align="center">
                     <CustomizedIcons editIcon deleteIcon assignIcon onEdit={onEdit} onDelete={onDelete} onAssign={onAssign}/>
                 </TableCell>
             </TableRow>

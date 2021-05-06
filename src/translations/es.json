@@ -103,6 +103,8 @@
     "MessageExistsSurveyor": "Ya existe un encuestador registrado con el correo:",
     "MessageExistsSurveyorTown": "Ya existe un encuestador registrado en su municipio con el correo ingresado",
     "MessageAddSurveyor": "¿Desea agregar este encuestador a su municipio?",
-    "SurveyorAddSuccess": "Encuestador registrado correctamente"
+    "SurveyorAddSuccess": "Encuestador registrado correctamente",
+    "StateSurveyorUpdated": "El estado del encuestador ha sido actualizado",
+    "UpdatedSurveyor": "Encuestador actualizado correctamente"
 }
 

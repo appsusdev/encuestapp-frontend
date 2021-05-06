@@ -5,7 +5,7 @@ import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import { CustomizedSearch } from '../../../components/custom/CustomizedSearch';
 import { Fonts } from '../../../shared/constants/AppEnums';
 import { AppState } from '../../../redux/reducers/rootReducer';
-import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalDelete, uiCloseModalAssign } from '../../../redux/actions/uiActions';
+import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalDelete, uiCloseModalAssign, uiCloseSuccessAlert, uiCloseAlert } from '../../../redux/actions/uiActions';
 import { FormAddSurveyor } from '../../../components/admin/surveyors/FormAddSurveyor';
 import { SurveyorsTable } from '../../../components/admin/surveyors/SurveyorsTable';
 import CustomizedDialog from '../../../components/custom/CustomizedDialog';
@@ -13,6 +13,7 @@ import AppAnimate from '../../../components/ui/AppAnimate/AppAnimate';
 import { FormEditSurveyor } from '../../../components/admin/surveyors/FormEditSurveyor';
 import { DeleteSurveyor } from '../../../components/admin/surveyors/DeleteSurveyor';
 import { AssignSurvey } from '../../../components/admin/surveyors/AssignSurvey';
+import { MyAlert } from '../../../components/custom/MyAlert';
 
 export const useStyles = makeStyles((theme) => ({
   btnRoot: {
@@ -39,6 +40,7 @@ export const SurveyorsScreen = () => {
   const classes = useStyles();
   const intl = useIntl();
   const { modalAddOpen, modalEditOpen, modalDeleteOpen, modalAssignOpen } = useSelector<AppState, AppState['ui']>(state => state.ui);
+  const { alert } = useSelector<AppState, AppState['ui']>(state => state.ui);
   const dispatch = useDispatch();
 
   const openAddSurveyor = () => {
@@ -59,6 +61,10 @@ export const SurveyorsScreen = () => {
 
   const onDenyAssign = () => {
     dispatch(uiCloseModalAssign());
+  }
+
+  const closeSuccess = () => {
+    dispatch( uiCloseAlert() );
   }
 
 
@@ -91,7 +97,12 @@ export const SurveyorsScreen = () => {
         <CustomizedDialog open={modalEditOpen} cancelBtn={true} onDeny={onDenyEdit} title={`${intl.formatMessage({ id: 'EditSurveyor' })}`} content={<FormEditSurveyor />} width textButton="Accept" />
         <CustomizedDialog open={modalDeleteOpen} cancelBtn={true} onDeny={onDenyDelete} title={`${intl.formatMessage({ id: 'DeleteSurveyor' })}`} content={<DeleteSurveyor />} seeActions textButton="Accept" />
         <CustomizedDialog open={modalAssignOpen} cancelBtn={true} onDeny={onDenyAssign} title={`${intl.formatMessage({ id: 'AssignSurvey' })}`} content={<AssignSurvey />} seeActions textButton="Accept" />
+      
+      
+        <Box mt={3} fontSize={20}>
 
+          <MyAlert open={alert} typeAlert="success" message="StateSurveyorUpdated" time={2000} handleClose={closeSuccess}/>
+        </Box>
       </Box>
     </AppAnimate>
   )
