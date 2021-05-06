@@ -5,7 +5,7 @@ import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import { CustomizedSearch } from '../../../components/custom/CustomizedSearch';
 import { Fonts } from '../../../shared/constants/AppEnums';
 import { AppState } from '../../../redux/reducers/rootReducer';
-import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalDelete, uiCloseModalAssign, uiCloseSuccessAlert } from '../../../redux/actions/uiActions';
+import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalDelete, uiCloseModalAssign, uiCloseSuccessAlert, uiCloseAlert } from '../../../redux/actions/uiActions';
 import { FormAddSurveyor } from '../../../components/admin/surveyors/FormAddSurveyor';
 import { SurveyorsTable } from '../../../components/admin/surveyors/SurveyorsTable';
 import CustomizedDialog from '../../../components/custom/CustomizedDialog';
@@ -40,7 +40,7 @@ export const SurveyorsScreen = () => {
   const classes = useStyles();
   const intl = useIntl();
   const { modalAddOpen, modalEditOpen, modalDeleteOpen, modalAssignOpen } = useSelector<AppState, AppState['ui']>(state => state.ui);
-  const { successAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
+  const { alert } = useSelector<AppState, AppState['ui']>(state => state.ui);
   const dispatch = useDispatch();
 
   const openAddSurveyor = () => {
@@ -64,7 +64,7 @@ export const SurveyorsScreen = () => {
   }
 
   const closeSuccess = () => {
-    dispatch( uiCloseSuccessAlert() );
+    dispatch( uiCloseAlert() );
   }
 
 
@@ -101,7 +101,7 @@ export const SurveyorsScreen = () => {
       
         <Box mt={3} fontSize={20}>
 
-          <MyAlert open={successAlert} typeAlert="success" message="StateSurveyorUpdated" time={2000} handleClose={closeSuccess}/>
+          <MyAlert open={alert} typeAlert="success" message="StateSurveyorUpdated" time={2000} handleClose={closeSuccess}/>
         </Box>
       </Box>
     </AppAnimate>

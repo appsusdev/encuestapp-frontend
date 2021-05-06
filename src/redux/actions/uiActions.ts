@@ -17,6 +17,10 @@ export const uiOpenModalAssign = () => ({ type: types.uiOpenModalAssign });
 
 export const uiCloseModalAssign = () => ({ type: types.uiCloseModalAssign });
 
+export const uiOpenModalAlert = () => ({ type: types.uiOpenModalAlert });
+
+export const uiCloseModalAlert = () => ({ type: types.uiCloseModalAlert });
+
 export const startLoading = () => ({ type: types.uiStartLoading });
 
 export const finishLoading = () => ({ type: types.uiFinishLoading });

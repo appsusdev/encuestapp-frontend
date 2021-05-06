@@ -5,7 +5,7 @@ import { CustomizedIcons } from '../../custom/CustomizedIcons';
 import { AntSwitch } from '../../custom/CustomizedSwitch';
 import { Surveyor } from '../../../interfaces/Surveyor';
 import { useDispatch, useSelector } from 'react-redux';
-import { uiOpenModalEdit, uiOpenModalDelete, uiOpenModalAssign, uiOpenSuccessAlert } from '../../../redux/actions/uiActions';
+import { uiOpenModalEdit, uiOpenModalDelete, uiOpenModalAssign, uiOpenAlert } from '../../../redux/actions/uiActions';
 import { activeSurveyors, startLoadingSurveyors } from '../../../redux/actions/surveyorsActions';
 import { db } from '../../../config/firebase/firebase-config';
 import { AppState } from '../../../redux/reducers/rootReducer';
@@ -32,7 +32,7 @@ export const SurveyorsBody = (props: Props) => {
         setState({ ...state, [ event.target.name ]: event.target.checked});
         
         await db.collection('Usuarios').doc(surveyor.email).update({activo: !state.checkedA})
-        dispatch( uiOpenSuccessAlert() );
+        dispatch( uiOpenAlert() );
         (municipios) && dispatch( startLoadingSurveyors(municipios[0]));
     };
 

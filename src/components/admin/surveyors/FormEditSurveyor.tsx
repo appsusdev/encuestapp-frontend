@@ -6,7 +6,7 @@ import clsx from 'clsx';
 
 import { Box, Button, Grid, IconButton, Card, CardMedia, Tooltip, MenuItem } from '@material-ui/core';
 import { PhotoCamera } from '@material-ui/icons';
-import { uiCloseModalEdit, uiCloseAlert } from '../../../redux/actions/uiActions';
+import { uiCloseModalEdit, uiCloseSuccessAlert } from '../../../redux/actions/uiActions';
 import { MyTextField } from '../../custom/MyTextField';
 import { useStyles } from '../../../shared/styles/useStyles';
 import { AppState } from '../../../redux/reducers/rootReducer';
@@ -22,7 +22,7 @@ export const FormEditSurveyor = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { activeSurveyor } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
-    const { alert } = useSelector<AppState, AppState['ui']>(state => state.ui);
+    const { successAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
     const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
     const surveyor: any = activeSurveyor;
 
@@ -60,7 +60,7 @@ export const FormEditSurveyor = () => {
     }
 
     const closeSuccess = () => {
-        dispatch( uiCloseAlert() );
+        dispatch( uiCloseSuccessAlert() );
         dispatch( uiCloseModalEdit() );
         (municipios) && dispatch( startLoadingSurveyors(municipios[0]));
     }
@@ -274,7 +274,7 @@ export const FormEditSurveyor = () => {
                 )}
             </Formik>
 
-            <MyAlert open={alert} typeAlert="success" message="UpdatedSurveyor" time={2000} handleClose={closeSuccess}/>
+            <MyAlert open={successAlert} typeAlert="success" message="UpdatedSurveyor" time={2000} handleClose={closeSuccess}/>
         </Box>
     )
 }

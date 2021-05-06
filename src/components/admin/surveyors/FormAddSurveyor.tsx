@@ -7,7 +7,7 @@ import clsx from 'clsx';
 
 import { Box, Button, Grid, MenuItem, IconButton, Tooltip, Dialog, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import { PhotoCamera } from '@material-ui/icons';
-import { uiCloseModalAdd, uiCloseAlert, uiCloseSuccessAlert, uiCloseErrorAlert, uiOpenSuccessAlert } from '../../../redux/actions/uiActions';
+import { uiCloseModalAdd, uiCloseSuccessAlert, uiCloseErrorAlert, uiOpenSuccessAlert, uiCloseModalAlert } from '../../../redux/actions/uiActions';
 import { MyTextField } from '../../custom/MyTextField';
 import { useStyles } from '../../../shared/styles/useStyles';
 import { Surveyor } from '../../../interfaces/Surveyor';
@@ -40,7 +40,7 @@ export const FormAddSurveyor = () => {
     const [noValid, setNoValid] = useState(false);
     const [labelImage, setLabelImage] = useState('');
     const [email, setEmail] = useState<string | undefined>('');
-    const { alert, errorAlert, successAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
+    const { errorAlert, modalAlert, successAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
     const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
     const { surveyorFromDB } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
     const surveyorDB: any = surveyorFromDB;
@@ -95,13 +95,13 @@ export const FormAddSurveyor = () => {
 
         if(municipios) {
             await addSurveyorToTown(municipios, email, surveyorTown);
-            dispatch( uiCloseAlert() );
+            dispatch( uiCloseModalAlert() );
             dispatch( uiOpenSuccessAlert() );
         }
     }
 
     const closeDialog = () => {
-        dispatch( uiCloseAlert() );
+        dispatch( uiCloseModalAlert() );
         dispatch( uiCloseErrorAlert() );
     }
 
@@ -278,7 +278,7 @@ export const FormAddSurveyor = () => {
             </Formik>
             
             <Dialog
-                open={alert}
+                open={modalAlert}
                 onClose={closeDialog}
                 aria-labelledby="responsive-dialog-title"
             >

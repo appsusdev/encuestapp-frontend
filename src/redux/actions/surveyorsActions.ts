@@ -4,7 +4,7 @@ import { Surveyor } from '../../interfaces/Surveyor';
 import { registerWithEmailPassword } from '../../services/firebase/auth';
 import { existsSurveyor, addSurveyorToTown, getSurveyors, editSurveyor } from '../../services/firebase/surveyors';
 import { types } from '../types/types';
-import { uiOpenAlert, uiOpenSuccessAlert, uiOpenErrorAlert } from './uiActions';
+import { uiOpenSuccessAlert, uiOpenErrorAlert, uiOpenModalAlert } from './uiActions';
 
 // Agregar nuevo encuestador 
 export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
@@ -28,7 +28,7 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
                 if( townsSurveyor.includes(town) )
                 return dispatch(uiOpenErrorAlert());
                 else
-                return dispatch(uiOpenAlert());
+                return dispatch(uiOpenModalAlert());
             });
             
         } else {
@@ -91,7 +91,7 @@ export const startEditSurveyor = (surveyor: Partial<Surveyor>) => {
         delete userToDB.municipios;
         
         await editSurveyor(userToDB);
-        dispatch( uiOpenAlert());
+        dispatch( uiOpenSuccessAlert());
     }
 }
 

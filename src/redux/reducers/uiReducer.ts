@@ -6,6 +6,7 @@ const initialState = {
     modalEditOpen: false,
     modalDeleteOpen: false,
     modalAssignOpen: false,
+    modalAlert: false,
     loading: false,
     alert: false,
     successAlert: false,
@@ -61,6 +62,18 @@ export const uiReducer = ( state: IUi = initialState, action: UiAction) => {
             return {
                 ...state,
                 modalAssignOpen: false
+            }
+
+        case types.uiOpenModalAlert:
+            return {
+                ...state,
+                modalAlert: true
+            }
+        
+        case types.uiCloseModalAlert:
+            return {
+                ...state,
+                modalAlert: false
             }
         
         case types.uiStartLoading:
