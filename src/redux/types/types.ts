@@ -1,5 +1,6 @@
 import { TypeUser } from "../../enums/enums";
 import { Surveyor } from "../../interfaces/Surveyor";
+import { Survey } from '../../interfaces/Survey';
 
 export const types = {
     // auth
@@ -40,6 +41,13 @@ export const types = {
     surveyorUpdated: '[surveyor] Updated surveyor',
     surveyorDelete: '[surveyor] Delete surveyor',
     surveyorsLogoutCleaning: '[surveyor] Cleaning surveyors',
+
+    // survey
+    surveyAddNew: '[survey] New survey',
+    surveyActive: '[survey] Set active survey',
+    surveysLoad: '[survey] Load surveys',
+    surveyUpdated: '[survey] Updated survey',
+    surveyDelete: '[survey] Delete survey',
 }
 
 // Auth
@@ -75,7 +83,7 @@ export type UiAction = {
   payload: IAuth
 }
 
-// Auth
+// Surveyor
 export interface ISurveyor {
   surveyors: Partial<Surveyor>[],
   activeSurveyor: Partial<Surveyor> | null,
@@ -83,6 +91,17 @@ export interface ISurveyor {
 }
 
 export type SurveyorsAction = {
+  type: string,
+  payload: any
+}
+
+// Surveys
+export interface ISurvey {
+  surveys: Partial<Survey>[],
+  activeSurvey: Partial<Survey> | null,
+}
+
+export type SurveysAction = {
   type: string,
   payload: any
 }

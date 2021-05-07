@@ -105,6 +105,9 @@
     "MessageAddSurveyor": "¿Desea agregar este encuestador a su municipio?",
     "SurveyorAddSuccess": "Encuestador registrado correctamente",
     "StateSurveyorUpdated": "El estado del encuestador ha sido actualizado",
-    "UpdatedSurveyor": "Encuestador actualizado correctamente"
+    "UpdatedSurveyor": "Encuestador actualizado correctamente",
+    "MessageExistsSurvey": "Ya existe una encuesta registrada con el código ingresado",
+    "SurveyCreated": "Encuesta creada correctamente",
+    "StateSurveyUpdated": "El estado de la encuesta ha sido actualizado"
 }
 

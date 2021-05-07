@@ -1,19 +1,21 @@
+import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
+
 import { Box, Button, Grid, makeStyles } from '@material-ui/core';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-import { CustomizedSearch } from '../../../components/custom/CustomizedSearch';
-import { Fonts } from '../../../shared/constants/AppEnums';
-import { AppState } from '../../../redux/reducers/rootReducer';
-import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalDelete, uiCloseModalAssign, uiCloseSuccessAlert, uiCloseAlert } from '../../../redux/actions/uiActions';
+import { AssignSurvey } from '../../../components/admin/surveyors/AssignSurvey';
+import { DeleteSurveyor } from '../../../components/admin/surveyors/DeleteSurveyor';
 import { FormAddSurveyor } from '../../../components/admin/surveyors/FormAddSurveyor';
+import { FormEditSurveyor } from '../../../components/admin/surveyors/FormEditSurveyor';
 import { SurveyorsTable } from '../../../components/admin/surveyors/SurveyorsTable';
 import CustomizedDialog from '../../../components/custom/CustomizedDialog';
-import AppAnimate from '../../../components/ui/AppAnimate/AppAnimate';
-import { FormEditSurveyor } from '../../../components/admin/surveyors/FormEditSurveyor';
-import { DeleteSurveyor } from '../../../components/admin/surveyors/DeleteSurveyor';
-import { AssignSurvey } from '../../../components/admin/surveyors/AssignSurvey';
+import { CustomizedSearch } from '../../../components/custom/CustomizedSearch';
 import { MyAlert } from '../../../components/custom/MyAlert';
+import AppAnimate from '../../../components/ui/AppAnimate/AppAnimate';
+import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalDelete, uiCloseModalAssign, uiCloseAlert } from '../../../redux/actions/uiActions';
+import { AppState } from '../../../redux/reducers/rootReducer';
+import { Fonts } from '../../../shared/constants/AppEnums';
 
 export const useStyles = makeStyles((theme) => ({
   btnRoot: {
@@ -36,37 +38,46 @@ export const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export const SurveyorsScreen = () => {
+export const SurveyorsScreen: FC = () => {
   const classes = useStyles();
   const intl = useIntl();
   const { modalAddOpen, modalEditOpen, modalDeleteOpen, modalAssignOpen } = useSelector<AppState, AppState['ui']>(state => state.ui);
   const { alert } = useSelector<AppState, AppState['ui']>(state => state.ui);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch( uiCloseAlert() );
+  }, [dispatch]);
+
+  // Abrir modal crear encuestador
   const openAddSurveyor = () => {
     dispatch(uiOpenModalAdd());
   }
 
+  // Cerrar modal crear encuestador
   const onDenyAdd = () => {
     dispatch(uiCloseModalAdd());
   }
 
+  // Cerra modal editar encuestador
   const onDenyEdit = () => {
     dispatch(uiCloseModalEdit());
   }
 
+  // Cerrar modal eliminar encuestador
   const onDenyDelete = () => {
     dispatch(uiCloseModalDelete());
   }
 
+  // Cerra modal asignar encuestas
   const onDenyAssign = () => {
     dispatch(uiCloseModalAssign());
   }
 
+  // Cerrar alert
   const closeSuccess = () => {
     dispatch( uiCloseAlert() );
   }
-
 
   return (
     <AppAnimate animation='transition.slideUpIn' delay={200}>
@@ -98,9 +109,7 @@ export const SurveyorsScreen = () => {
         <CustomizedDialog open={modalDeleteOpen} cancelBtn={true} onDeny={onDenyDelete} title={`${intl.formatMessage({ id: 'DeleteSurveyor' })}`} content={<DeleteSurveyor />} seeActions textButton="Accept" />
         <CustomizedDialog open={modalAssignOpen} cancelBtn={true} onDeny={onDenyAssign} title={`${intl.formatMessage({ id: 'AssignSurvey' })}`} content={<AssignSurvey />} seeActions textButton="Accept" />
       
-      
-        <Box mt={3} fontSize={20}>
-
+        <Box mt={3}>
           <MyAlert open={alert} typeAlert="success" message="StateSurveyorUpdated" time={2000} handleClose={closeSuccess}/>
         </Box>
       </Box>

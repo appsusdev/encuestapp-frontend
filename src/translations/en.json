@@ -105,5 +105,8 @@
     "MessageAddSurveyor": "Do you want to add this surveyor to your town?",
     "SurveyorAddSuccess": "Surveyor added successfully",
     "StateSurveyorUpdated": "The state of the surveyor has been updated",
-    "UpdatedSurveyor": "Successfully updated surveyor"
+    "UpdatedSurveyor": "Successfully updated surveyor",
+    "MessageExistsSurvey": "A survey is already registered with the code entered",
+    "SurveyCreated": "Survey successfully created",
+    "StateSurveyUpdated": "The state of the survey has been updated"
 }

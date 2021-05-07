@@ -1,26 +1,33 @@
+import { FC, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
+
 import { Box, Button, Grid } from '@material-ui/core';
-import AppAnimate from '../../../components/ui/AppAnimate/AppAnimate';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import { useStyles } from './SurveyorsScreen';
-import { CustomizedSearch } from '../../../components/custom/CustomizedSearch';
 import { SurveysTable } from '../../../components/admin/surveys/SurveysTable';
-import CustomizedDialog from '../../../components/custom/CustomizedDialog';
-import { useSelector, useDispatch } from 'react-redux';
-import { AppState } from '../../../redux/reducers/rootReducer';
-import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalAssign } from '../../../redux/actions/uiActions';
 import { FormAddSurvey } from '../../../components/admin/surveys/FormAddSurvey';
-import { SurveysTabs } from '../../../components/admin/surveys/SurveysTabs';
 import { FormAddQuestion } from '../../../components/admin/surveys/FormAddQuestion';
+import { SurveysTabs } from '../../../components/admin/surveys/SurveysTabs';
+import CustomizedDialog from '../../../components/custom/CustomizedDialog';
+import { CustomizedSearch } from '../../../components/custom/CustomizedSearch';
+import { MyAlert } from '../../../components/custom/MyAlert';
+import AppAnimate from '../../../components/ui/AppAnimate/AppAnimate';
+import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalAssign, uiCloseAlert } from '../../../redux/actions/uiActions';
+import { AppState } from '../../../redux/reducers/rootReducer';
 
-export const SurveysScreen = () => {
-
+export const SurveysScreen: FC = () => {
 
   const classes = useStyles();
   const intl = useIntl();
 
   const { modalAddOpen, modalEditOpen, modalAssignOpen } = useSelector<AppState, AppState['ui']>(state => state.ui);
+  const { alert } = useSelector<AppState, AppState['ui']>(state => state.ui);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch( uiCloseAlert() );
+  }, [dispatch]);
 
   const openAddSurveyor = () => {
     dispatch(uiOpenModalAdd());
@@ -36,6 +43,10 @@ export const SurveysScreen = () => {
 
   const onDenyAssign = () => {
     dispatch(uiCloseModalAssign());
+  }
+
+  const closeSuccess = () => {
+    dispatch( uiCloseAlert() );
   }
 
   return (
@@ -66,6 +77,10 @@ export const SurveysScreen = () => {
         <CustomizedDialog open={modalAddOpen} cancelBtn={true} onDeny={onDenyAdd} title={`${intl.formatMessage({ id: 'NewSurvey' })}`} content={<FormAddSurvey />} textButton="Accept" />
         <CustomizedDialog open={modalEditOpen} cancelBtn={true} onDeny={onDenyEdit} title={'Nombre de la encuesta'} content={<SurveysTabs />} textButton="Accept" />
         <CustomizedDialog open={modalAssignOpen} cancelBtn={true} onDeny={onDenyAssign} title={'Agregar pregunta'} content={<FormAddQuestion />} textButton="Accept" />
+      
+        <Box mt={3}>
+          <MyAlert open={alert} typeAlert="success" message="StateSurveyUpdated" time={2000} handleClose={closeSuccess}/>
+        </Box>
       </Box>
     </AppAnimate>
   )

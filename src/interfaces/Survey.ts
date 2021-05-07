@@ -1,8 +1,12 @@
 export interface Survey {
+    idSurvey: string,
     code: string,
     name: string,
     creationDate: string,
     state: boolean,
+    authorizationFormats: null | string[],
+    surveyors: string[],
+    idTown: string,
 }
 
 export interface SurveyQuestion {

@@ -5,11 +5,9 @@ import { createMuiTheme, Paper, Table, TableCell, TableContainer, TableFooter, T
 import { TablePaginationAct } from '../../custom/TablePaginationAct';
 import { useStyles } from '../../../shared/styles/useStyles';
 import { SurveysBody } from './SurveysBody';
-
-const surveys = [
-    { code: '111ABC', name: 'LEVANTAMIENTO DE LÍNEA BASE', creationDate: "15/04/2021", state: true },
-    { code: '222ABC', name: 'CREACIÓN DE POBLACIÓN VICTIMA', creationDate: "15/04/2021", state: false },
-];
+import { useSelector } from 'react-redux';
+import { AppState } from '../../../redux/reducers/rootReducer';
+import { Survey } from '../../../interfaces/Survey';
 
 const theme = createMuiTheme({
     typography: {
@@ -23,9 +21,11 @@ export const SurveysTable = () => {
     const classes = useStyles();
 
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(4);
+    const [rowsPerPage, setRowsPerPage] = useState(3);
+    const { surveys } = useSelector<AppState, AppState['surveyor']>(state => state.survey);
+    const list: Survey[] = surveys;
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, surveys.length - page * rowsPerPage);
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, list.length - page * rowsPerPage);
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         setPage(newPage);
@@ -45,15 +45,15 @@ export const SurveysTable = () => {
                     <TableHead>
                         <TableRow >
                             <TableCell><FormattedMessage id="Name" /> </TableCell>
-                            <TableCell><FormattedMessage id="CreationDate" /> </TableCell>
+                            <TableCell align="center"><FormattedMessage id="CreationDate" /> </TableCell>
                             <TableCell align="center"><FormattedMessage id="State" /> </TableCell>
                             <TableCell align="center"><FormattedMessage id="Actions" /> </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {(rowsPerPage > 0
-                            ? surveys.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            : surveys
+                            ? list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            : list
                         ).map((survey) => (
                             <SurveysBody key={survey.code} {...survey}/>
                             // <SurveyorsBody key={surveyor.username} {...surveyor}/>
@@ -68,9 +68,9 @@ export const SurveysTable = () => {
                     <TableFooter>
                         <TableRow>
                             <TablePagination
-                                rowsPerPageOptions={[4]}
+                                rowsPerPageOptions={[3]}
                                 colSpan={6}
-                                count={surveys.length}
+                                count={list.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 SelectProps={{
