@@ -1,27 +1,25 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Formik } from 'formik';
 import { useIntl, FormattedMessage } from 'react-intl';
 import * as yup from 'yup';
 import clsx from 'clsx';
 
 import { Box, Button, Grid } from '@material-ui/core';
-import { uiCloseModalAdd } from '../../../redux/actions/uiActions';
+import { uiCloseModalAdd, uiCloseErrorAlert, uiCloseSuccessAlert } from '../../../redux/actions/uiActions';
 import { AntSwitch } from '../../custom/CustomizedSwitch';
 import { MyTextField } from '../../custom/MyTextField';
 import { useStyles } from '../../../shared/styles/useStyles';
-
-interface MyFormValues {
-    code: string;
-    creationDate: string;
-    state: boolean;
-    name: string;
-}
+import { Survey } from '../../../interfaces/Survey';
+import { startNewSurvey } from '../../../redux/actions/surveysActions';
+import { MyAlert } from '../../custom/MyAlert';
+import { AppState } from '../../../redux/reducers/rootReducer';
 
 export const FormAddSurvey = () => {
 
     const intl = useIntl();
     const classes = useStyles();
     const dispatch = useDispatch();
+    const { errorAlert, successAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
 
     const validationSchema = yup.object({
         code: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
@@ -30,7 +28,7 @@ export const FormAddSurvey = () => {
         name: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`)
     });
 
-    const initialValues: MyFormValues = {
+    const initialValues: Partial<Survey> = {
         code: '',
         creationDate: new Date().toLocaleDateString('en-CA'),
         state: false,
@@ -41,6 +39,15 @@ export const FormAddSurvey = () => {
         dispatch(uiCloseModalAdd());
     }
 
+    const closeAlert = () => {
+        dispatch(uiCloseErrorAlert());
+    }
+
+    const closeSuccess = () => {
+        dispatch( uiCloseSuccessAlert() );
+        dispatch( uiCloseModalAdd() );
+    }
+
     return (
         <Box m={1}>
             <Formik
@@ -48,9 +55,8 @@ export const FormAddSurvey = () => {
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={(data, { setSubmitting }) => {
-                    console.log(data);
                     setSubmitting(true);
-                    // dispatch( guardar en BD);
+                    dispatch( startNewSurvey(data));
                     setSubmitting(false);
                 }}>
                 {({ values, isSubmitting, handleChange }) => (
@@ -111,6 +117,9 @@ export const FormAddSurvey = () => {
                     </Form>
                 )}
             </Formik>
+
+            <MyAlert open={successAlert} typeAlert="success" message="SurveyCreated" time={2000} handleClose={closeSuccess}/>
+            <MyAlert open={errorAlert} typeAlert="error" message="MessageExistsSurvey" time={2000} handleClose={closeAlert}/>
         </Box>
     )
 }

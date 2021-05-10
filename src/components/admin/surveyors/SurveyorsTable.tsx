@@ -7,6 +7,7 @@ import { TablePaginationAct } from '../../custom/TablePaginationAct';
 import { useStyles } from '../../../shared/styles/useStyles';
 import { useSelector } from 'react-redux';
 import { AppState } from '../../../redux/reducers/rootReducer';
+import { Surveyor } from '../../../interfaces/Surveyor';
 
 const theme = createMuiTheme({
     typography: {
@@ -22,7 +23,7 @@ export const SurveyorsTable = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(3);
     const { surveyors } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
-    const list: any[] = surveyors;
+    const list: Surveyor[] = surveyors;
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, list.length - page * rowsPerPage);
 
@@ -55,8 +56,8 @@ export const SurveyorsTable = () => {
                         {(rowsPerPage > 0
                             ? list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             : list
-                        ).map((surveyor, index) => (
-                                <SurveyorsBody key={index} surveyor={surveyor} page={page}/>
+                        ).map((surveyor) => (
+                                <SurveyorsBody key={surveyor.email} {...surveyor} />
                         ))}
                         {emptyRows > 0 && (
                             <TableRow style={{ height: 53 * emptyRows }}>

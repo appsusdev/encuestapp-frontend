@@ -24,6 +24,7 @@ export const startLoginCorreoPassword = ( email:string, password: string) => {
                             municipios: municipios        
                         }
                         dispatch( login(userAuth) );
+                        window.location.reload();
                     } else {
                         dispatch( uiOpenErrorAlert() );
                     }

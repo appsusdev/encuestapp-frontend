@@ -15,8 +15,7 @@ interface Props {
     surveyor: Partial<Surveyor>,
 }
 
-export const SurveyorsBody = (props: Props) => {
-    const { page, surveyor } = props;
+export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
 
     const dispatch = useDispatch();
     const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
@@ -28,8 +27,10 @@ export const SurveyorsBody = (props: Props) => {
     // Función para cambiar estado
     const handleChange = async(event: React.ChangeEvent<HTMLInputElement>) => {
         setState({ ...state, [ event.target.name ]: event.target.checked});
-        
-        await db.collection('Usuarios').doc(surveyor.email).update({activo: !state.checkedA})
+        const check = event.target.checked;
+
+        // Actualizacion en BD
+        await db.collection('Usuarios').doc(surveyor.email).update({activo: check})
         dispatch( uiOpenAlert() );
         (municipios) && dispatch( startLoadingSurveyors(municipios[0]));
     };
@@ -63,7 +64,7 @@ export const SurveyorsBody = (props: Props) => {
                     {surveyor.email}
                 </TableCell>
                 <TableCell style={{ width: 30 }} align="center">
-                    <AntSwitch id={surveyor.id} checked={state.checkedA} name="checkedA" onChange={handleChange} />
+                    <AntSwitch checked={state.checkedA} name="checkedA" onChange={handleChange} />
                 </TableCell>
                 <TableCell style={{ width: 130 }} align="center">
                     <CustomizedIcons editIcon deleteIcon assignIcon onEdit={onEdit} onDelete={onDelete} onAssign={onAssign}/>
