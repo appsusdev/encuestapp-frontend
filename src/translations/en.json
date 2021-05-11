@@ -108,5 +108,6 @@
     "UpdatedSurveyor": "Successfully updated surveyor",
     "MessageExistsSurvey": "A survey is already registered with the code entered",
     "SurveyCreated": "Survey successfully created",
-    "StateSurveyUpdated": "The state of the survey has been updated"
+    "StateSurveyUpdated": "The state of the survey has been updated",
+    "UpdatedSurvey": "Successfully updated survey"
 }

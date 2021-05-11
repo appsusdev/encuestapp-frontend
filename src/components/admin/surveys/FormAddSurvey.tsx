@@ -5,12 +5,12 @@ import * as yup from 'yup';
 import clsx from 'clsx';
 
 import { Box, Button, Grid } from '@material-ui/core';
-import { uiCloseModalAdd, uiCloseErrorAlert, uiCloseSuccessAlert } from '../../../redux/actions/uiActions';
+import { uiCloseModalAdd, uiCloseErrorAlert, uiCloseSuccessAlert, uiCloseModalEdit } from '../../../redux/actions/uiActions';
 import { AntSwitch } from '../../custom/CustomizedSwitch';
 import { MyTextField } from '../../custom/MyTextField';
 import { useStyles } from '../../../shared/styles/useStyles';
 import { Survey } from '../../../interfaces/Survey';
-import { startNewSurvey } from '../../../redux/actions/surveysActions';
+import { startNewSurvey, startEditSurvey, activeSurvey } from '../../../redux/actions/surveysActions';
 import { MyAlert } from '../../custom/MyAlert';
 import { AppState } from '../../../redux/reducers/rootReducer';
 
@@ -20,6 +20,9 @@ export const FormAddSurvey = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { errorAlert, successAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
+    const { activeSurvey: active } = useSelector<AppState, AppState['survey']>(state => state.survey);
+    const survey: Survey = active;
+    let disable: boolean = false;
 
     const validationSchema = yup.object({
         code: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
@@ -28,15 +31,26 @@ export const FormAddSurvey = () => {
         name: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`)
     });
 
-    const initialValues: Partial<Survey> = {
+    let initialValues: Partial<Survey> = {
         code: '',
         creationDate: new Date().toLocaleDateString('en-CA'),
         state: false,
         name: ''
     }
 
+    if(active) {
+        disable = true;
+        initialValues = {
+            code: survey.code,
+            creationDate: survey.creationDate,
+            state: survey.state,
+            name: survey.name
+        }
+    }
+
     const onClose = () => {
         dispatch(uiCloseModalAdd());
+        dispatch(uiCloseModalEdit());
     }
 
     const closeAlert = () => {
@@ -56,7 +70,12 @@ export const FormAddSurvey = () => {
                 validationSchema={validationSchema}
                 onSubmit={(data, { setSubmitting }) => {
                     setSubmitting(true);
-                    dispatch( startNewSurvey(data));
+                    if (active) {
+                    dispatch( activeSurvey({...survey, name: data.name}))
+                    dispatch( startEditSurvey(data) )
+                    } else {
+                    dispatch( startNewSurvey(data) )
+                    }
                     setSubmitting(false);
                 }}>
                 {({ values, isSubmitting, handleChange }) => (
@@ -71,6 +90,7 @@ export const FormAddSurvey = () => {
                                     name="code"
                                     variant='outlined'
                                     className={classes.myTextFieldRoot}
+                                    disabled={disable}
                                 />
                             </Grid>
 
@@ -84,12 +104,15 @@ export const FormAddSurvey = () => {
                                 />
                             </Grid>
 
-                            <Grid item xs={2}>
-                                <label className="form-text" ><FormattedMessage id='State' /></label>
-                                <Box mt={2}>
-                                    <AntSwitch checked={values.state} name="state" onChange={handleChange} />
-                                </Box>
-                            </Grid>
+                            {
+                                (!active) &&
+                                <Grid item xs={2}>
+                                    <label className="form-text" ><FormattedMessage id='State' /></label>
+                                    <Box mt={2}>
+                                        <AntSwitch checked={values.state} name="state" onChange={handleChange} />
+                                    </Box>
+                                </Grid>
+                            }
 
 
                             <Grid item xs={12}>

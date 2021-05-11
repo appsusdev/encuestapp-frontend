@@ -1,4 +1,5 @@
 import { types, SurveysAction } from '../types/types';
+
 const initialState = {
     surveys: [],
     activeSurvey: null,
@@ -19,6 +20,12 @@ export const surveysReducer = ( state = initialState, action: SurveysAction ) =>
                 activeSurvey: {
                     ...action.payload
                 }
+            }
+        
+        case types.surveyCleanActive:
+            return {
+                ...state,
+                activeSurvey: null
             }
     
         default:

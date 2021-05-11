@@ -45,6 +45,7 @@ export const types = {
     // survey
     surveyAddNew: '[survey] New survey',
     surveyActive: '[survey] Set active survey',
+    surveyCleanActive: '[survey] Clean active survey',
     surveysLoad: '[survey] Load surveys',
     surveyUpdated: '[survey] Updated survey',
     surveyDelete: '[survey] Delete survey',

@@ -8,7 +8,7 @@ import { db } from '../../../config/firebase/firebase-config';
 import { convertDate } from '../../../helpers/convertDate';
 import { Survey } from '../../../interfaces/Survey';
 import { uiOpenModalEdit, uiOpenModalAssign, uiOpenAlert } from '../../../redux/actions/uiActions';
-import { startLoadingSurveys } from '../../../redux/actions/surveysActions';
+import { activeSurvey, startLoadingSurveys } from '../../../redux/actions/surveysActions';
 import { AppState } from '../../../redux/reducers/rootReducer';
 
 export const SurveysBody = (survey: Partial<Survey>) => {
@@ -26,13 +26,14 @@ export const SurveysBody = (survey: Partial<Survey>) => {
         const check = event.target.checked;
 
         // Actualizacion en BD
-        await db.collection('Municipios').doc(survey.idTown).collection('Encuestas').doc(survey.idSurvey).update({activo: check})
+        await db.collection('Municipios').doc(survey.idTown).collection('Encuestas').doc(survey.idSurvey).set({activo: check}, {merge: true});
         
         dispatch( uiOpenAlert() );
         (municipios) && dispatch(startLoadingSurveys(municipios[0])); 
     };
 
     const onEdit = () => {
+        dispatch( activeSurvey(survey));
         dispatch( uiOpenModalEdit() );
     }
 

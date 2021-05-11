@@ -43,7 +43,7 @@ export const updateTowns = async (
   email: string | undefined,
   surveyorTowns: {}
 ) => {
-  await db.collection("Usuarios").doc(`${email}`).update(surveyorTowns);
+  await db.collection("Usuarios").doc(`${email}`).set(surveyorTowns, {merge: true});
 };
 
 // Get encuestadores por municipio
@@ -66,5 +66,5 @@ export const getSurveyors = async (town: string) => {
 
 // Editar encuestador en tabla usuarios
 export const editSurveyor = async (surveyor: Partial<Surveyor>) => {
-  await db.collection('Usuarios').doc(surveyor.id).update(surveyor);
+  await db.collection('Usuarios').doc(surveyor.id).set(surveyor, {merge: true});
 }
