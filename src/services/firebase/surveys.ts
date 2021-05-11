@@ -53,6 +53,5 @@ export const addNewSurvey = async (town: string, code: string | undefined, surve
 export const editSurvey = async (survey: Partial<Survey>, town: string ) => {
   const {code, name, creationDate} = survey;
   const docRef = await db.collection("Municipios").doc(town);
-  docRef.set({});
   docRef.collection("Encuestas").doc(code).set({titulo: name, fechaCreacion: creationDate}, {merge: true});
 }
