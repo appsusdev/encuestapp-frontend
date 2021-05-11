@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { FC, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
 import { createMuiTheme, Paper, Table, TableCell, TableContainer, TableFooter, TablePagination, TableRow, TableHead, ThemeProvider, TableBody } from '@material-ui/core';
 import { TablePaginationAct } from '../../custom/TablePaginationAct';
 import { useStyles } from '../../../shared/styles/useStyles';
 import { SurveysBody } from './SurveysBody';
-import { useSelector } from 'react-redux';
 import { AppState } from '../../../redux/reducers/rootReducer';
 import { Survey } from '../../../interfaces/Survey';
 
@@ -16,14 +16,14 @@ const theme = createMuiTheme({
     },
 });
 
-export const SurveysTable = () => {
+export const SurveysTable: FC = () => {
 
     const classes = useStyles();
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(3);
     const { surveys } = useSelector<AppState, AppState['surveyor']>(state => state.survey);
-    const list: Survey[] = surveys;
+    let list: Survey[] = surveys;
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, list.length - page * rowsPerPage);
 

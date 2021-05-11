@@ -108,6 +108,7 @@
     "UpdatedSurveyor": "Encuestador actualizado correctamente",
     "MessageExistsSurvey": "Ya existe una encuesta registrada con el código ingresado",
     "SurveyCreated": "Encuesta creada correctamente",
-    "StateSurveyUpdated": "El estado de la encuesta ha sido actualizado"
+    "StateSurveyUpdated": "El estado de la encuesta ha sido actualizado",
+    "UpdatedSurvey": "Encuesta actualizada correctamente"
 }
 

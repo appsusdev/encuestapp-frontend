@@ -15,6 +15,8 @@ import { MyAlert } from '../../../components/custom/MyAlert';
 import AppAnimate from '../../../components/ui/AppAnimate/AppAnimate';
 import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalAssign, uiCloseAlert } from '../../../redux/actions/uiActions';
 import { AppState } from '../../../redux/reducers/rootReducer';
+import { cleanActiveSurvey } from '../../../redux/actions/surveyorsActions';
+import { Survey } from '../../../interfaces/Survey';
 
 export const SurveysScreen: FC = () => {
 
@@ -24,6 +26,11 @@ export const SurveysScreen: FC = () => {
   const { modalAddOpen, modalEditOpen, modalAssignOpen } = useSelector<AppState, AppState['ui']>(state => state.ui);
   const { alert } = useSelector<AppState, AppState['ui']>(state => state.ui);
   const dispatch = useDispatch();
+  const { activeSurvey } = useSelector<AppState, AppState['survey']>(state => state.survey);
+  const survey: Survey = activeSurvey;
+  let title: string = '';
+
+  if (activeSurvey) { title = survey.name }
 
   useEffect(() => {
     dispatch( uiCloseAlert() );
@@ -38,6 +45,7 @@ export const SurveysScreen: FC = () => {
   }
 
   const onDenyEdit = () => {
+    dispatch(cleanActiveSurvey());
     dispatch(uiCloseModalEdit());
   }
 
@@ -75,7 +83,7 @@ export const SurveysScreen: FC = () => {
 
         <SurveysTable />
         <CustomizedDialog open={modalAddOpen} cancelBtn={true} onDeny={onDenyAdd} title={`${intl.formatMessage({ id: 'NewSurvey' })}`} content={<FormAddSurvey />} textButton="Accept" />
-        <CustomizedDialog open={modalEditOpen} cancelBtn={true} onDeny={onDenyEdit} title={'Nombre de la encuesta'} content={<SurveysTabs />} textButton="Accept" />
+        <CustomizedDialog open={modalEditOpen} cancelBtn={true} onDeny={onDenyEdit} title={title} content={<SurveysTabs />} textButton="Accept" />
         <CustomizedDialog open={modalAssignOpen} cancelBtn={true} onDeny={onDenyAssign} title={'Agregar pregunta'} content={<FormAddQuestion />} textButton="Accept" />
       
         <Box mt={3}>

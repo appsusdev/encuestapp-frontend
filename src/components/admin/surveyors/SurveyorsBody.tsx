@@ -10,11 +10,6 @@ import { activeSurveyors, startLoadingSurveyors } from '../../../redux/actions/s
 import { db } from '../../../config/firebase/firebase-config';
 import { AppState } from '../../../redux/reducers/rootReducer';
 
-interface Props {
-    page: number,
-    surveyor: Partial<Surveyor>,
-}
-
 export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
 
     const dispatch = useDispatch();
@@ -30,7 +25,7 @@ export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
         const check = event.target.checked;
 
         // Actualizacion en BD
-        await db.collection('Usuarios').doc(surveyor.email).update({activo: check})
+        await db.collection('Usuarios').doc(surveyor.email).set({activo: check}, {merge: true});
         dispatch( uiOpenAlert() );
         (municipios) && dispatch( startLoadingSurveyors(municipios[0]));
     };

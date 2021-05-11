@@ -17,7 +17,7 @@ export const existsSurvey = (
       snapShot.forEach((doc: any) => {
         survey = doc.data() as Survey;
       });
-
+      console.log('Consulta verificar si existe encuesta')
       return survey;
     })
     .catch((err) => console.log(err));
@@ -48,3 +48,10 @@ export const addNewSurvey = async (town: string, code: string | undefined, surve
   docRef.set({});
   docRef.collection("Encuestas").doc(code).set(surveyToDB);
 };
+
+// Editar encuesta
+export const editSurvey = async (survey: Partial<Survey>, town: string ) => {
+  const {code, name, creationDate} = survey;
+  const docRef = await db.collection("Municipios").doc(town);
+  docRef.collection("Encuestas").doc(code).set({titulo: name, fechaCreacion: creationDate}, {merge: true});
+}

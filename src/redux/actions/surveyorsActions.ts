@@ -84,6 +84,8 @@ export const activeSurveyors = (id: string | undefined, surveyor: {}) => ({
     }
 });
 
+export const cleanActiveSurvey = () => ({ type: types.surveyCleanActive });
+
 // Editar encuestador
 export const startEditSurveyor = (surveyor: Partial<Surveyor>) => {
     return async(dispatch: any) => {

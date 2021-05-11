@@ -62,9 +62,7 @@ export const SurveyorsData = () => {
 
             <Grid container>
                 <Grid item xs={8}>
-
-                    <Box mt={2} mb={2}>
-
+                    <Box mb={2}>
                         <CustomizedSearch />
                     </Box>
                 </Grid>
