@@ -39,6 +39,8 @@ export const getSurveys = async (town: string) => {
     });
   });
 
+  console.log('Obtener encuestas')
+
   return surveys;
 };
 

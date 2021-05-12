@@ -16,6 +16,7 @@ import AppAnimate from '../../../components/ui/AppAnimate/AppAnimate';
 import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalDelete, uiCloseModalAssign, uiCloseAlert } from '../../../redux/actions/uiActions';
 import { AppState } from '../../../redux/reducers/rootReducer';
 import { Fonts } from '../../../shared/constants/AppEnums';
+import { Surveyor } from '../../../interfaces/Surveyor';
 
 export const useStyles = makeStyles((theme) => ({
   btnRoot: {
@@ -41,9 +42,11 @@ export const useStyles = makeStyles((theme) => ({
 export const SurveyorsScreen: FC = () => {
   const classes = useStyles();
   const intl = useIntl();
-  const { modalAddOpen, modalEditOpen, modalDeleteOpen, modalAssignOpen } = useSelector<AppState, AppState['ui']>(state => state.ui);
-  const { alert } = useSelector<AppState, AppState['ui']>(state => state.ui);
   const dispatch = useDispatch();
+  const { modalAddOpen, modalEditOpen, modalDeleteOpen, modalAssignOpen } = useSelector<AppState, AppState['ui']>(state => state.ui);
+  const { surveyors } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
+  const { alert } = useSelector<AppState, AppState['ui']>(state => state.ui);
+  let array: Surveyor[] = surveyors;
 
   useEffect(() => {
     dispatch( uiCloseAlert() );
@@ -98,7 +101,7 @@ export const SurveyorsScreen: FC = () => {
             </Grid>
             <Grid item xs={2} />
             <Grid item xs={5}>
-              <CustomizedSearch />
+              <CustomizedSearch data={array}/>
             </Grid>
           </Grid>
         </Box>

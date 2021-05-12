@@ -13,22 +13,22 @@ import CustomizedDialog from '../../../components/custom/CustomizedDialog';
 import { CustomizedSearch } from '../../../components/custom/CustomizedSearch';
 import { MyAlert } from '../../../components/custom/MyAlert';
 import AppAnimate from '../../../components/ui/AppAnimate/AppAnimate';
+import { Survey } from '../../../interfaces/Survey';
 import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalAssign, uiCloseAlert } from '../../../redux/actions/uiActions';
 import { AppState } from '../../../redux/reducers/rootReducer';
 import { cleanActiveSurvey } from '../../../redux/actions/surveyorsActions';
-import { Survey } from '../../../interfaces/Survey';
 
 export const SurveysScreen: FC = () => {
 
   const classes = useStyles();
   const intl = useIntl();
-
-  const { modalAddOpen, modalEditOpen, modalAssignOpen } = useSelector<AppState, AppState['ui']>(state => state.ui);
-  const { alert } = useSelector<AppState, AppState['ui']>(state => state.ui);
   const dispatch = useDispatch();
-  const { activeSurvey } = useSelector<AppState, AppState['survey']>(state => state.survey);
+
+  const { alert, modalAddOpen, modalEditOpen, modalAssignOpen } = useSelector<AppState, AppState['ui']>(state => state.ui);
+  const { activeSurvey, surveys } = useSelector<AppState, AppState['survey']>(state => state.survey);
   const survey: Survey = activeSurvey;
   let title: string = '';
+  let array: Survey[] = surveys;
 
   if (activeSurvey) { title = survey.name }
 
@@ -76,7 +76,7 @@ export const SurveysScreen: FC = () => {
             </Grid>
             <Grid item xs={2} />
             <Grid item xs={5}>
-              <CustomizedSearch />
+              <CustomizedSearch data={array}/>
             </Grid>
           </Grid>
         </Box>
