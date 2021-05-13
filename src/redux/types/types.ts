@@ -49,6 +49,10 @@ export const types = {
     surveysLoad: '[survey] Load surveys',
     surveyUpdated: '[survey] Updated survey',
     surveyDelete: '[survey] Delete survey',
+
+    // Search
+    arraySearch: '[search] Array search',
+    valueSearched: '[search] Value searched'
 }
 
 // Auth
@@ -103,6 +107,17 @@ export interface ISurvey {
 }
 
 export type SurveysAction = {
+  type: string,
+  payload: any
+}
+
+// Search
+export interface ISearch {
+  data: any[],
+  value: string
+}
+
+export type SearchAction = {
   type: string,
   payload: any
 }

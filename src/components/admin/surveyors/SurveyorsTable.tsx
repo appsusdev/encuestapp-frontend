@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { useSelector } from 'react-redux';
 
 import { createMuiTheme, Paper, Table, TableCell, TableContainer, TableFooter, TablePagination, TableRow, TableHead, ThemeProvider, TableBody } from '@material-ui/core';
 import { SurveyorsBody } from './SurveyorsBody';
 import { TablePaginationAct } from '../../custom/TablePaginationAct';
 import { useStyles } from '../../../shared/styles/useStyles';
-import { useSelector } from 'react-redux';
 import { AppState } from '../../../redux/reducers/rootReducer';
 import { Surveyor } from '../../../interfaces/Surveyor';
 
@@ -23,7 +23,9 @@ export const SurveyorsTable = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(3);
     const { surveyors } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
+    const { data, value } = useSelector<AppState, AppState['search']>(state => state.search);
     const list: Surveyor[] = surveyors;
+    let count: number = 0;
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, list.length - page * rowsPerPage);
 
@@ -37,6 +39,12 @@ export const SurveyorsTable = () => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
+
+    if(!value.trim()) {
+        count = list.length;
+    } else {
+        if(data) { count = data.length };
+    }
 
     return (
         <ThemeProvider theme={theme}>
@@ -53,12 +61,22 @@ export const SurveyorsTable = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {(rowsPerPage > 0
-                            ? list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            : list
-                        ).map((surveyor) => (
+                        {(!value.trim()) ?
+                            (rowsPerPage > 0
+                                ? list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                : list
+                            ).map((surveyor) => (
                                 <SurveyorsBody key={surveyor.email} {...surveyor} />
-                        ))}
+                            ))
+                            :
+                            (data) &&
+                            (rowsPerPage > 0
+                                ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                : data
+                            ).map((surveyor) => (
+                                <SurveyorsBody key={surveyor.email} {...surveyor} />
+                            ))
+                        }
                         {emptyRows > 0 && (
                             <TableRow style={{ height: 53 * emptyRows }}>
                                 <TableCell colSpan={6} />
@@ -70,7 +88,7 @@ export const SurveyorsTable = () => {
                             <TablePagination
                                 rowsPerPageOptions={[3]}
                                 colSpan={6}
-                                count={list.length}
+                                count={count}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 SelectProps={{

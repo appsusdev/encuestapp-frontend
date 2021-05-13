@@ -22,8 +22,10 @@ export const SurveysTable: FC = () => {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(3);
-    const { surveys } = useSelector<AppState, AppState['surveyor']>(state => state.survey);
+    const { surveys } = useSelector<AppState, AppState['survey']>(state => state.survey);
+    const { data, value } = useSelector<AppState, AppState['search']>(state => state.search);
     let list: Survey[] = surveys;
+    let count: number = 0;
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, list.length - page * rowsPerPage);
 
@@ -38,6 +40,12 @@ export const SurveysTable: FC = () => {
         setPage(0);
     };
 
+    if(!value.trim()) {
+        count = list.length;
+    } else {
+        if(data) { count = data.length };
+    }
+
     return (
         <ThemeProvider theme={theme}>
             <TableContainer component={Paper} >
@@ -51,14 +59,22 @@ export const SurveysTable: FC = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {(rowsPerPage > 0
-                            ? list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            : list
-                        ).map((survey) => (
-                            <SurveysBody key={survey.code} {...survey}/>
-                            // <SurveyorsBody key={surveyor.username} {...surveyor}/>
-
-                        ))}
+                        {(!value.trim()) ?
+                            (rowsPerPage > 0
+                                ? list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                : list
+                            ).map((survey) => (
+                                <SurveysBody key={survey.code} {...survey}/>
+                            ))
+                            :
+                            (data) &&
+                            (rowsPerPage > 0
+                                ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                : data
+                            ).map((survey) => (
+                                <SurveysBody key={survey.code} {...survey}/>
+                            ))
+                        }
                         {emptyRows > 0 && (
                             <TableRow style={{ height: 53 * emptyRows }}>
                                 <TableCell colSpan={6} />
@@ -70,7 +86,7 @@ export const SurveysTable: FC = () => {
                             <TablePagination
                                 rowsPerPageOptions={[3]}
                                 colSpan={6}
-                                count={list.length}
+                                count={count}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 SelectProps={{

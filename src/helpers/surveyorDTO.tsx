@@ -2,7 +2,13 @@ import { TypeUser } from '../enums/enums';
 import { Surveyor } from '../interfaces/Surveyor';
 
 export const encuestadorDTO = (surveyor: Partial<Surveyor>, existsSurveyorDB?: any, municipios?: string[]) => {
-    const { firstName, secondName, firstLastName, secondLastName, document, email, address, profileImage, mobilePhone, typeDoc } = surveyor;
+    let { firstName, secondName, firstLastName, secondLastName, document, email, address, profileImage, mobilePhone, typeDoc } = surveyor;
+    if(!secondName?.trim()){
+        secondName = ` ${secondName}`;
+    }
+    if(!secondLastName?.trim()){
+        secondLastName = ` ${secondLastName}`;
+    }
 
     const surveyorToDB = {
         id: (existsSurveyorDB)? existsSurveyorDB.id : email,
@@ -11,7 +17,7 @@ export const encuestadorDTO = (surveyor: Partial<Surveyor>, existsSurveyorDB?: a
         segundoNombre: secondName?.trim(),
         primerApellido: firstLastName,
         segundoApellido: secondLastName?.trim(),
-        nombreCompleto: `${firstName} ${secondName} ${firstLastName} ${secondLastName}`.trim() ,
+        nombreCompleto: `${firstName}${secondName}${firstLastName}${secondLastName}`.trim() ,
         identificacion: Number(document),
         tipoDocumento: typeDoc,
         email,

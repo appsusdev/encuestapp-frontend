@@ -4,14 +4,15 @@ import settingsReducer from './settingsReducer';
 import { uiReducer } from "./uiReducer";
 import { surveyorsReducer } from './surveyorsReducer';
 import { surveysReducer } from './surveysReducer';
-
+import { searchReducer } from './searchReducer';
 
 export const rootReducer = combineReducers({
     auth: authReducer,
     setting: settingsReducer,
     ui: uiReducer,
     surveyor: surveyorsReducer,
-    survey: surveysReducer
+    survey: surveysReducer,
+    search: searchReducer,
     // TODO: Demás reducers
 });
 
