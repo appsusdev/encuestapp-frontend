@@ -68,3 +68,10 @@ export const getSurveyors = async (town: string) => {
 export const editSurveyor = async (surveyor: Partial<Surveyor>) => {
   await db.collection('Usuarios').doc(surveyor.id).set(surveyor, {merge: true});
 }
+
+// Asignar o eliminar encuestas al encuestador 
+export const assignSurvey = async (town: string, idSurvey: string, newSurveyors: string[]) => {
+  await db.collection('Municipios').doc(town).collection('Encuestas').doc(idSurvey)
+    .set({encuestadores: [...newSurveyors]}, {merge: true});
+}
+

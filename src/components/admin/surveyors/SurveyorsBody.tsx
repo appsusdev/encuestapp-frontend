@@ -5,7 +5,7 @@ import { CustomizedIcons } from '../../custom/CustomizedIcons';
 import { AntSwitch } from '../../custom/CustomizedSwitch';
 import { Surveyor } from '../../../interfaces/Surveyor';
 import { useDispatch, useSelector } from 'react-redux';
-import { uiOpenModalEdit, uiOpenModalDelete, uiOpenModalAssign, uiOpenAlert } from '../../../redux/actions/uiActions';
+import { uiOpenModalEdit, uiOpenModalDelete, uiOpenModalAssign, uiOpenAlert, uiOpenModalAlert } from '../../../redux/actions/uiActions';
 import { activeSurveyors, startLoadingSurveyors } from '../../../redux/actions/surveyorsActions';
 import { db } from '../../../config/firebase/firebase-config';
 import { AppState } from '../../../redux/reducers/rootReducer';
@@ -40,7 +40,12 @@ export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
     }
 
     const onAssign = () => {
-        dispatch( uiOpenModalAssign() );
+        dispatch( activeSurveyors(surveyor.email, surveyor));
+        if(surveyor.state) {
+            dispatch( uiOpenModalAssign() );
+        } else {
+            dispatch( uiOpenModalAlert() );
+        }
     }
 
     return (

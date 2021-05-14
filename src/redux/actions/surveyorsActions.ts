@@ -2,9 +2,11 @@ import { db } from '../../config/firebase/firebase-config';
 import { encuestadorDTO, surveyorDTO } from '../../helpers/surveyorDTO';
 import { Surveyor } from '../../interfaces/Surveyor';
 import { registerWithEmailPassword } from '../../services/firebase/auth';
-import { existsSurveyor, addSurveyorToTown, getSurveyors, editSurveyor } from '../../services/firebase/surveyors';
+import { existsSurveyor, addSurveyorToTown, getSurveyors, editSurveyor, assignSurvey } from '../../services/firebase/surveyors';
 import { types } from '../types/types';
 import { uiOpenSuccessAlert, uiOpenErrorAlert, uiOpenModalAlert } from './uiActions';
+import { Survey } from '../../interfaces/Survey';
+import { startLoadingSurveys } from './surveysActions';
 
 // Agregar nuevo encuestador 
 export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
@@ -44,7 +46,7 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
                 await addSurveyorToTown(townsAdmin, email, surveyorTown);
                     
                 dispatch(uiOpenSuccessAlert());
-                dispatch( startLoadingSurveyors(townsAdmin[0]));   
+                await dispatch( startLoadingSurveyors(townsAdmin[0]));   
             } catch (error) {
                 throw new Error(error);
             }
@@ -96,5 +98,40 @@ export const startEditSurveyor = (surveyor: Partial<Surveyor>) => {
         dispatch( uiOpenSuccessAlert());
     }
 }
+
+// Asignar y eliminar encuestas al encuestador
+export const startAssignSurvey = (id: string, email: string, action: boolean) => {
+    return async(dispatch: any, getState: any) => {
+        const { surveys } = getState().survey;
+        const { municipios } = getState().auth;
+        const town: string = municipios[0];
+
+        const array = surveys.filter( (survey: Survey) => survey.code === id)
+        const { surveyors } = array[0];
+        let newSurveyors: string[] = [];
+
+        if(action) {
+            // Asignar encuesta
+            if(surveyors.includes(email)) {
+                dispatch( uiOpenErrorAlert() );
+            } else {
+                newSurveyors = (surveyors) ? [...surveyors, email] : [email]       
+                
+                await assignSurvey(town, id, newSurveyors);
+                await dispatch(startLoadingSurveys(town));
+                dispatch( uiOpenSuccessAlert() );
+            }
+        } else {
+            // Eliminar encuesta asignada
+            newSurveyors = surveyors.filter((surveyor: string) => surveyor !== email);
+
+            await assignSurvey(town, id, newSurveyors);
+            await dispatch(startLoadingSurveys(town));
+        }
+    }
+}
+
+
+
 
 

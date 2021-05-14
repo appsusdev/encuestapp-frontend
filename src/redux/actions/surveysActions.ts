@@ -23,7 +23,7 @@ export const startNewSurvey = (survey: Partial<Survey>) => {
                 await addNewSurvey(town, code, surveyToDB);
 
                 dispatch( uiOpenSuccessAlert() );
-                dispatch( startLoadingSurveys(town));
+                await dispatch( startLoadingSurveys(town));
             } catch (error) {
                 throw new Error(error);
             }
