@@ -1,14 +1,18 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
 import clsx from 'clsx';
 
-import { Box, Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, TableFooter, TablePagination, Tooltip, IconButton, createMuiTheme, ThemeProvider, Button } from '@material-ui/core';
+import { Box, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, TableFooter, TablePagination, Tooltip, IconButton, createMuiTheme, ThemeProvider, Button } from '@material-ui/core';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { TablePaginationAct } from '../../custom/TablePaginationAct';
-import { CustomizedSearch } from '../../custom/CustomizedSearch';
 import { uiCloseModalEdit } from '../../../redux/actions/uiActions';
 import { useStyles } from '../../../shared/styles/useStyles';
+import { AppState } from '../../../redux/reducers/rootReducer';
+import { Surveyor } from '../../../interfaces/Surveyor';
+import { Survey } from '../../../interfaces/Survey';
+import { startAssignSurvey } from '../../../redux/actions/surveyorsActions';
+import { activeSurvey } from '../../../redux/actions/surveysActions';
 
 const theme = createMuiTheme({
     typography: {
@@ -22,21 +26,25 @@ const defaultProps = {
     style: { width: '100%', height: '100%' },
 };
 
-const surveyors = [
-    { name: 'Encuestador 1', typeDoc: 'CC', document: 1061715070 },
-    { name: 'Encuestador 2', typeDoc: 'CC', document: 1061715071 },
-    { name: 'Encuestador 2', typeDoc: 'CC', document: 1061715072 },
-]
-
 export const SurveyorsData = () => {
     const classes = useStyles();
     const intl = useIntl();
     const dispatch = useDispatch();
 
+    const { surveyors } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
+    const { activeSurvey: active } = useSelector<AppState, AppState['survey']>(state => state.survey);
+    const list: Surveyor[] = surveyors;
+    const survey: Survey = active;
+    let arraySurveyors: string[] = [];    
+
+    (survey) && (arraySurveyors = survey.surveyors)
+
+    const surveyorsFilter = list.filter( (surveyor: Surveyor) => arraySurveyors.includes(surveyor.email));
+
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(3);
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, surveyors.length - page * rowsPerPage);
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, surveyorsFilter.length - page * rowsPerPage);
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         setPage(newPage);
@@ -49,8 +57,11 @@ export const SurveyorsData = () => {
         setPage(0);
     };
 
-    const onDelete = () => {
-        console.log('Eliminar encuesta');
+    const onDelete = async(email: string) => {
+        const action = false;
+        const newSurveyors = arraySurveyors.filter( surveyor => surveyor !== email);
+        dispatch( activeSurvey({...survey, surveyors: newSurveyors}))
+        dispatch( startAssignSurvey(survey.idSurvey, email, action) );
     }
 
     const onClose = () => {
@@ -59,14 +70,6 @@ export const SurveyorsData = () => {
 
     return (
         <Box >
-
-            <Grid container>
-                <Grid item xs={8}>
-                    <Box mb={2}>
-                        <CustomizedSearch />
-                    </Box>
-                </Grid>
-            </Grid>
 
             <ThemeProvider theme={theme}>
                 <Box borderColor="grey.400" borderRadius={4} {...defaultProps}>
@@ -83,13 +86,13 @@ export const SurveyorsData = () => {
                             </TableHead>
                             <TableBody>
                                 {(rowsPerPage > 0
-                                    ? surveyors.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    : surveyors
+                                    ? surveyorsFilter.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    : surveyorsFilter
                                 ).map((surveyor) => (
 
                                     <TableRow key={surveyor.document}>
                                         <TableCell size="small" component="th" scope="row">
-                                            {surveyor.name}
+                                            {surveyor.username}
                                         </TableCell>
                                         <TableCell style={{ width: 140 }}>
                                             {surveyor.typeDoc}
@@ -99,7 +102,7 @@ export const SurveyorsData = () => {
                                         </TableCell>
                                         <TableCell size="small" align="center">
                                             <Tooltip title={`${intl.formatMessage({ id: 'Delete' })}`}>
-                                                <IconButton aria-label="expand row" size="small" onClick={onDelete}> <DeleteOutlineOutlinedIcon /> </IconButton>
+                                                <IconButton aria-label="expand row" size="small" onClick={() => onDelete(surveyor.email)}> <DeleteOutlineOutlinedIcon /> </IconButton>
                                             </Tooltip>
                                         </TableCell>
                                     </TableRow>
@@ -116,7 +119,7 @@ export const SurveyorsData = () => {
                                     <TablePagination
                                         rowsPerPageOptions={[3]}
                                         colSpan={6}
-                                        count={surveyors.length}
+                                        count={surveyorsFilter.length}
                                         rowsPerPage={rowsPerPage}
                                         page={page}
                                         SelectProps={{
