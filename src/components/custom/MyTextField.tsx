@@ -9,6 +9,7 @@ export const MyTextField = (props: any) => {
             size="small"
             {...props}
             {...field}
+            onChange={(e:any)=>  console.log(e.target.files[0])}
             helperText={errorText}
             error={!!errorText}
             autoComplete="off"

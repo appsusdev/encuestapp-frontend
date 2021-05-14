@@ -1,7 +1,7 @@
 import { db } from '../../config/firebase/firebase-config';
 import { encuestadorDTO, surveyorDTO } from '../../helpers/surveyorDTO';
 import { Surveyor } from '../../interfaces/Surveyor';
-import { registerWithEmailPassword } from '../../services/firebase/auth';
+import { registerWithEmailPassword,uploadFileAsync } from '../../services/firebase/auth';
 import { existsSurveyor, addSurveyorToTown, getSurveyors, editSurveyor } from '../../services/firebase/surveyors';
 import { types } from '../types/types';
 import { uiOpenSuccessAlert, uiOpenErrorAlert, uiOpenModalAlert } from './uiActions';
@@ -11,11 +11,21 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
     return async(dispatch: any, getState: any) => {
 
         const { auth } = getState();
-        const { document, email } = surveyor;
+        const { document, email,profileImage } = surveyor;
         
         // const fileName = profileImage?.split('\\').pop()?.split('.').slice(0,-1).join('.');
         // (profileImage && fileName ) && await uploadFileAsync(profileImage, fileName);
-        const existsSurveyorDB = await existsSurveyor(email);
+     if(profileImage){
+
+         const uriResponse = await uploadFileAsync(profileImage,`avatars/${document}`);
+         console.log('SUBIO EL ARCHIVO------------------')
+         console.log(uriResponse)
+     }
+
+
+
+
+        /* const existsSurveyorDB = await existsSurveyor(email);
         dispatch( surveyorFromDB(existsSurveyorDB) );
         const townsAdmin: string[] = auth.municipios;
         const userToDB = encuestadorDTO(surveyor, existsSurveyorDB, townsAdmin);
@@ -48,7 +58,7 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
             } catch (error) {
                 throw new Error(error);
             }
-        }
+        } */
     }
 }
 
