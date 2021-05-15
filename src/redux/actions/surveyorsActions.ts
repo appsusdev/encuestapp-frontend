@@ -27,9 +27,6 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
     const { auth } = getState();
     const { document, email, profileImage } = surveyor;
 
-    // const fileName = profileImage?.split('\\').pop()?.split('.').slice(0,-1).join('.');
-    // (profileImage && fileName ) && await uploadFileAsync(profileImage, fileName);
-
     if (profileImage) {
       const uriResponse = await uploadFileAsync(
         profileImage as File,

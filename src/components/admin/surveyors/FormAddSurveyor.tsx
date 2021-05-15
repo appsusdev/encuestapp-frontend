@@ -311,7 +311,6 @@ export const FormAddSurveyor = () => {
                   <FormattedMessage id="ProfileImage" />
                 </label>
 
-                {/* <input type='file' onChange={(e)=>  console.log(e.target.files[0]) } /> */}
                 <TextField
                   size="small"
                   type="file"
@@ -320,21 +319,7 @@ export const FormAddSurveyor = () => {
                   autoComplete="off"
                   style={{ display: "none" }}
                 />
-                {/* <TextField
-                  size="small"
-                  type="file"
-                  onChange={(e: any) => console.log(e.target.files[0])}
-                  id="icon-button-file"
-                  autoComplete="off"
-                />
-                <MyTextField
-                  accept="image/*"
-                  name="profileImage"
-                  type="file"
-                  //onChange={(e:any)=>  console.log(e.target.files[0])}
-                  id="icon-button-file"
-                  style={{ display: "none" }}
-                /> */}
+
                 <MyTextField
                   disabled={true}
                   variant="outlined"
