@@ -11,7 +11,7 @@ export interface Surveyor {
     email: string,
     mobilePhone: number | string ,
     address: string,
-    profileImage: string,
+    profileImage: File | null | string,
     state: boolean,
     page: number
 }

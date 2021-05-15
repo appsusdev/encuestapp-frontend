@@ -50,7 +50,7 @@ export const FormAddSurveyor = () => {
     email: "",
     mobilePhone: "",
     address: "",
-    profileImage: "",
+    profileImage: null,
   };
 
   const intl = useIntl();
@@ -59,6 +59,7 @@ export const FormAddSurveyor = () => {
   const dispatch = useDispatch();
   const [noValid, setNoValid] = useState(false);
   const [labelImage, setLabelImage] = useState("");
+  const [profileFile, setProfileFile] = useState<File | null>(null);
   const [email, setEmail] = useState<string | undefined>("");
   const { errorAlert, modalAlert, successAlert } = useSelector<
     AppState,
@@ -105,16 +106,20 @@ export const FormAddSurveyor = () => {
     profileImage: yup
       .mixed()
       .test("fileFormat", "Archivo no soportado", (value) => {
-        setLabelImage(value?.split("\\").pop());
-        const file = value?.split("\\").pop()?.split(".");
+        //setLabelImage(value?.split("\\").pop());
+        /* const file = value.name?.split("\\").pop()?.split(".");
         let fileType = "";
         if (file) {
           fileType = file[file.length - 1];
+          console.log(fileType)
           !SUPPORTED_FORMATS.includes(fileType)
             ? setNoValid(true)
             : setNoValid(false);
-        }
+        } */
         if (!value) return true;
+        const { type } = value as File;
+        let splitType = type.split("/");
+        const fileType = splitType[1];
         return SUPPORTED_FORMATS.includes(fileType);
       }),
   });
@@ -152,10 +157,12 @@ export const FormAddSurveyor = () => {
     dispatch(uiCloseSuccessAlert());
     dispatch(uiCloseModalAdd());
   };
-  const handleSelectFile = (e:any)=>{
-    console.log(e.target.files[0])
-      setLabelImage(e.target.files[0].name)
-  }
+  const handleSelectFile = (e: any) => {
+    console.log(e.target.files[0]);
+    const file = e.target.files[0] as File;
+    setProfileFile(file);
+    setLabelImage(e.target.files[0].name);
+  };
 
   return (
     <Box m={1}>
@@ -164,12 +171,11 @@ export const FormAddSurveyor = () => {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting }) => {
-          /*  setSubmitting(true);
-                    setEmail(values.email); */
-          console.log(values);
+          setSubmitting(true);
+          setEmail(values.email);
+          values.profileImage = profileFile;
           dispatch(startNewSurveyor(values));
-          /*  dispatch( startNewSurveyor(values) );
-                    setSubmitting(false); */
+          setSubmitting(false);
         }}
       >
         {({ values, isSubmitting }) => (

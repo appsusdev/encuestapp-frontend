@@ -34,35 +34,26 @@ export const getUserRole = (
     .catch((err) => console.log(err));
 };
 export const uploadFileAsync = async (
-  uri: string,
+  file: File,
   fileName: string
 ): Promise<string> => {
   return new Promise(async (res, rej) => {
     /* const response = await fetch(uri, {mode: 'no-cors'});
       const file = await response.blob(); */
     //const file = new File(uri,fileName)
-    const request = new XMLHttpRequest();
-    request.open("GET", uri, true);
-    request.responseType = "blob";
-    request.send(null);
-    if(request.status === 0){
-      console.log('BLOP FROM URI----------------')
-      console.log(request.response)
-      console.log(request.responseType)
-      /* const upload = firebase.storage().ref(fileName).put(request.responseText);
-      upload.on(
-        "state_changed",
-        (snapshot) => {},
-        (err) => {
-          rej(err);
-        },
-        async () => {
-          const url = await upload.snapshot?.ref.getDownloadURL();
-          res(url as string);
-        }
-      ); */
-    }
 
+    const upload = firebase.storage().ref(fileName).put(file);
+    upload.on(
+      "state_changed",
+      (snapshot) => {},
+      (err) => {
+        rej(err);
+      },
+      async () => {
+        const url = await upload.snapshot?.ref.getDownloadURL();
+        res(url as string);
+      }
+    );
   });
 };
 

@@ -52,7 +52,7 @@ export const FormEditSurveyor = () => {
         email: surveyor.email,
         mobilePhone: surveyor.mobilePhone,
         address: surveyor.address,
-        profileImage: ''
+        profileImage: null
     }
 
     const onClose = () => {
