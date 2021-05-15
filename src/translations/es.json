@@ -109,6 +109,10 @@
     "MessageExistsSurvey": "Ya existe una encuesta registrada con el código ingresado",
     "SurveyCreated": "Encuesta creada correctamente",
     "StateSurveyUpdated": "El estado de la encuesta ha sido actualizado",
-    "UpdatedSurvey": "Encuesta actualizada correctamente"
+    "UpdatedSurvey": "Encuesta actualizada correctamente",
+    "MessageAssignSurveyOne": "No es posible asignar encuestas a este encuestador.", 
+    "MessageAssignSurveyTwo": "Cambie el estado del encuestador a habilitado.",
+    "AssignedSurvey": "Encuesta asignada correctamente",
+    "ErrorAssignedSurvey": "La encuesta ya ha sido asignada a este encuestador"   
 }
 

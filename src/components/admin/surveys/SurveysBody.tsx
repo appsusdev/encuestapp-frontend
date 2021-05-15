@@ -29,7 +29,7 @@ export const SurveysBody = (survey: Partial<Survey>) => {
         await db.collection('Municipios').doc(survey.idTown).collection('Encuestas').doc(survey.idSurvey).set({activo: check}, {merge: true});
         
         dispatch( uiOpenAlert() );
-        (municipios) && dispatch(startLoadingSurveys(municipios[0])); 
+        (municipios) && await dispatch(startLoadingSurveys(municipios[0])); 
     };
 
     const onEdit = () => {

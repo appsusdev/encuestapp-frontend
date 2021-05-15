@@ -6,6 +6,13 @@ import { Box, Button, Grid, MenuItem, TextField, TableContainer, Paper, Table, T
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { TablePaginationAct } from '../../custom/TablePaginationAct';
 import { useStyles } from '../../../shared/styles/useStyles';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppState } from '../../../redux/reducers/rootReducer';
+import { Survey } from '../../../interfaces/Survey';
+import { startAssignSurvey } from '../../../redux/actions/surveyorsActions';
+import { Surveyor } from '../../../interfaces/Surveyor';
+import { MyAlert } from '../../custom/MyAlert';
+import { uiCloseSuccessAlert, uiCloseErrorAlert } from '../../../redux/actions/uiActions';
 
 const theme = createMuiTheme({
     typography: {
@@ -16,25 +23,29 @@ const theme = createMuiTheme({
 
 const defaultProps = {
     bgcolor: 'background.paper',
-    // m: 1,
     border: 1,
     style: { width: '100%', height: '100%' },
 };
 
-const surveys = [
-    { name: 'Caracterización población victima 2020' },
-    { name: 'Línea Base agropecuaria 2021' }
-]
 
 export const AssignSurvey = () => {
     const classes = useStyles();
     const intl = useIntl();
+    const dispatch = useDispatch();
 
     const [survey, setSurvey] = useState('');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(3);
+    const { surveys } = useSelector<AppState, AppState['survey']>(state => state.survey);
+    const { activeSurveyor } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
+    const { successAlert, errorAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
+    let list: Survey[] = surveys;
+    const surveyor: Surveyor = activeSurveyor;
+    let action: boolean = true;
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, surveys.length - page * rowsPerPage);
+    const surveysAssign = list.filter( (survey: Survey) => survey.surveyors.includes(surveyor.email));
+
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, surveysAssign.length - page * rowsPerPage);
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         setPage(newPage);
@@ -52,11 +63,18 @@ export const AssignSurvey = () => {
     };
 
     const handleAssign = () => {
-        // console.log(survey);
+        (survey.trim()) && dispatch(startAssignSurvey(survey, surveyor.email, action))
     }
 
-    const onDelete = () => {
-        // console.log('Eliminar encuesta');
+    const onDelete = (id: string) => {
+        action = false;
+        dispatch( startAssignSurvey(id, surveyor.email, action));
+    }
+
+    // Cerrar success alert
+    const closeSuccess = () => {
+        dispatch( uiCloseSuccessAlert() );
+        dispatch( uiCloseErrorAlert() );
     }
 
     return (
@@ -75,8 +93,11 @@ export const AssignSurvey = () => {
                             size="small"
                             variant="outlined"
                         >
-                            <MenuItem className={classes.typography} value={10}>Caracterización población victima 2020</MenuItem>
-                            <MenuItem className={classes.typography} value={20}>Linea Base Agropecuaria 2021</MenuItem>
+                            {
+                                list.map( survey => (
+                                    <MenuItem key={survey.code} className={classes.typography} value={survey.code}>{survey.name}</MenuItem>
+                                ))
+                            }
                         </TextField>
                     </Grid>
 
@@ -102,8 +123,8 @@ export const AssignSurvey = () => {
                             </TableHead>
                             <TableBody>
                                 {(rowsPerPage > 0
-                                    ? surveys.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    : surveys
+                                    ? surveysAssign.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    : surveysAssign
                                 ).map((survey) => (
 
                                     <TableRow key={survey.name}>
@@ -112,7 +133,7 @@ export const AssignSurvey = () => {
                                         </TableCell>
                                         <TableCell size="small" align="center">
                                             <Tooltip title={`${intl.formatMessage({ id: 'Delete' })}`}>
-                                                <IconButton aria-label="expand row" size="small" onClick={onDelete}> <DeleteOutlineOutlinedIcon /> </IconButton>
+                                                <IconButton aria-label="expand row" size="small" onClick={() => onDelete(survey.code)}> <DeleteOutlineOutlinedIcon /> </IconButton>
                                             </Tooltip>
                                         </TableCell>
                                     </TableRow>
@@ -129,7 +150,7 @@ export const AssignSurvey = () => {
                                     <TablePagination
                                         rowsPerPageOptions={[3]}
                                         colSpan={6}
-                                        count={surveys.length}
+                                        count={surveysAssign.length}
                                         rowsPerPage={rowsPerPage}
                                         page={page}
                                         SelectProps={{
@@ -146,6 +167,9 @@ export const AssignSurvey = () => {
                     </TableContainer>
                 </Box>
             </ThemeProvider>
+
+            <MyAlert open={successAlert} typeAlert="success" message="AssignedSurvey" time={2000} handleClose={closeSuccess}/>
+            <MyAlert open={errorAlert} typeAlert="error" message="ErrorAssignedSurvey" time={2000} handleClose={closeSuccess}/>
 
         </Box >
     )
