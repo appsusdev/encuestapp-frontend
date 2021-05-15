@@ -109,5 +109,9 @@
     "MessageExistsSurvey": "A survey is already registered with the code entered",
     "SurveyCreated": "Survey successfully created",
     "StateSurveyUpdated": "The state of the survey has been updated",
-    "UpdatedSurvey": "Successfully updated survey"
+    "UpdatedSurvey": "Successfully updated survey",
+    "MessageAssignSurveyOne": "It is not possible to assign surveys to this surveyor.", 
+    "MessageAssignSurveyTwo": "Change the surveyor's status to enabled.",
+    "AssignedSurvey": "Successfully assigned survey",
+    "ErrorAssignedSurvey": "The survey has already been assigned to this surveyor" 
 }

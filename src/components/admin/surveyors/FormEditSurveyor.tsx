@@ -59,10 +59,10 @@ export const FormEditSurveyor = () => {
         dispatch(uiCloseModalEdit());
     }
 
-    const closeSuccess = () => {
+    const closeSuccess = async() => {
         dispatch( uiCloseSuccessAlert() );
         dispatch( uiCloseModalEdit() );
-        (municipios) && dispatch( startLoadingSurveyors(municipios[0]));
+        (municipios) && await dispatch( startLoadingSurveyors(municipios[0]));
     }
 
     return (
