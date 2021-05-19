@@ -22,8 +22,8 @@ export const startNewSurvey = (survey: Partial<Survey>) => {
                 // Crear encuesta
                 await addNewSurvey(town, code, surveyToDB);
 
-                dispatch( uiOpenSuccessAlert() );
                 await dispatch( startLoadingSurveys(town));
+                dispatch( uiOpenSuccessAlert() );
             } catch (error) {
                 throw new Error(error);
             }
@@ -50,10 +50,12 @@ export const setSurveys = (surveys: Survey[]) => ({
 });
 
 // Encuesta activa
-export const activeSurvey = (survey: {}) => ({
+export const activeSurvey = (survey: {} | null) => ({
     type: types.surveyActive,
-    payload: {...survey}
+    payload: survey
 });
+
+export const surveyCleanActive = () => ({type: types.surveyCleanActive});
 
 // Editar encuestador
 export const startEditSurvey = (survey: Partial<Survey>) => {
@@ -61,11 +63,11 @@ export const startEditSurvey = (survey: Partial<Survey>) => {
 
         const { auth } = getState();
         const town = auth.municipios[0];
-
+        
         try {
             await editSurvey(survey, town);
-            dispatch( uiOpenSuccessAlert() );
             await dispatch( startLoadingSurveys(town) );
+            dispatch( uiOpenSuccessAlert() );
         } catch (error) {
             throw new Error(error);
         }

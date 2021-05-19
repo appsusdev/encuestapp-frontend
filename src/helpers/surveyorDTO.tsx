@@ -3,10 +3,10 @@ import { Surveyor } from '../interfaces/Surveyor';
 
 export const encuestadorDTO = (surveyor: Partial<Surveyor>, existsSurveyorDB?: any, municipios?: string[]) => {
     let { firstName, secondName, firstLastName, secondLastName, document, email, address, profileImage, mobilePhone, typeDoc } = surveyor;
-    if(!secondName?.trim()){
+    if(secondName?.trim()){
         secondName = ` ${secondName}`;
     }
-    if(!secondLastName?.trim()){
+    if(secondLastName?.trim()){
         secondLastName = ` ${secondLastName}`;
     }
 
@@ -17,7 +17,7 @@ export const encuestadorDTO = (surveyor: Partial<Surveyor>, existsSurveyorDB?: a
         segundoNombre: secondName?.trim(),
         primerApellido: firstLastName,
         segundoApellido: secondLastName?.trim(),
-        nombreCompleto: `${firstName}${secondName}${firstLastName}${secondLastName}`.trim() ,
+        nombreCompleto: `${firstName}${secondName} ${firstLastName} ${secondLastName}`.trim() ,
         identificacion: Number(document),
         tipoDocumento: typeDoc,
         email,

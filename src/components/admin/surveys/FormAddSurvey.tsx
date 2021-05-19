@@ -4,13 +4,13 @@ import { useIntl, FormattedMessage } from 'react-intl';
 import * as yup from 'yup';
 import clsx from 'clsx';
 
-import { Box, Button, Grid } from '@material-ui/core';
+import { Box, Button, CircularProgress, Grid } from '@material-ui/core';
 import { uiCloseModalAdd, uiCloseErrorAlert, uiCloseSuccessAlert, uiCloseModalEdit } from '../../../redux/actions/uiActions';
 import { AntSwitch } from '../../custom/CustomizedSwitch';
 import { MyTextField } from '../../custom/MyTextField';
 import { useStyles } from '../../../shared/styles/useStyles';
 import { Survey } from '../../../interfaces/Survey';
-import { startNewSurvey, startEditSurvey, activeSurvey } from '../../../redux/actions/surveysActions';
+import { startNewSurvey, startEditSurvey, activeSurvey, surveyCleanActive } from '../../../redux/actions/surveysActions';
 import { MyAlert } from '../../custom/MyAlert';
 import { AppState } from '../../../redux/reducers/rootReducer';
 
@@ -51,6 +51,7 @@ export const FormAddSurvey = () => {
     const onClose = () => {
         dispatch(uiCloseModalAdd());
         dispatch(uiCloseModalEdit());
+        dispatch( surveyCleanActive() );
     }
 
     const closeAlert = () => {
@@ -60,6 +61,8 @@ export const FormAddSurvey = () => {
     const closeSuccess = () => {
         dispatch( uiCloseSuccessAlert() );
         dispatch( uiCloseModalAdd() );
+        dispatch( uiCloseModalEdit() );
+        dispatch( surveyCleanActive() );
     }
 
     return (
@@ -68,13 +71,13 @@ export const FormAddSurvey = () => {
                 validateOnChange={true}
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={(data, { setSubmitting }) => {
+                onSubmit={async(data, { setSubmitting }) => {
                     setSubmitting(true);
                     if (active) {
                     dispatch( activeSurvey({...survey, name: data.name}))
-                    dispatch( startEditSurvey(data) )
+                    await dispatch( startEditSurvey(data) )
                     } else {
-                    dispatch( startNewSurvey(data) )
+                    await dispatch( startNewSurvey(data) )
                     }
                     setSubmitting(false);
                 }}>
@@ -127,11 +130,25 @@ export const FormAddSurvey = () => {
                         </Grid>
 
                         <Box mt={2} display="flex" flexDirection="row-reverse">
-                            <Button className={clsx(classes.btn, classes.save)} autoFocus
-                                type='submit'
-                                disabled={isSubmitting} >
-                                <FormattedMessage id="Accept" />
-                            </Button>
+                            {!isSubmitting ? (
+                                <Button
+                                    className={clsx(classes.btn, classes.save)}
+                                    autoFocus
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                >
+                                    <FormattedMessage id="Save" />
+                                </Button>
+                            ) : (
+                                <Button
+                                    className={clsx(classes.btn, classes.save)}
+                                    autoFocus
+                                    type="button"
+                                    disabled={true}
+                                >
+                                    <CircularProgress className={classes.btnLoading} />
+                                </Button>
+                            )}
                             <Button className={clsx(classes.btn, classes.cancel)} onClick={onClose}>
                                 <FormattedMessage id="Cancel" />
                             </Button>
