@@ -10,7 +10,7 @@ import { AntSwitch } from '../../custom/CustomizedSwitch';
 import { MyTextField } from '../../custom/MyTextField';
 import { useStyles } from '../../../shared/styles/useStyles';
 import { Survey } from '../../../interfaces/Survey';
-import { startNewSurvey, startEditSurvey, activeSurvey } from '../../../redux/actions/surveysActions';
+import { startNewSurvey, startEditSurvey, activeSurvey, surveyCleanActive } from '../../../redux/actions/surveysActions';
 import { MyAlert } from '../../custom/MyAlert';
 import { AppState } from '../../../redux/reducers/rootReducer';
 
@@ -51,6 +51,7 @@ export const FormAddSurvey = () => {
     const onClose = () => {
         dispatch(uiCloseModalAdd());
         dispatch(uiCloseModalEdit());
+        dispatch( surveyCleanActive() );
     }
 
     const closeAlert = () => {
@@ -60,6 +61,8 @@ export const FormAddSurvey = () => {
     const closeSuccess = () => {
         dispatch( uiCloseSuccessAlert() );
         dispatch( uiCloseModalAdd() );
+        dispatch( uiCloseModalEdit() );
+        dispatch( surveyCleanActive() );
     }
 
     return (
