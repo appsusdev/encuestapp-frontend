@@ -31,8 +31,8 @@ export const FormAddChapter = () => {
     const chapter: Chapter = activeChapter;
     
     useEffect(() => {
-        (municipios && survey.idSurvey) && dispatch( startLoadingChapters(municipios[0], survey.idSurvey));
-    }, [dispatch, municipios, survey.idSurvey]);
+        (municipios) && dispatch( startLoadingChapters(municipios[0], survey.idSurvey));
+    }, [dispatch, municipios ]);
     
     let initialValues: Partial<Chapter> = {
         number: '',
