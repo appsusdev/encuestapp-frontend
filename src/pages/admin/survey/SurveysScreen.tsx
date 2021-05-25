@@ -14,9 +14,11 @@ import { CustomizedSearch } from '../../../components/custom/CustomizedSearch';
 import { MyAlert } from '../../../components/custom/MyAlert';
 import AppAnimate from '../../../components/ui/AppAnimate/AppAnimate';
 import { Survey } from '../../../interfaces/Survey';
-import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalAssign, uiCloseAlert } from '../../../redux/actions/uiActions';
+import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalAssign, uiCloseAlert, uiCloseModalDelete } from '../../../redux/actions/uiActions';
 import { AppState } from '../../../redux/reducers/rootReducer';
 import { cleanActiveSurvey } from '../../../redux/actions/surveyorsActions';
+import { FormAddChapter } from '../../../components/admin/surveys/FormAddChapter';
+import { setChapters, chapterCleanActive } from '../../../redux/actions/surveysActions';
 
 export const SurveysScreen: FC = () => {
 
@@ -24,7 +26,7 @@ export const SurveysScreen: FC = () => {
   const intl = useIntl();
   const dispatch = useDispatch();
 
-  const { alert, modalAddOpen, modalEditOpen, modalAssignOpen } = useSelector<AppState, AppState['ui']>(state => state.ui);
+  const { alert, modalAddOpen, modalEditOpen, modalAssignOpen, modalDeleteOpen } = useSelector<AppState, AppState['ui']>(state => state.ui);
   const { activeSurvey, surveys } = useSelector<AppState, AppState['survey']>(state => state.survey);
   const survey: Survey = activeSurvey;
   let title: string = '';
@@ -51,6 +53,13 @@ export const SurveysScreen: FC = () => {
 
   const onDenyAssign = () => {
     dispatch(uiCloseModalAssign());
+  }
+
+  const onDenyDelete = () => {
+    dispatch(uiCloseModalDelete());
+    dispatch(cleanActiveSurvey());
+    dispatch(chapterCleanActive());
+    dispatch(setChapters([]));
   }
 
   const closeSuccess = () => {
@@ -84,7 +93,8 @@ export const SurveysScreen: FC = () => {
         <SurveysTable />
         <CustomizedDialog open={modalAddOpen} cancelBtn={true} onDeny={onDenyAdd} title={`${intl.formatMessage({ id: 'NewSurvey' })}`} content={<FormAddSurvey />} textButton="Accept" />
         <CustomizedDialog open={modalEditOpen} cancelBtn={true} onDeny={onDenyEdit} title={title} content={<SurveysTabs />} textButton="Accept" />
-        <CustomizedDialog open={modalAssignOpen} cancelBtn={true} onDeny={onDenyAssign} title={'Agregar pregunta'} content={<FormAddQuestion />} textButton="Accept" />
+        <CustomizedDialog open={modalDeleteOpen} cancelBtn={true} onDeny={onDenyDelete} title={`${intl.formatMessage({ id: 'AddChapter' })}`} content={<FormAddChapter />} textButton="Accept" />
+        <CustomizedDialog open={modalAssignOpen} cancelBtn={true} onDeny={onDenyAssign} title={`${intl.formatMessage({ id: 'AddQuestion' })}`} content={<FormAddQuestion />} textButton="Accept" />
       
         <Box mt={3}>
           <MyAlert open={alert} typeAlert="success" message="StateSurveyUpdated" time={2000} handleClose={closeSuccess}/>

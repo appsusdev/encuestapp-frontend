@@ -113,6 +113,15 @@
     "MessageAssignSurveyOne": "No es posible asignar encuestas a este encuestador.", 
     "MessageAssignSurveyTwo": "Cambie el estado del encuestador a habilitado.",
     "AssignedSurvey": "Encuesta asignada correctamente",
-    "ErrorAssignedSurvey": "La encuesta ya ha sido asignada a este encuestador"   
+    "ErrorAssignedSurvey": "La encuesta ya ha sido asignada a este encuestador",
+    "Number": "Número",
+    "Chapter": "Capítulo",
+    "AddChapter": "Agregar capítulo",
+    "EditChapter": "Editar capítulo",
+    "ChapterName": "Nombre capítulo",
+    "MessageExistsChapter": "Ya existe un capítulo con el nombre ingresado",
+    "ChapterAddSuccess": "Capítulo agregado correctamente",
+    "ChapterEditSuccess": "Capítulo editado correctamente",
+    "ChapterDeletedSuccess": "Capítulo eliminado correctamente"
 }
 

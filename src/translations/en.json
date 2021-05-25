@@ -113,5 +113,14 @@
     "MessageAssignSurveyOne": "It is not possible to assign surveys to this surveyor.", 
     "MessageAssignSurveyTwo": "Change the surveyor's status to enabled.",
     "AssignedSurvey": "Successfully assigned survey",
-    "ErrorAssignedSurvey": "The survey has already been assigned to this surveyor" 
+    "ErrorAssignedSurvey": "The survey has already been assigned to this surveyor",
+    "Number": "Number",
+    "Chapter": "Capítulo",
+    "AddChapter": "Add chapter",
+    "EditChapter": "Edit chapter",
+    "ChapterName": "Chapter name",
+    "MessageExistsChapter": "A chapter already exists with the entered name",
+    "ChapterAddSuccess": "Chapter added successfully",
+    "ChapterEditSuccess": "Chapter edited successfully",
+    "ChapterDeletedSuccess": "Chapter deleted successfully"
 }

@@ -41,7 +41,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
         textTransform: 'capitalize',
         color: theme.palette.common.white,
         fontSize: 14,
-        marginTop: '28px',
+        // marginTop: '28px',
         borderRadius: '4px'
     },
     cancel: {

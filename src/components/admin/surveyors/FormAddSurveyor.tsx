@@ -156,6 +156,7 @@ export const FormAddSurveyor = () => {
   return (
     <Box m={1}>
       <Formik
+        enableReinitialize
         validateOnChange={true}
         initialValues={initialValues}
         validationSchema={validationSchema}

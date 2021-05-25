@@ -1,4 +1,4 @@
-import { Survey } from '../interfaces/Survey';
+import { Chapter, Survey } from '../interfaces/Survey';
 
 export const encuestaDTO = (survey: Partial<Survey>, town: string) => {
     const { code, name, creationDate, state } = survey;
@@ -29,4 +29,25 @@ export const surveyDTO = (survey: any) => {
     }
 
     return surveyorFromDB;
+}
+
+export const capituloDTO = (chapter: Partial<Chapter>) => {
+    const chapterToDB = {
+        titulo: chapter.name,
+        numero: chapter.number,
+        index: chapter.index
+    }
+
+    return chapterToDB;
+}
+
+export const chapterDTO = ( chapter: any ) => {
+    const chapterFromDB = {
+        id: chapter.id,
+        name: chapter.titulo,
+        number: chapter.numero,
+        index: chapter.index
+    }
+
+    return chapterFromDB;
 }
