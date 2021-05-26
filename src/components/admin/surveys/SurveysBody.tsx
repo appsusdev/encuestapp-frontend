@@ -7,7 +7,7 @@ import { AntSwitch } from '../../custom/CustomizedSwitch';
 import { db } from '../../../config/firebase/firebase-config';
 import { convertDate } from '../../../helpers/convertDate';
 import { Survey } from '../../../interfaces/Survey';
-import { uiOpenModalEdit, uiOpenModalAssign, uiOpenAlert } from '../../../redux/actions/uiActions';
+import { uiOpenModalEdit, uiOpenModalAssign, uiOpenAlert, uiOpenModalDelete } from '../../../redux/actions/uiActions';
 import { activeSurvey, startLoadingSurveys } from '../../../redux/actions/surveysActions';
 import { AppState } from '../../../redux/reducers/rootReducer';
 
@@ -38,7 +38,13 @@ export const SurveysBody = (survey: Partial<Survey>) => {
     }
 
     const onQuestion = () => {
+        dispatch( activeSurvey(survey));
         dispatch( uiOpenModalAssign() );
+    }
+
+    const onChapter = () => {
+        dispatch( activeSurvey(survey));
+        dispatch( uiOpenModalDelete() );
     }
 
     return (
@@ -54,7 +60,7 @@ export const SurveysBody = (survey: Partial<Survey>) => {
                     <AntSwitch checked={state.checkedA} name="checkedA" onChange={handleChange} />
                 </TableCell>
                 <TableCell style={{ width: 200 }} align="center">
-                    <CustomizedIcons editIcon deleteIcon chapterIcon questionIcon onEdit={onEdit} onQuestion={onQuestion}/>
+                    <CustomizedIcons editIcon deleteIcon chapterIcon questionIcon onEdit={onEdit} onQuestion={onQuestion} onChapter={onChapter}/>
                 </TableCell>
             </TableRow>
         </>

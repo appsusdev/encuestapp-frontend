@@ -44,3 +44,9 @@ export interface QuestionOptions {
     textDescription?: string;
     typeDescription?: Partial<TypeEnum>
 }
+
+export interface Chapter {
+    id: string;
+    number: number | string;
+    name: string;
+}
