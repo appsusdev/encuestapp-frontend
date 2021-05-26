@@ -78,15 +78,27 @@ export const startEditSurvey = (survey: Partial<Survey>) => {
 export const startNewChapter = (chapter: Partial<Chapter>, idSurvey: string, action: boolean, idChapter?: string) => {
     return async(dispatch: any, getState: any) => {
         const { auth } = getState();
+        const { activeChapter } = getState().survey;
         const town = auth.municipios[0];
         const { name } = chapter;
 
         const existsChapterDB = await existsChapter(town, idSurvey, name);
+        const chapterToDB = capituloDTO(chapter);
         
         if( existsChapterDB ) {
-            dispatch( uiOpenErrorAlert() );
+            if(action) {
+                dispatch( uiOpenErrorAlert() );
+            } else {
+                if ( name === activeChapter.name) {
+                    // Editar capitulo
+                    (idChapter) && await editChapter(town, idSurvey, idChapter, chapterToDB);
+                    await dispatch( startLoadingChapters(town, idSurvey) );
+                    await dispatch( uiOpenSuccessAlert() );
+                } else {
+                    dispatch( uiOpenErrorAlert() );
+                }
+            }
         } else {
-            const chapterToDB = capituloDTO(chapter);
             try {
                 if(action) {
                     // Crear capitulo

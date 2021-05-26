@@ -23,11 +23,10 @@ export const FormAddChapter = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     
-    const { activeSurvey, chapters, activeChapter } = useSelector<AppState, AppState['survey']>(state => state.survey);
+    const { activeSurvey, activeChapter } = useSelector<AppState, AppState['survey']>(state => state.survey);
     const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
     const { errorAlert, successAlert, modalAlert } = useSelector<AppState, AppState["ui"]>((state) => state.ui);
     const survey: Survey = activeSurvey;
-    const listChapters: Chapter[] = chapters;
     const chapter: Chapter = activeChapter;
     
     useEffect(() => {
@@ -81,12 +80,10 @@ export const FormAddChapter = () => {
                     setSubmitting(true);
                     let action: boolean = true;
                     if(chapter) {
-                        data.index = chapter.index
                         action = false
                         await dispatch( startNewChapter(data, survey.idSurvey, action, chapter.id) );
                         dispatch( chapterActive({...chapter, name: data.name, number: data.number}))
                     } else {
-                        data.index = listChapters.length;
                         await dispatch( startNewChapter(data, survey.idSurvey, action) );
                     }
                     setSubmitting(false);

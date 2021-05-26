@@ -49,5 +49,4 @@ export interface Chapter {
     id: string;
     number: number | string;
     name: string;
-    index: number;
 }

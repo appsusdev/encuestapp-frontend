@@ -35,7 +35,6 @@ export const capituloDTO = (chapter: Partial<Chapter>) => {
     const chapterToDB = {
         titulo: chapter.name,
         numero: chapter.number,
-        index: chapter.index
     }
 
     return chapterToDB;
@@ -46,7 +45,6 @@ export const chapterDTO = ( chapter: any ) => {
         id: chapter.id,
         name: chapter.titulo,
         number: chapter.numero,
-        index: chapter.index
     }
 
     return chapterFromDB;

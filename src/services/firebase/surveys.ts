@@ -71,7 +71,6 @@ export const existsChapter = (
     .doc(idSurvey)
     .collection('Capitulos')
     .where('titulo','==',name)
-    .orderBy('index', "asc")
     .get()
     .then((snapShot) => {
       let chapter: any;
@@ -105,6 +104,7 @@ export const getChapters = async (town: string, idSurvey: string) => {
     .collection("Encuestas")
     .doc(idSurvey)
     .collection("Capitulos")
+    .orderBy("numero","asc")
     .get();
   const chapters: any[] = [];
 
