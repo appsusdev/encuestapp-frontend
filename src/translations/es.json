@@ -118,10 +118,21 @@
     "Chapter": "Capítulo",
     "AddChapter": "Agregar capítulo",
     "EditChapter": "Editar capítulo",
+    "EditChapterMessage": "Edite el capítulo seleccionado:",
     "ChapterName": "Nombre capítulo",
     "MessageExistsChapter": "Ya existe un capítulo con el nombre ingresado",
     "ChapterAddSuccess": "Capítulo agregado correctamente",
     "ChapterEditSuccess": "Capítulo editado correctamente",
-    "ChapterDeletedSuccess": "Capítulo eliminado correctamente"
+    "ChapterDeletedSuccess": "Capítulo eliminado correctamente",
+    "QuestionAddSuccess": "Pregunta agregada correctamente",
+    "Text": "Texto",
+    "TextArea": "Área de texto",
+    "Select": "Select",
+    "Checkbox": "Checkbox",
+    "Radius": "Radio",
+    "Region": "Región",
+    "Attachment": "Adjunto",
+    "Geolocation": "Geolocalización",
+    "Date": "Fecha"
 }
 

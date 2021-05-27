@@ -41,11 +41,51 @@ export const capituloDTO = (chapter: Partial<Chapter>) => {
 }
 
 export const chapterDTO = ( chapter: any ) => {
+
+    const questionsFromDB = chapter.questions;
+    const questions:any[] = [];
+
+    questionsFromDB.forEach( (question: any) => {
+        questions.push(questionDTO(question));
+    });
+
     const chapterFromDB = {
         id: chapter.id,
         name: chapter.titulo,
         number: chapter.numero,
+        questions: questions,
     }
 
     return chapterFromDB;
 }
+
+export const preguntaDTO = ( question: any, directedTo: string ) => {
+    const questionToDB = {
+        pregunta: question.question,
+        dirigida: directedTo,
+        tipo: question.type,
+        graficar: question.chart,
+        opciones: question.options,
+        departamento: question.department,
+        municipio: question.town,
+    }
+
+    return questionToDB;
+}
+
+export const questionDTO = ( question: any ) => {
+    const questionFromDB = {
+        id: question.id,
+        question: question.pregunta,
+        directedTo: question.dirigida,
+        type: question.tipo,
+        chart: question.graficar,
+        options: question.opciones,
+        department: question.departamento,
+        town: question.municipio,
+    }
+
+    return questionFromDB;
+}
+
+

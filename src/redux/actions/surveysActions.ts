@@ -1,6 +1,6 @@
 import { Chapter, Survey } from '../../interfaces/Survey';
-import { existsSurvey, getSurveys, addNewSurvey, editSurvey, existsChapter, addNewChapter, getChapters, deleteChapter, editChapter } from '../../services/firebase/surveys';
-import { encuestaDTO, surveyDTO, capituloDTO, chapterDTO } from '../../helpers/surveyDTO';
+import { existsSurvey, getSurveys, addNewSurvey, editSurvey, existsChapter, addNewChapter, getChapters, deleteChapter, editChapter, addQuestion } from '../../services/firebase/surveys';
+import { encuestaDTO, surveyDTO, capituloDTO, chapterDTO, preguntaDTO } from '../../helpers/surveyDTO';
 import { uiOpenErrorAlert, uiOpenSuccessAlert, uiOpenModalAlert } from './uiActions';
 import { types } from '../types/types';
 
@@ -80,7 +80,8 @@ export const startNewChapter = (chapter: Partial<Chapter>, idSurvey: string, act
         const { auth } = getState();
         const { activeChapter } = getState().survey;
         const town = auth.municipios[0];
-        const { name } = chapter;
+        const { name, number } = chapter;
+        console.log(name)
 
         const existsChapterDB = await existsChapter(town, idSurvey, name);
         const chapterToDB = capituloDTO(chapter);
@@ -93,6 +94,7 @@ export const startNewChapter = (chapter: Partial<Chapter>, idSurvey: string, act
                     // Editar capitulo
                     (idChapter) && await editChapter(town, idSurvey, idChapter, chapterToDB);
                     await dispatch( startLoadingChapters(town, idSurvey) );
+                    dispatch( chapterActive({...activeChapter, name: name, number: number}))
                     await dispatch( uiOpenSuccessAlert() );
                 } else {
                     dispatch( uiOpenErrorAlert() );
@@ -106,6 +108,7 @@ export const startNewChapter = (chapter: Partial<Chapter>, idSurvey: string, act
                 } else {
                     // Editar capitulo
                     (idChapter) && await editChapter(town, idSurvey, idChapter, chapterToDB);
+                    dispatch( chapterActive({...activeChapter, name: name, number: number}))
                 }
                 await dispatch( uiOpenSuccessAlert() );
                 await dispatch( startLoadingChapters(town, idSurvey) );
@@ -154,3 +157,29 @@ export const chapterActive = (chapter: {} | null) => ({
 });
 
 export const chapterCleanActive = () => ({type: types.chapterCleanActive});
+
+// Agregar pregunta
+export const startNewQuestion = (question: any, idSurvey: string) => {
+    return async(dispatch: any, getState: any) => {
+        const { auth, survey } = getState();
+        const { chapters } = survey;
+        const town = auth.municipios[0];
+        const idChapter = question.chapter;
+        let chapterFilter: Chapter[] = chapters;
+
+        chapterFilter.filter( chapter => chapter.id === question.chapter);
+        const idQuestion = `pregunta${chapterFilter[0].questions.length + 1}`;
+
+        let typeQuestion:string = '';
+        (question.directedTo === 0) ? (typeQuestion = 'PreguntasIndividual') : (typeQuestion = 'PreguntasHogar')
+
+        const questionToDB = preguntaDTO(question, typeQuestion);
+        try {
+            await addQuestion(town, idSurvey, idChapter, typeQuestion, questionToDB, idQuestion);
+            await dispatch( startLoadingChapters(town, idSurvey));
+            dispatch( uiOpenSuccessAlert() );
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+}
