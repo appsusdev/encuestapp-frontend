@@ -13,7 +13,7 @@ import { MyAlert } from '../../custom/MyAlert';
 import { MyTextField } from '../../custom/MyTextField';
 import { useStyles } from '../../../shared/styles/useStyles';
 import { uiCloseModalDelete, uiCloseErrorAlert, uiCloseSuccessAlert, uiCloseModalAlert } from '../../../redux/actions/uiActions';
-import { startLoadingChapters, startNewChapter, setChapters, chapterCleanActive, chapterActive } from '../../../redux/actions/surveysActions';
+import { startLoadingChapters, startNewChapter, setChapters, chapterCleanActive } from '../../../redux/actions/surveysActions';
 import { cleanActiveSurvey } from '../../../redux/actions/surveyorsActions';
 import { AppState } from '../../../redux/reducers/rootReducer';
 
@@ -82,7 +82,6 @@ export const FormAddChapter = () => {
                     if(chapter) {
                         action = false
                         await dispatch( startNewChapter(data, survey.idSurvey, action, chapter.id) );
-                        dispatch( chapterActive({...chapter, name: data.name, number: data.number}))
                     } else {
                         await dispatch( startNewChapter(data, survey.idSurvey, action) );
                     }
@@ -98,7 +97,7 @@ export const FormAddChapter = () => {
                                 (chapter) &&
                                 <Grid container spacing={2} >
                                     <Box m={2} display="flex" justifyContent="space-between" width='100%'>
-                                        <Grid item xs={8}> Edite el capitulo seleccionado:</Grid>
+                                        <Grid item xs={8}> <FormattedMessage id="EditChapterMessage"/></Grid>
                                         <Grid item xs={3}> 
                                         <Button className={clsx(classes.btnAction, classes.cancel)} onClick={handleNewChapter}>
                                             <AddIcon/> <FormattedMessage id="Chapter" />
@@ -115,9 +114,6 @@ export const FormAddChapter = () => {
                                     inputProps={{ min: 0 }}
                                     variant='outlined'
                                     className={classes.myTextFieldRoot}
-                                    // InputLabelProps={{ shrink: false }}
-                                    
-
                                     />
                             </Grid>
 
@@ -127,7 +123,6 @@ export const FormAddChapter = () => {
                                     name="name"
                                     variant='outlined'
                                     className={classes.myTextFieldRoot}
-                                    
                                 />
                             </Grid>
 

@@ -1,5 +1,5 @@
 import { db } from "../../config/firebase/firebase-config";
-import { Survey, Chapter } from '../../interfaces/Survey';
+import { Survey, Chapter } from "../../interfaces/Survey";
 
 // Verificar si existe encuesta
 export const existsSurvey = (
@@ -17,7 +17,7 @@ export const existsSurvey = (
       snapShot.forEach((doc: any) => {
         survey = doc.data() as Survey;
       });
-      console.log('Consulta verificar si existe encuesta')
+      console.log("Consulta verificar si existe encuesta");
       return survey;
     })
     .catch((err) => console.log(err));
@@ -39,38 +39,45 @@ export const getSurveys = async (town: string) => {
     });
   });
 
-  console.log('Obtener encuestas')
+  console.log("Obtener encuestas");
 
   return surveys;
 };
 
 // Crear encuesta
-export const addNewSurvey = async (town: string, code: string | undefined, surveyToDB: {} ) => {
+export const addNewSurvey = async (
+  town: string,
+  code: string | undefined,
+  surveyToDB: {}
+) => {
   const docRef = await db.collection("Municipios").doc(town);
   docRef.set({});
   docRef.collection("Encuestas").doc(code).set(surveyToDB);
 };
 
 // Editar encuesta
-export const editSurvey = async (survey: Partial<Survey>, town: string ) => {
-  const {code, name, creationDate} = survey;
+export const editSurvey = async (survey: Partial<Survey>, town: string) => {
+  const { code, name, creationDate } = survey;
   const docRef = await db.collection("Municipios").doc(town);
-  docRef.collection("Encuestas").doc(code).set({titulo: name, fechaCreacion: creationDate}, {merge: true});
-}
+  docRef
+    .collection("Encuestas")
+    .doc(code)
+    .set({ titulo: name, fechaCreacion: creationDate }, { merge: true });
+};
 
 // Verificar si existe capitulo
 export const existsChapter = (
   town: string,
   idSurvey: string,
-  name?: string 
+  name?: string
 ): Promise<Chapter> => {
   return db
     .collection("Municipios")
     .doc(town)
     .collection("Encuestas")
     .doc(idSurvey)
-    .collection('Capitulos')
-    .where('titulo','==',name)
+    .collection("Capitulos")
+    .where("titulo", "==", name)
     .get()
     .then((snapShot) => {
       let chapter: any;
@@ -83,51 +90,164 @@ export const existsChapter = (
 };
 
 // Crear capitulo
-export const addNewChapter = async (town: string, idSurvey: string , chapter: any ) => {
+export const addNewChapter = async (
+  town: string,
+  idSurvey: string,
+  chapter: any
+) => {
   const docRef = await db.collection("Municipios").doc(town);
   docRef.set({});
-  docRef.collection("Encuestas").doc(idSurvey).collection("Capitulos").doc(`capitulo${chapter.numero}-${Date.now()}`).set(chapter);
+  docRef
+    .collection("Encuestas")
+    .doc(idSurvey)
+    .collection("Capitulos")
+    .doc(`capitulo${chapter.numero}-${Date.now()}`)
+    .set(chapter);
 };
 
 // Editar capitulo
-export const editChapter = async (town: string, idSurvey: string , idChapter: string, chapter: any ) => {
+export const editChapter = async (
+  town: string,
+  idSurvey: string,
+  idChapter: string,
+  chapter: any
+) => {
   const docRef = await db.collection("Municipios").doc(town);
   docRef.set({});
-  docRef.collection("Encuestas").doc(idSurvey).collection("Capitulos").doc(idChapter).set(chapter, {merge: true});
+  docRef
+    .collection("Encuestas")
+    .doc(idSurvey)
+    .collection("Capitulos")
+    .doc(idChapter)
+    .set(chapter, { merge: true });
 };
 
 // Obtener capitulos por encuesta
 export const getChapters = async (town: string, idSurvey: string) => {
+  // Obtener capitulos
   const chapterSnap = await db
     .collection("Municipios")
     .doc(town)
     .collection("Encuestas")
     .doc(idSurvey)
     .collection("Capitulos")
-    .orderBy("numero","asc")
+    .orderBy("numero", "asc")
     .get();
   const chapters: any[] = [];
 
-  chapterSnap.forEach((snap) => {
+  chapterSnap.forEach(async (snap) => {
     chapters.push({
       id: snap.id,
       ...snap.data(),
     });
   });
 
-  console.log('Obtener capitulos');
+  // Obtener preguntas por capitulo
+  let chaptersAndQuestions: any[] = [];
+  for (let chapter of chapters) {
+    const questions = await getQuestions(town, idSurvey, chapter.id);
 
-  return chapters;
+    let chapterFromDB = {
+      id: chapter.id,
+      titulo: chapter.titulo,
+      numero: chapter.numero,
+      questions: questions,
+    };
+    chaptersAndQuestions = [...chaptersAndQuestions, chapterFromDB];
+  }
+
+  return chaptersAndQuestions;
 };
 
 // Eliminar capitulo
-export const deleteChapter =  async(town: string, idSurvey: string, idChapter: string) => {
-  await db
+export const deleteChapter = async (
+  town: string,
+  idSurvey: string,
+  idChapter: string
+) => {
+  let chapterRef = db
     .collection("Municipios")
     .doc(town)
     .collection("Encuestas")
     .doc(idSurvey)
     .collection("Capitulos")
+    .doc(idChapter);
+
+  // Eliminar preguntales individuales del capitulo
+  let individual = await chapterRef.collection("PreguntasIndividual").get();
+  individual.forEach((snap) => {
+    snap.ref.delete();
+  });
+
+  // Eliminar preguntales hogar del capitulo
+  let home = await chapterRef.collection("PreguntasHogar").get();
+  home.forEach((snap) => {
+    snap.ref.delete();
+  });
+
+  await chapterRef.delete();
+};
+
+// Crear pregunta
+export const addQuestion = async (
+  town: string,
+  idSurvey: string,
+  idChapter: string,
+  typeQuestion: string,
+  question: any,
+  idQuestion: string
+) => {
+  const docRef = await db.collection("Municipios").doc(town);
+  docRef.set({});
+  docRef
+    .collection("Encuestas")
+    .doc(idSurvey)
+    .collection("Capitulos")
     .doc(idChapter)
-    .delete();
-}
+    .collection(typeQuestion)
+    .doc(idQuestion)
+    .set(question);
+};
+
+// Obtener preguntas hogar e indivual
+export const getQuestions = async (
+  town: string,
+  idSurvey: string,
+  idChapter: string
+) => {
+  const docChaptersRef = db
+    .collection("Municipios")
+    .doc(town)
+    .collection("Encuestas")
+    .doc(idSurvey)
+    .collection("Capitulos");
+  let allQuestions: any[] = [];
+
+  // Preguntas individuales
+  const individualQuestions = await docChaptersRef
+    .doc(idChapter)
+    .collection("PreguntasIndividual")
+    .get();
+
+  individualQuestions.forEach((snap) => {
+    allQuestions.push({
+      id: snap.id,
+      ...snap.data(),
+    });
+  });
+
+  // Preguntas hogar
+  const homeQuestions = await docChaptersRef
+    .doc(idChapter)
+    .collection("PreguntasHogar")
+    .get();
+
+  homeQuestions.forEach((snap) => {
+    allQuestions.push({
+      id: snap.id,
+      ...snap.data(),
+    });
+  });
+
+  return allQuestions;
+};

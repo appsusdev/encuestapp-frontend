@@ -1,6 +1,6 @@
 import { TypeUser } from "../../enums/enums";
 import { Surveyor } from "../../interfaces/Surveyor";
-import { Chapter, Survey } from '../../interfaces/Survey';
+import { Survey } from '../../interfaces/Survey';
 
 export const types = {
     // auth
@@ -107,7 +107,7 @@ export type SurveyorsAction = {
 export interface ISurvey {
   surveys: Partial<Survey>[],
   activeSurvey: Partial<Survey> | null,
-  chapters: Partial<Chapter>[]
+  chapters: any[]
 }
 
 export type SurveysAction = {

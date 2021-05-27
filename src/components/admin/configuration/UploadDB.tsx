@@ -22,7 +22,7 @@ export const UploadDB = () => {
                 <Box className={classes.root}>
                     <Box display="flex" justifyContent="flex-end">
                         <Link component="button">
-                            <FormattedMessage id="UploadExcel"/>    
+                            <FormattedMessage id="DownloadExcelTemplate"/>    
                         </Link>    
                     </Box>
                     
@@ -47,8 +47,8 @@ export const UploadDB = () => {
                             
                             />
                             <label htmlFor="contained-button-file">
-                                <Button className={clsx(classes.btnAction, classes.save)}  size="medium" component="span" onClick={handleUpload}>
-                                <FormattedMessage id='Attach' />
+                                <Button style={{marginTop: '27px'}} className={clsx(classes.btnAction, classes.save)}  size="medium" component="span" onClick={handleUpload}>
+                                    <FormattedMessage id='Attach' />
                                 </Button>
                             </label>
                         </Grid>

@@ -35,28 +35,28 @@ export const Home = () => {
         <Paper square className={classes.paper}>
             <Box m={2} mb={2}>
 
-            <Box mb={2}>
-                <Grid container spacing={4}>
+                <Box mb={2}>
+                    <Grid container spacing={4}>
 
-                    <Grid item xs={9} className={classes.typography}>
-                        <label className="form-text"><FormattedMessage id='SelectSurvey' /></label>
-                        <TextField
-                            className={classes.inputSelect}
-                            onChange={handleChange}
-                            size="small"
-                            variant="outlined"
-                        />
+                        <Grid item xs={9} className={classes.typography}>
+                            <label className="form-text"><FormattedMessage id='SelectSurvey' /></label>
+                            <TextField
+                                className={classes.inputSelect}
+                                onChange={handleChange}
+                                size="small"
+                                variant="outlined"
+                            />
+                        </Grid>
+
+                        <Grid item xs={3}>
+                            <Button style={{marginTop: '27px'}} size="medium" className={clsx(classes.btnAction, classes.save)} onClick={handleSearch}>
+                                <FormattedMessage id='Search' />
+                            </Button>
+                        </Grid>
+
                     </Grid>
-
-                    <Grid item xs={3}>
-                        <Button size="medium" className={clsx(classes.btnAction, classes.save)} onClick={handleSearch}>
-                            <FormattedMessage id='Search' />
-                        </Button>
-                    </Grid>
-
-                </Grid>
+                </Box>
             </Box>
-                                </Box>
 
             <Box m={2} style={{marginTop: '30px'}}>
                                 <ThemeProvider theme={theme}>
