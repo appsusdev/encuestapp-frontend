@@ -102,7 +102,7 @@ export const AssignSurvey = () => {
                     </Grid>
 
                     <Grid item xs={3}>
-                        <Button size="medium" className={clsx(classes.btnAction, classes.save)} onClick={handleAssign}>
+                        <Button style={{marginTop: '27px'}} size="medium" className={clsx(classes.btnAction, classes.save)} onClick={handleAssign}>
                             <FormattedMessage id='Assign' />
                         </Button>
                     </Grid>
