@@ -1,3 +1,5 @@
+import { TypeQuestion, TypeDirectedTo } from '../enums/enums';
+
 export interface Survey {
     idSurvey: string,
     code: string,
@@ -10,37 +12,26 @@ export interface Survey {
 }
 
 export interface SurveyQuestion {
-    chapter: string;
+    id: string;
     question: string;
-    directedTo: DirectedToQuestion;
+    directedTo: TypeDirectedTo;
     chart?: boolean;
-    type: TypeEnum;
+    type: TypeQuestion;
     options?: QuestionOptions[] | null;
+    department: boolean;
+    town: boolean;
 }
-
-export enum TypeEnum {
-    SELECT = 'SELECT',
-    CHECK = 'CHECK',
-    FILE = 'FILE',
-    TEXT_INPUT = 'TEXT_INPUT',
-    DATE = 'DATE',
-    NUMBER = 'NUMBER',
-    TEXT_AREA = 'TEXT_AREA',
-    GEOLOCATION = 'GEOLOCATION',
-    PICTURE = 'PICTURE',
-    RADIO = 'RADIO',
-    REGION = 'REGION'
-}
-
-export enum DirectedToQuestion {
-    HOGAR,
-    INDIVIDUAL
-}
-
 export interface QuestionOptions {
     label: string;
     value?: number;
     description?: boolean;
     textDescription?: string;
-    typeDescription?: Partial<TypeEnum>
+    typeDescription?: Partial<TypeQuestion>
+}
+
+export interface Chapter {
+    id: string;
+    number: number | string;
+    name: string;
+    questions: SurveyQuestion[],
 }

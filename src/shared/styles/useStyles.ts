@@ -41,7 +41,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
         textTransform: 'capitalize',
         color: theme.palette.common.white,
         fontSize: 14,
-        marginTop: '28px',
+        // marginTop: '28px',
         borderRadius: '4px'
     },
     cancel: {
@@ -105,5 +105,10 @@ export const useStyles = makeStyles((theme: Theme) => ({
         height: '100%',
         width: '100%'
     },
+    btnLoading: {
+        color: theme.palette.common.white,
+        height: '25px !important',
+        width: '25px !important'
+    }
 
 }));

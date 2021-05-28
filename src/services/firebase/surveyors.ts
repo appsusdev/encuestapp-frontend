@@ -33,7 +33,7 @@ export const addSurveyorToTown = async (
 ) => {
   townsAdmin.forEach(async (townAdm: string) => {
     const df = await db.collection("Municipios").doc(townAdm);
-    //df.set({});
+    df.set({});
     df.collection("Encuestadores").doc(email).set(surveyorTown);
   });
 };

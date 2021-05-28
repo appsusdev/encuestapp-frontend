@@ -27,15 +27,11 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
     const { auth } = getState();
     const { document, email, profileImage } = surveyor;
 
-    // const fileName = profileImage?.split('\\').pop()?.split('.').slice(0,-1).join('.');
-    // (profileImage && fileName ) && await uploadFileAsync(profileImage, fileName);
-
     if (profileImage) {
       const uriResponse = await uploadFileAsync(
         profileImage as File,
-        `avatars/${document}`
+        `avatars/${email}`
       );
-
       surveyor.profileImage = uriResponse;
     } else {
       surveyor.profileImage = null;
@@ -111,13 +107,25 @@ export const activeSurveyors = (id: string | undefined, surveyor: {}) => ({
 export const cleanActiveSurvey = () => ({ type: types.surveyCleanActive });
 
 // Editar encuestador
-export const startEditSurveyor = (surveyor: Partial<Surveyor>) => {
-    return async(dispatch: any) => {
+export const startEditSurveyor = (surveyor: Partial<Surveyor>, changeImage: boolean) => {
+    return async(dispatch: any, getState: any) => {
+        const { municipios } = getState().auth;
+        const { email, profileImage } = surveyor;
+        if( changeImage ) {
+          const uriResponse = await uploadFileAsync(
+            profileImage as File,
+            `avatars/${email}`
+          );
+          surveyor.profileImage = uriResponse;
+        } 
+
         const userToDB = encuestadorDTO(surveyor)
         delete userToDB.municipios;
-        
+
+        dispatch( activeSurveyors(surveyor.email, {...surveyor}))
         await editSurveyor(userToDB);
         dispatch( uiOpenSuccessAlert());
+        await dispatch( startLoadingSurveyors(municipios[0]))
     }
 }
 

@@ -33,14 +33,19 @@ export const getUserRole = (
     })
     .catch((err) => console.log(err));
 };
+
+export const registerWithEmailPassword = async (
+  email: string,
+  password: string
+) => {
+  return await firebase.auth().createUserWithEmailAndPassword(email, password);
+};
+
 export const uploadFileAsync = async (
   file: File,
   fileName: string
 ): Promise<string> => {
   return new Promise(async (res, rej) => {
-    /* const response = await fetch(uri, {mode: 'no-cors'});
-      const file = await response.blob(); */
-    //const file = new File(uri,fileName)
 
     const upload = firebase.storage().ref(fileName).put(file);
     upload.on(
@@ -55,11 +60,4 @@ export const uploadFileAsync = async (
       }
     );
   });
-};
-
-export const registerWithEmailPassword = async (
-  email: string,
-  password: string
-) => {
-  return await firebase.auth().createUserWithEmailAndPassword(email, password);
 };

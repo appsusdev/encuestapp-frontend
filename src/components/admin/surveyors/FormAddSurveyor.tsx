@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import { useIntl, FormattedMessage } from "react-intl";
-import { TextField } from "@material-ui/core";
+import { CircularProgress, TextField } from "@material-ui/core";
 import * as yup from "yup";
 import clsx from "clsx";
 
@@ -73,8 +73,6 @@ export const FormAddSurveyor = () => {
   );
   const surveyorDB: any = surveyorFromDB;
 
-  const SUPPORTED_FORMATS = ["jpg", "jpeg", "png"];
-
   const validationSchema = yup.object({
     typeDoc: yup
       .string()
@@ -103,25 +101,6 @@ export const FormAddSurveyor = () => {
     address: yup
       .string()
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`),
-    profileImage: yup
-      .mixed()
-      .test("fileFormat", "Archivo no soportado", (value) => {
-        //setLabelImage(value?.split("\\").pop());
-        /* const file = value.name?.split("\\").pop()?.split(".");
-        let fileType = "";
-        if (file) {
-          fileType = file[file.length - 1];
-          console.log(fileType)
-          !SUPPORTED_FORMATS.includes(fileType)
-            ? setNoValid(true)
-            : setNoValid(false);
-        } */
-        if (!value) return true;
-        const { type } = value as File;
-        let splitType = type.split("/");
-        const fileType = splitType[1];
-        return SUPPORTED_FORMATS.includes(fileType);
-      }),
   });
 
   const onClose = () => {
@@ -157,25 +136,41 @@ export const FormAddSurveyor = () => {
     dispatch(uiCloseSuccessAlert());
     dispatch(uiCloseModalAdd());
   };
+
   const handleSelectFile = (e: any) => {
-    console.log(e.target.files[0]);
+    const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
     const file = e.target.files[0] as File;
-    setProfileFile(file);
-    setLabelImage(e.target.files[0].name);
+
+    if (file) {
+      !SUPPORTED_FORMATS.includes(file.type)
+        ? setNoValid(true)
+        : setNoValid(false);
+      setProfileFile(file);
+      setLabelImage(e.target.files[0].name);
+    } else {
+      setNoValid(false);
+      setLabelImage("");
+    }
   };
 
   return (
     <Box m={1}>
       <Formik
+        enableReinitialize
         validateOnChange={true}
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting }) => {
-          setSubmitting(true);
-          setEmail(values.email);
-          values.profileImage = profileFile;
-          dispatch(startNewSurveyor(values));
-          setSubmitting(false);
+        validateOnMount
+        onSubmit={async (values, { setSubmitting }) => {
+          if (!noValid) {
+            setSubmitting(true);
+            setEmail(values.email);
+            values.profileImage = profileFile;
+            await dispatch(startNewSurveyor(values));
+            setSubmitting(false);
+          } else {
+            setSubmitting(false);
+          }
         }}
       >
         {({ values, isSubmitting }) => (
@@ -311,7 +306,6 @@ export const FormAddSurveyor = () => {
                   <FormattedMessage id="ProfileImage" />
                 </label>
 
-                {/* <input type='file' onChange={(e)=>  console.log(e.target.files[0]) } /> */}
                 <TextField
                   size="small"
                   type="file"
@@ -320,21 +314,7 @@ export const FormAddSurveyor = () => {
                   autoComplete="off"
                   style={{ display: "none" }}
                 />
-                {/* <TextField
-                  size="small"
-                  type="file"
-                  onChange={(e: any) => console.log(e.target.files[0])}
-                  id="icon-button-file"
-                  autoComplete="off"
-                />
-                <MyTextField
-                  accept="image/*"
-                  name="profileImage"
-                  type="file"
-                  //onChange={(e:any)=>  console.log(e.target.files[0])}
-                  id="icon-button-file"
-                  style={{ display: "none" }}
-                /> */}
+
                 <MyTextField
                   disabled={true}
                   variant="outlined"
@@ -368,14 +348,25 @@ export const FormAddSurveyor = () => {
             </Grid>
 
             <Box mt={2} display="flex" flexDirection="row-reverse">
-              <Button
-                className={clsx(classes.btn, classes.save)}
-                autoFocus
-                type="submit"
-                disabled={isSubmitting}
-              >
-                <FormattedMessage id="Save" />
-              </Button>
+              {!isSubmitting ? (
+                <Button
+                  className={clsx(classes.btn, classes.save)}
+                  autoFocus
+                  type="submit"
+                  disabled={isSubmitting}
+                >
+                  <FormattedMessage id="Save" />
+                </Button>
+              ) : (
+                <Button
+                  className={clsx(classes.btn, classes.save)}
+                  autoFocus
+                  type="button"
+                  disabled={true}
+                >
+                  <CircularProgress className={classes.btnLoading} />
+                </Button>
+              )}
               <Button
                 className={clsx(classes.btn, classes.cancel)}
                 onClick={onClose}

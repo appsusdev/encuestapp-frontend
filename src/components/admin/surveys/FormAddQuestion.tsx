@@ -1,29 +1,43 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Formik } from 'formik';
 import { useIntl, FormattedMessage } from 'react-intl';
 import * as yup from 'yup';
 import clsx from 'clsx';
 
-import { Box, Button, Grid, MenuItem, Checkbox, Tooltip, IconButton } from '@material-ui/core';
+import { Box, Button, Grid, MenuItem, Checkbox, Tooltip, IconButton, CircularProgress } from '@material-ui/core';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { Alert } from '@material-ui/lab';
 import { MyTextField } from '../../custom/MyTextField';
-import { uiCloseModalAdd } from '../../../redux/actions/uiActions';
-import { TypeEnum, QuestionOptions } from '../../../interfaces/Survey';
+import { uiCloseModalAdd, uiCloseSuccessAlert } from '../../../redux/actions/uiActions';
+import { QuestionOptions, Survey, Chapter } from '../../../interfaces/Survey';
 import { useStyles } from '../../../shared/styles/useStyles';
+import { startLoadingChapters, startNewQuestion } from '../../../redux/actions/surveysActions';
+import { AppState } from '../../../redux/reducers/rootReducer';
+import { TypeQuestion, TypeDirectedTo } from '../../../enums/enums';
+import { MyAlert } from '../../custom/MyAlert';
 
 export const FormAddQuestion = () => {
 
     const intl = useIntl();
     const classes = useStyles();
     const dispatch = useDispatch();
-    const [options, setOptions] = useState<QuestionOptions[]>([]);
 
+    const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
+    const { activeSurvey, chapters } = useSelector<AppState, AppState['survey']>(state => state.survey);
+    const { successAlert } = useSelector<AppState, AppState["ui"]>((state) => state.ui);
+    const survey: Survey = activeSurvey;
+    const list: Chapter[] = chapters;
+    
+    const [options, setOptions] = useState<QuestionOptions[]>([]);
     const [state, setState] = useState(false);
 
+    useEffect(() => {
+        (municipios) && dispatch( startLoadingChapters(municipios[0], survey.idSurvey));
+    }, [dispatch]);
+
     const validationSchema = yup.object({
-        chapter: yup.string(),
+        chapter: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
         question: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
         directedTo: yup.number(),
         chart: yup.boolean(),
@@ -41,26 +55,26 @@ export const FormAddQuestion = () => {
         question: string,
         directedTo: number,
         chart: boolean,
-        type: TypeEnum,
-        options: QuestionOptions[],
+        type: TypeQuestion,
+        options: QuestionOptions[] | null,
         label: string,
         description: boolean,
         textDescription: string,
-        typeDescription: Partial<TypeEnum>,
+        typeDescription: Partial<TypeQuestion>,
         department: boolean,
         town: boolean,
     }
 
-    const initialValues: Partial<myFormValues> = {
+    let initialValues: Partial<myFormValues> = {
         chapter: '',
         question: '',
-        directedTo: 1,
+        directedTo: 0,
         chart: false,
-        type: TypeEnum.TEXT_INPUT,
+        type: TypeQuestion.TEXT_INPUT,
         label: '',
         description: false,
         textDescription: '',
-        typeDescription: TypeEnum.TEXT_INPUT,
+        typeDescription: TypeQuestion.TEXT_INPUT,
         department: false,
         town: false,
         options: options
@@ -94,18 +108,26 @@ export const FormAddQuestion = () => {
         setOptions(newOptions);
     }
 
+    const closeSuccess = () => {
+        dispatch(uiCloseSuccessAlert());
+    };
+
     return (
         <Box m={1}>
             <Formik
                 validateOnChange={true}
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={(data, { setSubmitting }) => {
-                    data.options = options;
-                    console.log(data);
+                onSubmit={async(data, { setSubmitting, resetForm }) => {
+                    if( data.type === TypeQuestion.SELECT || data.type === TypeQuestion.CHECK || data.type === TypeQuestion.RADIO) {
+                        data.options = options;
+                    } else {
+                        data.options = null
+                    }
                     setSubmitting(true);
-                    // dispatch( guardar en BD);
+                    await dispatch( startNewQuestion(data, survey.idSurvey) );
                     setSubmitting(false);
+                    resetForm({});
                 }}>
                 {({ values, isSubmitting, handleChange, handleSubmit }) => (
 
@@ -121,8 +143,11 @@ export const FormAddQuestion = () => {
                                     select
                                     className={classes.myTextFieldRoot}
                                 >
-                                    <MenuItem value={0}>Datos básicos</MenuItem>
-                                    <MenuItem value={1}>Datos del hogar</MenuItem>
+                                    {
+                                        list.map( chapter => (
+                                            <MenuItem key={chapter.id} value={chapter.id}>{chapter.name}</MenuItem>
+                                        ))
+                                    }
                                 </MyTextField>
                             </Grid>
 
@@ -143,8 +168,8 @@ export const FormAddQuestion = () => {
                                     select
                                     className={classes.myTextFieldRoot}
                                 >
-                                    <MenuItem value={0}>Al hogar</MenuItem>
-                                    <MenuItem value={1}>A cada persona</MenuItem>
+                                    <MenuItem value={0}>{TypeDirectedTo.INDIVIDUAL}</MenuItem>
+                                    <MenuItem value={1}>{TypeDirectedTo.HOGAR}</MenuItem>
                                 </MyTextField>
                             </Grid>
 
@@ -173,17 +198,17 @@ export const FormAddQuestion = () => {
                                     select
                                     className={classes.myTextFieldRoot}
                                 >
-                                    <MenuItem value={"TEXT_INPUT"}>Texto</MenuItem>
-                                    <MenuItem value={"NUMBER"}>Número</MenuItem>
-                                    <MenuItem value={"TEXT_AREA"}>Área de texto</MenuItem>
-                                    <MenuItem value={"SELECT"}>Select</MenuItem>
-                                    <MenuItem value={"CHECK"}>Checkbox</MenuItem>
-                                    <MenuItem value={"RADIO"}>Radio</MenuItem>
-                                    <MenuItem value={"REGION"}>Región</MenuItem>
-                                    <MenuItem value={"FILE"}>Adjunto</MenuItem>
-                                    <MenuItem value={"GEOLOCATION"}>Geolocalización</MenuItem>
-                                    <MenuItem value={"PICTURE"}>Imagen</MenuItem>
-                                    <MenuItem value={"DATE"}>Fecha</MenuItem>
+                                    <MenuItem value={TypeQuestion.TEXT_INPUT}><FormattedMessage  id="Text"/></MenuItem>
+                                    <MenuItem value={TypeQuestion.NUMBER}><FormattedMessage id="Number" /></MenuItem>
+                                    <MenuItem value={TypeQuestion.TEXT_AREA}><FormattedMessage id="TextArea" /></MenuItem>
+                                    <MenuItem value={TypeQuestion.SELECT}><FormattedMessage id="Select" /></MenuItem>
+                                    <MenuItem value={TypeQuestion.CHECK}><FormattedMessage id="Checkbox" /></MenuItem>
+                                    <MenuItem value={TypeQuestion.RADIO}><FormattedMessage id="Radius" /></MenuItem>
+                                    <MenuItem value={TypeQuestion.REGION}><FormattedMessage id="Region" /></MenuItem>
+                                    <MenuItem value={TypeQuestion.FILE}><FormattedMessage id="Attachment" /></MenuItem>
+                                    <MenuItem value={TypeQuestion.GEOLOCATION}><FormattedMessage id="Geolocation" /></MenuItem>
+                                    <MenuItem value={TypeQuestion.PICTURE}><FormattedMessage id="Image" /></MenuItem>
+                                    <MenuItem value={TypeQuestion.DATE}><FormattedMessage id="Date" /></MenuItem>
                                 </MyTextField>
                             </Grid>
 
@@ -226,9 +251,9 @@ export const FormAddQuestion = () => {
                                             select
                                             className={classes.myTextFieldRoot}
                                         >
-                                            <MenuItem value={"TEXT_INPUT"}>Texto</MenuItem>
-                                            <MenuItem value={"NUMBER"}>Número</MenuItem>
-                                            <MenuItem value={"TEXT_AREA"}>Área de texto</MenuItem>
+                                            <MenuItem value={TypeQuestion.TEXT_INPUT}><FormattedMessage  id="Text"/></MenuItem>
+                                            <MenuItem value={TypeQuestion.NUMBER}><FormattedMessage id="Number" /></MenuItem>
+                                            <MenuItem value={TypeQuestion.TEXT_AREA}><FormattedMessage id="TextArea" /></MenuItem>
                                         </MyTextField>
                                     </Grid>
 
@@ -273,12 +298,12 @@ export const FormAddQuestion = () => {
                                                     />
                                                     <label className="form-text">{option.label}</label>
                                                 </Grid>
-                                                <Grid item xs={3}>
+                                                <Grid item xs={5}>
                                                     <Box style={{marginTop: '10px'}}>
                                                         {option.textDescription} 
                                                     </Box>
                                                 </Grid>
-                                                <Grid item xs={5}>
+                                                <Grid item xs={3}>
                                                 {
                                                     (option.description) &&
                                                      <MyTextField 
@@ -338,12 +363,25 @@ export const FormAddQuestion = () => {
                         {/* <Divider/> */}
 
                         <Box mt={3} display="flex" flexDirection="row-reverse">
-                            <Button className={clsx(classes.btn, classes.save)} autoFocus
-                                type='submit'
-                                // onClick={handleSubmit}
-                                disabled={isSubmitting} >
-                                <FormattedMessage id="Save" />
-                            </Button>
+                            {!isSubmitting ? (
+                                <Button
+                                    className={clsx(classes.btn, classes.save)}
+                                    autoFocus
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                >
+                                    <FormattedMessage id="Save" />
+                                </Button>
+                            ) : (
+                                <Button
+                                    className={clsx(classes.btn, classes.save)}
+                                    autoFocus
+                                    type="button"
+                                    disabled={true}
+                                >
+                                    <CircularProgress className={classes.btnLoading} />
+                                </Button>
+                            )}
                             <Button className={clsx(classes.btn, classes.cancel)} onClick={onClose}>
                                 <FormattedMessage id="Cancel" />
                             </Button>
@@ -352,6 +390,14 @@ export const FormAddQuestion = () => {
                     </Form>
                 )}
             </Formik>
+
+            <MyAlert
+                open={successAlert}
+                typeAlert="success"
+                message={"QuestionAddSuccess"}
+                time={2000}
+                handleClose={closeSuccess}
+            />
         </Box>
     )
 }
