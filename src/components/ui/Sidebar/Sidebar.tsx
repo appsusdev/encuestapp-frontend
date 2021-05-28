@@ -46,22 +46,22 @@ const Sidebar: React.FC<AppSidebarProps> = ({
                         paper: clsx(variant),
                     }}
                     style={{ position: 'absolute' }}>
-                    <Box height='100%' className={classes.container}>
+                    {<Box height='100%' className={classes.container}>
                         <Box className={clsx(classes.sidebarBg, sidebarClasses)}>
                             <UserInfo />
                             <Navigation />
                         </Box>
-                    </Box>
+                    </Box>}
                 </Drawer>
             </Hidden>
-            <Hidden mdDown>
+            {<Hidden mdDown>
                 <Box height='100%' className={clsx(classes.container, 'app-sidebar')}>
                     <Box className={clsx(classes.sidebarBg, sidebarClasses)}>
                         <UserInfo />
                         <Navigation />
                     </Box>
                 </Box>
-            </Hidden>
+            </Hidden>}
         </>
     );
 };
