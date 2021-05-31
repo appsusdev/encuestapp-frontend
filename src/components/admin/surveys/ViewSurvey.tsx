@@ -32,6 +32,10 @@ export const ViewSurvey = () => {
   );
   const list: Chapter[] = chapters;
 
+  const editQuestion = (idQuestion: string) => {
+    // console.log(idQuestion);
+  }
+
   return (
     <Box m={2} className={classes.typography}>
       {list.length === 0 ? (
@@ -61,6 +65,7 @@ export const ViewSurvey = () => {
                   <Grid item xs={11} style={{ marginLeft: "-10px" }}>
                     {chapter.number}.{index + 1} {question.question}
                     <EditOutlinedIcon
+                      onClick={ () => editQuestion(question.id)}
                       style={{ marginLeft: '10px' }}
                       fontSize="small"
                     />
