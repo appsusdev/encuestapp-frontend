@@ -134,6 +134,7 @@
     "Region": "Región",
     "Attachment": "Adjunto",
     "Geolocation": "Geolocalización",
-    "Date": "Fecha"
+    "Date": "Fecha",
+    "OnlyExcelFile":"Solo se aceptan archivos xlsx."
 }
 
