@@ -7,6 +7,9 @@ import {
   TextField,
   Tooltip,
   IconButton,
+  Checkbox,
+  FormControlLabel,
+  Radio,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { AppState } from "../../../redux/reducers/rootReducer";
@@ -17,8 +20,9 @@ import PersonIcon from "@material-ui/icons/Person";
 import HomeIcon from "@material-ui/icons/Home";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import { TypeQuestion } from "../../../enums/enums";
-import { Gif, PhotoCamera } from "@material-ui/icons";
+import { PhotoCamera } from "@material-ui/icons";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
+import { MenuItem } from "@material-ui/core";
 
 export const ViewSurvey = () => {
   const classes = useStyles();
@@ -29,7 +33,7 @@ export const ViewSurvey = () => {
   const list: Chapter[] = chapters;
 
   return (
-    <Box m={2}>
+    <Box m={2} className={classes.typography}>
       {list.length === 0 ? (
         <Alert severity="info" color="info">
           <FormattedMessage id="EmptySurvey" />
@@ -46,22 +50,31 @@ export const ViewSurvey = () => {
                 <Grid container>
                   <Grid item xs={1}>
                     {question.directedTo === "PreguntasIndividual" ? (
-                      <PersonIcon />
+                      <PersonIcon
+                        fontSize="small"
+                        style={{ marginTop: "5px" }}
+                      />
                     ) : (
-                      <HomeIcon />
+                      <HomeIcon fontSize="small" style={{ marginTop: "5px" }} />
                     )}
                   </Grid>
-                  <Grid item xs={11}>
-                    {chapter.number}.{index + 1} {question.question}{" "}
+                  <Grid item xs={11} style={{ marginLeft: "-10px" }}>
+                    {chapter.number}.{index + 1} {question.question}
                     <EditOutlinedIcon
-                      style={{ marginTop: "0px" }}
+                      style={{ marginLeft: '10px' }}
                       fontSize="small"
                     />
                   </Grid>
 
                   <Grid
                     item
-                    xs={(question.type === TypeQuestion.TEXT_AREA ||  question.type === TypeQuestion.PICTURE || question.type === TypeQuestion.FILE)? 12 : 8}
+                    xs={
+                      question.type === TypeQuestion.TEXT_AREA ||
+                      question.type === TypeQuestion.PICTURE ||
+                      question.type === TypeQuestion.FILE
+                        ? 12
+                        : 8
+                    }
                   >
                     {(question.type === TypeQuestion.TEXT_INPUT ||
                       question.type === TypeQuestion.NUMBER) && (
@@ -127,6 +140,47 @@ export const ViewSurvey = () => {
                           </Grid>
                         </Grid>
                       </>
+                    )}
+                    {(question.options && question.type !== TypeQuestion.SELECT) &&
+                      question.options.map((option, index) => (
+                        <Grid container key={index}>
+                          <Grid item xs={6}>
+                            {question.type === TypeQuestion.RADIO && (
+                              <FormControlLabel
+                                value={option.label}
+                                control={<Radio />}
+                                label={option.label}
+                              />
+                            )}
+                            {question.type === TypeQuestion.CHECK && (
+                              <>
+                                <Checkbox color="default" />
+                                <label className="form-text">
+                                  {option.label}
+                                </label>
+                              </>
+                            )}
+                          </Grid>
+                        </Grid>
+                      ))}
+                    {question.type === TypeQuestion.SELECT && (
+                      <TextField
+                        size="small"
+                        name="question"
+                        value=""
+                        variant="outlined"
+                        label={`${intl.formatMessage({id: "InputSelect"})}`}
+                        InputLabelProps={{ shrink: false }}
+                        select
+                        className={classes.myTextFieldRoot}
+                      >
+                        {question.options?.map((option, index) => (
+                          
+                          <MenuItem key={index} value={option.label}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
                     )}
                   </Grid>
                 </Grid>
