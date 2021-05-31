@@ -9,12 +9,13 @@ export interface Survey {
     authorizationFormats: null | string[],
     surveyors: string[],
     idTown: string,
+    chapters: Chapter[] 
 }
 
 export interface SurveyQuestion {
     id: string;
     question: string;
-    directedTo: TypeDirectedTo;
+    directedTo: string | TypeDirectedTo;
     chart?: boolean;
     type: TypeQuestion;
     options?: QuestionOptions[] | null;

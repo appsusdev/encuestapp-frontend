@@ -9,13 +9,14 @@ import { Box, Button, Grid, MenuItem, Checkbox, Tooltip, IconButton, CircularPro
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { Alert } from '@material-ui/lab';
 import { MyTextField } from '../../custom/MyTextField';
-import { uiCloseModalAdd, uiCloseSuccessAlert } from '../../../redux/actions/uiActions';
+import { uiCloseSuccessAlert, uiCloseModalAssign } from '../../../redux/actions/uiActions';
 import { QuestionOptions, Survey, Chapter } from '../../../interfaces/Survey';
 import { useStyles } from '../../../shared/styles/useStyles';
 import { startLoadingChapters, startNewQuestion } from '../../../redux/actions/surveysActions';
 import { AppState } from '../../../redux/reducers/rootReducer';
 import { TypeQuestion, TypeDirectedTo } from '../../../enums/enums';
 import { MyAlert } from '../../custom/MyAlert';
+import { cleanActiveSurvey } from '../../../redux/actions/surveyorsActions';
 
 export const FormAddQuestion = () => {
 
@@ -81,7 +82,8 @@ export const FormAddQuestion = () => {
     }
 
     const onClose = () => {
-        dispatch(uiCloseModalAdd());
+        dispatch(uiCloseModalAssign());
+        dispatch(cleanActiveSurvey());
     }
 
     const addOptions = (values: Partial<myFormValues>) => {

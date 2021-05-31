@@ -37,6 +37,7 @@ export const surveysReducer = ( state = initialState, action: SurveysAction ) =>
             }
 
         case types.chapterActive:
+            console.log(action.payload)
             return {
                 ...state,
                 activeChapter: {

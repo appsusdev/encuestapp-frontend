@@ -49,10 +49,13 @@ export const SurveysScreen: FC = () => {
   const onDenyEdit = () => {
     dispatch(cleanActiveSurvey());
     dispatch(uiCloseModalEdit());
+    dispatch(setChapters([]));
   }
 
   const onDenyAssign = () => {
     dispatch(uiCloseModalAssign());
+    dispatch(cleanActiveSurvey());
+    dispatch(setChapters([]));
   }
 
   const onDenyDelete = () => {

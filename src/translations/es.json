@@ -134,6 +134,7 @@
     "Region": "Región",
     "Attachment": "Adjunto",
     "Geolocation": "Geolocalización",
-    "Date": "Fecha"
+    "Date": "Fecha",
+    "EmptySurvey": "No se han agregado capítulos ni preguntas a esta encuesta."
 }
 
