@@ -135,6 +135,8 @@
     "Attachment": "Adjunto",
     "Geolocation": "Geolocalización",
     "Date": "Fecha",
-    "OnlyExcelFile":"Solo se aceptan archivos xlsx."
+    "EmptySurvey": "No se han agregado capítulos ni preguntas a esta encuesta.",
+    "OnlyExcelFile":"Solo se aceptan archivos xlsx.",
+    "InputSelect": "Seleccione..."
 }
 

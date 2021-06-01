@@ -25,9 +25,16 @@ export const ChapterTable = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
 
-    const { chapters, activeSurvey } = useSelector<AppState, AppState['survey']>(state => state.survey);
-    const list: Chapter[] = chapters;
-    const survey: Survey = activeSurvey;
+    const { surveys, activeSurvey } = useSelector<AppState, AppState['survey']>(state => state.survey);
+    const surveysDB: Survey[] = surveys;
+    const surveyActive: Survey = activeSurvey;
+    let surveyFilter: Survey[] = [];
+    let list: Chapter[] = [];
+
+    if (surveysDB && activeSurvey) {
+        surveyFilter = surveysDB.filter( survey => survey.idSurvey === surveyActive.idSurvey);
+        list = surveyFilter[0].chapters;
+    }
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(2);
@@ -46,7 +53,7 @@ export const ChapterTable = () => {
     };
 
     const onDelete = async(idChapter: string) => {
-        await dispatch(startDeleteChapter(survey.idSurvey, idChapter));
+        await dispatch(startDeleteChapter(surveyActive.idSurvey, idChapter));
     }
 
     const onEdit = (chapter: any) => {

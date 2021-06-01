@@ -23,9 +23,10 @@ export const surveyDTO = (survey: any) => {
         name: survey.titulo,
         creationDate: survey.fechaCreacion,
         state: survey.activo,
-        authorizationFormats: survey.formatoAutorizacion,
+        authorizationFormats: survey.formatosAutorizacion,
         surveyors: survey.encuestadores,
-        idTown: survey.idMunicipio
+        idTown: survey.idMunicipio,
+        chapters: survey.chapters
     }
 
     return surveyorFromDB;
@@ -41,19 +42,11 @@ export const capituloDTO = (chapter: Partial<Chapter>) => {
 }
 
 export const chapterDTO = ( chapter: any ) => {
-
-    const questionsFromDB = chapter.questions;
-    const questions:any[] = [];
-
-    questionsFromDB.forEach( (question: any) => {
-        questions.push(questionDTO(question));
-    });
-
     const chapterFromDB = {
         id: chapter.id,
         name: chapter.titulo,
         number: chapter.numero,
-        questions: questions,
+        questions: chapter.questions,
     }
 
     return chapterFromDB;

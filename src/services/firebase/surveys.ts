@@ -1,5 +1,6 @@
 import { db } from "../../config/firebase/firebase-config";
 import { Survey, Chapter } from "../../interfaces/Survey";
+import { questionDTO, chapterDTO, surveyDTO } from '../../helpers/surveyDTO';
 
 // Verificar si existe encuesta
 export const existsSurvey = (
@@ -39,9 +40,26 @@ export const getSurveys = async (town: string) => {
     });
   });
 
-  console.log("Obtener encuestas");
+  // Obtener cada encuesta con sus capitulos
+  let surveysAndChapters: any[] = [];
+  for (let survey of surveys) {
+    const chapters = await getChapters(town, survey.id);
 
-  return surveys;
+    let surveyDB = {
+      id: survey.id,
+      ...survey,
+      chapters: chapters,
+    };
+    surveysAndChapters = [...surveysAndChapters, surveyDB];
+  }
+  
+  // DTO surveys
+  const resp:any[] = [];
+  surveysAndChapters.forEach( survey => {
+    resp.push(surveyDTO(survey));
+  });
+
+  return resp;
 };
 
 // Crear encuesta
@@ -156,7 +174,13 @@ export const getChapters = async (town: string, idSurvey: string) => {
     chaptersAndQuestions = [...chaptersAndQuestions, chapterFromDB];
   }
 
-  return chaptersAndQuestions;
+  // DTO chapters
+  const resp:any[] = [];
+  chaptersAndQuestions.forEach( chapter => {
+      resp.push(chapterDTO(chapter));
+  });
+
+  return resp;
 };
 
 // Eliminar capitulo
@@ -249,5 +273,11 @@ export const getQuestions = async (
     });
   });
 
-  return allQuestions;
+  // DTO questions
+  const resp:any[] = [];
+  allQuestions.forEach( question => {
+      resp.push(questionDTO(question));
+  });
+
+  return resp;
 };
