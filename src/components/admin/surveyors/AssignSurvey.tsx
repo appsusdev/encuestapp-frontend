@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import clsx from 'clsx';
 
-import { Box, Button, Grid, MenuItem, TextField, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, TableFooter, TablePagination, Tooltip, IconButton, createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { Box, Button, Grid, MenuItem, TextField, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, TableFooter, TablePagination, Tooltip, IconButton, createMuiTheme, ThemeProvider, CircularProgress } from '@material-ui/core';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { TablePaginationAct } from '../../custom/TablePaginationAct';
 import { useStyles } from '../../../shared/styles/useStyles';
@@ -12,7 +12,7 @@ import { Survey } from '../../../interfaces/Survey';
 import { startAssignSurvey } from '../../../redux/actions/surveyorsActions';
 import { Surveyor } from '../../../interfaces/Surveyor';
 import { MyAlert } from '../../custom/MyAlert';
-import { uiCloseSuccessAlert, uiCloseErrorAlert } from '../../../redux/actions/uiActions';
+import { uiCloseSuccessAlert, uiCloseErrorAlert, uiCloseModalAlert } from '../../../redux/actions/uiActions';
 
 const theme = createMuiTheme({
     typography: {
@@ -35,13 +35,14 @@ export const AssignSurvey = () => {
 
     const [survey, setSurvey] = useState('');
     const [page, setPage] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [action, setAction] = useState(true);
     const [rowsPerPage, setRowsPerPage] = useState(3);
     const { surveys } = useSelector<AppState, AppState['survey']>(state => state.survey);
     const { activeSurveyor } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
-    const { successAlert, errorAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
+    const { successAlert, errorAlert, modalAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
     let list: Survey[] = surveys;
     const surveyor: Surveyor = activeSurveyor;
-    let action: boolean = true;
 
     const surveysAssign = list.filter( (survey: Survey) => survey.surveyors.includes(surveyor.email));
 
@@ -62,13 +63,15 @@ export const AssignSurvey = () => {
         setSurvey(event.target.value as string);
     };
 
-    const handleAssign = () => {
-        (survey.trim()) && dispatch(startAssignSurvey(survey, surveyor.email, action))
+    const handleAssign = async() => {
+        setLoading(true);
+        (survey.trim()) && await dispatch(startAssignSurvey(survey, surveyor.email, action));
+        setLoading(false);
     }
 
-    const onDelete = (id: string) => {
-        action = false;
-        dispatch( startAssignSurvey(id, surveyor.email, action));
+    const onDelete = async(id: string) => {
+        setAction(false);
+        await dispatch( startAssignSurvey(id, surveyor.email, action));
     }
 
     // Cerrar success alert
@@ -102,9 +105,30 @@ export const AssignSurvey = () => {
                     </Grid>
 
                     <Grid item xs={3}>
-                        <Button style={{marginTop: '27px'}} size="medium" className={clsx(classes.btnAction, classes.save)} onClick={handleAssign}>
-                            <FormattedMessage id='Assign' />
-                        </Button>
+                        {!loading ? (
+                            <Button
+                                autoFocus
+                                className={clsx(classes.btnAction, classes.save)}
+                                disabled={loading}
+                                onClick={handleAssign}
+                                size="medium"
+                                style={{marginTop: '27px'}}
+                                type="submit"
+                            >
+                                <FormattedMessage id="Assign" />
+                            </Button>
+                        ) : (
+                            <Button
+                                autoFocus
+                                className={clsx(classes.btnAction, classes.save)}
+                                disabled={true}
+                                size="medium"
+                                style={{marginTop: '27px'}}
+                                type="button"
+                            >
+                                <CircularProgress className={classes.btnLoading} />
+                            </Button>
+                        )}
                     </Grid>
 
                 </Grid>
@@ -132,7 +156,7 @@ export const AssignSurvey = () => {
                                             {survey.name}
                                         </TableCell>
                                         <TableCell size="small" align="center">
-                                            <Tooltip title={`${intl.formatMessage({ id: 'Delete' })}`}>
+                                            <Tooltip title={`${intl.formatMessage({ id: 'Delete' })}`} >
                                                 <IconButton aria-label="expand row" size="small" onClick={() => onDelete(survey.code)}> <DeleteOutlineOutlinedIcon /> </IconButton>
                                             </Tooltip>
                                         </TableCell>
@@ -168,8 +192,9 @@ export const AssignSurvey = () => {
                 </Box>
             </ThemeProvider>
 
-            <MyAlert open={successAlert} typeAlert="success" message="AssignedSurvey" time={2000} handleClose={closeSuccess}/>
+            <MyAlert open={successAlert} typeAlert="success" message={(action) ? "AssignedSurvey" : "SurveyDeleted"} time={2000} handleClose={closeSuccess}/>
             <MyAlert open={errorAlert} typeAlert="error" message="ErrorAssignedSurvey" time={2000} handleClose={closeSuccess}/>
+            {/* <MyAlert open={modalAlert} typeAlert="success" message="SurveyDeleted" time={2000} handleClose={closeSuccess}/> */}
 
         </Box >
     )

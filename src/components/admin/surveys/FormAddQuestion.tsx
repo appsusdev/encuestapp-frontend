@@ -47,8 +47,6 @@ export const FormAddQuestion = () => {
         description: yup.boolean(),
         textDescription: yup.string(),
         typeDescription: yup.string(),
-        deparment: yup.boolean(),
-        town: yup.boolean(),
     });
 
     interface myFormValues {
@@ -62,8 +60,6 @@ export const FormAddQuestion = () => {
         description: boolean,
         textDescription: string,
         typeDescription: Partial<TypeQuestion>,
-        department: boolean,
-        town: boolean,
     }
 
     let initialValues: Partial<myFormValues> = {
@@ -76,8 +72,6 @@ export const FormAddQuestion = () => {
         description: false,
         textDescription: '',
         typeDescription: TypeQuestion.TEXT_INPUT,
-        department: false,
-        town: false,
         options: options
     }
 
@@ -176,20 +170,22 @@ export const FormAddQuestion = () => {
                             </Grid>
 
                             <Grid item xs={3}>
-                                <Box mt={2}>
-                                <Tooltip title={`${intl.formatMessage({ id: 'MessageSix' })}`}> 
-                                
-                                    <Checkbox
-                                        checked={values.chart}
-                                        name="chart"
-                                        onChange={handleChange}
-                                        color="default"
-                                        disabled={(values.type === 'TEXT_INPUT') || (values.type === 'TEXT_AREA') || (values.type === 'REGION') || (values.type === 'FILE') || (values.type === 'GEOLOCATION') || (values.type === 'PICTURE')}
-                                        inputProps={{ 'aria-label': 'primary checkbox' }}
-                                    />
-                                </Tooltip>
-                                    <label className="form-text"><FormattedMessage id='Chart' /></label>
-                                </Box>
+                                {
+                                    (values.type === TypeQuestion.NUMBER || values.type === TypeQuestion.SELECT || values.type === TypeQuestion.CHECK || values.type === TypeQuestion.RADIO || values.type === TypeQuestion.DATE) &&
+                                    <Box mt={2}>
+                                    <Tooltip title={`${intl.formatMessage({ id: 'MessageSix' })}`}> 
+                                    
+                                        <Checkbox
+                                            checked={values.chart}
+                                            name="chart"
+                                            onChange={handleChange}
+                                            color="default"
+                                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                                        />
+                                    </Tooltip>
+                                        <label className="form-text"><FormattedMessage id='Chart' /></label>
+                                    </Box>
+                                }
                             </Grid>
 
                             <Grid item xs={4}>
@@ -206,7 +202,8 @@ export const FormAddQuestion = () => {
                                     <MenuItem value={TypeQuestion.SELECT}><FormattedMessage id="Select" /></MenuItem>
                                     <MenuItem value={TypeQuestion.CHECK}><FormattedMessage id="Checkbox" /></MenuItem>
                                     <MenuItem value={TypeQuestion.RADIO}><FormattedMessage id="Radius" /></MenuItem>
-                                    <MenuItem value={TypeQuestion.REGION}><FormattedMessage id="Region" /></MenuItem>
+                                    <MenuItem value={TypeQuestion.DEPARTMENT}><FormattedMessage id="Department" /></MenuItem>
+                                    <MenuItem value={TypeQuestion.TOWN}><FormattedMessage id="Town" /></MenuItem>
                                     <MenuItem value={TypeQuestion.FILE}><FormattedMessage id="Attachment" /></MenuItem>
                                     <MenuItem value={TypeQuestion.GEOLOCATION}><FormattedMessage id="Geolocation" /></MenuItem>
                                     <MenuItem value={TypeQuestion.PICTURE}><FormattedMessage id="Image" /></MenuItem>
@@ -215,7 +212,7 @@ export const FormAddQuestion = () => {
                             </Grid>
 
                             {
-                                (values.type === 'SELECT' || values.type === 'CHECK' || values.type === 'RADIO') &&
+                                (values.type === TypeQuestion.SELECT || values.type === TypeQuestion.CHECK || values.type === TypeQuestion.RADIO) &&
                                 <>
                                     <Grid item xs={12}>
                                         <Box mb={-1}>
@@ -282,7 +279,7 @@ export const FormAddQuestion = () => {
                                         (state === true) &&
                                         <Grid item xs={12}>
                                             <Alert severity="error" color="error">
-                                                Debe agregar una opción válida
+                                                <FormattedMessage id="ValidOption"/>
                                             </Alert>
                                         </Grid>
                                     }
@@ -327,42 +324,7 @@ export const FormAddQuestion = () => {
                                     }
                                 </>
                             }
-                            {
-                                (values.type === 'REGION') &&
-                                <>
-                                    <Grid item xs={12}>
-                                        <Box mb={-1}>
-                                            <label className="form-text" style={{ color: '#F04F47', fontSize: 12 }}><FormattedMessage id='MessageFive' /></label>
-                                        </Box>
-                                    </Grid>
-
-                                    <Grid item xs={12}>
-                                        {/* <Box mt={2}> */}
-
-                                        <Checkbox
-                                            checked={values.department}
-                                            name="department"
-                                            onChange={handleChange}
-                                            color="default"
-                                            inputProps={{ 'aria-label': 'primary checkbox' }}
-                                        />
-                                        <label className="form-text"><FormattedMessage id='Department' /></label>
-
-                                        <Checkbox
-                                            checked={values.town}
-                                            name="town"
-                                            onChange={handleChange}
-                                            color="default"
-                                            inputProps={{ 'aria-label': 'primary checkbox' }}
-                                        />
-                                        <label className="form-text"><FormattedMessage id='Town' /></label>
-                                        {/* </Box> */}
-
-                                    </Grid>
-                                </>
-                            }
                         </Grid>
-                        {/* <Divider/> */}
 
                         <Box mt={3} display="flex" flexDirection="row-reverse">
                             {!isSubmitting ? (

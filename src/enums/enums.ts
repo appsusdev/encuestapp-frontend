@@ -21,7 +21,8 @@ export enum TypeQuestion {
     GEOLOCATION = 'GEOLOCATION',
     PICTURE = 'PICTURE',
     RADIO = 'RADIO',
-    REGION = 'REGION'
+    DEPARTMENT='DEPARTMENT',
+    TOWN='TOWN'
 }
 
 export enum TypeDirectedTo {
