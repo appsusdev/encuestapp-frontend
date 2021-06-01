@@ -13,7 +13,10 @@ import {
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { AppState } from "../../../redux/reducers/rootReducer";
-import { Chapter } from "../../../interfaces/Survey";
+import {
+  Chapter,
+  SurveyQuestion,
+} from "../../../interfaces/Survey";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useStyles } from "../../../shared/styles/useStyles";
 import PersonIcon from "@material-ui/icons/Person";
@@ -23,6 +26,8 @@ import { TypeQuestion } from "../../../enums/enums";
 import { PhotoCamera } from "@material-ui/icons";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
 import { MenuItem } from "@material-ui/core";
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import { grey, red } from '@material-ui/core/colors';
 
 export const ViewSurvey = () => {
   const classes = useStyles();
@@ -32,9 +37,13 @@ export const ViewSurvey = () => {
   );
   const list: Chapter[] = chapters;
 
-  const editQuestion = (idQuestion: string) => {
-    // console.log(idQuestion);
-  }
+  const editQuestion = (question: SurveyQuestion) => {
+    console.log(question);
+  };
+
+  const deleteQuestion = (question: SurveyQuestion) => {
+    console.log(question);
+  };
 
   return (
     <Box m={2} className={classes.typography}>
@@ -56,19 +65,38 @@ export const ViewSurvey = () => {
                     {question.directedTo === "PreguntasIndividual" ? (
                       <PersonIcon
                         fontSize="small"
-                        style={{ marginTop: "5px" }}
+                        style={{ marginTop: "2px" }}
                       />
                     ) : (
-                      <HomeIcon fontSize="small" style={{ marginTop: "5px" }} />
+                      <HomeIcon fontSize="small" style={{ marginTop: "2px" }} />
                     )}
                   </Grid>
                   <Grid item xs={11} style={{ marginLeft: "-10px" }}>
                     {chapter.number}.{index + 1} {question.question}
-                    <EditOutlinedIcon
-                      onClick={ () => editQuestion(question.id)}
-                      style={{ marginLeft: '10px' }}
-                      fontSize="small"
-                    />
+                    <Tooltip
+                      title={`${intl.formatMessage({ id: "Edit" })}`}
+                      style={{ marginLeft: "5px", marginTop: "-5px", color: grey[800] }}
+                      color="default" 
+                    >
+                      <IconButton
+                        size="small"
+                        onClick={() => editQuestion(question)}
+                      >
+                        <EditOutlinedIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip
+                      title={`${intl.formatMessage({ id: "Delete" })}`}
+                      style={{ marginTop: "-5px", color: red[600] }}
+                      color="secondary"
+                    >
+                      <IconButton
+                        size="small"
+                        onClick={() => deleteQuestion(question)}
+                      >
+                        <DeleteOutlineOutlinedIcon/>
+                      </IconButton>
+                    </Tooltip>
                   </Grid>
 
                   <Grid
@@ -146,7 +174,8 @@ export const ViewSurvey = () => {
                         </Grid>
                       </>
                     )}
-                    {(question.options && question.type !== TypeQuestion.SELECT) &&
+                    {question.options &&
+                      question.type !== TypeQuestion.SELECT &&
                       question.options.map((option, index) => (
                         <Grid container key={index}>
                           <Grid item xs={6}>
@@ -174,13 +203,12 @@ export const ViewSurvey = () => {
                         name="question"
                         value=""
                         variant="outlined"
-                        label={`${intl.formatMessage({id: "InputSelect"})}`}
+                        label={`${intl.formatMessage({ id: "InputSelect" })}`}
                         InputLabelProps={{ shrink: false }}
                         select
                         className={classes.myTextFieldRoot}
                       >
                         {question.options?.map((option, index) => (
-                          
                           <MenuItem key={index} value={option.label}>
                             {option.label}
                           </MenuItem>
