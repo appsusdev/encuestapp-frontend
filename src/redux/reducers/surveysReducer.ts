@@ -1,13 +1,15 @@
-import { types, SurveysAction } from '../types/types';
+import { types, SurveysAction, ISurvey } from '../types/types';
 
 const initialState = {
     surveys: [],
     activeSurvey: null,
     chapters: [],
-    activeChapter: null
+    activeChapter: null,
+    activeQuestion: null,
+    chapterQuestion: null
 }
 
-export const surveysReducer = ( state = initialState, action: SurveysAction ) => {
+export const surveysReducer = ( state: ISurvey = initialState, action: SurveysAction ) => {
     switch (action.type) {
 
         case types.surveysLoad:
@@ -37,7 +39,6 @@ export const surveysReducer = ( state = initialState, action: SurveysAction ) =>
             }
 
         case types.chapterActive:
-            console.log(action.payload)
             return {
                 ...state,
                 activeChapter: {
@@ -51,6 +52,34 @@ export const surveysReducer = ( state = initialState, action: SurveysAction ) =>
                 activeChapter: null
             }
 
+        case types.questionActive:
+            return {
+                ...state,
+                activeQuestion: {
+                    ...action.payload
+                }
+            }
+
+        case types.questionCleanActive:
+            return {
+                ...state,
+                activeQuestion: null
+            }
+
+        case types.chapterQuestionActive:
+            return {
+                ...state,
+                chapterQuestion: {
+                    ...action.payload
+                }
+            }
+
+        case types.chapterQuestionCleanActive:
+            return {
+                ...state,
+                chapterQuestion: null
+            }
+    
     
         default:
             return state;

@@ -37,6 +37,10 @@ export const uiOpenErrorAlert = () => ({ type: types.uiOpenErrorAlert });
 
 export const uiCloseErrorAlert = () => ({ type: types.uiCloseErrorAlert });
 
+export const uiOpenQuestion = () => ({ type: types.uiOpenQuestion });
+
+export const uiCloseQuestion = () => ({ type: types.uiCloseQuestion });
+
 
 export const uiChangeRole = (role: TypeUser) => ({ 
     type: types.uiChangeRole,

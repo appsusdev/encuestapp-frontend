@@ -281,3 +281,45 @@ export const getQuestions = async (
 
   return resp;
 };
+
+
+// Editar pregunta
+export const editQuestion = async (
+  town: string,
+  idSurvey: string,
+  idChapter: string,
+  typeQuestion: string,
+  idQuestion: string,
+  question: any
+) => {
+  const docRef = await db.collection("Municipios").doc(town);
+  docRef.set({});
+  docRef
+    .collection("Encuestas")
+    .doc(idSurvey)
+    .collection("Capitulos")
+    .doc(idChapter)
+    .collection(typeQuestion)
+    .doc(idQuestion)
+    .set(question, { merge: true });
+};
+
+// Eliminar pregunta
+export const deleteQuestion = async (
+  town: string,
+  idSurvey: string,
+  idChapter: string,
+  typeQuestion: string,
+  idQuestion: string
+) => {
+  await db
+    .collection("Municipios")
+    .doc(town)
+    .collection("Encuestas")
+    .doc(idSurvey)
+    .collection("Capitulos")
+    .doc(idChapter)
+    .collection(typeQuestion)
+    .doc(idQuestion)
+    .delete();    
+}

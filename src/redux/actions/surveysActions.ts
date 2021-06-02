@@ -1,7 +1,7 @@
 import { Chapter, Survey } from '../../interfaces/Survey';
-import { existsSurvey, getSurveys, addNewSurvey, editSurvey, existsChapter, addNewChapter, deleteChapter, editChapter, addQuestion } from '../../services/firebase/surveys';
+import { existsSurvey, getSurveys, addNewSurvey, editSurvey, existsChapter, addNewChapter, deleteChapter, editChapter, addQuestion, editQuestion, getChapters, deleteQuestion } from '../../services/firebase/surveys';
 import { encuestaDTO, capituloDTO, preguntaDTO } from '../../helpers/surveyDTO';
-import { uiOpenErrorAlert, uiOpenSuccessAlert, uiOpenModalAlert } from './uiActions';
+import { uiOpenErrorAlert, uiOpenSuccessAlert, uiOpenModalAlert, uiCloseQuestion } from './uiActions';
 import { types } from '../types/types';
 
 export const startNewSurvey = (survey: Partial<Survey>) => {
@@ -177,5 +177,66 @@ export const startNewQuestion = (question: any, idSurvey: string) => {
         } catch (error) {
             throw new Error(error);
         }
+    }
+}
+
+// Pregunta activa
+export const questionActive = (question: {} | null) => ({
+    type: types.questionActive,
+    payload: question
+});
+
+export const questionCleanActive = () => ({type: types.questionCleanActive});
+
+// Capitulo de la pregunta activa
+export const chapterQuestionActive = (chapter: {} | null) => ({
+    type: types.chapterQuestionActive,
+    payload: chapter
+});
+
+export const chapterQuestionCleanActive = () => ({type: types.chapterQuestionCleanActive});
+
+// Editar
+export const startEditQuestion = (question: any, idSurvey: string, idQuestion: string) => {
+    return async(dispatch: any, getState: any) => {
+        const { auth } = getState();
+        const { activeSurvey: active } = getState().survey;
+        const survey: Survey = active;
+        const town = auth.municipios[0];
+        const idChapter = question.chapter;
+
+        let typeQuestion:string = '';
+        (question.directedTo === 0) ? (typeQuestion = 'PreguntasIndividual') : (typeQuestion = 'PreguntasHogar')
+
+        const questionToDB = preguntaDTO(question, typeQuestion);
+        try {
+            await editQuestion(town, idSurvey, idChapter, typeQuestion, idQuestion, questionToDB,);
+            const chapters = await getChapters(town, idSurvey)
+            dispatch( uiOpenSuccessAlert() );
+            dispatch( activeSurvey({...survey, chapters: chapters}));
+            dispatch( setChapters(chapters) );
+            
+        } catch (error) {
+            throw new Error(error);
+        }
+        dispatch( uiCloseQuestion() );
+        dispatch( questionCleanActive() );
+        dispatch( chapterQuestionCleanActive() );
+    }
+}
+
+// Eliminar pregunta
+export const startDeleteQuestion = ( question: any, idChapter: string ) => {
+    return async(dispatch: any, getState: any) => {
+        const { auth } = getState();
+        const { activeSurvey: active } = getState().survey;
+        const survey: Survey = active;
+        const town = auth.municipios[0];
+        
+        await deleteQuestion(town, survey.idSurvey, idChapter, question.directedTo, question.id);
+        const chapters = await getChapters(town, survey.idSurvey)
+        dispatch( uiOpenSuccessAlert() );
+        dispatch( activeSurvey({...survey, chapters: chapters}));
+        dispatch( setChapters(chapters) );
     }
 }

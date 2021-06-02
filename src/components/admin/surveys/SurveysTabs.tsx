@@ -21,7 +21,7 @@ export const SurveysTabs = () => {
   const [value, setValue] = React.useState(0);
   const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
   const { activeSurvey } = useSelector<AppState, AppState['survey']>(state => state.survey);
-  const { successAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
+  const { successAlert, openQuestion } = useSelector<AppState, AppState['ui']>(state => state.ui);
   const survey: Survey = activeSurvey;
 
   useEffect(() => {
@@ -33,8 +33,12 @@ export const SurveysTabs = () => {
   };
 
   const closeSuccess = () => {
-    dispatch( uiCloseModalEdit() );
-    dispatch( uiCloseSuccessAlert() );
+    if( !openQuestion ) {
+      dispatch( uiCloseSuccessAlert() );
+    } else {
+      dispatch( uiCloseModalEdit() );
+      dispatch( uiCloseSuccessAlert() );
+    }
   }
 
   return (

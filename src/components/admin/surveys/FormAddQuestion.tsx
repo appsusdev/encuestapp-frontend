@@ -9,10 +9,10 @@ import { Box, Button, Grid, MenuItem, Checkbox, Tooltip, IconButton, CircularPro
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { Alert } from '@material-ui/lab';
 import { MyTextField } from '../../custom/MyTextField';
-import { uiCloseSuccessAlert, uiCloseModalAssign } from '../../../redux/actions/uiActions';
+import { uiCloseSuccessAlert, uiCloseModalAssign, uiCloseQuestion } from '../../../redux/actions/uiActions';
 import { QuestionOptions, Survey, Chapter } from '../../../interfaces/Survey';
 import { useStyles } from '../../../shared/styles/useStyles';
-import { startLoadingChapters, startNewQuestion } from '../../../redux/actions/surveysActions';
+import { startLoadingChapters, startNewQuestion, questionCleanActive, chapterQuestionCleanActive, startEditQuestion } from '../../../redux/actions/surveysActions';
 import { AppState } from '../../../redux/reducers/rootReducer';
 import { TypeQuestion, TypeDirectedTo } from '../../../enums/enums';
 import { MyAlert } from '../../custom/MyAlert';
@@ -25,12 +25,12 @@ export const FormAddQuestion = () => {
     const dispatch = useDispatch();
 
     const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
-    const { activeSurvey, chapters } = useSelector<AppState, AppState['survey']>(state => state.survey);
-    const { successAlert } = useSelector<AppState, AppState["ui"]>((state) => state.ui);
+    const { activeSurvey, activeQuestion, chapters, chapterQuestion } = useSelector<AppState, AppState['survey']>(state => state.survey);
+    const { successAlert, openQuestion } = useSelector<AppState, AppState["ui"]>((state) => state.ui);
     const survey: Survey = activeSurvey;
     const list: Chapter[] = chapters;
     
-    const [options, setOptions] = useState<QuestionOptions[]>([]);
+    const [options, setOptions] = useState<QuestionOptions[]>((activeQuestion && activeQuestion.options) ? activeQuestion.options : []);
     const [state, setState] = useState(false);
 
     useEffect(() => {
@@ -75,9 +75,30 @@ export const FormAddQuestion = () => {
         options: options
     }
 
+    if( activeQuestion && chapterQuestion) {
+        initialValues = {
+            chapter: chapterQuestion.id,
+            question: activeQuestion.question,
+            directedTo: (activeQuestion.directedTo === 'PreguntasIndividual') ? 0 : 1,
+            chart: activeQuestion.chart,
+            type: activeQuestion.type,
+            label: '',
+            description: false,
+            textDescription: '',
+            typeDescription: TypeQuestion.TEXT_INPUT,
+            options: options,
+        }
+    }
+
     const onClose = () => {
-        dispatch(uiCloseModalAssign());
-        dispatch(cleanActiveSurvey());
+        if (openQuestion) {
+            dispatch(chapterQuestionCleanActive());
+            dispatch(questionCleanActive());
+            dispatch(uiCloseQuestion());
+        } else {
+            dispatch(uiCloseModalAssign());
+            dispatch(cleanActiveSurvey());
+        }
     }
 
     const addOptions = (values: Partial<myFormValues>) => {
@@ -121,7 +142,13 @@ export const FormAddQuestion = () => {
                         data.options = null
                     }
                     setSubmitting(true);
-                    await dispatch( startNewQuestion(data, survey.idSurvey) );
+                    if(activeQuestion) {
+                        // Editar pregunta 
+                        await  dispatch( startEditQuestion(data, survey.idSurvey, activeQuestion.id) );
+                    } else {
+                        // Agregar pregunta
+                        await dispatch( startNewQuestion(data, survey.idSurvey) );
+                    }
                     setSubmitting(false);
                     resetForm({});
                 }}>
@@ -138,6 +165,7 @@ export const FormAddQuestion = () => {
                                     variant='outlined'
                                     select
                                     className={classes.myTextFieldRoot}
+                                    disabled={(activeQuestion) ? true : false}
                                 >
                                     {
                                         list.map( chapter => (
@@ -163,6 +191,7 @@ export const FormAddQuestion = () => {
                                     variant='outlined'
                                     select
                                     className={classes.myTextFieldRoot}
+                                    disabled={(activeQuestion) ? true : false}
                                 >
                                     <MenuItem value={0}>{TypeDirectedTo.INDIVIDUAL}</MenuItem>
                                     <MenuItem value={1}>{TypeDirectedTo.HOGAR}</MenuItem>
@@ -284,7 +313,7 @@ export const FormAddQuestion = () => {
                                         </Grid>
                                     }
                                     {
-                                        (options.length > 0) &&
+                                        (options && options.length > 0) &&
                                         options.map((option, index) => {
                                             return (
                                             <Grid container key={index} style={{marginTop: '10px'}}>

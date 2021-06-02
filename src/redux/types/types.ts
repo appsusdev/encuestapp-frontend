@@ -1,6 +1,6 @@
 import { TypeUser } from "../../enums/enums";
 import { Surveyor } from "../../interfaces/Surveyor";
-import { Survey } from '../../interfaces/Survey';
+import { Survey, Chapter, SurveyQuestion } from '../../interfaces/Survey';
 
 export const types = {
     // auth
@@ -31,6 +31,8 @@ export const types = {
     uiCloseSuccessAlert: '[ui] Close success alert',
     uiOpenErrorAlert: '[ui] Open error alert',
     uiCloseErrorAlert: '[ui] Close error alert',
+    uiOpenQuestion: '[ui] Open edit question',
+    uiCloseQuestion: '[ui] Close edit question',
     uiChangeRole: '[ui] Change role',
 
     // surveyors
@@ -52,6 +54,10 @@ export const types = {
     chaptersLoad: '[survey] Load chapters',
     chapterActive: '[survey] Set active chapter',
     chapterCleanActive: '[survey] Clean active chapter',
+    questionActive: '[survey] Set active question',
+    questionCleanActive: '[survey] Clean active question',
+    chapterQuestionActive: '[survey] Set active chapter question',
+    chapterQuestionCleanActive: '[survey] Clean active chapter question',
 
     // Search
     arraySearch: '[search] Array search',
@@ -83,6 +89,7 @@ export interface IUi {
   alert: boolean,
   successAlert: boolean,
   errorAlert: boolean,
+  openQuestion: boolean,
   role: TypeUser,
 }
 
@@ -105,9 +112,12 @@ export type SurveyorsAction = {
 
 // Surveys
 export interface ISurvey {
-  surveys: Partial<Survey>[],
+  surveys: Survey[],
   activeSurvey: Partial<Survey> | null,
   chapters: any[]
+  activeChapter: Partial<Chapter> | null,
+  activeQuestion: Partial<SurveyQuestion> | null,
+  chapterQuestion: any | null
 }
 
 export type SurveysAction = {
