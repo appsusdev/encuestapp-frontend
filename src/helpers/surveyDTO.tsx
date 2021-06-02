@@ -59,8 +59,6 @@ export const preguntaDTO = ( question: any, directedTo: string ) => {
         tipo: question.type,
         graficar: question.chart,
         opciones: question.options,
-        departamento: question.department,
-        municipio: question.town,
     }
 
     return questionToDB;
@@ -74,8 +72,6 @@ export const questionDTO = ( question: any ) => {
         type: question.tipo,
         chart: question.graficar,
         options: question.opciones,
-        department: question.departamento,
-        town: question.municipio,
     }
 
     return questionFromDB;

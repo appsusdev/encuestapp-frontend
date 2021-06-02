@@ -109,6 +109,7 @@
     "UpdatedSurveyor": "Successfully updated surveyor",
     "MessageExistsSurvey": "A survey is already registered with the code entered",
     "SurveyCreated": "Survey successfully created",
+    "SurveyDeleted": "Survey successfully deleted",
     "StateSurveyUpdated": "The state of the survey has been updated",
     "UpdatedSurvey": "Successfully updated survey",
     "MessageAssignSurveyOne": "It is not possible to assign surveys to this surveyor.", 
@@ -137,5 +138,8 @@
     "Date": "Date",
     "EmptySurvey": "No chapters or questions have been added to this survey.",
     "OnlyExcelFile":"Only xlsx files are accepted",
-    "InputSelect": "Seleccione..."
+    "InputSelect": "Seleccione...",
+    "ValidOption": "You must add a valid option.",
+    "FilterTownMessage": "Please choose a department to filter by municipality",
+    "GetPosition": "Get position"
 }

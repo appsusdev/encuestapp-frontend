@@ -157,6 +157,7 @@ export const startAssignSurvey = (id: string, email: string, action: boolean) =>
 
             await assignSurvey(town, id, newSurveyors);
             await dispatch(startLoadingSurveys(town));
+            dispatch( uiOpenSuccessAlert() );
         }
     }
 }

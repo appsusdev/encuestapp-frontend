@@ -1,9 +1,13 @@
+import clsx from "clsx";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useSelector } from "react-redux";
 
 import {
   Box,
+  Button,
   Typography,
   Grid,
+  MenuItem,
   TextField,
   Tooltip,
   IconButton,
@@ -11,23 +15,19 @@ import {
   FormControlLabel,
   Radio,
 } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
-import { AppState } from "../../../redux/reducers/rootReducer";
-import {
-  Chapter,
-  SurveyQuestion,
-} from "../../../interfaces/Survey";
-import { FormattedMessage, useIntl } from "react-intl";
-import { useStyles } from "../../../shared/styles/useStyles";
-import PersonIcon from "@material-ui/icons/Person";
-import HomeIcon from "@material-ui/icons/Home";
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
-import { TypeQuestion } from "../../../enums/enums";
+import { grey, red } from "@material-ui/core/colors";
 import { PhotoCamera } from "@material-ui/icons";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
-import { MenuItem } from "@material-ui/core";
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
-import { grey, red } from '@material-ui/core/colors';
+import DeleteOutlineOutlinedIcon from "@material-ui/icons/DeleteOutlineOutlined";
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
+import HomeIcon from "@material-ui/icons/Home";
+import LocationOnIcon from "@material-ui/icons/LocationOn";
+import PersonIcon from "@material-ui/icons/Person";
+import { Alert } from "@material-ui/lab";
+import { AppState } from "../../../redux/reducers/rootReducer";
+import { Chapter, SurveyQuestion } from "../../../interfaces/Survey";
+import { useStyles } from "../../../shared/styles/useStyles";
+import { TypeQuestion } from "../../../enums/enums";
 
 export const ViewSurvey = () => {
   const classes = useStyles();
@@ -75,8 +75,12 @@ export const ViewSurvey = () => {
                     {chapter.number}.{index + 1} {question.question}
                     <Tooltip
                       title={`${intl.formatMessage({ id: "Edit" })}`}
-                      style={{ marginLeft: "5px", marginTop: "-5px", color: grey[800] }}
-                      color="default" 
+                      style={{
+                        marginLeft: "5px",
+                        marginTop: "-5px",
+                        color: grey[800],
+                      }}
+                      color="default"
                     >
                       <IconButton
                         size="small"
@@ -94,7 +98,7 @@ export const ViewSurvey = () => {
                         size="small"
                         onClick={() => deleteQuestion(question)}
                       >
-                        <DeleteOutlineOutlinedIcon/>
+                        <DeleteOutlineOutlinedIcon />
                       </IconButton>
                     </Tooltip>
                   </Grid>
@@ -138,6 +142,54 @@ export const ViewSurvey = () => {
                         size="small"
                       />
                     )}
+                    {question.type === TypeQuestion.DEPARTMENT && (
+                      <TextField
+                        size="small"
+                        name="deparment"
+                        value=""
+                        variant="outlined"
+                        label={`${intl.formatMessage({ id: "Department" })}`}
+                        InputLabelProps={{ shrink: false }}
+                        select
+                        className={classes.myTextFieldRoot}
+                      >
+                        <MenuItem key={index} value=""></MenuItem>
+                      </TextField>
+                    )}
+                    {question.type === TypeQuestion.TOWN && (
+                      <>
+                        <label
+                          className="form-text"
+                          style={{ fontSize: "11px" }}
+                        >
+                          <FormattedMessage id="FilterTownMessage" />
+                        </label>
+                        <TextField
+                          size="small"
+                          name="deparment"
+                          value=""
+                          variant="outlined"
+                          label={`${intl.formatMessage({ id: "Department" })}`}
+                          InputLabelProps={{ shrink: false }}
+                          select
+                          className={classes.myTextFieldRoot}
+                        >
+                          <MenuItem key={index} value=""></MenuItem>
+                        </TextField>
+                        <TextField
+                          size="small"
+                          name="town"
+                          value=""
+                          variant="outlined"
+                          label={`${intl.formatMessage({ id: "Town" })}`}
+                          InputLabelProps={{ shrink: false }}
+                          select
+                          className={classes.myTextFieldRoot}
+                        >
+                          <MenuItem key={index} value=""></MenuItem>
+                        </TextField>
+                      </>
+                    )}
                     {(question.type === TypeQuestion.FILE ||
                       question.type === TypeQuestion.PICTURE) && (
                       <>
@@ -174,8 +226,8 @@ export const ViewSurvey = () => {
                         </Grid>
                       </>
                     )}
-                    {question.options &&
-                      question.type !== TypeQuestion.SELECT &&
+                    {(question.options &&
+                      question.type !== TypeQuestion.SELECT) &&
                       question.options.map((option, index) => (
                         <Grid container key={index}>
                           <Grid item xs={6}>
@@ -214,6 +266,20 @@ export const ViewSurvey = () => {
                           </MenuItem>
                         ))}
                       </TextField>
+                    )}
+                    {question.type === TypeQuestion.GEOLOCATION && (
+                      <Button
+                        style={{
+                          marginTop: "10px",
+                          textTransform: "uppercase",
+                        }}
+                        className={clsx(classes.btnAction, classes.save)}
+                        size="medium"
+                        component="span"
+                      >
+                        <LocationOnIcon />
+                        <FormattedMessage id="GetPosition" />
+                      </Button>
                     )}
                   </Grid>
                 </Grid>
