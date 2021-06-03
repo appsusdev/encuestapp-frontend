@@ -1,6 +1,6 @@
 import { Chapter, Survey } from '../../interfaces/Survey';
-import { existsSurvey, getSurveys, addNewSurvey, editSurvey, existsChapter, addNewChapter, deleteChapter, editChapter, addQuestion, editQuestion, getChapters, deleteQuestion } from '../../services/firebase/surveys';
-import { encuestaDTO, capituloDTO, preguntaDTO } from '../../helpers/surveyDTO';
+import { existsSurvey, getSurveys, addNewSurvey, editSurvey, existsChapter, addNewChapter, deleteChapter, editChapter, addQuestion, editQuestion, getChapters, deleteQuestion, getSurveysAndChapters } from '../../services/firebase/surveys';
+import { encuestaDTO, capituloDTO, preguntaDTO, surveyDTO } from '../../helpers/surveyDTO';
 import { uiOpenErrorAlert, uiOpenSuccessAlert, uiOpenModalAlert, uiCloseQuestion } from './uiActions';
 import { types } from '../types/types';
 
@@ -22,7 +22,7 @@ export const startNewSurvey = (survey: Partial<Survey>) => {
                 // Crear encuesta
                 await addNewSurvey(town, code, surveyToDB);
 
-                await dispatch( startLoadingSurveys(town));
+                await dispatch( startLoadingCompleteSurveys(town));
                 dispatch( uiOpenSuccessAlert() );
             } catch (error) {
                 throw new Error(error);
@@ -31,17 +31,36 @@ export const startNewSurvey = (survey: Partial<Survey>) => {
     } 
 }
 
-// Cargar encuestas por municipio
-export const startLoadingSurveys = ( town: string ) => {
+// Cargar solo informacion de la encuesta
+export const startLoadingDataSurveys = ( town: string ) => {
     return async(dispatch: any) => {
-        const surveys = await getSurveys(town);
+        const resp = await getSurveys(town);
+        const surveys:any[] = [];
+
+        resp.forEach( resp => {
+            surveys.push(surveyDTO(resp));
+        });
+        dispatch( setDataSurveys(surveys) );
+    }
+};
+
+
+// Cargar encuestas por municipio
+export const startLoadingCompleteSurveys = ( town: string ) => {
+    return async(dispatch: any) => {
+        const surveys = await getSurveysAndChapters(town);
 
         await dispatch( setSurveys(surveys) );
     }
 };
 
 export const setSurveys = (surveys: Survey[]) => ({
-    type: types.surveysLoad,
+    type: types.surveysCompleteLoad,
+    payload: surveys
+});
+
+export const setDataSurveys = (surveys: Survey[]) => ({
+    type: types.surveysDataLoad,
     payload: surveys
 });
 
@@ -62,7 +81,7 @@ export const startEditSurvey = (survey: Partial<Survey>) => {
         
         try {
             await editSurvey(survey, town);
-            await dispatch( startLoadingSurveys(town) );
+            await dispatch( startLoadingCompleteSurveys(town) );
             dispatch( uiOpenSuccessAlert() );
         } catch (error) {
             throw new Error(error);
@@ -90,7 +109,7 @@ export const startNewChapter = (chapter: Partial<Chapter>, idSurvey: string, act
                     (idChapter) && await editChapter(town, idSurvey, idChapter, chapterToDB);
                     dispatch( chapterActive({...activeChapter, name: name, number: number}))
                     await dispatch( uiOpenSuccessAlert() );
-                    await dispatch( startLoadingSurveys(town) );
+                    await dispatch( startLoadingCompleteSurveys(town) );
                     await dispatch( startLoadingChapters(town, idSurvey) );
                     
                 } else {
@@ -108,7 +127,7 @@ export const startNewChapter = (chapter: Partial<Chapter>, idSurvey: string, act
                     dispatch( chapterActive({...activeChapter, name: name, number: number}))
                 }
                 await dispatch( uiOpenSuccessAlert() );
-                await dispatch( startLoadingSurveys(town) );
+                await dispatch( startLoadingCompleteSurveys(town) );
                 await dispatch( startLoadingChapters(town, idSurvey) );
             } catch (error) {
                 throw new Error(error);
@@ -140,7 +159,7 @@ export const startDeleteChapter = ( idSurvey: string, idChapter: string ) => {
 
         await deleteChapter(town, idSurvey, idChapter);
         dispatch( uiOpenModalAlert() );
-        await dispatch( startLoadingSurveys(town) );
+        await dispatch( startLoadingCompleteSurveys(town) );
         dispatch( chapterCleanActive() );
     }
 }
@@ -173,7 +192,7 @@ export const startNewQuestion = (question: any, idSurvey: string) => {
         try {
             await addQuestion(town, idSurvey, idChapter, typeQuestion, questionToDB, idQuestion);
             dispatch( uiOpenSuccessAlert() );
-            await dispatch( startLoadingSurveys(town) );
+            await dispatch( startLoadingCompleteSurveys(town) );
         } catch (error) {
             throw new Error(error);
         }

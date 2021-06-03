@@ -48,7 +48,8 @@ export const types = {
     surveyAddNew: '[survey] New survey',
     surveyActive: '[survey] Set active survey',
     surveyCleanActive: '[survey] Clean active survey',
-    surveysLoad: '[survey] Load surveys',
+    surveysCompleteLoad: '[survey] Load complete surveys',
+    surveysDataLoad: '[survey] Load data surveys',
     surveyUpdated: '[survey] Updated survey',
     surveyDelete: '[survey] Delete survey',
     chaptersLoad: '[survey] Load chapters',
@@ -113,6 +114,7 @@ export type SurveyorsAction = {
 // Surveys
 export interface ISurvey {
   surveys: Survey[],
+  dataSurveys: Survey[],
   activeSurvey: Partial<Survey> | null,
   chapters: any[]
   activeChapter: Partial<Chapter> | null,

@@ -12,7 +12,8 @@ import { Survey } from '../../../interfaces/Survey';
 import { startAssignSurvey } from '../../../redux/actions/surveyorsActions';
 import { Surveyor } from '../../../interfaces/Surveyor';
 import { MyAlert } from '../../custom/MyAlert';
-import { uiCloseSuccessAlert, uiCloseErrorAlert, uiCloseModalAlert } from '../../../redux/actions/uiActions';
+import { uiCloseSuccessAlert, uiCloseErrorAlert } from '../../../redux/actions/uiActions';
+import { startLoadingCompleteSurveys } from '../../../redux/actions/surveysActions';
 
 const theme = createMuiTheme({
     typography: {
@@ -36,13 +37,15 @@ export const AssignSurvey = () => {
     const [survey, setSurvey] = useState('');
     const [page, setPage] = useState(0);
     const [loading, setLoading] = useState(false);
-    const [action, setAction] = useState(true);
+    const [assign, setAssign] = useState(true);
     const [rowsPerPage, setRowsPerPage] = useState(3);
-    const { surveys } = useSelector<AppState, AppState['survey']>(state => state.survey);
+    const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
+    const { dataSurveys } = useSelector<AppState, AppState['survey']>(state => state.survey);
     const { activeSurveyor } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
-    const { successAlert, errorAlert, modalAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
-    let list: Survey[] = surveys;
+    const { successAlert, errorAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
+    let list: Survey[] = dataSurveys;
     const surveyor: Surveyor = activeSurveyor;
+    let action: boolean = true;
 
     const surveysAssign = list.filter( (survey: Survey) => survey.surveyors.includes(surveyor.email));
 
@@ -65,13 +68,17 @@ export const AssignSurvey = () => {
 
     const handleAssign = async() => {
         setLoading(true);
+        setAssign(true);
         (survey.trim()) && await dispatch(startAssignSurvey(survey, surveyor.email, action));
         setLoading(false);
+        municipios && await dispatch(startLoadingCompleteSurveys(municipios[0]));
     }
 
     const onDelete = async(id: string) => {
-        setAction(false);
+        action = false;
+        setAssign(false);
         await dispatch( startAssignSurvey(id, surveyor.email, action));
+        municipios && await dispatch(startLoadingCompleteSurveys(municipios[0]));
     }
 
     // Cerrar success alert
@@ -192,9 +199,9 @@ export const AssignSurvey = () => {
                 </Box>
             </ThemeProvider>
 
-            <MyAlert open={successAlert} typeAlert="success" message={(action) ? "AssignedSurvey" : "SurveyDeleted"} time={2000} handleClose={closeSuccess}/>
+            <MyAlert open={successAlert} typeAlert="success" message={(assign) ? "AssignedSurvey" : "SurveyDeleted"} time={2000} handleClose={closeSuccess}/>
             <MyAlert open={errorAlert} typeAlert="error" message="ErrorAssignedSurvey" time={2000} handleClose={closeSuccess}/>
-            {/* <MyAlert open={modalAlert} typeAlert="success" message="SurveyDeleted" time={2000} handleClose={closeSuccess}/> */}
+            {/* <MyAlert open={modalAlert} typeAlert="success" message="SurveyDeleted" time={2000} handleClose={closeSuccess}/>  */}
 
         </Box >
     )

@@ -35,15 +35,13 @@ import {
 } from "../../../redux/actions/uiActions";
 import { FormAddQuestion } from "./FormAddQuestion";
 import CustomizedDialog from "../../custom/CustomizedDialog";
-import { startDeleteQuestion } from '../../../redux/actions/surveysActions';
+import { startDeleteQuestion, startLoadingCompleteSurveys } from '../../../redux/actions/surveysActions';
 import {
   questionActive,
   questionCleanActive,
   chapterQuestionActive,
   chapterQuestionCleanActive,
-  startLoadingSurveys,
-  startLoadingChapters,
-  activeSurvey,
+  startLoadingChapters
 } from "../../../redux/actions/surveysActions";
 
 export const ViewSurvey = () => {
@@ -79,7 +77,7 @@ export const ViewSurvey = () => {
 
   const deleteQuestion = async(question: SurveyQuestion, idChapter: string) => {
     await dispatch( startDeleteQuestion(question, idChapter) );
-    municipios && await dispatch( startLoadingSurveys(municipios[0]) );
+    municipios && await dispatch( startLoadingCompleteSurveys(municipios[0]) );
   };
 
   const handleClose = () => {

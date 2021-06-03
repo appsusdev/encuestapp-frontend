@@ -24,7 +24,7 @@ export const existsSurvey = (
     .catch((err) => console.log(err));
 };
 
-// Obtener encuestas por municipio
+// Obtener solamente informacion de las encuestas
 export const getSurveys = async (town: string) => {
   const surveyorsSnap = await db
     .collection("Municipios")
@@ -39,6 +39,12 @@ export const getSurveys = async (town: string) => {
       ...snap.data(),
     });
   });
+
+  return surveys;
+}  
+// Obtener encuestas con toda la informacion (capitulos y preguntas)
+export const getSurveysAndChapters = async (town: string) => {
+  const surveys = await getSurveys(town);
 
   // Obtener cada encuesta con sus capitulos
   let surveysAndChapters: any[] = [];
