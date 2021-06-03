@@ -19,8 +19,6 @@ export interface SurveyQuestion {
     chart?: boolean;
     type: TypeQuestion;
     options?: QuestionOptions[] | null;
-    department: boolean;
-    town: boolean;
 }
 export interface QuestionOptions {
     label: string;

@@ -1,6 +1,7 @@
 import clsx from "clsx";
+import { useEffect } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   Box,
@@ -25,24 +26,66 @@ import LocationOnIcon from "@material-ui/icons/LocationOn";
 import PersonIcon from "@material-ui/icons/Person";
 import { Alert } from "@material-ui/lab";
 import { AppState } from "../../../redux/reducers/rootReducer";
-import { Chapter, SurveyQuestion } from "../../../interfaces/Survey";
+import { Chapter, SurveyQuestion, Survey } from "../../../interfaces/Survey";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { TypeQuestion } from "../../../enums/enums";
+import {
+  uiOpenQuestion,
+  uiCloseQuestion,
+} from "../../../redux/actions/uiActions";
+import { FormAddQuestion } from "./FormAddQuestion";
+import CustomizedDialog from "../../custom/CustomizedDialog";
+import { startDeleteQuestion } from '../../../redux/actions/surveysActions';
+import {
+  questionActive,
+  questionCleanActive,
+  chapterQuestionActive,
+  chapterQuestionCleanActive,
+  startLoadingSurveys,
+  startLoadingChapters,
+  activeSurvey,
+} from "../../../redux/actions/surveysActions";
 
 export const ViewSurvey = () => {
   const classes = useStyles();
   const intl = useIntl();
-  const { chapters } = useSelector<AppState, AppState["survey"]>(
+  const dispatch = useDispatch();
+  const { chapters, activeSurvey } = useSelector<AppState, AppState["survey"]>(
     (state) => state.survey
   );
+  const { municipios } = useSelector<AppState, AppState["auth"]>(
+    (state) => state.auth
+  );
+  const { openQuestion } = useSelector<AppState, AppState["ui"]>(
+    (state) => state.ui
+  );
   const list: Chapter[] = chapters;
+  const survey: Survey = activeSurvey;
 
-  const editQuestion = (question: SurveyQuestion) => {
-    console.log(question);
+  useEffect(() => {
+    municipios &&
+      dispatch(startLoadingChapters(municipios[0], survey.idSurvey));
+  }, [dispatch]);
+
+  const editQuestion = (
+    question: SurveyQuestion,
+    idChapter: string,
+    nameChapter: string
+  ) => {
+    dispatch(chapterQuestionActive({ id: idChapter, name: nameChapter }));
+    dispatch(questionActive(question));
+    dispatch(uiOpenQuestion());
   };
 
-  const deleteQuestion = (question: SurveyQuestion) => {
-    console.log(question);
+  const deleteQuestion = async(question: SurveyQuestion, idChapter: string) => {
+    await dispatch( startDeleteQuestion(question, idChapter) );
+    municipios && await dispatch( startLoadingSurveys(municipios[0]) );
+  };
+
+  const handleClose = () => {
+    dispatch(chapterQuestionCleanActive());
+    dispatch(questionCleanActive());
+    dispatch(uiCloseQuestion());
   };
 
   return (
@@ -84,7 +127,9 @@ export const ViewSurvey = () => {
                     >
                       <IconButton
                         size="small"
-                        onClick={() => editQuestion(question)}
+                        onClick={() =>
+                          editQuestion(question, chapter.id, chapter.name)
+                        }
                       >
                         <EditOutlinedIcon />
                       </IconButton>
@@ -96,7 +141,7 @@ export const ViewSurvey = () => {
                     >
                       <IconButton
                         size="small"
-                        onClick={() => deleteQuestion(question)}
+                        onClick={() => deleteQuestion(question, chapter.id)}
                       >
                         <DeleteOutlineOutlinedIcon />
                       </IconButton>
@@ -226,8 +271,8 @@ export const ViewSurvey = () => {
                         </Grid>
                       </>
                     )}
-                    {(question.options &&
-                      question.type !== TypeQuestion.SELECT) &&
+                    {question.options &&
+                      question.type !== TypeQuestion.SELECT &&
                       question.options.map((option, index) => (
                         <Grid container key={index}>
                           <Grid item xs={6}>
@@ -288,6 +333,15 @@ export const ViewSurvey = () => {
           </div>
         ))
       )}
+
+      <CustomizedDialog
+        open={openQuestion}
+        onDeny={handleClose}
+        cancelBtn={true}
+        title={`${intl.formatMessage({ id: "EditQuestion" })}`}
+        content={<FormAddQuestion />}
+        textButton="Accept"
+      />
     </Box>
   );
 };

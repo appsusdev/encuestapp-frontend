@@ -11,6 +11,7 @@ const initialState = {
     alert: false,
     successAlert: false,
     errorAlert: false,
+    openQuestion: false,
     role: TypeUser.ADMIN,
 }
 
@@ -122,6 +123,18 @@ export const uiReducer = ( state: IUi = initialState, action: UiAction) => {
             return {
                 ...state,
                 errorAlert: false
+            }
+
+        case types.uiOpenQuestion:
+            return {
+                ...state,
+                openQuestion: true
+            }
+            
+        case types.uiCloseQuestion:
+            return {
+                ...state,
+                openQuestion: false
             }
 
         case types.uiChangeRole:
