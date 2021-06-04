@@ -29,3 +29,15 @@ export enum TypeDirectedTo {
     HOGAR = 'Al hogar',
     INDIVIDUAL = 'A cada persona'
 }
+export enum TypeDocEnum {
+    CC = 1,
+    TI = 2,
+    CE = 3,
+    RC = 4,
+    NIT = "NIT",
+    Otro = "Otro",
+  }
+  export enum GenderEnum {
+    Women,
+    Men,
+  }

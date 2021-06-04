@@ -8,36 +8,62 @@ import {
   Grid,
   TextField,
   Link,
+  CircularProgress,
 } from "@material-ui/core";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { useState } from "react";
 import { excelToJson } from "../../../helpers/excelToJson";
+import { uploadCitizens } from "../../../helpers/uploadCitizens";
+import { CitizensType } from "../../../interfaces/Citizens";
+import { useDispatch, useSelector } from "react-redux";
+import { MyAlert } from '../../custom/MyAlert'
+import { uiCloseErrorAlert, uiCloseSuccessAlert, uiOpenErrorAlert, uiOpenSuccessAlert } from "../../../redux/actions/uiActions";
+import { AppState } from "../../../redux/reducers/rootReducer";
 
 export const UploadDB = () => {
   const classes = useStyles();
   const [labelImage, setLabelImage] = useState("");
-  const [citizensFile, setCitizensFile] = useState<File | null>(null);
-  const [noValid, setNoValid] = useState<boolean>(false)
+  const [citizens, setCitizens] = useState<CitizensType | null>(null);
+  const [noValid, setNoValid] = useState<boolean>(false);
+  const [loading, setloading] = useState(false);
+  const { successAlert, errorAlert } = useSelector((state:AppState) => state.ui);
+  const dispatch = useDispatch();
 
-  const handleUpload = () => {
-    console.log("Upload");
-    //console.log(citizensFile);
+  // Cerrar success alert
+  const closeSuccess = () => {
+    dispatch( uiCloseSuccessAlert() );
+    dispatch( uiCloseErrorAlert() );
+}
+  const handleUpload = async () => {
+    try {
+      if (citizens) {
+        setloading(true);
+
+        await uploadCitizens(citizens);
+        await setLabelImage("");
+        await setloading(false);
+        await setCitizens(null);
+        dispatch( uiOpenSuccessAlert() )
+      }
+    } catch (error) {
+      dispatch( uiOpenErrorAlert() )
+      setloading(false);
+    }
   };
   const handleSelectFile = async (e: any) => {
-    const SUPPORTED_FORMATS = ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
+    const SUPPORTED_FORMATS = [
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/vnd.ms-excel",
+    ];
     const file = e.target.files[0] as File;
-    if(file && SUPPORTED_FORMATS.includes(file.type)){
-
-      let jsonResponse:any = await excelToJson(file);
-      let parseData:any[] = JSON.parse(jsonResponse)
-  
-      console.log(parseData.length)
-      setCitizensFile(file);
+    if (file && SUPPORTED_FORMATS.includes(file.type)) {
+      let jsonResponse: any = await excelToJson(file);
+      let parseData: any[] = JSON.parse(jsonResponse);
+      setCitizens(parseData as CitizensType);
       setLabelImage(e.target.files[0].name);
-      setNoValid(false)
-
-    }else{
-      setNoValid(true)
+      setNoValid(false);
+    } else {
+      setNoValid(true);
     }
   };
 
@@ -90,28 +116,38 @@ export const UploadDB = () => {
               </label>
             </Grid>
             {noValid && (
-                <Grid item xs={12}>
-                  <Box mt={-2} ml={2} style={{ fontSize: 12, color: "red" }}>
-                    <FormattedMessage id="OnlyExcelFile" />
-                  </Box>
-                </Grid>
-              )}
-
-          
+              <Grid item xs={12}>
+                <Box mt={-2} ml={2} style={{ fontSize: 12, color: "red" }}>
+                  <FormattedMessage id="OnlyExcelFile" />
+                </Box>
+              </Grid>
+            )}
           </Grid>
 
           <Box mt={2} display="flex" flexDirection="row-reverse">
             <Button
               className={clsx(classes.btn, classes.save)}
               onClick={handleUpload}
+              disabled={loading}
             >
-              <FormattedMessage id="Save" />
+              {loading ? (
+                <>
+                  <FormattedMessage id="SavingData" />
+
+                  <CircularProgress className={classes.btnLoading} />
+                </>
+              ) : (
+                <FormattedMessage id="Save" />
+              )}
             </Button>
-            <Button className={clsx(classes.btn, classes.cancel)}>
+           {/*  <Button className={clsx(classes.btn, classes.cancel)}>
               <FormattedMessage id="Cancel" />
-            </Button>
+            </Button> */}
           </Box>
         </Box>
+        <MyAlert open={successAlert} typeAlert="success" message={"SavingDataSucces"} time={2000} handleClose={closeSuccess}/>
+        <MyAlert open={errorAlert} typeAlert="error" message="SavingDataError" time={2000} handleClose={closeSuccess}/>
+
       </Box>
     </Paper>
   );

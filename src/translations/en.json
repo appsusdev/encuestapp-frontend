@@ -143,5 +143,8 @@
     "InputSelect": "Seleccione...",
     "ValidOption": "You must add a valid option.",
     "FilterTownMessage": "Please choose a department to filter by municipality",
-    "GetPosition": "Get position"
+    "GetPosition": "Get position",
+    "SavingData": "Saving...",
+    "SavingDataSucces": "The data has been saved correctly",
+    "SavingDataError": "Failed to save data, please try again."
 }
