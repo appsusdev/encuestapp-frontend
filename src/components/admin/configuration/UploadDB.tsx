@@ -11,29 +11,46 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import { useStyles } from "../../../shared/styles/useStyles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { excelToJson } from "../../../helpers/excelToJson";
 import { uploadCitizens } from "../../../helpers/uploadCitizens";
 import { CitizensType } from "../../../interfaces/Citizens";
 import { useDispatch, useSelector } from "react-redux";
-import { MyAlert } from '../../custom/MyAlert'
-import { uiCloseErrorAlert, uiCloseSuccessAlert, uiOpenErrorAlert, uiOpenSuccessAlert } from "../../../redux/actions/uiActions";
+import { MyAlert } from "../../custom/MyAlert";
+import {
+  uiCloseErrorAlert,
+  uiCloseSuccessAlert,
+  uiOpenErrorAlert,
+  uiOpenSuccessAlert,
+} from "../../../redux/actions/uiActions";
 import { AppState } from "../../../redux/reducers/rootReducer";
+import CircularProgressWithLabel from "../../custom/CircularProgressWithLabel";
 
 export const UploadDB = () => {
   const classes = useStyles();
+  const [progress, setProgress] = useState(10);
   const [labelImage, setLabelImage] = useState("");
   const [citizens, setCitizens] = useState<CitizensType | null>(null);
   const [noValid, setNoValid] = useState<boolean>(false);
   const [loading, setloading] = useState(false);
-  const { successAlert, errorAlert } = useSelector((state:AppState) => state.ui);
+  const { successAlert, errorAlert } = useSelector(
+    (state: AppState) => state.ui
+  );
   const dispatch = useDispatch();
 
   // Cerrar success alert
   const closeSuccess = () => {
-    dispatch( uiCloseSuccessAlert() );
-    dispatch( uiCloseErrorAlert() );
-}
+    dispatch(uiCloseSuccessAlert());
+    dispatch(uiCloseErrorAlert());
+  };
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
+    }, 800);
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
   const handleUpload = async () => {
     try {
       if (citizens) {
@@ -43,10 +60,10 @@ export const UploadDB = () => {
         await setLabelImage("");
         await setloading(false);
         await setCitizens(null);
-        dispatch( uiOpenSuccessAlert() )
+        dispatch(uiOpenSuccessAlert());
       }
     } catch (error) {
-      dispatch( uiOpenErrorAlert() )
+      dispatch(uiOpenErrorAlert());
       setloading(false);
     }
   };
@@ -140,14 +157,26 @@ export const UploadDB = () => {
                 <FormattedMessage id="Save" />
               )}
             </Button>
-           {/*  <Button className={clsx(classes.btn, classes.cancel)}>
+            {/*  <Button className={clsx(classes.btn, classes.cancel)}>
               <FormattedMessage id="Cancel" />
             </Button> */}
           </Box>
+          <CircularProgressWithLabel value={progress} />
         </Box>
-        <MyAlert open={successAlert} typeAlert="success" message={"SavingDataSucces"} time={2000} handleClose={closeSuccess}/>
-        <MyAlert open={errorAlert} typeAlert="error" message="SavingDataError" time={2000} handleClose={closeSuccess}/>
-
+        <MyAlert
+          open={successAlert}
+          typeAlert="success"
+          message={"SavingDataSucces"}
+          time={2000}
+          handleClose={closeSuccess}
+        />
+        <MyAlert
+          open={errorAlert}
+          typeAlert="error"
+          message="SavingDataError"
+          time={2000}
+          handleClose={closeSuccess}
+        />
       </Box>
     </Paper>
   );
