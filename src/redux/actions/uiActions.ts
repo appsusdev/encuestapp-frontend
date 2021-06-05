@@ -1,6 +1,10 @@
 import { TypeUser } from '../../enums/enums';
 import { types } from '../types/types';
 
+export const setProgress = (number:number)=>({
+    type:types.uiSetprogres,
+    payload:number
+})
 export const uiOpenModalAdd = () => ({ type: types.uiOpenModalAdd });
 
 export const uiCloseModalAdd = () => ({ type: types.uiCloseModalAdd });

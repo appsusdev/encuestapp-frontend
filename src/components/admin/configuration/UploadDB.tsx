@@ -18,6 +18,7 @@ import { CitizensType } from "../../../interfaces/Citizens";
 import { useDispatch, useSelector } from "react-redux";
 import { MyAlert } from "../../custom/MyAlert";
 import {
+  setProgress,
   uiCloseErrorAlert,
   uiCloseSuccessAlert,
   uiOpenErrorAlert,
@@ -28,7 +29,8 @@ import CircularProgressWithLabel from "../../custom/CircularProgressWithLabel";
 
 export const UploadDB = () => {
   const classes = useStyles();
-  const [progress, setProgress] = useState(10);
+ const {progress} = useSelector((state:AppState) => state.ui)
+  //const [progresPorcent, setProgresPorcent] = useState(0);
   const [labelImage, setLabelImage] = useState("");
   const [citizens, setCitizens] = useState<CitizensType | null>(null);
   const [noValid, setNoValid] = useState<boolean>(false);
@@ -43,24 +45,35 @@ export const UploadDB = () => {
     dispatch(uiCloseSuccessAlert());
     dispatch(uiCloseErrorAlert());
   };
-  useEffect(() => {
+  /*   useEffect(() => {
     const timer = setInterval(() => {
       setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
     }, 800);
     return () => {
       clearInterval(timer);
     };
-  }, []);
+  }, []); */
+  useEffect(() => {
+    console.log('ENTRA => ',progress)
+  }, [progress])
+
+  const handleSetprogress = async (totalInterted: number) => {
+    if (citizens) {
+      let progresPorcent = Math.round((totalInterted / citizens.length) * 100)
+      await dispatch( setProgress(progresPorcent) )
+    }
+  };
   const handleUpload = async () => {
     try {
       if (citizens) {
         setloading(true);
-
-        await uploadCitizens(citizens);
+       
+        await uploadCitizens(citizens, handleSetprogress);
         await setLabelImage("");
         await setloading(false);
         await setCitizens(null);
         dispatch(uiOpenSuccessAlert());
+        dispatch( setProgress(0) )
       }
     } catch (error) {
       dispatch(uiOpenErrorAlert());
@@ -76,6 +89,7 @@ export const UploadDB = () => {
     if (file && SUPPORTED_FORMATS.includes(file.type)) {
       let jsonResponse: any = await excelToJson(file);
       let parseData: any[] = JSON.parse(jsonResponse);
+ 
       setCitizens(parseData as CitizensType);
       setLabelImage(e.target.files[0].name);
       setNoValid(false);
@@ -141,27 +155,28 @@ export const UploadDB = () => {
             )}
           </Grid>
 
-          <Box mt={2} display="flex" flexDirection="row-reverse">
-            <Button
-              className={clsx(classes.btn, classes.save)}
-              onClick={handleUpload}
-              disabled={loading}
-            >
+          <Box mt={2} display="flex" flexDirection="row-reverse" justifyContent="center" alignItems="center" >
               {loading ? (
                 <>
+                  <CircularProgressWithLabel value={progress} />
                   <FormattedMessage id="SavingData" />
 
-                  <CircularProgress className={classes.btnLoading} />
+                  {/* <CircularProgress className={classes.btnLoading} /> */}
                 </>
               ) : (
+                <Button
+                  className={clsx(classes.btn, classes.save)}
+                  onClick={handleUpload}
+                  disabled={loading}
+                >
+
                 <FormattedMessage id="Save" />
-              )}
             </Button>
+              )}
             {/*  <Button className={clsx(classes.btn, classes.cancel)}>
               <FormattedMessage id="Cancel" />
             </Button> */}
           </Box>
-          <CircularProgressWithLabel value={progress} />
         </Box>
         <MyAlert
           open={successAlert}
