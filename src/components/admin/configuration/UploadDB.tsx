@@ -29,9 +29,10 @@ import CircularProgressWithLabel from "../../custom/CircularProgressWithLabel";
 
 export const UploadDB = () => {
   const classes = useStyles();
- const {progress} = useSelector((state:AppState) => state.ui)
+  const { progress } = useSelector((state: AppState) => state.ui);
   //const [progresPorcent, setProgresPorcent] = useState(0);
-  const [labelImage, setLabelImage] = useState("");
+
+  const [fileToConvert, setFileToConvert] = useState<File | null>(null);
   const [citizens, setCitizens] = useState<CitizensType | null>(null);
   const [noValid, setNoValid] = useState<boolean>(false);
   const [loading, setloading] = useState(false);
@@ -53,27 +54,27 @@ export const UploadDB = () => {
       clearInterval(timer);
     };
   }, []); */
-  useEffect(() => {
-    console.log('ENTRA => ',progress)
-  }, [progress])
 
   const handleSetprogress = async (totalInterted: number) => {
     if (citizens) {
-      let progresPorcent = Math.round((totalInterted / citizens.length) * 100)
-      await dispatch( setProgress(progresPorcent) )
+      let progresPorcent = Math.round((totalInterted / citizens.length) * 100);
+      await dispatch(setProgress(progresPorcent));
     }
   };
   const handleUpload = async () => {
     try {
       if (citizens) {
         setloading(true);
-       
+
         await uploadCitizens(citizens, handleSetprogress);
-        await setLabelImage("");
+        await setFileToConvert(null);
         await setloading(false);
         await setCitizens(null);
+        (
+          document.getElementById("contained-button-file") as HTMLInputElement
+        ).value = "";
         dispatch(uiOpenSuccessAlert());
-        dispatch( setProgress(0) )
+        dispatch(setProgress(0));
       }
     } catch (error) {
       dispatch(uiOpenErrorAlert());
@@ -89,9 +90,10 @@ export const UploadDB = () => {
     if (file && SUPPORTED_FORMATS.includes(file.type)) {
       let jsonResponse: any = await excelToJson(file);
       let parseData: any[] = JSON.parse(jsonResponse);
- 
+
       setCitizens(parseData as CitizensType);
-      setLabelImage(e.target.files[0].name);
+      setFileToConvert(file);
+      //setLabelImage(e.target.files[0].name);
       setNoValid(false);
     } else {
       setNoValid(true);
@@ -121,7 +123,7 @@ export const UploadDB = () => {
                 className={classes.inputSelect}
                 // onChange={handleChange}
                 // value={survey}
-                value={labelImage}
+                value={fileToConvert ? fileToConvert.name : ""}
                 disabled
                 size="small"
                 variant="outlined"
@@ -155,24 +157,29 @@ export const UploadDB = () => {
             )}
           </Grid>
 
-          <Box mt={2} display="flex" flexDirection="row-reverse" justifyContent="center" alignItems="center" >
-              {loading ? (
-                <>
-                  <CircularProgressWithLabel value={progress} />
-                  <FormattedMessage id="SavingData" />
+          <Box
+            mt={2}
+            display="flex"
+            flexDirection="row-reverse"
+            justifyContent="center"
+            alignItems="center"
+          >
+            {loading ? (
+              <>
+                <CircularProgressWithLabel value={progress} />
+                <FormattedMessage id="SavingData" />
 
-                  {/* <CircularProgress className={classes.btnLoading} /> */}
-                </>
-              ) : (
-                <Button
-                  className={clsx(classes.btn, classes.save)}
-                  onClick={handleUpload}
-                  disabled={loading}
-                >
-
+                {/* <CircularProgress className={classes.btnLoading} /> */}
+              </>
+            ) : (
+              <Button
+                className={clsx(classes.btn, classes.save)}
+                onClick={handleUpload}
+                disabled={loading}
+              >
                 <FormattedMessage id="Save" />
-            </Button>
-              )}
+              </Button>
+            )}
             {/*  <Button className={clsx(classes.btn, classes.cancel)}>
               <FormattedMessage id="Cancel" />
             </Button> */}
