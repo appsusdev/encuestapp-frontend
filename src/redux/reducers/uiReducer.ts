@@ -13,6 +13,7 @@ const initialState = {
     errorAlert: false,
     openQuestion: false,
     role: TypeUser.ADMIN,
+    progress:0
 }
 
 export const uiReducer = ( state: IUi = initialState, action: UiAction) => {
@@ -142,6 +143,11 @@ export const uiReducer = ( state: IUi = initialState, action: UiAction) => {
                 ...state,
                 role: action.payload
             }
+            case types.uiSetprogres:
+                return{
+                    ...state,
+                    progress:action.payload
+                }
     
 
         default:

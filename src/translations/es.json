@@ -143,6 +143,9 @@
     "InputSelect": "Seleccione...",
     "ValidOption": "Debe agregar una opción válida.",
     "FilterTownMessage": "Por favor escoja un departamento para filtrar por municipio.",
-    "GetPosition": "Obtener posición"
+    "GetPosition": "Obtener posición",
+    "SavingData": "Guardando...",
+    "SavingDataSucces": "Se han guardado los datos correctamente",
+    "SavingDataError": "Error al guardar los datos, por favor intente nuevamente."
 }
 

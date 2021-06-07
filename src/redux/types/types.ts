@@ -34,6 +34,7 @@ export const types = {
     uiOpenQuestion: '[ui] Open edit question',
     uiCloseQuestion: '[ui] Close edit question',
     uiChangeRole: '[ui] Change role',
+    uiSetprogres: '[ui] setProgress',
 
     // surveyors
     surveyorAddNew: '[surveyor] New surveyor',
@@ -91,6 +92,7 @@ export interface IUi {
   errorAlert: boolean,
   openQuestion: boolean,
   role: TypeUser,
+  progress:number
 }
 
 export type UiAction = {
