@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Formik, Form } from 'formik';
@@ -13,7 +12,7 @@ import { MyAlert } from '../../custom/MyAlert';
 import { MyTextField } from '../../custom/MyTextField';
 import { useStyles } from '../../../shared/styles/useStyles';
 import { uiCloseModalDelete, uiCloseErrorAlert, uiCloseSuccessAlert, uiCloseModalAlert } from '../../../redux/actions/uiActions';
-import { startLoadingChapters, startNewChapter, setChapters, chapterCleanActive } from '../../../redux/actions/surveysActions';
+import { startNewChapter, setChapters, chapterCleanActive } from '../../../redux/actions/surveysActions';
 import { cleanActiveSurvey } from '../../../redux/actions/surveyorsActions';
 import { AppState } from '../../../redux/reducers/rootReducer';
 
@@ -24,14 +23,9 @@ export const FormAddChapter = () => {
     const dispatch = useDispatch();
     
     const { activeSurvey, activeChapter } = useSelector<AppState, AppState['survey']>(state => state.survey);
-    const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
     const { errorAlert, successAlert, modalAlert } = useSelector<AppState, AppState["ui"]>((state) => state.ui);
     const survey: Survey = activeSurvey;
     const chapter: Chapter = activeChapter;
-    
-    useEffect(() => {
-        (municipios) && dispatch( startLoadingChapters(municipios[0], survey.idSurvey));
-    }, [dispatch, municipios ]);
     
     let initialValues: Partial<Chapter> = {
         number: '',

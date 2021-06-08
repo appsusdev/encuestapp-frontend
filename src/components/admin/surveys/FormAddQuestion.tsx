@@ -164,6 +164,7 @@ export const FormAddQuestion = () => {
                                     name="chapter"
                                     variant='outlined'
                                     select
+                                    value=""
                                     className={classes.myTextFieldRoot}
                                     disabled={(activeQuestion) ? true : false}
                                 >

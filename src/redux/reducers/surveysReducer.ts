@@ -2,6 +2,7 @@ import { types, SurveysAction, ISurvey } from '../types/types';
 
 const initialState = {
     surveys: [],
+    dataSurveys: [],
     activeSurvey: null,
     chapters: [],
     activeChapter: null,
@@ -12,10 +13,16 @@ const initialState = {
 export const surveysReducer = ( state: ISurvey = initialState, action: SurveysAction ) => {
     switch (action.type) {
 
-        case types.surveysLoad:
+        case types.surveysCompleteLoad:
             return {
                 ...state,
                 surveys: [...action.payload]
+            }
+
+        case types.surveysDataLoad:
+            return {
+                ...state,
+                dataSurveys: [...action.payload]
             }
 
         case types.surveyActive:

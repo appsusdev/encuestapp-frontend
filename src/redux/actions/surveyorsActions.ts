@@ -14,7 +14,7 @@ import {
   assignSurvey,
 } from "../../services/firebase/surveyors";
 import { types } from "../types/types";
-import { startLoadingSurveys } from "./surveysActions";
+import { startLoadingDataSurveys } from './surveysActions';
 import {
   uiOpenSuccessAlert,
   uiOpenErrorAlert,
@@ -132,11 +132,11 @@ export const startEditSurveyor = (surveyor: Partial<Surveyor>, changeImage: bool
 // Asignar y eliminar encuestas al encuestador
 export const startAssignSurvey = (id: string, email: string, action: boolean) => {
     return async(dispatch: any, getState: any) => {
-        const { surveys } = getState().survey;
+        const { dataSurveys } = getState().survey;
         const { municipios } = getState().auth;
         const town: string = municipios[0];
 
-        const array = surveys.filter( (survey: Survey) => survey.code === id)
+        const array = dataSurveys.filter( (survey: Survey) => survey.code === id)
         const { surveyors } = array[0];
         let newSurveyors: string[] = [];
 
@@ -148,16 +148,16 @@ export const startAssignSurvey = (id: string, email: string, action: boolean) =>
                 newSurveyors = (surveyors) ? [...surveyors, email] : [email]       
                 
                 await assignSurvey(town, id, newSurveyors);
-                await dispatch(startLoadingSurveys(town));
                 dispatch( uiOpenSuccessAlert() );
+                await dispatch(startLoadingDataSurveys(town));
             }
         } else {
             // Eliminar encuesta asignada
             newSurveyors = surveyors.filter((surveyor: string) => surveyor !== email);
 
             await assignSurvey(town, id, newSurveyors);
-            await dispatch(startLoadingSurveys(town));
             dispatch( uiOpenSuccessAlert() );
+            await dispatch(startLoadingDataSurveys(town));
         }
     }
 }
