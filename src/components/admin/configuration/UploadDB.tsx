@@ -8,10 +8,9 @@ import {
   Grid,
   TextField,
   Link,
-  CircularProgress,
 } from "@material-ui/core";
 import { useStyles } from "../../../shared/styles/useStyles";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { excelToJson } from "../../../helpers/excelToJson";
 import { uploadCitizens } from "../../../helpers/uploadCitizens";
 import { CitizensType } from "../../../interfaces/Citizens";
@@ -30,7 +29,6 @@ import CircularProgressWithLabel from "../../custom/CircularProgressWithLabel";
 export const UploadDB = () => {
   const classes = useStyles();
   const { progress } = useSelector((state: AppState) => state.ui);
-  //const [progresPorcent, setProgresPorcent] = useState(0);
 
   const [fileToConvert, setFileToConvert] = useState<File | null>(null);
   const [citizens, setCitizens] = useState<CitizensType | null>(null);
@@ -46,14 +44,6 @@ export const UploadDB = () => {
     dispatch(uiCloseSuccessAlert());
     dispatch(uiCloseErrorAlert());
   };
-  /*   useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
-    }, 800);
-    return () => {
-      clearInterval(timer);
-    };
-  }, []); */
 
   const handleSetprogress = async (totalInterted: number) => {
     if (citizens) {
@@ -61,6 +51,7 @@ export const UploadDB = () => {
       await dispatch(setProgress(progresPorcent));
     }
   };
+
   const handleUpload = async () => {
     try {
       if (citizens) {
@@ -93,7 +84,6 @@ export const UploadDB = () => {
 
       setCitizens(parseData as CitizensType);
       setFileToConvert(file);
-      //setLabelImage(e.target.files[0].name);
       setNoValid(false);
     } else {
       setNoValid(true);
@@ -121,8 +111,6 @@ export const UploadDB = () => {
               </label>
               <TextField
                 className={classes.inputSelect}
-                // onChange={handleChange}
-                // value={survey}
                 value={fileToConvert ? fileToConvert.name : ""}
                 disabled
                 size="small"
@@ -168,8 +156,6 @@ export const UploadDB = () => {
               <>
                 <CircularProgressWithLabel value={progress} />
                 <FormattedMessage id="SavingData" />
-
-                {/* <CircularProgress className={classes.btnLoading} /> */}
               </>
             ) : (
               <Button
@@ -180,9 +166,6 @@ export const UploadDB = () => {
                 <FormattedMessage id="Save" />
               </Button>
             )}
-            {/*  <Button className={clsx(classes.btn, classes.cancel)}>
-              <FormattedMessage id="Cancel" />
-            </Button> */}
           </Box>
         </Box>
         <MyAlert

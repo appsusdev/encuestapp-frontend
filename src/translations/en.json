@@ -3,6 +3,7 @@
     "Surveyors": "Surveyors",
     "Surveyor": "Surveyor",
     "Surveys": "Surveys",
+    "Survey": "Survey",
     "Configuration": "Configuration",
     "Statistics": "Statistics",
     "Login": "Login",
@@ -140,11 +141,16 @@
     "Date": "Date",
     "EmptySurvey": "No chapters or questions have been added to this survey.",
     "OnlyExcelFile":"Only xlsx files are accepted",
-    "InputSelect": "Seleccione...",
+    "InputSelect": "Select",
     "ValidOption": "You must add a valid option.",
     "FilterTownMessage": "Please choose a department to filter by municipality",
     "GetPosition": "Get position",
     "SavingData": "Saving...",
     "SavingDataSucces": "The data has been saved correctly",
-    "SavingDataError": "Failed to save data, please try again."
+    "SavingDataError": "Failed to save data, please try again.",
+    "Microdata": "Microdata",
+    "SelectSurveyor": "Select surveyor",
+    "StartDate": "Start date",
+    "EndDate": "End date",
+    "SearchCitizen": "Search citizen by document or name"
 }

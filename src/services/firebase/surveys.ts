@@ -74,16 +74,16 @@ export const addNewSurvey = async (
   code: string | undefined,
   surveyToDB: {}
 ) => {
-  const docRef = await db.collection("Municipios").doc(town);
+  const docRef = db.collection("Municipios").doc(town);
   docRef.set({});
-  docRef.collection("Encuestas").doc(code).set(surveyToDB);
+  await docRef.collection("Encuestas").doc(code).set(surveyToDB);
 };
 
 // Editar encuesta
 export const editSurvey = async (survey: Partial<Survey>, town: string) => {
   const { code, name, creationDate } = survey;
-  const docRef = await db.collection("Municipios").doc(town);
-  docRef
+  const docRef = db.collection("Municipios").doc(town);
+  await docRef
     .collection("Encuestas")
     .doc(code)
     .set({ titulo: name, fechaCreacion: creationDate }, { merge: true });
@@ -119,9 +119,9 @@ export const addNewChapter = async (
   idSurvey: string,
   chapter: any
 ) => {
-  const docRef = await db.collection("Municipios").doc(town);
+  const docRef = db.collection("Municipios").doc(town);
   docRef.set({});
-  docRef
+  await docRef
     .collection("Encuestas")
     .doc(idSurvey)
     .collection("Capitulos")
@@ -136,9 +136,9 @@ export const editChapter = async (
   idChapter: string,
   chapter: any
 ) => {
-  const docRef = await db.collection("Municipios").doc(town);
+  const docRef = db.collection("Municipios").doc(town);
   docRef.set({});
-  docRef
+  await docRef
     .collection("Encuestas")
     .doc(idSurvey)
     .collection("Capitulos")
@@ -227,9 +227,9 @@ export const addQuestion = async (
   question: any,
   idQuestion: string
 ) => {
-  const docRef = await db.collection("Municipios").doc(town);
+  const docRef = db.collection("Municipios").doc(town);
   docRef.set({});
-  docRef
+  await docRef
     .collection("Encuestas")
     .doc(idSurvey)
     .collection("Capitulos")
@@ -298,9 +298,9 @@ export const editQuestion = async (
   idQuestion: string,
   question: any
 ) => {
-  const docRef = await db.collection("Municipios").doc(town);
+  const docRef = db.collection("Municipios").doc(town);
   docRef.set({});
-  docRef
+  await docRef
     .collection("Encuestas")
     .doc(idSurvey)
     .collection("Capitulos")
