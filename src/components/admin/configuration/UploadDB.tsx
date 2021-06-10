@@ -13,7 +13,7 @@ import {
 import { useStyles } from "../../../shared/styles/useStyles";
 import { useEffect, useState } from "react";
 import { excelToJson } from "../../../helpers/excelToJson";
-import { uploadCitizens } from "../../../helpers/uploadCitizens";
+import { uploadCitizens, uploadJsonCitizens } from "../../../helpers/uploadCitizens";
 import { CitizensType } from "../../../interfaces/Citizens";
 import { useDispatch, useSelector } from "react-redux";
 import { MyAlert } from "../../custom/MyAlert";
@@ -57,7 +57,7 @@ export const UploadDB = () => {
 
   const handleSetprogress = async (totalInterted: number) => {
     if (citizens) {
-      let progresPorcent = Math.round((totalInterted / citizens.length) * 100);
+      const progresPorcent = Math.round((totalInterted / citizens.length) * 100);
       await dispatch(setProgress(progresPorcent));
     }
   };
@@ -66,7 +66,8 @@ export const UploadDB = () => {
       if (citizens) {
         setloading(true);
 
-        await uploadCitizens(citizens, handleSetprogress);
+        //await uploadCitizens(citizens, handleSetprogress);
+        await uploadJsonCitizens(JSON.stringify(citizens))
         await setFileToConvert(null);
         await setloading(false);
         await setCitizens(null);
@@ -88,12 +89,12 @@ export const UploadDB = () => {
     ];
     const file = e.target.files[0] as File;
     if (file && SUPPORTED_FORMATS.includes(file.type)) {
-      let jsonResponse: any = await excelToJson(file);
-      let parseData: any[] = JSON.parse(jsonResponse);
+      const jsonResponse: any = await excelToJson(file);
+      const parseData: any[] = JSON.parse(jsonResponse);
 
       setCitizens(parseData as CitizensType);
       setFileToConvert(file);
-      //setLabelImage(e.target.files[0].name);
+     
       setNoValid(false);
     } else {
       setNoValid(true);

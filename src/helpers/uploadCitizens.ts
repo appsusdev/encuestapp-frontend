@@ -1,6 +1,6 @@
 
 import { CitizensType } from "../interfaces/Citizens";
-import { addCitizen } from "../services/firebase/citizens";
+import { addCitizen, addJsonCitizens } from "../services/firebase/citizens";
 export const uploadCitizens = async (data: CitizensType,callback:Function) => {
  
   try {
@@ -12,6 +12,15 @@ export const uploadCitizens = async (data: CitizensType,callback:Function) => {
     }
   } catch (error) {
     console.log("ERROR AL INSERTAR DATOS");
-    return new Error(error);
+    return new Error(`ERROR AL INSERTAR DATOS ${error}`);
   }
 };
+export const uploadJsonCitizens = async (jsonData:string)=>{
+  try {
+    await addJsonCitizens(jsonData)
+  } catch (error) {
+    return new Error(`ERROR AL INSERTAR DATOS ${error}`);
+    
+  }
+
+}
