@@ -32,9 +32,9 @@ export const addSurveyorToTown = async (
   surveyorTown: {}
 ) => {
   townsAdmin.forEach(async (townAdm: string) => {
-    const df = await db.collection("Municipios").doc(townAdm);
+    const df = db.collection("Municipios").doc(townAdm);
     df.set({});
-    df.collection("Encuestadores").doc(email).set(surveyorTown);
+    await df.collection("Encuestadores").doc(email).set(surveyorTown);
   });
 };
 

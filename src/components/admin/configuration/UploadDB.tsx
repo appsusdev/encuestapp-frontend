@@ -8,12 +8,14 @@ import {
   Grid,
   TextField,
   Link,
-  CircularProgress,
 } from "@material-ui/core";
 import { useStyles } from "../../../shared/styles/useStyles";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { excelToJson } from "../../../helpers/excelToJson";
-import { uploadCitizens, uploadJsonCitizens } from "../../../helpers/uploadCitizens";
+import {
+  uploadCitizens,
+  uploadJsonCitizens,
+} from "../../../helpers/uploadCitizens";
 import { CitizensType } from "../../../interfaces/Citizens";
 import { useDispatch, useSelector } from "react-redux";
 import { MyAlert } from "../../custom/MyAlert";
@@ -30,7 +32,6 @@ import CircularProgressWithLabel from "../../custom/CircularProgressWithLabel";
 export const UploadDB = () => {
   const classes = useStyles();
   const { progress } = useSelector((state: AppState) => state.ui);
-  //const [progresPorcent, setProgresPorcent] = useState(0);
 
   const [fileToConvert, setFileToConvert] = useState<File | null>(null);
   const [citizens, setCitizens] = useState<CitizensType | null>(null);
@@ -46,28 +47,29 @@ export const UploadDB = () => {
     dispatch(uiCloseSuccessAlert());
     dispatch(uiCloseErrorAlert());
   };
-  /*   useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
-    }, 800);
-    return () => {
-      clearInterval(timer);
-    };
-  }, []); */
 
-  const handleSetprogress = async (totalInterted: number) => {
-    if (citizens) {
-      const progresPorcent = Math.round((totalInterted / citizens.length) * 100);
+  const handleSetprogress = async (totalInterted: number,lengthData:number) => {
+    if (lengthData>0) {
+      const progresPorcent = Math.round(
+        (totalInterted / lengthData) * 100
+      );
       await dispatch(setProgress(progresPorcent));
     }
   };
+
   const handleUpload = async () => {
     try {
-      if (citizens) {
+      if (fileToConvert) {
         setloading(true);
-
+        const jsonResponse: any = await excelToJson(
+          fileToConvert,
+          handleSetprogress
+        );
+        //const parseData: any[] = JSON.parse(jsonResponse);
         //await uploadCitizens(citizens, handleSetprogress);
-        await uploadJsonCitizens(JSON.stringify(citizens))
+        await dispatch(setProgress(100));
+        await uploadJsonCitizens(JSON.stringify(jsonResponse));
+
         await setFileToConvert(null);
         await setloading(false);
         await setCitizens(null);
@@ -89,12 +91,7 @@ export const UploadDB = () => {
     ];
     const file = e.target.files[0] as File;
     if (file && SUPPORTED_FORMATS.includes(file.type)) {
-      const jsonResponse: any = await excelToJson(file);
-      const parseData: any[] = JSON.parse(jsonResponse);
-
-      setCitizens(parseData as CitizensType);
       setFileToConvert(file);
-     
       setNoValid(false);
     } else {
       setNoValid(true);
@@ -122,8 +119,6 @@ export const UploadDB = () => {
               </label>
               <TextField
                 className={classes.inputSelect}
-                // onChange={handleChange}
-                // value={survey}
                 value={fileToConvert ? fileToConvert.name : ""}
                 disabled
                 size="small"
@@ -169,8 +164,6 @@ export const UploadDB = () => {
               <>
                 <CircularProgressWithLabel value={progress} />
                 <FormattedMessage id="SavingData" />
-
-                {/* <CircularProgress className={classes.btnLoading} /> */}
               </>
             ) : (
               <Button
@@ -181,9 +174,6 @@ export const UploadDB = () => {
                 <FormattedMessage id="Save" />
               </Button>
             )}
-            {/*  <Button className={clsx(classes.btn, classes.cancel)}>
-              <FormattedMessage id="Cancel" />
-            </Button> */}
           </Box>
         </Box>
         <MyAlert

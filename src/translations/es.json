@@ -3,6 +3,7 @@
     "Surveyors": "Encuestadores",
     "Surveyor": "Encuestador",
     "Surveys": "Encuestas",
+    "Survey": "Encuesta",
     "Configuration": "Configuración",
     "Statistics": "Estadísticas",
     "Login": "Iniciar sesión",
@@ -140,12 +141,17 @@
     "Date": "Fecha",
     "EmptySurvey": "No se han agregado capítulos ni preguntas a esta encuesta.",
     "OnlyExcelFile":"Solo se aceptan archivos xlsx.",
-    "InputSelect": "Seleccione...",
+    "InputSelect": "Seleccione",
     "ValidOption": "Debe agregar una opción válida.",
     "FilterTownMessage": "Por favor escoja un departamento para filtrar por municipio.",
     "GetPosition": "Obtener posición",
     "SavingData": "Guardando...",
     "SavingDataSucces": "Se han guardado los datos correctamente",
-    "SavingDataError": "Error al guardar los datos, por favor intente nuevamente."
+    "SavingDataError": "Error al guardar los datos, por favor intente nuevamente.",
+    "Microdata": "Microdatos",
+    "SelectSurveyor": "Seleccione encuestador",
+    "StartDate": "Fecha inicial",
+    "EndDate": "Fecha final",
+    "SearchCitizen": "Buscar ciudadano por documento o nombre"
 }
 

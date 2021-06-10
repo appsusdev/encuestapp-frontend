@@ -15,7 +15,7 @@ import { getUserRole } from "../services/firebase/auth";
 import { Box, Grid } from "@material-ui/core";
 import { useStyles } from "../shared/styles/useStyles";
 import { startLoadingSurveyors } from "../redux/actions/surveyorsActions";
-import { startLoadingSurveys } from "../redux/actions/surveysActions";
+import { startLoadingCompleteSurveys, startLoadingDataSurveys } from '../redux/actions/surveysActions';
 
 export const AppRouter: FC = () => {
   const dispatch = useDispatch();
@@ -46,7 +46,8 @@ export const AppRouter: FC = () => {
               };
               dispatch(login(userMain));
               dispatch(startLoadingSurveyors(municipios[0]));
-              dispatch(startLoadingSurveys(municipios[0]));
+              dispatch(startLoadingDataSurveys(municipios[0]));
+              dispatch(startLoadingCompleteSurveys(municipios[0]));
               setIsLoggedIn(true);
             }
           } else {

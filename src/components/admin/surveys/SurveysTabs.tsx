@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useIntl } from "react-intl";
 
 import { AppBar, Tab, Tabs } from "@material-ui/core";
@@ -9,8 +9,6 @@ import { MyAlert } from '../../custom/MyAlert';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../../../redux/reducers/rootReducer';
 import { uiCloseSuccessAlert, uiCloseModalEdit } from '../../../redux/actions/uiActions';
-import { startLoadingChapters } from '../../../redux/actions/surveysActions';
-import { Survey } from '../../../interfaces/Survey';
 import { ViewSurvey } from "./ViewSurvey";
 
 export const SurveysTabs = () => {
@@ -19,14 +17,7 @@ export const SurveysTabs = () => {
   const dispatch = useDispatch();
 
   const [value, setValue] = React.useState(0);
-  const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
-  const { activeSurvey } = useSelector<AppState, AppState['survey']>(state => state.survey);
   const { successAlert, openQuestion } = useSelector<AppState, AppState['ui']>(state => state.ui);
-  const survey: Survey = activeSurvey;
-
-  useEffect(() => {
-    (municipios) && dispatch( startLoadingChapters(municipios[0], survey.idSurvey));
-  }, [dispatch]);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
