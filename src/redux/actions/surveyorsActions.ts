@@ -14,7 +14,8 @@ import {
   assignSurvey,
 } from "../../services/firebase/surveyors";
 import { types } from "../types/types";
-import { startLoadingDataSurveys } from './surveysActions';
+import { startLoadingDataSurveys, startLoadingCompleteSurveys } from './surveysActions';
+import { getAssignedSurveys } from '../../services/firebase/surveyors';
 import {
   uiOpenSuccessAlert,
   uiOpenErrorAlert,
@@ -133,11 +134,15 @@ export const startEditSurveyor = (surveyor: Partial<Surveyor>, changeImage: bool
 export const startAssignSurvey = (id: string, email: string, action: boolean) => {
     return async(dispatch: any, getState: any) => {
         const { dataSurveys } = getState().survey;
+        const { assignedSurveys: surveys } = getState().surveyor;
         const { municipios } = getState().auth;
         const town: string = municipios[0];
-
-        const array = dataSurveys.filter( (survey: Survey) => survey.code === id)
-        const { surveyors } = array[0];
+      
+        const arraySurveys = surveys.filter( (survey: any)  => survey.email  === email );
+        const { assignedSurveys } = arraySurveys[0];
+        const arraySurveyors = dataSurveys.filter( (survey: Survey) => survey.code === id)
+        const { surveyors } = arraySurveyors[0];
+        let newAssignedSurveys: string[] = [];
         let newSurveyors: string[] = [];
 
         if(action) {
@@ -145,23 +150,42 @@ export const startAssignSurvey = (id: string, email: string, action: boolean) =>
             if(surveyors.includes(email)) {
                 dispatch( uiOpenErrorAlert() );
             } else {
+                newAssignedSurveys = (assignedSurveys) ? [...assignedSurveys, id] : [id]      
                 newSurveyors = (surveyors) ? [...surveyors, email] : [email]       
                 
-                await assignSurvey(town, id, newSurveyors);
+                await assignSurvey(town, id, newSurveyors, email, newAssignedSurveys);
                 dispatch( uiOpenSuccessAlert() );
                 await dispatch(startLoadingDataSurveys(town));
+                await dispatch(startLoadingAssignedSurveys(town));
+                await dispatch(startLoadingCompleteSurveys(town));
             }
         } else {
             // Eliminar encuesta asignada
+            newAssignedSurveys = assignedSurveys.filter((survey: string) => survey !== id);
             newSurveyors = surveyors.filter((surveyor: string) => surveyor !== email);
 
-            await assignSurvey(town, id, newSurveyors);
+            await assignSurvey(town, id, newSurveyors, email, newAssignedSurveys);
             dispatch( uiOpenSuccessAlert() );
             await dispatch(startLoadingDataSurveys(town));
+            await dispatch(startLoadingAssignedSurveys(town));
+            await dispatch(startLoadingCompleteSurveys(town));
         }
     }
 }
 
+// Cargar coleccion de encuestadores con sus encuestas asignadas
+export const startLoadingAssignedSurveys = (town: string) => {
+  return async (dispatch: any) => {
+
+    const resp = await getAssignedSurveys(town);
+    dispatch(setAssignedSurveys(resp));
+  };
+};
+
+export const setAssignedSurveys = (surveyors: any[]) => ({
+  type: types.surveyorsLoadAssignedSurveys,
+  payload: surveyors,
+});
 
 
 

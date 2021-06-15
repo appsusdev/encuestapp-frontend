@@ -70,8 +70,30 @@ export const editSurveyor = async (surveyor: Partial<Surveyor>) => {
 }
 
 // Asignar o eliminar encuestas al encuestador 
-export const assignSurvey = async (town: string, idSurvey: string, newSurveyors: string[]) => {
+export const assignSurvey = async (town: string, idSurvey: string, newSurveyors: string[], email: string, newAssignedSurveys: string[]) => {
   await db.collection('Municipios').doc(town).collection('Encuestas').doc(idSurvey)
     .set({encuestadores: [...newSurveyors]}, {merge: true});
+  
+  await db.collection('Municipios').doc(town).collection('Encuestadores').doc(email)
+    .set({encuestasAsignadas: [...newAssignedSurveys]}, {merge: true});
 }
 
+// Obtener coleccion de encuestadores con sus encuestas asignadas
+export const getAssignedSurveys = async (town: string) => {
+  const surveyorsSnap = await db
+    .collection("Municipios")
+    .doc(town)
+    .collection("Encuestadores")
+    .get();
+  const resp: any[] = [];
+
+  surveyorsSnap.forEach((snap) => {
+    resp.push({
+      id: snap.id,
+      email: snap.data().email,
+      assignedSurveys: snap.data().encuestasAsignadas
+    });
+  });
+
+  return resp;
+}  

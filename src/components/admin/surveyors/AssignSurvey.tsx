@@ -13,7 +13,6 @@ import { startAssignSurvey } from '../../../redux/actions/surveyorsActions';
 import { Surveyor } from '../../../interfaces/Surveyor';
 import { MyAlert } from '../../custom/MyAlert';
 import { uiCloseSuccessAlert, uiCloseErrorAlert } from '../../../redux/actions/uiActions';
-import { startLoadingCompleteSurveys } from '../../../redux/actions/surveysActions';
 
 const theme = createMuiTheme({
     typography: {
@@ -39,7 +38,6 @@ export const AssignSurvey = () => {
     const [loading, setLoading] = useState(false);
     const [assign, setAssign] = useState(true);
     const [rowsPerPage, setRowsPerPage] = useState(3);
-    const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
     const { dataSurveys } = useSelector<AppState, AppState['survey']>(state => state.survey);
     const { activeSurveyor } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
     const { successAlert, errorAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
@@ -71,14 +69,12 @@ export const AssignSurvey = () => {
         setAssign(true);
         (survey.trim()) && await dispatch(startAssignSurvey(survey, surveyor.email, action));
         setLoading(false);
-        municipios && await dispatch(startLoadingCompleteSurveys(municipios[0]));
     }
 
     const onDelete = async(id: string) => {
         action = false;
         setAssign(false);
         await dispatch( startAssignSurvey(id, surveyor.email, action));
-        municipios && await dispatch(startLoadingCompleteSurveys(municipios[0]));
     }
 
     // Cerrar success alert
@@ -140,64 +136,70 @@ export const AssignSurvey = () => {
 
                 </Grid>
             </Box>
+            
+            {
+                (surveysAssign.length > 0) &&
+                
+                <ThemeProvider theme={theme}>
+                    <Box borderColor="grey.400" borderRadius={4} {...defaultProps}>
 
-            <ThemeProvider theme={theme}>
-                <Box borderColor="grey.400" borderRadius={4} {...defaultProps}>
-
-                    <TableContainer component={Paper} >
-                        <Table className={classes.table} aria-label="custom pagination table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell><FormattedMessage id="AssignedSurveys" /> </TableCell>
-                                    <TableCell align="center"><FormattedMessage id="Delete" /> </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {(rowsPerPage > 0
-                                    ? surveysAssign.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    : surveysAssign
-                                ).map((survey) => (
-
-                                    <TableRow key={survey.name}>
-                                        <TableCell size="small" component="th" scope="row">
-                                            {survey.name}
-                                        </TableCell>
-                                        <TableCell size="small" align="center">
-                                            <Tooltip title={`${intl.formatMessage({ id: 'Delete' })}`} >
-                                                <IconButton aria-label="expand row" size="small" onClick={() => onDelete(survey.code)}> <DeleteOutlineOutlinedIcon /> </IconButton>
-                                            </Tooltip>
-                                        </TableCell>
+                        <TableContainer component={Paper} >
+                            <Table className={classes.table} aria-label="custom pagination table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell><FormattedMessage id="AssignedSurveys" /> </TableCell>
+                                        <TableCell align="center"><FormattedMessage id="Delete" /> </TableCell>
                                     </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {(rowsPerPage > 0
+                                        ? surveysAssign.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        : surveysAssign
+                                    ).map((survey) => (
 
-                                ))}
-                                {emptyRows > 0 && (
-                                    <TableRow style={{ height: 43 * emptyRows }}>
-                                        <TableCell colSpan={6} />
+                                        <TableRow key={survey.name}>
+                                            <TableCell size="small" component="th" scope="row">
+                                                {survey.name}
+                                            </TableCell>
+                                            <TableCell size="small" align="center">
+                                                <Tooltip title={`${intl.formatMessage({ id: 'Delete' })}`} >
+                                                    <IconButton aria-label="expand row" size="small" onClick={() => onDelete(survey.code)}> <DeleteOutlineOutlinedIcon /> </IconButton>
+                                                </Tooltip>
+                                            </TableCell>
+                                        </TableRow>
+
+                                    ))}
+                                    {emptyRows > 0 && (
+                                        <TableRow style={{ height: 43 * emptyRows }}>
+                                            <TableCell colSpan={6} />
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                                <TableFooter>
+                                    <TableRow>
+                                        <TablePagination
+                                            rowsPerPageOptions={[3]}
+                                            colSpan={6}
+                                            count={surveysAssign.length}
+                                            rowsPerPage={rowsPerPage}
+                                            page={page}
+                                            SelectProps={{
+                                                inputProps: { 'aria-label': 'rows per page' },
+                                                native: true,
+                                            }}
+                                            onChangePage={handleChangePage}
+                                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                                            ActionsComponent={TablePaginationAct}
+                                        />
                                     </TableRow>
-                                )}
-                            </TableBody>
-                            <TableFooter>
-                                <TableRow>
-                                    <TablePagination
-                                        rowsPerPageOptions={[3]}
-                                        colSpan={6}
-                                        count={surveysAssign.length}
-                                        rowsPerPage={rowsPerPage}
-                                        page={page}
-                                        SelectProps={{
-                                            inputProps: { 'aria-label': 'rows per page' },
-                                            native: true,
-                                        }}
-                                        onChangePage={handleChangePage}
-                                        onChangeRowsPerPage={handleChangeRowsPerPage}
-                                        ActionsComponent={TablePaginationAct}
-                                    />
-                                </TableRow>
-                            </TableFooter>
-                        </Table>
-                    </TableContainer>
-                </Box>
-            </ThemeProvider>
+                                </TableFooter>
+                            </Table>
+                        </TableContainer>
+                    </Box>
+                </ThemeProvider>
+            }
+
+           
 
             <MyAlert open={successAlert} typeAlert="success" message={(assign) ? "AssignedSurvey" : "SurveyDeleted"} time={2000} handleClose={closeSuccess}/>
             <MyAlert open={errorAlert} typeAlert="error" message="ErrorAssignedSurvey" time={2000} handleClose={closeSuccess}/>
