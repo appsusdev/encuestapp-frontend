@@ -12,7 +12,10 @@ import {
 import { useStyles } from "../../../shared/styles/useStyles";
 import { useState } from "react";
 import { excelToJson } from "../../../helpers/excelToJson";
-import { uploadCitizens } from "../../../helpers/uploadCitizens";
+import {
+  uploadCitizens,
+  uploadJsonCitizens,
+} from "../../../helpers/uploadCitizens";
 import { CitizensType } from "../../../interfaces/Citizens";
 import { useDispatch, useSelector } from "react-redux";
 import { MyAlert } from "../../custom/MyAlert";
@@ -45,19 +48,28 @@ export const UploadDB = () => {
     dispatch(uiCloseErrorAlert());
   };
 
-  const handleSetprogress = async (totalInterted: number) => {
-    if (citizens) {
-      let progresPorcent = Math.round((totalInterted / citizens.length) * 100);
+  const handleSetprogress = async (totalInterted: number,lengthData:number) => {
+    if (lengthData>0) {
+      const progresPorcent = Math.round(
+        (totalInterted / lengthData) * 100
+      );
       await dispatch(setProgress(progresPorcent));
     }
   };
 
   const handleUpload = async () => {
     try {
-      if (citizens) {
+      if (fileToConvert) {
         setloading(true);
+        const jsonResponse: any = await excelToJson(
+          fileToConvert,
+          handleSetprogress
+        );
+        //const parseData: any[] = JSON.parse(jsonResponse);
+        //await uploadCitizens(citizens, handleSetprogress);
+        await dispatch(setProgress(100));
+        await uploadJsonCitizens(JSON.stringify(jsonResponse));
 
-        await uploadCitizens(citizens, handleSetprogress);
         await setFileToConvert(null);
         await setloading(false);
         await setCitizens(null);
@@ -79,10 +91,6 @@ export const UploadDB = () => {
     ];
     const file = e.target.files[0] as File;
     if (file && SUPPORTED_FORMATS.includes(file.type)) {
-      let jsonResponse: any = await excelToJson(file);
-      let parseData: any[] = JSON.parse(jsonResponse);
-
-      setCitizens(parseData as CitizensType);
       setFileToConvert(file);
       setNoValid(false);
     } else {
