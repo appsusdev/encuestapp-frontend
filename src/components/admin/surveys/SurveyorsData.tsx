@@ -13,6 +13,7 @@ import { Surveyor } from '../../../interfaces/Surveyor';
 import { Survey } from '../../../interfaces/Survey';
 import { startAssignSurvey } from '../../../redux/actions/surveyorsActions';
 import { activeSurvey } from '../../../redux/actions/surveysActions';
+import { Alert } from '@material-ui/lab';
 
 const theme = createMuiTheme({
     typography: {
@@ -71,71 +72,79 @@ export const SurveyorsData = () => {
     return (
         <Box >
 
-            <ThemeProvider theme={theme}>
-                <Box borderColor="grey.400" borderRadius={4} {...defaultProps}>
+            {
+                (surveyorsFilter.length > 0) 
+                ?
+                <ThemeProvider theme={theme}>
+                    <Box borderColor="grey.400" borderRadius={4} {...defaultProps}>
 
-                    <TableContainer component={Paper} >
-                        <Table className={classes.table} aria-label="custom pagination table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell><FormattedMessage id="AssignedSurveys" /> </TableCell>
-                                    <TableCell><FormattedMessage id="DocumentType" /> </TableCell>
-                                    <TableCell><FormattedMessage id="Document" /> </TableCell>
-                                    <TableCell align="center"><FormattedMessage id="Delete" /> </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {(rowsPerPage > 0
-                                    ? surveyorsFilter.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    : surveyorsFilter
-                                ).map((surveyor) => (
-
-                                    <TableRow key={surveyor.document}>
-                                        <TableCell size="small" component="th" scope="row">
-                                            {surveyor.username}
-                                        </TableCell>
-                                        <TableCell style={{ width: 140 }}>
-                                            {surveyor.typeDoc}
-                                        </TableCell>
-                                        <TableCell style={{ width: 120 }}>
-                                            {surveyor.document}
-                                        </TableCell>
-                                        <TableCell size="small" align="center">
-                                            <Tooltip title={`${intl.formatMessage({ id: 'Delete' })}`}>
-                                                <IconButton aria-label="expand row" size="small" onClick={() => onDelete(surveyor.email)}> <DeleteOutlineOutlinedIcon /> </IconButton>
-                                            </Tooltip>
-                                        </TableCell>
+                        <TableContainer component={Paper} >
+                            <Table className={classes.table} aria-label="custom pagination table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell><FormattedMessage id="AssignedSurveys" /> </TableCell>
+                                        <TableCell><FormattedMessage id="DocumentType" /> </TableCell>
+                                        <TableCell><FormattedMessage id="Document" /> </TableCell>
+                                        <TableCell align="center"><FormattedMessage id="Delete" /> </TableCell>
                                     </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {(rowsPerPage > 0
+                                        ? surveyorsFilter.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        : surveyorsFilter
+                                    ).map((surveyor) => (
 
-                                ))}
-                                {emptyRows > 0 && (
-                                    <TableRow style={{ height: 43 * emptyRows }}>
-                                        <TableCell colSpan={6} />
+                                        <TableRow key={surveyor.document}>
+                                            <TableCell size="small" component="th" scope="row">
+                                                {surveyor.username}
+                                            </TableCell>
+                                            <TableCell style={{ width: 140 }}>
+                                                {surveyor.typeDoc}
+                                            </TableCell>
+                                            <TableCell style={{ width: 120 }}>
+                                                {surveyor.document}
+                                            </TableCell>
+                                            <TableCell size="small" align="center">
+                                                <Tooltip title={`${intl.formatMessage({ id: 'Delete' })}`}>
+                                                    <IconButton aria-label="expand row" size="small" onClick={() => onDelete(surveyor.email)}> <DeleteOutlineOutlinedIcon /> </IconButton>
+                                                </Tooltip>
+                                            </TableCell>
+                                        </TableRow>
+
+                                    ))}
+                                    {emptyRows > 0 && (
+                                        <TableRow style={{ height: 43 * emptyRows }}>
+                                            <TableCell colSpan={6} />
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                                <TableFooter>
+                                    <TableRow>
+                                        <TablePagination
+                                            rowsPerPageOptions={[3]}
+                                            colSpan={6}
+                                            count={surveyorsFilter.length}
+                                            rowsPerPage={rowsPerPage}
+                                            page={page}
+                                            SelectProps={{
+                                                inputProps: { 'aria-label': 'rows per page' },
+                                                native: true,
+                                            }}
+                                            onChangePage={handleChangePage}
+                                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                                            ActionsComponent={TablePaginationAct}
+                                        />
                                     </TableRow>
-                                )}
-                            </TableBody>
-                            <TableFooter>
-                                <TableRow>
-                                    <TablePagination
-                                        rowsPerPageOptions={[3]}
-                                        colSpan={6}
-                                        count={surveyorsFilter.length}
-                                        rowsPerPage={rowsPerPage}
-                                        page={page}
-                                        SelectProps={{
-                                            inputProps: { 'aria-label': 'rows per page' },
-                                            native: true,
-                                        }}
-                                        onChangePage={handleChangePage}
-                                        onChangeRowsPerPage={handleChangeRowsPerPage}
-                                        ActionsComponent={TablePaginationAct}
-                                    />
-                                </TableRow>
-                            </TableFooter>
-                        </Table>
-                    </TableContainer>
-                </Box>
-            </ThemeProvider>
+                                </TableFooter>
+                            </Table>
+                        </TableContainer>
+                    </Box>
+                </ThemeProvider>
+                :
+                <Alert severity="info" color="info">
+                    <FormattedMessage id="NoAssignedSurveyors" />
+                </Alert>
+            }
 
             <Box mt={2} display="flex" flexDirection="row-reverse">
                 <Button className={clsx(classes.btn, classes.save)} autoFocus onClick={onClose}>

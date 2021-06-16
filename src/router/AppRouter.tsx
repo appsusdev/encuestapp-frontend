@@ -14,7 +14,7 @@ import { uiChangeRole } from "../redux/actions/uiActions";
 import { getUserRole } from "../services/firebase/auth";
 import { Box, Grid } from "@material-ui/core";
 import { useStyles } from "../shared/styles/useStyles";
-import { startLoadingSurveyors } from "../redux/actions/surveyorsActions";
+import { startLoadingSurveyors, startLoadingAssignedSurveys } from '../redux/actions/surveyorsActions';
 import { startLoadingCompleteSurveys, startLoadingDataSurveys } from '../redux/actions/surveysActions';
 
 export const AppRouter: FC = () => {
@@ -31,7 +31,7 @@ export const AppRouter: FC = () => {
         if (isAuthFlag) {
           isAuthFlag = false;
           const resp = await getUserRole(user.email);
-
+          
           if (resp) {
             const { rol, municipios } = resp;
 
@@ -48,6 +48,7 @@ export const AppRouter: FC = () => {
               dispatch(startLoadingSurveyors(municipios[0]));
               dispatch(startLoadingDataSurveys(municipios[0]));
               dispatch(startLoadingCompleteSurveys(municipios[0]));
+              dispatch(startLoadingAssignedSurveys(municipios[0]));
               setIsLoggedIn(true);
             }
           } else {

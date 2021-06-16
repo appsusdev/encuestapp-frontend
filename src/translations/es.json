@@ -152,6 +152,7 @@
     "SelectSurveyor": "Seleccione encuestador",
     "StartDate": "Fecha inicial",
     "EndDate": "Fecha final",
-    "SearchCitizen": "Buscar ciudadano por documento o nombre"
+    "SearchCitizen": "Buscar ciudadano por documento o nombre",
+    "NoAssignedSurveyors": "No se han asignado encuestadores a esta encuesta."
 }
 

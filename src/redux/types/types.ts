@@ -41,6 +41,7 @@ export const types = {
     surveyorFromDB: '[surveyor] Surveyor from DB',
     surveyorActive: '[surveyor] Set active surveyor',
     surveyorsLoad: '[surveyor] Load surveyors',
+    surveyorsLoadAssignedSurveys: '[surveyor] Load assigned surveys',
     surveyorUpdated: '[surveyor] Updated surveyor',
     surveyorDelete: '[surveyor] Delete surveyor',
     surveyorsLogoutCleaning: '[surveyor] Cleaning surveyors',
@@ -105,6 +106,7 @@ export type UiAction = {
 export interface ISurveyor {
   surveyors: Partial<Surveyor>[],
   activeSurveyor: Partial<Surveyor> | null,
+  assignedSurveys: any,
   surveyorFromToDB: any
 }
 

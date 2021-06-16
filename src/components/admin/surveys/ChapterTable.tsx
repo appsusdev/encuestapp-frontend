@@ -63,65 +63,70 @@ export const ChapterTable = () => {
     return (
         <Box mt={2}>
 
-            <ThemeProvider theme={theme}>
-                <Box {...defaultProps}>
+            {  
+                (list.length > 0)
+                &&
 
-                    <TableContainer component={Paper} >
-                        <Table className={classes.table} aria-label="custom pagination table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell style={{ width: '10%' }}><FormattedMessage id="Number" /> </TableCell>
-                                    <TableCell style={{ width: '70%' }}><FormattedMessage id="ChapterName" /> </TableCell>
-                                    <TableCell style={{ width: '20%' }}><FormattedMessage id="Actions" /> </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {(rowsPerPage > 0
-                                    ? list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    : list
-                                ).map((chapter) => (
+                <ThemeProvider theme={theme}>
+                    <Box {...defaultProps}>
 
-                                    <TableRow key={chapter.id}>
-                                        <TableCell size="small" component="th" scope="row">
-                                            {chapter.number}
-                                        </TableCell>
-                                        <TableCell style={{ width: 140 }}>
-                                            {chapter.name}
-                                        </TableCell>
-                                        <TableCell size="small" align="center">
-                                            <CustomizedIcons editIcon deleteIcon onEdit={() => onEdit(chapter)} onDelete={() => onDelete(chapter.id)}/>
-                                        </TableCell>
+                        <TableContainer component={Paper} >
+                            <Table className={classes.table} aria-label="custom pagination table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell style={{ width: '10%' }}><FormattedMessage id="Number" /> </TableCell>
+                                        <TableCell style={{ width: '70%' }}><FormattedMessage id="ChapterName" /> </TableCell>
+                                        <TableCell style={{ width: '20%' }}><FormattedMessage id="Actions" /> </TableCell>
                                     </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {(rowsPerPage > 0
+                                        ? list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        : list
+                                    ).map((chapter) => (
 
-                                ))}
-                                {emptyRows > 0 && (
-                                    <TableRow style={{ height: 43 * emptyRows }}>
-                                        <TableCell colSpan={6} />
+                                        <TableRow key={chapter.id}>
+                                            <TableCell size="small" component="th" scope="row">
+                                                {chapter.number}
+                                            </TableCell>
+                                            <TableCell style={{ width: 140 }}>
+                                                {chapter.name}
+                                            </TableCell>
+                                            <TableCell size="small" align="center">
+                                                <CustomizedIcons editIcon deleteIcon onEdit={() => onEdit(chapter)} onDelete={() => onDelete(chapter.id)}/>
+                                            </TableCell>
+                                        </TableRow>
+
+                                    ))}
+                                    {emptyRows > 0 && (
+                                        <TableRow style={{ height: 43 * emptyRows }}>
+                                            <TableCell colSpan={6} />
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                                <TableFooter>
+                                    <TableRow>
+                                        <TablePagination
+                                            rowsPerPageOptions={[2]}
+                                            colSpan={6}
+                                            count={list.length}
+                                            rowsPerPage={rowsPerPage}
+                                            page={page}
+                                            SelectProps={{
+                                                inputProps: { 'aria-label': 'rows per page' },
+                                                native: true,
+                                            }}
+                                            onChangePage={handleChangePage}
+                                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                                            ActionsComponent={TablePaginationAct}
+                                        />
                                     </TableRow>
-                                )}
-                            </TableBody>
-                            <TableFooter>
-                                <TableRow>
-                                    <TablePagination
-                                        rowsPerPageOptions={[2]}
-                                        colSpan={6}
-                                        count={list.length}
-                                        rowsPerPage={rowsPerPage}
-                                        page={page}
-                                        SelectProps={{
-                                            inputProps: { 'aria-label': 'rows per page' },
-                                            native: true,
-                                        }}
-                                        onChangePage={handleChangePage}
-                                        onChangeRowsPerPage={handleChangeRowsPerPage}
-                                        ActionsComponent={TablePaginationAct}
-                                    />
-                                </TableRow>
-                            </TableFooter>
-                        </Table>
-                    </TableContainer>
-                </Box>
-            </ThemeProvider>
+                                </TableFooter>
+                            </Table>
+                        </TableContainer>
+                    </Box>
+                </ThemeProvider>
+            }
 
         </Box >
     )
