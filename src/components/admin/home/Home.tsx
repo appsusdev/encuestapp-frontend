@@ -19,6 +19,12 @@ import {
   Divider,
 } from "@material-ui/core";
 import { useStyles } from "../../../shared/styles/useStyles";
+import { AppState } from "../../../redux/reducers/rootReducer";
+import { useSelector } from "react-redux";
+import { TablePagination, TableFooter } from "@material-ui/core";
+import { CitizensType, ICitizen } from "../../../interfaces/Citizens";
+import { TablePaginationAct } from "../../custom/TablePaginationAct";
+import { Alert } from "@material-ui/lab";
 
 const theme = createMuiTheme({
   typography: {
@@ -27,28 +33,85 @@ const theme = createMuiTheme({
   },
 });
 
-const citizens = [
-  {
-    firstName: "Karen",
-    secondName: "Cristina",
-    firstLastName: "Gomez",
-    secondLastName: "Munoz",
-    typeDocument: "CC",
-    document: 10617874772,
-    encuestas: { name: "Encuesta 1" },
-  },
-];
-
 export const Home = () => {
   const classes = useStyles();
   const [value, setValue] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(3);
+  const [existsCitizens, setExistsCitizens] = useState(true);
+  const [list, setList] = useState<ICitizen[] | []>([]);
+  const { citizens } = useSelector<AppState, AppState["citizens"]>(
+    (state) => state.citizens
+  );
+  let array: CitizensType = citizens;
+
+  const emptyRows =
+    rowsPerPage - Math.min(rowsPerPage, list.length - page * rowsPerPage);
+
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setValue(event.target.value as string);
   };
 
   const handleSearch = () => {
-    console.log(value);
+    if (value.length > 0) {
+      if (array.length > 0) {
+        const newData = array.filter((data) => {
+          let search = "";
+
+          const firstName = data.primerNombre.toUpperCase();
+          const secondName = data.segundoNombre.toUpperCase();
+          const firstLastName = data.primerApellido.toUpperCase();
+          const secondLastName = data.segundoApellido.toUpperCase();
+          const doc = data.identificacion;
+          search =
+            firstName +
+            " " +
+            secondName +
+            " " +
+            firstLastName +
+            " " +
+            secondLastName +
+            " " +
+            doc;
+
+          const valueSearch = value.toUpperCase();
+          return search.indexOf(valueSearch) > -1;
+        });
+
+        if (newData.length === 0) {
+          setExistsCitizens(false);
+          setList([]);
+        } else {
+          setExistsCitizens(true);
+          const idCitizens: string[] = [];
+          newData.forEach((citizen) => idCitizens.push(citizen.identificacion));
+
+          setList(newData);
+        }
+      }
+    } else {
+      setList([]);
+    }
+  };
+
+  const handlePress = (e: any) => {
+    if (e.code === "Enter") {
+      handleSearch();
+    }
   };
 
   return (
@@ -65,6 +128,7 @@ export const Home = () => {
                 <TextField
                   className={classes.inputSelect}
                   onChange={handleChange}
+                  onKeyPress={handlePress}
                   size="small"
                   variant="outlined"
                 />
@@ -83,13 +147,15 @@ export const Home = () => {
             </Grid>
           </Box>
         </Box>
-
-        <Box m={2} style={{ marginTop: "30px" }}>
+      </Paper>
+      <Box style={{ marginTop: "50px" }}>
+        {list.length > 0 && (
           <ThemeProvider theme={theme}>
-            <TableContainer component={Paper} square>
+            <TableContainer component={Paper}>
               <Table
                 className={classes.table}
                 aria-label="custom pagination table"
+                style={{ tableLayout: "auto" }}
               >
                 <TableHead>
                   <TableRow>
@@ -115,25 +181,72 @@ export const Home = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {citizens.map((citizen) => (
-                    <TableRow key={citizen.firstName}>
+                  {(rowsPerPage > 0
+                    ? list.slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                    : list
+                  ).map((citizen, index) => (
+                    <TableRow key={index} className={classes.capitalize}>
                       <TableCell component="th" scope="row">
-                        {citizen.firstName}
+                        {citizen.primerNombre.toLowerCase()}
                       </TableCell>
-                      <TableCell>{citizen.secondName}</TableCell>
-                      <TableCell>{citizen.firstLastName}</TableCell>
-                      <TableCell>{citizen.secondLastName}</TableCell>
-                      <TableCell>{citizen.typeDocument}</TableCell>
-                      <TableCell>{citizen.document}</TableCell>
-                      <TableCell>{citizen.encuestas.name}</TableCell>
+                      <TableCell>
+                        {citizen.segundoNombre.toLowerCase()}
+                      </TableCell>
+                      <TableCell>
+                        {citizen.primerApellido.toLowerCase()}
+                      </TableCell>
+                      <TableCell>
+                        {citizen.segundoApellido.toLowerCase()}
+                      </TableCell>
+                      <TableCell>
+                        {citizen.tipoIdentificacion === "1" && "CC"}
+                        {citizen.tipoIdentificacion === "2" && "TI"}
+                        {citizen.tipoIdentificacion === "3" && "CE"}
+                        {citizen.tipoIdentificacion === "4" && "RC"}
+                        {citizen.tipoIdentificacion === "NIT" && "NIT"}
+                        {citizen.tipoIdentificacion === "Otro" && "Otro"}
+                      </TableCell>
+                      <TableCell>{citizen.identificacion}</TableCell>
+                      <TableCell>Encuesta</TableCell>
                     </TableRow>
                   ))}
+                  {emptyRows > 0 && (
+                    <TableRow style={{ height: 53 * emptyRows }}>
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
                 </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TablePagination
+                      rowsPerPageOptions={[3]}
+                      colSpan={6}
+                      count={list.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      SelectProps={{
+                        inputProps: { "aria-label": "rows per page" },
+                        native: true,
+                      }}
+                      onChangePage={handleChangePage}
+                      onChangeRowsPerPage={handleChangeRowsPerPage}
+                      ActionsComponent={TablePaginationAct}
+                    />
+                  </TableRow>
+                </TableFooter>
               </Table>
             </TableContainer>
           </ThemeProvider>
-        </Box>
-      </Paper>
+        )}
+        {!existsCitizens && (
+          <Alert severity="info" color="info">
+            <FormattedMessage id="CitizenNotFound" />
+          </Alert>
+        )}
+      </Box>
     </>
   );
 };

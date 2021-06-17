@@ -153,5 +153,6 @@
     "StartDate": "Start date",
     "EndDate": "End date",
     "SearchCitizen": "Search citizen by document or name",
-    "NoAssignedSurveyors": "No surveyors have been assigned to this survey."
+    "NoAssignedSurveyors": "No surveyors have been assigned to this survey.",
+    "CitizenNotFound": "No record found for the entered citizen."    
 }

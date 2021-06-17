@@ -11,3 +11,14 @@ export const addJsonCitizens = (jsonStr:string)=>{
   const docRef = db.collection('Ciudadanos').doc('jsonCitizens')
   return docRef.set({data:jsonStr},{merge:true})
 }
+
+export const getCitizens = async() => {
+  const citizensRef = db.collection('Ciudadanos').doc('jsonCitizens');
+  
+  const citizens = await citizensRef.get().then(snapShot=>{
+      return snapShot.data()
+  });
+
+  return citizens;
+}
+
