@@ -1,5 +1,5 @@
 import { db } from "../../config/firebase/firebase-config";
-import { Survey, Chapter } from "../../interfaces/Survey";
+import { Survey, Chapter } from '../../interfaces/Survey';
 import { questionDTO, chapterDTO, surveyDTO } from '../../helpers/surveyDTO';
 
 // Verificar si existe encuesta
@@ -43,8 +43,9 @@ export const getSurveys = async (town: string) => {
   return surveys;
 }  
 // Obtener encuestas con toda la informacion (capitulos y preguntas)
-export const getSurveysAndChapters = async (town: string) => {
-  const surveys = await getSurveys(town);
+export const getSurveysAndChapters = async (town: string, data: Partial<Survey[]>, flag?: boolean ) => {
+  let surveys: any[] = []; 
+  (flag) ? ( surveys = await getSurveys(town)) : (surveys = data)
 
   // Obtener cada encuesta con sus capitulos
   let surveysAndChapters: any[] = [];

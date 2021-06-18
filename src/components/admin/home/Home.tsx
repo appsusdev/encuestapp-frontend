@@ -25,6 +25,7 @@ import { TablePagination, TableFooter } from "@material-ui/core";
 import { CitizensType, ICitizen } from "../../../interfaces/Citizens";
 import { TablePaginationAct } from "../../custom/TablePaginationAct";
 import { Alert } from "@material-ui/lab";
+import { Link } from "@material-ui/core";
 
 const theme = createMuiTheme({
   typography: {
@@ -40,6 +41,7 @@ export const Home = () => {
   const [rowsPerPage, setRowsPerPage] = useState(3);
   const [existsCitizens, setExistsCitizens] = useState(true);
   const [list, setList] = useState<ICitizen[] | []>([]);
+  const [valid, setValid] = useState(true);
   const { citizens } = useSelector<AppState, AppState["citizens"]>(
     (state) => state.citizens
   );
@@ -67,8 +69,9 @@ export const Home = () => {
   };
 
   const handleSearch = () => {
-    if (value.length > 0) {
+    if (value.length >= 3) {
       if (array.length > 0) {
+        setValid(true);
         const newData = array.filter((data) => {
           let search = "";
 
@@ -100,10 +103,12 @@ export const Home = () => {
           const idCitizens: string[] = [];
           newData.forEach((citizen) => idCitizens.push(citizen.identificacion));
 
+          console.log(idCitizens);
           setList(newData);
         }
       }
     } else {
+      setValid(false);
       setList([]);
     }
   };
@@ -144,6 +149,16 @@ export const Home = () => {
                   <FormattedMessage id="Search" />
                 </Button>
               </Grid>
+              {!valid && (
+                <Box
+                  mt={-1}
+                  ml={2}
+                  mb={2}
+                  style={{ fontSize: 12, color: "red" }}
+                >
+                  *<FormattedMessage id="CitizensField" />*
+                </Box>
+              )}
             </Grid>
           </Box>
         </Box>
@@ -210,7 +225,11 @@ export const Home = () => {
                         {citizen.tipoIdentificacion === "Otro" && "Otro"}
                       </TableCell>
                       <TableCell>{citizen.identificacion}</TableCell>
-                      <TableCell>Encuesta</TableCell>
+                      <TableCell>
+                        <Link component="button">
+                          <FormattedMessage id="SeeSurveys" />
+                        </Link>
+                      </TableCell>
                     </TableRow>
                   ))}
                   {emptyRows > 0 && (

@@ -154,5 +154,7 @@
     "EndDate": "End date",
     "SearchCitizen": "Search citizen by document or name",
     "NoAssignedSurveyors": "No surveyors have been assigned to this survey.",
-    "CitizenNotFound": "No record found for the entered citizen."    
+    "CitizenNotFound": "No record found for the entered citizen.",
+    "CitizensField": "The field must be a minimum of 3 characters.",
+    "SeeSurveys": "See surveys"       
 }

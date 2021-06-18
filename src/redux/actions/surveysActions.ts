@@ -46,9 +46,10 @@ export const startLoadingDataSurveys = ( town: string ) => {
 
 
 // Cargar encuestas por municipio
-export const startLoadingCompleteSurveys = ( town: string ) => {
-    return async(dispatch: any) => {
-        const surveys = await getSurveysAndChapters(town);
+export const startLoadingCompleteSurveys = ( town: string, flag?: boolean ) => {
+    return async(dispatch: any, getState: any) => {
+        const { dataSurveys } = getState().survey;
+        const surveys = await getSurveysAndChapters(town, dataSurveys, flag);
 
         await dispatch( setSurveys(surveys) );
     }

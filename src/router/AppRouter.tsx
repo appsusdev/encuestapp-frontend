@@ -32,7 +32,7 @@ export const AppRouter: FC = () => {
         if (isAuthFlag) {
           isAuthFlag = false;
           const resp = await getUserRole(user.email);
-          
+                    
           if (resp) {
             const { rol, municipios } = resp;
 
@@ -48,7 +48,7 @@ export const AppRouter: FC = () => {
               dispatch(login(userMain));
               dispatch(startLoadingSurveyors(municipios[0]));
               dispatch(startLoadingDataSurveys(municipios[0]));
-              dispatch(startLoadingCompleteSurveys(municipios[0]));
+              dispatch(startLoadingCompleteSurveys(municipios[0], false));
               dispatch(startLoadingAssignedSurveys(municipios[0]));
               dispatch(startLoadingCitizens());
               setIsLoggedIn(true);
