@@ -47,8 +47,8 @@ export const AppRouter: FC = () => {
               };
               dispatch(login(userMain));
               dispatch(startLoadingSurveyors(municipios[0]));
-              dispatch(startLoadingDataSurveys(municipios[0]));
-              dispatch(startLoadingCompleteSurveys(municipios[0], false));
+              await dispatch(startLoadingDataSurveys(municipios[0]));
+              await dispatch(startLoadingCompleteSurveys(municipios[0]));
               dispatch(startLoadingAssignedSurveys(municipios[0]));
               dispatch(startLoadingCitizens());
               setIsLoggedIn(true);

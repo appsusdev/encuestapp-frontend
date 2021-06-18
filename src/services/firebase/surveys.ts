@@ -43,9 +43,8 @@ export const getSurveys = async (town: string) => {
   return surveys;
 }  
 // Obtener encuestas con toda la informacion (capitulos y preguntas)
-export const getSurveysAndChapters = async (town: string, data: Partial<Survey[]>, flag?: boolean ) => {
-  let surveys: any[] = []; 
-  (flag) ? ( surveys = await getSurveys(town)) : (surveys = data)
+export const getSurveysAndChapters = async (town: string) => {
+  const surveys = await getSurveys(town);
 
   // Obtener cada encuesta con sus capitulos
   let surveysAndChapters: any[] = [];
