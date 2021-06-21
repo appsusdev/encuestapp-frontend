@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import clsx from "clsx";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 
 import {
   Box,
@@ -17,15 +17,30 @@ import {
   TableCell,
   TableBody,
   Divider,
+  Tooltip,
 } from "@material-ui/core";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { AppState } from "../../../redux/reducers/rootReducer";
-import { useSelector } from "react-redux";
-import { TablePagination, TableFooter } from "@material-ui/core";
+import { useDispatch, useSelector } from "react-redux";
+import { TablePagination, TableFooter, IconButton } from "@material-ui/core";
 import { CitizensType, ICitizen } from "../../../interfaces/Citizens";
 import { TablePaginationAct } from "../../custom/TablePaginationAct";
 import { Alert } from "@material-ui/lab";
 import { Link } from "@material-ui/core";
+import {
+  uiOpenModalAdd,
+  uiCloseModalAdd,
+  startLoading,
+} from "../../../redux/actions/uiActions";
+import CustomizedDialog from "../../custom/CustomizedDialog";
+import {
+  startLoadingSurveysAnswered,
+  setSurveysAnswered,
+  activeCitizen,
+  citizenCleanActive,
+} from "../../../redux/actions/citizensActions";
+import { ListSurveysAnswered } from "./ListSurveysAnswered";
+import VisibilityOutlinedIcon from "@material-ui/icons/VisibilityOutlined";
 
 const theme = createMuiTheme({
   typography: {
@@ -36,14 +51,19 @@ const theme = createMuiTheme({
 
 export const Home = () => {
   const classes = useStyles();
+  const intl = useIntl();
+  const dispatch = useDispatch();
   const [value, setValue] = useState("");
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(3);
+  const [rowsPerPage, setRowsPerPage] = useState(2);
   const [existsCitizens, setExistsCitizens] = useState(true);
   const [list, setList] = useState<ICitizen[] | []>([]);
   const [valid, setValid] = useState(true);
   const { citizens } = useSelector<AppState, AppState["citizens"]>(
     (state) => state.citizens
+  );
+  const { modalAddOpen } = useSelector<AppState, AppState["ui"]>(
+    (state) => state.ui
   );
   let array: CitizensType = citizens;
 
@@ -65,6 +85,7 @@ export const Home = () => {
   };
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setExistsCitizens(true);
     setValue(event.target.value as string);
   };
 
@@ -108,15 +129,30 @@ export const Home = () => {
         }
       }
     } else {
+      setExistsCitizens(true);
       setValid(false);
       setList([]);
     }
+  };
+
+  const handleSeeSurveys = (citizen: ICitizen) => {
+    dispatch(activeCitizen(citizen));
+    dispatch(startLoading());
+    dispatch(uiOpenModalAdd());
+    // Consultar encuestas del ciudadano
+    dispatch(startLoadingSurveysAnswered(citizen.identificacion));
   };
 
   const handlePress = (e: any) => {
     if (e.code === "Enter") {
       handleSearch();
     }
+  };
+
+  const onDeny = () => {
+    dispatch(citizenCleanActive());
+    dispatch(uiCloseModalAdd());
+    dispatch(setSurveysAnswered([]));
   };
 
   return (
@@ -162,110 +198,130 @@ export const Home = () => {
             </Grid>
           </Box>
         </Box>
+        <Box m={2} mt={3}>
+          {list.length > 0 && (
+            <ThemeProvider theme={theme}>
+              <TableContainer component={Paper}>
+                <Table
+                  className={classes.table}
+                  aria-label="custom pagination table"
+                  style={{ tableLayout: "auto" }}
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>
+                        <FormattedMessage id="FirstName" />{" "}
+                      </TableCell>
+                      <TableCell>
+                        <FormattedMessage id="SecondName" />{" "}
+                      </TableCell>
+                      <TableCell>
+                        <FormattedMessage id="FirstLastName" />{" "}
+                      </TableCell>
+                      <TableCell>
+                        <FormattedMessage id="SecondLastName" />{" "}
+                      </TableCell>
+                      <TableCell>TD</TableCell>
+                      <TableCell>
+                        <FormattedMessage id="Document" />{" "}
+                      </TableCell>
+                      <TableCell>
+                        <FormattedMessage id="Surveys" />{" "}
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {(rowsPerPage > 0
+                      ? list.slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                      : list
+                    ).map((citizen, index) => (
+                      <TableRow key={index} className={classes.capitalize}>
+                        <TableCell component="th" scope="row">
+                          {citizen.primerNombre.toLowerCase()}
+                        </TableCell>
+                        <TableCell>
+                          {citizen.segundoNombre.toLowerCase()}
+                        </TableCell>
+                        <TableCell>
+                          {citizen.primerApellido.toLowerCase()}
+                        </TableCell>
+                        <TableCell>
+                          {citizen.segundoApellido.toLowerCase()}
+                        </TableCell>
+                        <TableCell>
+                          {citizen.tipoIdentificacion === "1" && "CC"}
+                          {citizen.tipoIdentificacion === "2" && "TI"}
+                          {citizen.tipoIdentificacion === "3" && "CE"}
+                          {citizen.tipoIdentificacion === "4" && "RC"}
+                          {citizen.tipoIdentificacion === "NIT" && "NIT"}
+                          {citizen.tipoIdentificacion === "Otro" && "Otro"}
+                        </TableCell>
+                        <TableCell>{citizen.identificacion}</TableCell>
+                        <TableCell align="center">
+                          <Tooltip
+                            title={`${intl.formatMessage({ id: "SeeSurveys" })}`}
+                          >
+                            <IconButton
+                              aria-label="expand row"
+                              size="small"
+                              onClick={() => handleSeeSurveys(citizen)}
+                            >
+                              {" "}
+                              <VisibilityOutlinedIcon />{" "}
+                            </IconButton>
+                          </Tooltip>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+                  <TableFooter>
+                    <TableRow>
+                      <TablePagination
+                        rowsPerPageOptions={[3]}
+                        colSpan={6}
+                        count={list.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        SelectProps={{
+                          inputProps: { "aria-label": "rows per page" },
+                          native: true,
+                        }}
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                        ActionsComponent={TablePaginationAct}
+                      />
+                    </TableRow>
+                  </TableFooter>
+                </Table>
+              </TableContainer>
+            </ThemeProvider>
+          )}
+          {!existsCitizens && value.length >= 3 && (
+            <Alert severity="info" color="info">
+              <FormattedMessage id="CitizenNotFound" />
+            </Alert>
+          )}
+        </Box>
       </Paper>
-      <Box style={{ marginTop: "50px" }}>
-        {list.length > 0 && (
-          <ThemeProvider theme={theme}>
-            <TableContainer component={Paper}>
-              <Table
-                className={classes.table}
-                aria-label="custom pagination table"
-                style={{ tableLayout: "auto" }}
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell>
-                      <FormattedMessage id="FirstName" />{" "}
-                    </TableCell>
-                    <TableCell>
-                      <FormattedMessage id="SecondName" />{" "}
-                    </TableCell>
-                    <TableCell>
-                      <FormattedMessage id="FirstLastName" />{" "}
-                    </TableCell>
-                    <TableCell>
-                      <FormattedMessage id="SecondLastName" />{" "}
-                    </TableCell>
-                    <TableCell>TD</TableCell>
-                    <TableCell>
-                      <FormattedMessage id="Document" />{" "}
-                    </TableCell>
-                    <TableCell>
-                      <FormattedMessage id="Surveys" />{" "}
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {(rowsPerPage > 0
-                    ? list.slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
-                    : list
-                  ).map((citizen, index) => (
-                    <TableRow key={index} className={classes.capitalize}>
-                      <TableCell component="th" scope="row">
-                        {citizen.primerNombre.toLowerCase()}
-                      </TableCell>
-                      <TableCell>
-                        {citizen.segundoNombre.toLowerCase()}
-                      </TableCell>
-                      <TableCell>
-                        {citizen.primerApellido.toLowerCase()}
-                      </TableCell>
-                      <TableCell>
-                        {citizen.segundoApellido.toLowerCase()}
-                      </TableCell>
-                      <TableCell>
-                        {citizen.tipoIdentificacion === "1" && "CC"}
-                        {citizen.tipoIdentificacion === "2" && "TI"}
-                        {citizen.tipoIdentificacion === "3" && "CE"}
-                        {citizen.tipoIdentificacion === "4" && "RC"}
-                        {citizen.tipoIdentificacion === "NIT" && "NIT"}
-                        {citizen.tipoIdentificacion === "Otro" && "Otro"}
-                      </TableCell>
-                      <TableCell>{citizen.identificacion}</TableCell>
-                      <TableCell>
-                        <Link component="button">
-                          <FormattedMessage id="SeeSurveys" />
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-                <TableFooter>
-                  <TableRow>
-                    <TablePagination
-                      rowsPerPageOptions={[3]}
-                      colSpan={6}
-                      count={list.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      SelectProps={{
-                        inputProps: { "aria-label": "rows per page" },
-                        native: true,
-                      }}
-                      onChangePage={handleChangePage}
-                      onChangeRowsPerPage={handleChangeRowsPerPage}
-                      ActionsComponent={TablePaginationAct}
-                    />
-                  </TableRow>
-                </TableFooter>
-              </Table>
-            </TableContainer>
-          </ThemeProvider>
-        )}
-        {!existsCitizens && (
-          <Alert severity="info" color="info">
-            <FormattedMessage id="CitizenNotFound" />
-          </Alert>
-        )}
-      </Box>
+
+      <CustomizedDialog
+        open={modalAddOpen}
+        onConfirm={onDeny}
+        cancelBtn={false}
+        onDeny={onDeny}
+        title={`${intl.formatMessage({ id: "SurveysConducted" })}`}
+        content={<ListSurveysAnswered />}
+        textButton="Accept"
+        seeActions
+      />
     </>
   );
 };

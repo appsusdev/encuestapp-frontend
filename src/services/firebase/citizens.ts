@@ -23,17 +23,16 @@ export const getCitizens = async() => {
   return citizens;
 }
 
-// export const getTransmitedSurveys = async() => {
-//   const surveysSnap = await db.collectionGroup('EncuestasTransmitidas').get();
-//   const surveys: any[] = [];
+export const getTransmitedSurveys = async(town: string, idCitizen: string) => {
+  const surveysSnap = await db.collectionGroup('EncuestasTransmitidas').where('encuestados','array-contains', idCitizen).where('municipio','==',town).get();
+  const surveys: any[] = [];
 
-//   surveysSnap.forEach((snap) => {
-//     surveys.push({
-//       id: snap.id,
-//       ...snap.data(),
-//     });
-//   });
-
-//   return surveys;
-// };
+  surveysSnap.forEach((snap) => {
+    surveys.push({
+      id: snap.id,
+      ...snap.data(),
+    });
+  });
+  return surveys;
+};
 
