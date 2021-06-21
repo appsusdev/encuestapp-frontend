@@ -5,6 +5,7 @@ import { uiReducer } from "./uiReducer";
 import { surveyorsReducer } from './surveyorsReducer';
 import { surveysReducer } from './surveysReducer';
 import { searchReducer } from './searchReducer';
+import { citizensReducer } from './citizensReducer';
 
 export const rootReducer = combineReducers({
     auth: authReducer,
@@ -13,6 +14,7 @@ export const rootReducer = combineReducers({
     surveyor: surveyorsReducer,
     survey: surveysReducer,
     search: searchReducer,
+    citizens: citizensReducer,
     // TODO: Demás reducers
 });
 

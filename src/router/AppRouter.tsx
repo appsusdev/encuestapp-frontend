@@ -16,6 +16,7 @@ import { Box, Grid } from "@material-ui/core";
 import { useStyles } from "../shared/styles/useStyles";
 import { startLoadingSurveyors, startLoadingAssignedSurveys } from '../redux/actions/surveyorsActions';
 import { startLoadingCompleteSurveys, startLoadingDataSurveys } from '../redux/actions/surveysActions';
+import { startLoadingCitizens } from '../redux/actions/citizensActions';
 
 export const AppRouter: FC = () => {
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ export const AppRouter: FC = () => {
         if (isAuthFlag) {
           isAuthFlag = false;
           const resp = await getUserRole(user.email);
-          
+                    
           if (resp) {
             const { rol, municipios } = resp;
 
@@ -49,6 +50,7 @@ export const AppRouter: FC = () => {
               dispatch(startLoadingDataSurveys(municipios[0]));
               dispatch(startLoadingCompleteSurveys(municipios[0]));
               dispatch(startLoadingAssignedSurveys(municipios[0]));
+              dispatch(startLoadingCitizens());
               setIsLoggedIn(true);
             }
           } else {

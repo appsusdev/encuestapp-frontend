@@ -153,6 +153,8 @@
     "StartDate": "Fecha inicial",
     "EndDate": "Fecha final",
     "SearchCitizen": "Buscar ciudadano por documento o nombre",
-    "NoAssignedSurveyors": "No se han asignado encuestadores a esta encuesta."
+    "NoAssignedSurveyors": "No se han asignado encuestadores a esta encuesta.",
+    "CitizenNotFound": "No se encuentra ningún registro del ciudadano ingresado.",
+    "CitizensField": "El campo debe ser mínimo de 3 caracteres",
+    "SeeSurveys": "Ver encuestas"    
 }
-

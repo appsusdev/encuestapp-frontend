@@ -5,7 +5,7 @@ export interface ICitizen {
   segundoApellido: string;
   primerNombre: string;
   segundoNombre: string;
-  tipoIdentificacion: TypeDocEnum;
+  tipoIdentificacion: TypeDocEnum | string;
   identificacion: string;
   telefono: string;
   correo: string;

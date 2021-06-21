@@ -41,7 +41,6 @@ export const useStyles = makeStyles((theme: Theme) => ({
         textTransform: 'capitalize',
         color: theme.palette.common.white,
         fontSize: 14,
-        // marginTop: '28px',
         borderRadius: '4px'
     },
     cancel: {
@@ -79,7 +78,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
         maxWidth: 345,
     },
     paper: {
-        minHeight: '400px'
+        // minHeight: '400px'
     },
     root: {
         margin: 0,
@@ -109,6 +108,8 @@ export const useStyles = makeStyles((theme: Theme) => ({
         color: theme.palette.common.white,
         height: '25px !important',
         width: '25px !important'
+    },
+    capitalize: {
+        textTransform: 'capitalize', 
     }
-
 }));

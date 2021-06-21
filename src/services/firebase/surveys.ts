@@ -1,5 +1,5 @@
 import { db } from "../../config/firebase/firebase-config";
-import { Survey, Chapter } from "../../interfaces/Survey";
+import { Survey, Chapter } from '../../interfaces/Survey';
 import { questionDTO, chapterDTO, surveyDTO } from '../../helpers/surveyDTO';
 
 // Verificar si existe encuesta
