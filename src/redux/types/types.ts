@@ -1,6 +1,7 @@
 import { TypeUser } from "../../enums/enums";
 import { Surveyor } from "../../interfaces/Surveyor";
 import { Survey, Chapter, SurveyQuestion } from '../../interfaces/Survey';
+import { CitizensType } from '../../interfaces/Citizens';
 
 export const types = {
     // auth
@@ -64,7 +65,10 @@ export const types = {
 
     // Search
     arraySearch: '[search] Array search',
-    valueSearched: '[search] Value searched'
+    valueSearched: '[search] Value searched',
+
+    // Citizens
+    citizensLoad: '[citizen] Load citizens',
 }
 
 // Auth
@@ -138,6 +142,16 @@ export interface ISearch {
 }
 
 export type SearchAction = {
+  type: string,
+  payload: any
+}
+
+// Citizens
+export interface CitizenState {
+  citizens: CitizensType,
+}
+
+export type CitizensAction = {
   type: string,
   payload: any
 }
