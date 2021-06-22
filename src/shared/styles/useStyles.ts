@@ -78,7 +78,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
         maxWidth: 345,
     },
     paper: {
-        // minHeight: '400px'
+        minHeight: '400px'
     },
     root: {
         margin: 0,

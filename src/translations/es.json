@@ -156,5 +156,9 @@
     "NoAssignedSurveyors": "No se han asignado encuestadores a esta encuesta.",
     "CitizenNotFound": "No se encuentra ningún registro del ciudadano ingresado.",
     "CitizensField": "El campo debe ser mínimo de 3 caracteres",
-    "SeeSurveys": "Ver encuestas"    
+    "SeeSurveys": "Ver encuestas",
+    "TheCitizen": "El ciudadano",
+    "SurveysConducted": "Encuestas realizadas",
+    "SurveysConductedMessage": "ha realizado las siguientes encuestas:",
+    "NotSurveysConductedMessage": "no ha realizado ninguna encuesta hasta el momento."       
 }

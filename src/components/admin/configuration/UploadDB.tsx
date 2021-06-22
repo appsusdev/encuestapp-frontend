@@ -13,7 +13,6 @@ import { useStyles } from "../../../shared/styles/useStyles";
 import { useState } from "react";
 import { excelToJson } from "../../../helpers/excelToJson";
 import {
-  uploadCitizens,
   uploadJsonCitizens,
 } from "../../../helpers/uploadCitizens";
 import { CitizensType } from "../../../interfaces/Citizens";
