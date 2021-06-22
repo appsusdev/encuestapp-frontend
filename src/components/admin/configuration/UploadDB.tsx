@@ -81,7 +81,6 @@ export const UploadDB = () => {
         dispatch(uiOpenSuccessAlert());
         dispatch(setProgress(0));
       }
-      console.log(municipios)
     } catch (error) {
       dispatch(uiOpenErrorAlert());
       setloading(false);
