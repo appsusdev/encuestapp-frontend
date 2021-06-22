@@ -43,8 +43,10 @@ export const getSurveys = async (town: string) => {
   return surveys;
 }  
 // Obtener encuestas con toda la informacion (capitulos y preguntas)
-export const getSurveysAndChapters = async (town: string) => {
-  const surveys = await getSurveys(town);
+export const getSurveysAndChapters = async (town: string, data?: any[]) => {
+  let surveys: any[] = [];
+  
+  (data) ? (surveys = data) : (surveys = await getSurveys(town));
 
   // Obtener cada encuesta con sus capitulos
   let surveysAndChapters: any[] = [];
