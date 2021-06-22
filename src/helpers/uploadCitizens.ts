@@ -15,9 +15,9 @@ export const uploadCitizens = async (data: CitizensType,callback:Function) => {
     return new Error(`ERROR AL INSERTAR DATOS ${error}`);
   }
 };
-export const uploadJsonCitizens = async (jsonData:string)=>{
+export const uploadJsonCitizens = async (jsonData:string,municipio:string)=>{
   try {
-    await addJsonCitizens(jsonData)
+    await addJsonCitizens(jsonData,municipio)
   } catch (error) {
     return new Error(`ERROR AL INSERTAR DATOS ${error}`);
     

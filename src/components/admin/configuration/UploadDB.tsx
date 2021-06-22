@@ -28,10 +28,12 @@ import {
 } from "../../../redux/actions/uiActions";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import CircularProgressWithLabel from "../../custom/CircularProgressWithLabel";
+import { TypeUser } from "../../../enums/enums";
 
 export const UploadDB = () => {
   const classes = useStyles();
   const { progress } = useSelector((state: AppState) => state.ui);
+  const {municipios,rol} = useSelector((state:AppState) => state.auth)
 
   const [fileToConvert, setFileToConvert] = useState<File | null>(null);
   const [citizens, setCitizens] = useState<CitizensType | null>(null);
@@ -59,7 +61,7 @@ export const UploadDB = () => {
 
   const handleUpload = async () => {
     try {
-      if (fileToConvert) {
+      if (fileToConvert && rol===TypeUser.ADMIN && municipios) {
         setloading(true);
         const jsonResponse: any = await excelToJson(
           fileToConvert,
@@ -68,7 +70,7 @@ export const UploadDB = () => {
         //const parseData: any[] = JSON.parse(jsonResponse);
         //await uploadCitizens(citizens, handleSetprogress);
         await dispatch(setProgress(100));
-        await uploadJsonCitizens(JSON.stringify(jsonResponse));
+        await uploadJsonCitizens(JSON.stringify(jsonResponse),municipios[0]);
 
         await setFileToConvert(null);
         await setloading(false);
@@ -79,6 +81,7 @@ export const UploadDB = () => {
         dispatch(uiOpenSuccessAlert());
         dispatch(setProgress(0));
       }
+      console.log(municipios)
     } catch (error) {
       dispatch(uiOpenErrorAlert());
       setloading(false);
