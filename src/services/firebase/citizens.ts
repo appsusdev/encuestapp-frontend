@@ -8,8 +8,9 @@ export const addCitizen = (citizen: ICitizen) => {
   return docRef.set({ ...citizen }, { merge: true });
 };
 
-export const addJsonCitizens = (jsonStr:string)=>{
-  const docRef = db.collection('Ciudadanos').doc('jsonCitizens')
+export const addJsonCitizens = (jsonStr:string,municipio:string)=>{
+  //const docRef = db.collection('Ciudadanos').doc('jsonCitizens')
+  const docRef = db.collection('Municipios').doc(municipio).collection('Ciudadanos').doc('jsonCitizens')
   return docRef.set({data:jsonStr},{merge:true})
 }
 

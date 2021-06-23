@@ -46,6 +46,7 @@ export const getSurveys = async (town: string) => {
 export const getSurveysAndChapters = async (town: string) => {
   const surveys = await getSurveys(town);
 
+
   // Obtener cada encuesta con sus capitulos
   let surveysAndChapters: any[] = [];
   for (let survey of surveys) {
