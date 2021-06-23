@@ -32,11 +32,14 @@ export const startNewSurvey = (survey: Partial<Survey>) => {
 }
 
 // Cargar solo informacion de la encuesta
-export const startLoadingDataSurveys = ( town: string ) => {
+export const startLoadingDataSurveys = ( town: string, flag?: boolean ) => {
     return async(dispatch: any) => {
         const resp = await getSurveys(town);
         const surveys:any[] = [];
 
+        if(flag) {
+            dispatch( startLoadingCompleteSurveys(town, resp) )
+        }
         resp.forEach( resp => {
             surveys.push(surveyDTO(resp));
         });
@@ -46,9 +49,9 @@ export const startLoadingDataSurveys = ( town: string ) => {
 
 
 // Cargar encuestas por municipio
-export const startLoadingCompleteSurveys = ( town: string ) => {
+export const startLoadingCompleteSurveys = ( town: string, data?: any[] ) => {
     return async(dispatch: any) => {
-        const surveys = await getSurveysAndChapters(town);
+        const surveys = await getSurveysAndChapters(town, data);
 
         await dispatch( setSurveys(surveys) );
     }

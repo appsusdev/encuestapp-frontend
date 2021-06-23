@@ -5,8 +5,11 @@ import { Survey } from '../../interfaces/Survey';
 import { finishLoading } from './uiActions';
 
 export const startLoadingCitizens = () => {
-  return async (dispatch: Function) => {
-    const jsonResponse: any = await getCitizens();
+  return async (dispatch: Function, getState: Function) => {
+    const { municipios } = getState().auth;
+    const town: string = municipios[0];
+    
+    const jsonResponse: any = await getCitizens(town);
     const parseJson = await JSON.parse(jsonResponse.data);
 
     dispatch( setCitizens( JSON.parse(parseJson)) );
