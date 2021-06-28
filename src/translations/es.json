@@ -160,5 +160,6 @@
     "TheCitizen": "El ciudadano",
     "SurveysConducted": "Encuestas realizadas",
     "SurveysConductedMessage": "ha realizado las siguientes encuestas:",
-    "NotSurveysConductedMessage": "no ha realizado ninguna encuesta hasta el momento."       
+    "NotSurveysConductedMessage": "no ha realizado ninguna encuesta hasta el momento.",
+    "CitizenName": "Nombre ciudadano"       
 }

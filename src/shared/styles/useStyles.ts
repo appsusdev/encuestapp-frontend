@@ -91,6 +91,11 @@ export const useStyles = makeStyles((theme: Theme) => ({
         fontWeight: Fonts.MEDIUM,
         color: theme.palette.grey[800]
     },
+    titlePDF: {
+        fontSize: 22,
+        fontWeight: Fonts.BOLD,
+        color: theme.palette.grey[800]
+    },
     swal: {
         height: '50hv'
     },

@@ -152,7 +152,7 @@ export type SearchAction = {
 // Citizens
 export interface CitizenState {
   citizens: CitizensType,
-  surveysAnswered: any[],
+  surveysAnswered: Partial<Survey>[],
   activeCitizen: Partial<ICitizen> | null,
 }
 

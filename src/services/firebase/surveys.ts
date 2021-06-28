@@ -257,12 +257,12 @@ export const getQuestions = async (
   let allQuestions: any[] = [];
 
   // Preguntas individuales
-  const individualQuestions = await docChaptersRef
+  const individualQuestionsRef =  docChaptersRef
     .doc(idChapter)
     .collection("PreguntasIndividual")
-    .get();
+  const indQuestions = await individualQuestionsRef.get();
 
-  individualQuestions.forEach((snap) => {
+  indQuestions.forEach((snap) => {
     allQuestions.push({
       id: snap.id,
       ...snap.data(),
@@ -270,10 +270,10 @@ export const getQuestions = async (
   });
 
   // Preguntas hogar
-  const homeQuestions = await docChaptersRef
+  let homeQuestionsRef = docChaptersRef
     .doc(idChapter)
     .collection("PreguntasHogar")
-    .get();
+  const homeQuestions = await  homeQuestionsRef.get();
 
   homeQuestions.forEach((snap) => {
     allQuestions.push({
@@ -281,6 +281,22 @@ export const getQuestions = async (
       ...snap.data(),
     });
   });
+
+  for( let doc of allQuestions ) {
+    let answersRef;
+    if( doc.dirigida === 'PreguntasIndividual') {
+      answersRef = await individualQuestionsRef.doc(doc.id).collection('Respuestas').get();
+    } else {
+      answersRef = await homeQuestionsRef.doc(doc.id).collection('Respuestas').get();
+    }
+    
+    const answers: any[] = [];
+    answersRef.forEach((resp) => {
+      answers.push({citizen:resp.id, ...resp.data()})
+    });
+
+    doc.answers = answers;
+  }
 
   // DTO questions
   const resp:any[] = [];

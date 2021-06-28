@@ -24,19 +24,17 @@ export const setCitizens = (citizens: CitizensType)=> ({
 
 export const startLoadingSurveysAnswered = (idCitizen: string) => {
   return async (dispatch: Function, getState: Function) => {
-    console.log(idCitizen);
     const { auth, survey } = getState();
-    const { dataSurveys } = survey;
+    const { surveys } = survey;
     const town = auth.municipios[0];
     const idSurveys: string[] = [];
 
     const resp = await getTransmitedSurveys(town, idCitizen)
     resp.forEach((survey) => idSurveys.push(survey.idEncuesta));
-    const newSurveys = dataSurveys.filter( (survey: Partial<Survey>) => (survey.idSurvey) && idSurveys.includes(survey.idSurvey));
+    const newSurveys = surveys.filter( (survey: Partial<Survey>) => (survey.idSurvey) && idSurveys.includes(survey.idSurvey));
     
     dispatch( finishLoading() );
     dispatch( setSurveysAnswered(newSurveys) );
-
   };
 };
 
