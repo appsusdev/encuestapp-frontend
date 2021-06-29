@@ -1,5 +1,4 @@
-import clsx from "clsx";
-import { FormattedMessage, useIntl } from "react-intl";
+import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 
 import {
@@ -9,13 +8,11 @@ import {
   CardMedia,
   Typography,
   Grid,
-  Button,
   TextField,
   FormControlLabel,
   Radio,
 } from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/Home";
-import LocationOnIcon from "@material-ui/icons/LocationOn";
 import PersonIcon from "@material-ui/icons/Person";
 
 import { TypeQuestion } from "../../../enums/enums";
@@ -32,7 +29,6 @@ interface Props {
 export const PDFSurveys = (props: Props) => {
   const { data } = props;
   const classes = useStyles();
-  const intl = useIntl();
 
   const { activeCitizen } = useSelector<AppState, AppState["citizens"]>(
     (state) => state.citizens
@@ -221,21 +217,15 @@ export const PDFSurveys = (props: Props) => {
                               )
                           )}
                         {question.type === TypeQuestion.GEOLOCATION && (
-                          <Button
-                            style={{
-                              marginTop: "10px",
-                              textTransform: "uppercase",
-                            }}
-                            className={clsx(classes.btnAction, classes.save)}
-                            size="medium"
-                            component="span"
-                          >
-                            <LocationOnIcon />
-                            {/* TODO: Poner en el mapa*/}
-                            Latitud: {answer.respuesta.value.coords.latitude}
-                            <br />
-                            Longitud: {answer.respuesta.value.coords.longitude}
-                          </Button>
+                          <Box m={1}>
+                            <Card className={classes.cardPDF}>
+                              <CardMedia
+                                className={classes.media}
+                                image={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
+                                title="Map"
+                              />
+                            </Card>
+                          </Box>
                         )}
                         {question.type === TypeQuestion.FILE && (
                           <Box mt={1}>
