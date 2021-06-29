@@ -26,7 +26,6 @@ import { TablePagination, TableFooter, IconButton } from "@material-ui/core";
 import { CitizensType, ICitizen } from "../../../interfaces/Citizens";
 import { TablePaginationAct } from "../../custom/TablePaginationAct";
 import { Alert } from "@material-ui/lab";
-import { Link } from "@material-ui/core";
 import {
   uiOpenModalAdd,
   uiCloseModalAdd,
@@ -124,7 +123,6 @@ export const Home = () => {
           const idCitizens: string[] = [];
           newData.forEach((citizen) => idCitizens.push(citizen.identificacion));
 
-          console.log(idCitizens);
           setList(newData);
         }
       }

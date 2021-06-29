@@ -160,5 +160,6 @@
     "TheCitizen": "The citizen",
     "SurveysConducted": "Surveys conducted",     
     "SurveysConductedMessage": "has conducted the following surveys:",       
-    "NotSurveysConductedMessage": "has not conducted any survey so far."       
+    "NotSurveysConductedMessage": "has not conducted any survey so far.",
+    "CitizenName": "Citizen name"         
 }

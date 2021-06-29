@@ -63,7 +63,7 @@ export const ViewSurvey = () => {
   useEffect(() => {
     municipios &&
       dispatch(startLoadingChapters(municipios[0], survey.idSurvey));
-  }, [dispatch]);
+  }, [dispatch, municipios]);
 
   const editQuestion = (
     question: SurveyQuestion,

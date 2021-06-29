@@ -72,6 +72,7 @@ export const questionDTO = ( question: any ) => {
         type: question.tipo,
         chart: question.graficar,
         options: question.opciones,
+        answers: question.answers
     }
 
     return questionFromDB;

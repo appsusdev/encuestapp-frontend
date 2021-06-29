@@ -77,6 +77,12 @@ export const useStyles = makeStyles((theme: Theme) => ({
         marginTop: '12px',
         maxWidth: 345,
     },
+    cardPDF: {
+        height: '350px',
+        maxWidth: '100%',
+        objectFit: 'cover',
+        objectPosition: 'center center'
+    },
     paper: {
         minHeight: '400px'
     },
@@ -89,6 +95,11 @@ export const useStyles = makeStyles((theme: Theme) => ({
         fontFamily: 'Poppins',
         fontSize: 18,
         fontWeight: Fonts.MEDIUM,
+        color: theme.palette.grey[800]
+    },
+    titlePDF: {
+        fontSize: 22,
+        fontWeight: Fonts.BOLD,
         color: theme.palette.grey[800]
     },
     swal: {

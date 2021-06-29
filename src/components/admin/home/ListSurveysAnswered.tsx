@@ -1,14 +1,19 @@
+import { useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
+import ReactToPrint from "react-to-print";
 
 import { Box, CircularProgress, Link } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { ICitizen } from "../../../interfaces/Citizens";
+import { Survey } from "../../../interfaces/Survey";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
+import { PDFSurveys } from "./PDFSurveys";
 
 export const ListSurveysAnswered = () => {
   const classes = useStyles();
+  const componentRef = useRef<HTMLDivElement>(null);
 
   const { surveysAnswered, activeCitizen } = useSelector<
     AppState,
@@ -18,6 +23,7 @@ export const ListSurveysAnswered = () => {
     (state) => state.ui
   );
   const citizen: ICitizen = activeCitizen;
+
   return (
     <Box m={2}>
       {loading ? (
@@ -31,14 +37,25 @@ export const ListSurveysAnswered = () => {
             {citizen.primerApellido}{" "}
             <FormattedMessage id="SurveysConductedMessage" />
           </Box>
-          {surveysAnswered.map((survey, index) => (
-            <Link
-              className={classes.typography}
-              component="button"
-              key={survey.idSurvey}
-            >
-              {index + 1}. {survey.name}
-            </Link>
+          {surveysAnswered.map((survey: Partial<Survey>, index: number) => (
+            <div key={index}>
+              <ReactToPrint
+                trigger={() => (
+                  <Link className={classes.typography} component="button">
+                    {index + 1}. {survey.name}
+                  </Link>
+                )}
+                content={() => componentRef.current}
+                documentTitle={`${survey.name}_${activeCitizen.identificacion}`}
+                pageStyle="@page { size: auto; margin: 0mm; } @media print { body { -webkit-print-color-adjust: exact; padding: 30px !important; } }"
+              />
+
+              <div style={{ display: "none" }}>
+              <div ref={componentRef}>
+                <PDFSurveys data={survey} />
+              </div>
+              </div>
+            </div>
           ))}
         </>
       ) : (

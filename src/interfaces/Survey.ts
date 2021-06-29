@@ -19,6 +19,8 @@ export interface SurveyQuestion {
     chart?: boolean;
     type: TypeQuestion;
     options?: QuestionOptions[] | null;
+    answers: ISurveyAnswers[] 
+    othersAnswers?: any[] | ISurveyAnswers[] |ISurveyAnswers
 }
 export interface QuestionOptions {
     label: string;
@@ -34,3 +36,24 @@ export interface Chapter {
     name: string;
     questions: SurveyQuestion[],
 }
+
+// export interface IAnswerWithDescription {
+//     value: string | number | answerFile | readonly string[] | undefined;
+//     description: string | null;
+// }
+
+// type answer = IAnswerWithDescription[] | IAnswerWithDescription;
+
+export interface ISurveyAnswers {
+    respuesta: any;
+    citizen: string;
+}
+
+export type answerFile = {
+    fileName: string;
+    path: string;
+    readableSize: string;
+    size: number;
+    type: string;
+    uri: string;
+};
