@@ -1,4 +1,4 @@
-import { getCitizens, getTransmitedSurveys } from '../../services/firebase/citizens';
+import { getCitizens, getTransmittedSurveysByCitizen } from '../../services/firebase/citizens';
 import { CitizensType } from '../../interfaces/Citizens';
 import { types } from '../types/types';
 import { Survey } from '../../interfaces/Survey';
@@ -29,7 +29,7 @@ export const startLoadingSurveysAnswered = (idCitizen: string) => {
     const town = auth.municipios[0];
     const idSurveys: string[] = [];
 
-    const resp = await getTransmitedSurveys(town, idCitizen)
+    const resp = await getTransmittedSurveysByCitizen(town, idCitizen)
     resp.forEach((survey) => idSurveys.push(survey.idEncuesta));
     const newSurveys = surveys.filter( (survey: Partial<Survey>) => (survey.idSurvey) && idSurveys.includes(survey.idSurvey));
     

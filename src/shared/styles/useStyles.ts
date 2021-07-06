@@ -122,5 +122,8 @@ export const useStyles = makeStyles((theme: Theme) => ({
     },
     capitalize: {
         textTransform: 'capitalize', 
+    },
+    helperText: {
+        color: "red"
     }
 }));

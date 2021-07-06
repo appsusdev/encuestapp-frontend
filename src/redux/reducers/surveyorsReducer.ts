@@ -3,7 +3,8 @@ const initialState = {
     surveyors: [],
     activeSurveyor: null,
     assignedSurveys: [],
-    surveyorFromDB: null
+    surveyorFromDB: null,
+    surveysTransmitted: []
 }
 
 export const surveyorsReducer = ( state = initialState, action: SurveyorsAction ) => {
@@ -32,6 +33,12 @@ export const surveyorsReducer = ( state = initialState, action: SurveyorsAction 
             return {
                 ...state,
                 assignedSurveys: [...action.payload]
+            }
+
+        case types.surveyorsTransmittedSurveys:
+            return {
+                ...state,
+                surveysTransmitted: [...action.payload]
             }
     
         default:

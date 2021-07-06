@@ -16,10 +16,13 @@ import {
 import { types } from "../types/types";
 import { startLoadingDataSurveys, startLoadingCompleteSurveys } from './surveysActions';
 import { getAssignedSurveys } from '../../services/firebase/surveyors';
+import firebase from 'firebase/app';
+import { getTransmittedSurveysBySurveyor } from '../../services/firebase/surveyors';
 import {
   uiOpenSuccessAlert,
   uiOpenErrorAlert,
   uiOpenModalAlert,
+  finishLoading,
 } from "./uiActions";
 
 // Agregar nuevo encuestador
@@ -186,6 +189,34 @@ export const setAssignedSurveys = (surveyors: any[]) => ({
   type: types.surveyorsLoadAssignedSurveys,
   payload: surveyors,
 });
+
+// MICRODATA
+export const startLoadingMicrodata = (data: any) => {
+  return async (dispatch: Function, getState: Function) => {
+    const { auth } = getState();
+    const town = auth.municipios[0];
+    const { survey, surveyor } = data;
+    const startDate =  firebase.firestore.Timestamp.fromDate(new Date(data.startDate));
+    const endDate =  firebase.firestore.Timestamp.fromDate(new Date(data.endDate));
+
+    const resp = await getTransmittedSurveysBySurveyor(town, survey, surveyor, startDate, endDate);
+    
+    if(resp.length === 0){
+      console.log('No existen encuestas transmitidas')
+      dispatch( setTransmittedSurveys([]) );
+    } else {
+      console.log('Existen encuestas transmitidas')
+    }
+    console.log(town, survey, surveyor, startDate, endDate)
+    dispatch( finishLoading() );
+  };
+};
+
+export const setTransmittedSurveys = (surveys: any[]) => ({
+  type: types.surveyorsTransmittedSurveys,
+  payload: surveys,
+});
+
 
 
 
