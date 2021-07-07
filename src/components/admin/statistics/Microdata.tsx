@@ -108,7 +108,7 @@ export const Microdata = () => {
     const value: string = event.target.value as string;
     setSurveySelected(value);
     setShow(false);
-    value === "" ? setErrorSurvey(true) : setErrorSurvey(false);
+    setErrorSurvey(value === "");
 
     setValid({ ...valid, survey: true });
     const surveryFilter = surveys.filter((survey) => survey.code === value);
@@ -133,7 +133,7 @@ export const Microdata = () => {
     event: React.ChangeEvent<{ value: unknown }>
   ) => {
     const value: string = event.target.value as string;
-    value === "" ? setErrorSurveyor(true) : setErrorSurveyor(false);
+    setErrorSurveyor(value === "");
     setSurveyorSelected(value);
     setShow(false);
     setValid({ ...valid, surveyor: true });
