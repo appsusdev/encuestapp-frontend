@@ -149,12 +149,8 @@ export const Microdata = () => {
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={async (data, { setSubmitting }) => {
-              surveySelected === ""
-                ? setErrorSurvey(true)
-                : setErrorSurvey(false);
-              surveyorSelected === ""
-                ? setErrorSurveyor(true)
-                : setErrorSurveyor(false);
+              setErrorSurvey(surveySelected === "");
+              setErrorSurveyor(surveyorSelected === "");
               if (valid.survey && valid.surveyor) {
                 setShow(true);
                 dispatch(startLoading());
