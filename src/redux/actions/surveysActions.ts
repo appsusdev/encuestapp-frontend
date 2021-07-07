@@ -186,7 +186,7 @@ export const startNewQuestion = (question: any, idSurvey: string) => {
 
         const getSurvey = surveyFilter.filter( survey => survey.idSurvey === idSurvey);
         const getChapter = getSurvey[0].chapters.filter( chapter => chapter.id === question.chapter );
-        const idQuestion = `pregunta${getChapter[0].questions.length + 1}`;
+        const idQuestion = `pregunta${getChapter[0].questions.length + 1}_${Date.now()}`;
 
         let typeQuestion:string = '';
         (question.directedTo === 0) ? (typeQuestion = 'PreguntasIndividual') : (typeQuestion = 'PreguntasHogar')

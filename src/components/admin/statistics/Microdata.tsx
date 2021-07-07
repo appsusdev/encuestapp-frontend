@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { Formik, Form } from "formik";
+import { useEffect, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
@@ -15,15 +16,16 @@ import {
   MenuItem,
   Link,
 } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 
-import { useStyles } from "../../../shared/styles/useStyles";
 import { MyTextField } from "../../custom/MyTextField";
-import { AppState } from "../../../redux/reducers/rootReducer";
-import { useEffect, useState } from "react";
 import { Surveyor } from "../../../interfaces/Surveyor";
+import { useStyles } from "../../../shared/styles/useStyles";
 import { startLoadingMicrodata } from "../../../redux/actions/surveyorsActions";
 import { startLoading, finishLoading } from "../../../redux/actions/uiActions";
-import { Alert } from "@material-ui/lab";
+import { AppState } from "../../../redux/reducers/rootReducer";
+import { Chapter, ISurveyAnswers } from '../../../interfaces/Survey';
+import { getCopyArrayOrObject } from "../../../helpers/getCopyArrayOrObject";
 
 export const Microdata = () => {
   const classes = useStyles();
@@ -48,8 +50,28 @@ export const Microdata = () => {
   const [errorSurvey, setErrorSurvey] = useState(false);
   const [errorSurveyor, setErrorSurveyor] = useState(false);
   const [valid, setValid] = useState({ survey: false, surveyor: false });
-  const transmitted: any[] = surveysTransmitted;
+  const transmitted: any[] = getCopyArrayOrObject(surveysTransmitted);
   const [show, setShow] = useState(false);
+  let arrayQuestionsInd: any[] = [];
+  let arrayQuestionsHome: any[] = [];
+
+  if(transmitted.length > 0 && transmitted[0].chapters) {
+    transmitted[0].chapters.forEach( (chapter: Partial<Chapter>) => {
+      chapter.questions?.forEach( question => {
+        (surveyorSelected !== "Todos") && (question.answers = question.answers.filter( (answer: Partial<ISurveyAnswers>) => answer.idEncuestador === surveyorSelected));
+        if(question.directedTo === 'PreguntasIndividual') {
+          arrayQuestionsInd.push(question)
+        } else {
+          arrayQuestionsHome.push(question)
+        }
+        return question;
+      })
+    });
+  }  
+  console.log(arrayQuestionsInd, arrayQuestionsHome);
+  // arrayQuestionsInd.forEach( (question, index) => console.log(`PInd${index+1}:`, question.question));
+  // arrayQuestionsHome.forEach( (question, index) => console.log(`PHog${index+1}:`, question.question));
+  
 
   useEffect(() => {
     setShow(false);
@@ -85,6 +107,7 @@ export const Microdata = () => {
   const handleSelectSurvey = (event: React.ChangeEvent<{ value: unknown }>) => {
     const value: string = event.target.value as string;
     setSurveySelected(value);
+    setShow(false);
     value === "" ? setErrorSurvey(true) : setErrorSurvey(false);
 
     setValid({ ...valid, survey: true });
@@ -112,6 +135,7 @@ export const Microdata = () => {
     const value: string = event.target.value as string;
     value === "" ? setErrorSurveyor(true) : setErrorSurveyor(false);
     setSurveyorSelected(value);
+    setShow(false);
     setValid({ ...valid, surveyor: true });
   };
 
@@ -137,9 +161,9 @@ export const Microdata = () => {
                 data.survey = surveySelected;
                 data.surveyor = surveyorSelected;
                 setSubmitting(true);
-                // await dispatch(startLoadingMicrodata(data));
-                setSubmitting(false);
-                dispatch(finishLoading());
+                await dispatch(startLoadingMicrodata(data));
+                setSubmitting(false);     
+                dispatch( finishLoading() );    
               }
             }}
           >
@@ -267,7 +291,7 @@ export const Microdata = () => {
               <Box display="flex" justifyContent="center">
                 <CircularProgress className={classes.colorLoading} />
               </Box>
-            ) : transmitted.length > 0 ? (
+            ) : (transmitted.length > 0 && !loading)? (
               <Box
                 m={2}
                 ml={6}
