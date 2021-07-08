@@ -113,7 +113,7 @@ export const getTransmittedSurveysBySurveyor = async (
     .collectionGroup("EncuestasTransmitidas")
     .where("municipio", "==", town)
     .where("idEncuesta", "==", idSurvey)
-    .where("fechaDeCarga", ">", startDate)
+    .where("fechaDeCarga", ">=", startDate)
     .where("fechaDeCarga", "<", endDate)
     .get()
   :
@@ -122,7 +122,7 @@ export const getTransmittedSurveysBySurveyor = async (
     .where("municipio", "==", town)
     .where("idEncuesta", "==", idSurvey)
     .where("idEncuestador", "==", idSurveyor)
-    .where("fechaDeCarga", ">", startDate)
+    .where("fechaDeCarga", ">=", startDate)
     .where("fechaDeCarga", "<", endDate)
     .get(); 
 

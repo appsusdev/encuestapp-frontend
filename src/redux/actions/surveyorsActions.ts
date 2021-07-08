@@ -21,8 +21,7 @@ import { getTransmittedSurveysBySurveyor } from '../../services/firebase/surveyo
 import {
   uiOpenSuccessAlert,
   uiOpenErrorAlert,
-  uiOpenModalAlert,
-  finishLoading,
+  uiOpenModalAlert
 } from "./uiActions";
 
 // Agregar nuevo encuestador
@@ -201,9 +200,9 @@ export const startLoadingMicrodata = (data: any) => {
 
     // Manejo de fechas
     let date1 = new Date(data.startDate);
-    date1.setDate(date1.getDate());
+    date1.setDate(date1.getDate()+1);
     let date2 = new Date(data.endDate);
-    date2.setDate(date2.getDate()+1);
+    date2.setDate(date2.getDate()+2);
 
     const startDate =  firebase.firestore.Timestamp.fromDate(new Date(date1));
     const endDate =  firebase.firestore.Timestamp.fromDate(new Date(date2));

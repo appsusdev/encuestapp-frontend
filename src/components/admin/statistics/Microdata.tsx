@@ -21,7 +21,7 @@ import { Alert } from "@material-ui/lab";
 import { MyTextField } from "../../custom/MyTextField";
 import { Surveyor } from "../../../interfaces/Surveyor";
 import { useStyles } from "../../../shared/styles/useStyles";
-import { startLoadingMicrodata } from "../../../redux/actions/surveyorsActions";
+import { startLoadingMicrodata, setTransmittedSurveys } from '../../../redux/actions/surveyorsActions';
 import { startLoading, finishLoading } from "../../../redux/actions/uiActions";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { Chapter, ISurveyAnswers } from '../../../interfaces/Survey';
@@ -67,15 +67,20 @@ export const Microdata = () => {
         return question;
       })
     });
+    // console.log("Preguntas Individuales:", arrayQuestionsInd);
+    // arrayQuestionsInd.forEach( (question, index) => console.log(`PInd${index+1}:`, question.question));
+    // console.log("Preguntas Hogar:",  arrayQuestionsHome);
+    // arrayQuestionsHome.forEach( (question, index) => console.log(`PHog${index+1}:`, question.question));
   }  
-  console.log(arrayQuestionsInd, arrayQuestionsHome);
-  // arrayQuestionsInd.forEach( (question, index) => console.log(`PInd${index+1}:`, question.question));
-  // arrayQuestionsHome.forEach( (question, index) => console.log(`PHog${index+1}:`, question.question));
   
 
   useEffect(() => {
     setShow(false);
   }, []);
+
+  useEffect(() => {
+    dispatch( setTransmittedSurveys([]) );
+  }, [dispatch]);
 
   const validationSchema = yup.object({
     survey: yup.string(),
@@ -105,6 +110,7 @@ export const Microdata = () => {
   };
 
   const handleSelectSurvey = (event: React.ChangeEvent<{ value: unknown }>) => {
+    dispatch( setTransmittedSurveys([]) );
     const value: string = event.target.value as string;
     setSurveySelected(value);
     setShow(false);
@@ -133,11 +139,16 @@ export const Microdata = () => {
     event: React.ChangeEvent<{ value: unknown }>
   ) => {
     const value: string = event.target.value as string;
+    dispatch( setTransmittedSurveys([]) );
     setErrorSurveyor(value === "");
     setSurveyorSelected(value);
     setShow(false);
     setValid({ ...valid, surveyor: true });
   };
+
+  const handleDate = () => {
+    console.log('Hola')
+  }
 
   return (
     <>
@@ -217,6 +228,7 @@ export const Microdata = () => {
                       variant="outlined"
                       type="date"
                       className={classes.myTextFieldRoot}
+                      onChange={handleDate}
                     />
                   </Grid>
 
