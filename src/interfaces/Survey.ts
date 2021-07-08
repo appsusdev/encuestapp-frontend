@@ -47,6 +47,8 @@ export interface Chapter {
 export interface ISurveyAnswers {
     respuesta: any;
     citizen: string;
+    idEncuestador: string;
+    idEncuestaCiudadano: string;
 }
 
 export type answerFile = {

@@ -161,5 +161,9 @@
     "SurveysConducted": "Encuestas realizadas",
     "SurveysConductedMessage": "ha realizado las siguientes encuestas:",
     "NotSurveysConductedMessage": "no ha realizado ninguna encuesta hasta el momento.",
-    "CitizenName": "Nombre ciudadano"       
+    "CitizenName": "Nombre ciudadano",
+    "GreaterStartDate": "Fecha inicial no puede ser mayor a la fecha final",
+    "LowerEndDate": "Fecha final no puede ser menor a la fecha inicial",
+    "GreaterCurrentDate": "La fecha no puede ser mayor a la fecha actual",
+    "NoExistsRecords": "No existen registros para los datos ingresados"       
 }

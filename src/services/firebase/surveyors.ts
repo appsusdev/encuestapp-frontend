@@ -97,3 +97,42 @@ export const getAssignedSurveys = async (town: string) => {
 
   return resp;
 }  
+
+// Obtener encuestas transmitidas por el encuestador
+export const getTransmittedSurveysBySurveyor = async (
+  town: string,
+  idSurvey: string,
+  idSurveyor: string,
+  startDate: any,
+  endDate: any,
+) => {
+  let surveysSnap;
+
+  (idSurveyor === "Todos") ?
+  surveysSnap = await db
+    .collectionGroup("EncuestasTransmitidas")
+    .where("municipio", "==", town)
+    .where("idEncuesta", "==", idSurvey)
+    .where("fechaDeCarga", ">=", startDate)
+    .where("fechaDeCarga", "<", endDate)
+    .get()
+  :
+  surveysSnap = await db
+    .collectionGroup("EncuestasTransmitidas")
+    .where("municipio", "==", town)
+    .where("idEncuesta", "==", idSurvey)
+    .where("idEncuestador", "==", idSurveyor)
+    .where("fechaDeCarga", ">=", startDate)
+    .where("fechaDeCarga", "<", endDate)
+    .get(); 
+
+  const surveys: any[] = [];
+
+  surveysSnap.forEach((snap) => {
+    surveys.push({
+      id: snap.id,
+      ...snap.data(),
+    });
+  });
+  return surveys;
+};

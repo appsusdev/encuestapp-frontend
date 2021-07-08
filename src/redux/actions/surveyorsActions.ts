@@ -16,10 +16,12 @@ import {
 import { types } from "../types/types";
 import { startLoadingDataSurveys, startLoadingCompleteSurveys } from './surveysActions';
 import { getAssignedSurveys } from '../../services/firebase/surveyors';
+import firebase from 'firebase/app';
+import { getTransmittedSurveysBySurveyor } from '../../services/firebase/surveyors';
 import {
   uiOpenSuccessAlert,
   uiOpenErrorAlert,
-  uiOpenModalAlert,
+  uiOpenModalAlert
 } from "./uiActions";
 
 // Agregar nuevo encuestador
@@ -186,6 +188,47 @@ export const setAssignedSurveys = (surveyors: any[]) => ({
   type: types.surveyorsLoadAssignedSurveys,
   payload: surveyors,
 });
+
+// MICRODATA
+export const startLoadingMicrodata = (data: any) => {
+  return async (dispatch: Function, getState: Function) => {
+    const { auth } = getState();
+    const { surveys } = getState().survey;
+    const town = auth.municipios[0];
+    const { survey, surveyor } = data;
+    const idSurveys: string[] = [];
+
+    // Manejo de fechas
+    let date1 = new Date(data.startDate);
+    date1.setDate(date1.getDate()+1);
+    let date2 = new Date(data.endDate);
+    date2.setDate(date2.getDate()+2);
+
+    const startDate =  firebase.firestore.Timestamp.fromDate(new Date(date1));
+    const endDate =  firebase.firestore.Timestamp.fromDate(new Date(date2));
+
+    // Obtener respuestas transmitidas
+    const resp = await getTransmittedSurveysBySurveyor(town, survey, surveyor, startDate, endDate);
+    
+    if(resp.length === 0){
+      console.log('No existen encuestas transmitidas')
+      dispatch( setTransmittedSurveys([]) );
+    } else {
+      console.log('Existen encuestas transmitidas')
+      resp.forEach((survey) => idSurveys.push(survey.idEncuesta));
+      const newSurveys = surveys.filter( (survey: Partial<Survey>) => (survey.idSurvey) && idSurveys.includes(survey.idSurvey));
+      dispatch( setTransmittedSurveys(newSurveys) );
+    }
+    // console.log(town, survey, surveyor, startDate, endDate)
+    
+  };
+};
+
+export const setTransmittedSurveys = (surveys: any[]) => ({
+  type: types.surveyorsTransmittedSurveys,
+  payload: surveys,
+});
+
 
 
 
