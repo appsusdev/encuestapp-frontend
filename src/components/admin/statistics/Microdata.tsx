@@ -1,8 +1,10 @@
 import clsx from "clsx";
 import { Formik, Form } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
+import { CSVLink } from "react-csv";
 import { useDispatch, useSelector } from "react-redux";
+import ReactToPrint from "react-to-print";
 import * as yup from "yup";
 
 import {
@@ -15,26 +17,46 @@ import {
   CircularProgress,
   MenuItem,
   Link,
+  Table,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  createMuiTheme,
+  ThemeProvider,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
 import { MyTextField } from "../../custom/MyTextField";
+import { getCopyArrayOrObject } from "../../../helpers/getCopyArrayOrObject";
+import { Chapter, ISurveyAnswers, Survey } from "../../../interfaces/Survey";
 import { Surveyor } from "../../../interfaces/Surveyor";
 import { useStyles } from "../../../shared/styles/useStyles";
-import { startLoadingMicrodata, setTransmittedSurveys } from '../../../redux/actions/surveyorsActions';
+import {
+  startLoadingMicrodata,
+  setTransmittedSurveys,
+  setInfoTransmittedSurveys,
+} from "../../../redux/actions/surveyorsActions";
 import { startLoading, finishLoading } from "../../../redux/actions/uiActions";
 import { AppState } from "../../../redux/reducers/rootReducer";
-import { Chapter, ISurveyAnswers } from '../../../interfaces/Survey';
-import { getCopyArrayOrObject } from "../../../helpers/getCopyArrayOrObject";
+
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: "Poppins",
+    fontSize: 14,
+  },
+});
 
 export const Microdata = () => {
   const classes = useStyles();
   const intl = useIntl();
   const dispatch = useDispatch();
+  const componentRef = useRef<HTMLDivElement>(null);
   const { dataSurveys } = useSelector<AppState, AppState["survey"]>(
     (state) => state.survey
   );
-  const { surveyors, surveysTransmitted } = useSelector<
+  const { surveyors, surveysTransmitted, idResponsibleCitizens } = useSelector<
     AppState,
     AppState["surveyor"]
   >((state) => state.surveyor);
@@ -42,6 +64,7 @@ export const Microdata = () => {
     (state) => state.ui
   );
   const surveys: any[] = dataSurveys;
+  const idCitizens: string[] = idResponsibleCitizens;
   const listSurveyors: Partial<Surveyor>[] = surveyors;
   const [surveySelected, setSurveySelected] = useState("");
   const [surveyorSelected, setSurveyorSelected] = useState("");
@@ -50,36 +73,87 @@ export const Microdata = () => {
   const [errorSurvey, setErrorSurvey] = useState(false);
   const [errorSurveyor, setErrorSurveyor] = useState(false);
   const [valid, setValid] = useState({ survey: false, surveyor: false });
-  const transmitted: any[] = getCopyArrayOrObject(surveysTransmitted);
+  const transmitted: Partial<Survey>[] =
+    getCopyArrayOrObject(surveysTransmitted);
   const [show, setShow] = useState(false);
   let arrayQuestionsInd: any[] = [];
   let arrayQuestionsHome: any[] = [];
+  let questions: any[] = [];
 
-  if(transmitted.length > 0 && transmitted[0].chapters) {
-    transmitted[0].chapters.forEach( (chapter: Partial<Chapter>) => {
-      chapter.questions?.forEach( question => {
-        (surveyorSelected !== "Todos") && (question.answers = question.answers.filter( (answer: Partial<ISurveyAnswers>) => answer.idEncuestador === surveyorSelected));
-        if(question.directedTo === 'PreguntasIndividual') {
-          arrayQuestionsInd.push(question)
+  if (transmitted.length > 0 && transmitted[0].chapters) {
+    transmitted[0].chapters.forEach((chapter: Partial<Chapter>) => {
+      chapter.questions?.forEach((question) => {
+        surveyorSelected !== "Todos" &&
+          (question.answers = question.answers.filter(
+            (answer: Partial<ISurveyAnswers>) =>
+              answer.idEncuestador === surveyorSelected &&
+              (answer.idEncuestaCiudadano &&
+              idCitizens.includes(answer.idEncuestaCiudadano))
+          ));
+
+        if (question.directedTo === "PreguntasIndividual") {
+          arrayQuestionsInd.push(question);
         } else {
-          arrayQuestionsHome.push(question)
+          arrayQuestionsHome.push(question);
         }
         return question;
-      })
+      });
     });
-    // console.log("Preguntas Individuales:", arrayQuestionsInd);
-    // arrayQuestionsInd.forEach( (question, index) => console.log(`PInd${index+1}:`, question.question));
-    // console.log("Preguntas Hogar:",  arrayQuestionsHome);
-    // arrayQuestionsHome.forEach( (question, index) => console.log(`PHog${index+1}:`, question.question));
-  }  
-  
+    arrayQuestionsHome.forEach((question, index) =>
+      questions.push({
+        question: `PreguntaHog${index + 1}`,
+        answer: question.question,
+      })
+    );
+    arrayQuestionsInd.forEach((question, index) =>
+      questions.push({
+        question: `PreguntaInd${index + 1}`,
+        answer: question.question,
+      })
+    );
+  }
+
+  // const headers: any[] = [
+  //   {label: "Pregunta", key: "pregunta"},
+  //   {label: "Encuesta", key: "encuesta"},
+  //   {label: "ID ciudadano responsable", key: "idEncuestaCiudadano"},
+  //   {label: "ID ciudadano encuestado", key: "idCiudadano"}
+  // ];
+  const homeData: any[] = [];
+  arrayQuestionsHome.forEach((question, index) => {
+    // headers.push({label: `PreguntaHog${index+1}`, key: "answer"})
+    question.answers.forEach((answer: ISurveyAnswers) => {
+      homeData.push({
+        Codigo_encuesta: transmitted[0].idSurvey,
+        Codigo_pregunta: `PreguntaHog${index + 1}`,
+        ID_ciudadano_responsable: answer.idEncuestaCiudadano,
+        ID_ciudadano_encuestado: answer.citizen,
+        Respuesta: answer.respuesta.value,
+      });
+    });
+  });
+
+  const indData: any[] = [];
+  arrayQuestionsInd.forEach((question, index) => {
+    // headers.push({label: `PreguntaHog${index+1}`, key: "answer"})
+    question.answers.forEach((answer: ISurveyAnswers) => {
+      indData.push({
+        Codigo_encuesta: transmitted[0].idSurvey,
+        Codigo_pregunta: `PreguntaInd${index + 1}`,
+        ID_ciudadano_responsable: answer.idEncuestaCiudadano,
+        ID_ciudadano_encuestado: answer.citizen,
+        Respuesta: answer.respuesta.value,
+      });
+    });
+  });
 
   useEffect(() => {
     setShow(false);
   }, []);
 
   useEffect(() => {
-    dispatch( setTransmittedSurveys([]) );
+    dispatch(setTransmittedSurveys([]));
+    dispatch(setInfoTransmittedSurveys([]));
   }, [dispatch]);
 
   const validationSchema = yup.object({
@@ -110,7 +184,8 @@ export const Microdata = () => {
   };
 
   const handleSelectSurvey = (event: React.ChangeEvent<{ value: unknown }>) => {
-    dispatch( setTransmittedSurveys([]) );
+    dispatch(setTransmittedSurveys([]));
+    dispatch(setInfoTransmittedSurveys([]));
     const value: string = event.target.value as string;
     setSurveySelected(value);
     setShow(false);
@@ -139,16 +214,13 @@ export const Microdata = () => {
     event: React.ChangeEvent<{ value: unknown }>
   ) => {
     const value: string = event.target.value as string;
-    dispatch( setTransmittedSurveys([]) );
+    dispatch(setTransmittedSurveys([]));
+    dispatch(setInfoTransmittedSurveys([]));
     setErrorSurveyor(value === "");
     setSurveyorSelected(value);
     setShow(false);
     setValid({ ...valid, surveyor: true });
   };
-
-  const handleDate = () => {
-    console.log('Hola')
-  }
 
   return (
     <>
@@ -169,8 +241,8 @@ export const Microdata = () => {
                 data.surveyor = surveyorSelected;
                 setSubmitting(true);
                 await dispatch(startLoadingMicrodata(data));
-                setSubmitting(false);     
-                dispatch( finishLoading() );    
+                setSubmitting(false);
+                dispatch(finishLoading());
               }
             }}
           >
@@ -228,7 +300,6 @@ export const Microdata = () => {
                       variant="outlined"
                       type="date"
                       className={classes.myTextFieldRoot}
-                      onChange={handleDate}
                     />
                   </Grid>
 
@@ -299,7 +370,7 @@ export const Microdata = () => {
               <Box display="flex" justifyContent="center">
                 <CircularProgress className={classes.colorLoading} />
               </Box>
-            ) : (transmitted.length > 0 && !loading)? (
+            ) : transmitted.length > 0 && !loading ? (
               <Box
                 m={2}
                 ml={6}
@@ -309,8 +380,82 @@ export const Microdata = () => {
                 justifyContent="flex-start"
                 alignItems="flex-start"
               >
-                <Link component="button">Codigo_encuesta_microdatos_hogar</Link>
-                <Link component="button">Codigo_encuesta_microdatos_personas</Link>
+                <CSVLink
+                  data={homeData}
+                  separator={";"}
+                  filename={`Microdatos_hogar_${transmitted[0].idSurvey}.csv`}
+                >
+                  <Link component="button">
+                    Encuesta{transmitted[0].idSurvey}_microdatos_hogar
+                  </Link>
+                </CSVLink>
+                <CSVLink
+                  data={indData}
+                  separator={";"}
+                  filename={`Microdatos_personas_${transmitted[0].idSurvey}.csv`}
+                >
+                  <Link component="button">
+                    Encuesta{transmitted[0].idSurvey}_microdatos_personas
+                  </Link>
+                </CSVLink>
+
+                <ReactToPrint
+                  trigger={() => (
+                    <Link className={classes.typography} component="button">
+                      <FormattedMessage id="DictionaryQuestions" />
+                    </Link>
+                  )}
+                  content={() => componentRef.current}
+                  documentTitle={`Diccionario_encuesta_${transmitted[0].idSurvey}`}
+                  pageStyle="@page { size: auto; margin: 0mm; } @media print { body { -webkit-print-color-adjust: exact; padding: 50px !important; } }"
+                />
+
+                <div style={{ display: "none" }}>
+                  <div ref={componentRef}>
+                    <Box
+                      mb={4}
+                      display="flex"
+                      justifyContent="center"
+                      className={classes.titlePDF}
+                    >
+                      <FormattedMessage id="DictionaryQuestions" />
+                    </Box>
+
+                    <Box mb={4} display="flex">
+                      <FormattedMessage id="MessagePDF" />
+                      &nbsp;({transmitted[0].name})
+                    </Box>
+                    <ThemeProvider theme={theme}>
+                      <TableContainer component={Paper}>
+                        <Table
+                          className={classes.table}
+                          aria-label="simple table"
+                        >
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>#</TableCell>
+                              <TableCell width="30%">
+                                <FormattedMessage id="QuestionCode" />
+                              </TableCell>
+                              <TableCell width="70%">
+                                <FormattedMessage id="Dictionary" />
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {questions.map((question, index) => (
+                              <TableRow key={index}>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{question.question}</TableCell>
+                                <TableCell>{question.answer}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </ThemeProvider>
+                  </div>
+                </div>
               </Box>
             ) : (
               <Box display="flex" justifyContent="center">

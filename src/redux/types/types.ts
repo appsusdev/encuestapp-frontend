@@ -47,6 +47,8 @@ export const types = {
     surveyorDelete: '[surveyor] Delete surveyor',
     surveyorsLogoutCleaning: '[surveyor] Cleaning surveyors',
     surveyorsTransmittedSurveys: '[surveyor] Load transmitted surveys',
+    surveyorsInfoTransmittedSurveys: '[surveyor] Load info transmitted surveys',
+    surveyorsIdResponsibleCitizens: '[surveyor] Set id responsible citizens',
 
     // survey
     surveyAddNew: '[survey] New survey',
@@ -117,6 +119,8 @@ export interface ISurveyor {
   assignedSurveys: any,
   surveyorFromToDB: any,
   surveysTransmitted: any[]
+  infoSurveysTransmitted: any[],
+  idResponsibleCitizens: any[]
 }
 
 export type SurveyorsAction = {

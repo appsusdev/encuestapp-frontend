@@ -285,9 +285,9 @@ export const getQuestions = async (
   for( let doc of allQuestions ) {
     let answersRef;
     if( doc.dirigida === 'PreguntasIndividual') {
-      answersRef = await individualQuestionsRef.doc(doc.id).collection('Respuestas').get();
+      answersRef = await individualQuestionsRef.doc(doc.id).collection('Respuestas').orderBy('idEncuestaCiudadano').get();
     } else {
-      answersRef = await homeQuestionsRef.doc(doc.id).collection('Respuestas').get();
+      answersRef = await homeQuestionsRef.doc(doc.id).collection('Respuestas').orderBy('idEncuestaCiudadano').get();
     }
     
     const answers: any[] = [];
