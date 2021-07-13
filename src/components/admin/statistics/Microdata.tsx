@@ -112,13 +112,15 @@ export const Microdata = () => {
       })
     );
   }
-
+  
   // const headers: any[] = [
   //   {label: "Pregunta", key: "pregunta"},
   //   {label: "Encuesta", key: "encuesta"},
   //   {label: "ID ciudadano responsable", key: "idEncuestaCiudadano"},
   //   {label: "ID ciudadano encuestado", key: "idCiudadano"}
   // ];
+
+  // Filtro de la data para los excel
   const homeData: any[] = [];
   arrayQuestionsHome.forEach((question, index) => {
     // headers.push({label: `PreguntaHog${index+1}`, key: "answer"})
