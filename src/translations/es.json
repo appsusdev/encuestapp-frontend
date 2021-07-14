@@ -165,5 +165,9 @@
     "GreaterStartDate": "Fecha inicial no puede ser mayor a la fecha final",
     "LowerEndDate": "Fecha final no puede ser menor a la fecha inicial",
     "GreaterCurrentDate": "La fecha no puede ser mayor a la fecha actual",
-    "NoExistsRecords": "No existen registros para los datos ingresados"       
+    "NoExistsRecords": "No existen registros para los datos ingresados",
+    "MessagePDF": "En este documento se encuentra el significado de las preguntas que contiene la encuesta seleccionada.",
+    "Dictionary": "Diccionario",
+    "DictionaryQuestions": "Diccionario de preguntas",
+    "QuestionCode": "Código pregunta"       
 }

@@ -165,5 +165,9 @@
     "GreaterStartDate": "Start date cannot be greater than end date",
     "LowerEndDate": "End date cannot be less than start date",
     "GreaterCurrentDate": "The date cannot be greater than the current date",
-    "NoExistsRecords": "There are no records for the data entered"            
+    "NoExistsRecords": "There are no records for the data entered",
+    "MessagePDF": "In this document you will find the meaning of the questions contained in the selected survey.",
+    "Dictionary": "Dictionarys",                   
+    "DictionaryQuestions": "Dictionary of questions",
+    "QuestionCode": "Question code"                     
 }

@@ -197,29 +197,29 @@ export const startLoadingMicrodata = (data: any) => {
     const town = auth.municipios[0];
     const { survey, surveyor } = data;
     const idSurveys: string[] = [];
+    const idResponsibleCitizen: any[] = [];
 
     // Manejo de fechas
     let date1 = new Date(data.startDate);
-    date1.setDate(date1.getDate()+1);
+    date1.setDate(date1.getDate());
     let date2 = new Date(data.endDate);
-    date2.setDate(date2.getDate()+2);
+    date2.setDate(date2.getDate()+1);
 
     const startDate =  firebase.firestore.Timestamp.fromDate(new Date(date1));
     const endDate =  firebase.firestore.Timestamp.fromDate(new Date(date2));
 
     // Obtener respuestas transmitidas
-    const resp = await getTransmittedSurveysBySurveyor(town, survey, surveyor, startDate, endDate);
-    
+    let resp = await getTransmittedSurveysBySurveyor(town, survey, surveyor, startDate, endDate);
+
     if(resp.length === 0){
-      console.log('No existen encuestas transmitidas')
       dispatch( setTransmittedSurveys([]) );
     } else {
-      console.log('Existen encuestas transmitidas')
-      resp.forEach((survey) => idSurveys.push(survey.idEncuesta));
+      dispatch( setInfoTransmittedSurveys(resp) );
+      resp.forEach((survey) => {idSurveys.push(survey.idEncuesta); idResponsibleCitizen.push(survey.id)});
+      dispatch( setIdResponsibleCitizens(idResponsibleCitizen));
       const newSurveys = surveys.filter( (survey: Partial<Survey>) => (survey.idSurvey) && idSurveys.includes(survey.idSurvey));
       dispatch( setTransmittedSurveys(newSurveys) );
     }
-    // console.log(town, survey, surveyor, startDate, endDate)
     
   };
 };
@@ -227,6 +227,16 @@ export const startLoadingMicrodata = (data: any) => {
 export const setTransmittedSurveys = (surveys: any[]) => ({
   type: types.surveyorsTransmittedSurveys,
   payload: surveys,
+});
+
+export const setInfoTransmittedSurveys = (surveys: any[]) => ({
+  type: types.surveyorsInfoTransmittedSurveys,
+  payload: surveys,
+});
+
+export const setIdResponsibleCitizens = (ids: any[]) => ({
+  type: types.surveyorsIdResponsibleCitizens,
+  payload: ids,
 });
 
 
