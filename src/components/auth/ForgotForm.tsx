@@ -9,7 +9,7 @@ import { Fonts } from '../../shared/constants/AppEnums';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { FormattedMessage, useIntl } from 'react-intl';
-import logo from '../../assets/images/logo-white-with-name.png';
+import logo from '../../assets/images/mi-alcaldia-logo.png';
 import useStylesAuth from './auth.styles';
 import { MyTextField } from '../custom/MyTextField';
 

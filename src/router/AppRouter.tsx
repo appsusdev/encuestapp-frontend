@@ -80,9 +80,8 @@ export const AppRouter: FC = () => {
       <div>
         <Switch>
           <PublicRoute
-            exact
             isAuthenticated={isLoggedIn}
-            path="/auth/login"
+            path="/auth"
             component={AuthRouter}
           />
           <PrivateRoute
