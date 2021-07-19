@@ -94,24 +94,18 @@ export const Surveyors = () => {
     surveyor: "",
   };
 
-  const handleSelectSurveyor = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
-    const value: string = event.target.value as string;
-    setErrorSurveyor(value === "");
-    setSurveyorSelected(value);
-
-    setValid({ ...valid, surveyor: true });
+  const handleSelect = (value: string, flag: boolean) => {
     setShow(false);
-  };
 
-  const handleSelectSurvey = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const value: string = event.target.value as string;
-    setErrorSurvey(value === "");
-    setSurveySelected(value);
-
-    setValid({ ...valid, survey: true });
-    setShow(false);
+    if ( flag ) {
+      setErrorSurvey(value === "");
+      setSurveySelected(value);
+      setValid({ ...valid, survey: true });
+    } else {
+      setErrorSurveyor(value === "");
+      setSurveyorSelected(value);
+      setValid({ ...valid, surveyor: true });
+    }
   };
 
   let newData: any[] = [];
@@ -169,7 +163,7 @@ export const Surveyors = () => {
                       }
                       InputLabelProps={{ shrink: false }}
                       name="surveyor"
-                      onChange={handleSelectSurveyor}
+                      onChange={(event) => handleSelect(event.target.value,false)}
                       select
                       value={surveyorSelected}
                       variant="outlined"
@@ -227,7 +221,7 @@ export const Surveyors = () => {
                       size="small"
                       value={surveySelected}
                       variant="outlined"
-                      onChange={handleSelectSurvey}
+                      onChange={(event) => handleSelect(event.target.value,true)}
                       error={errorSurvey}
                       FormHelperTextProps={{
                         className: classes.helperText,
