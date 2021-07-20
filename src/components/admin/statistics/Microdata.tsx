@@ -114,16 +114,16 @@ export const Microdata = () => {
   }
   
   // const headers: any[] = [
-  //   {label: "Pregunta", key: "pregunta"},
-  //   {label: "Encuesta", key: "encuesta"},
-  //   {label: "ID ciudadano responsable", key: "idEncuestaCiudadano"},
-  //   {label: "ID ciudadano encuestado", key: "idCiudadano"}
+  //   {label: "Pregunta", key: "id"},
+    // {label: "Encuesta", key: "encuesta"},
+    // {label: "ID ciudadano responsable", key: "idEncuestaCiudadano"},
+    // {label: "ID ciudadano encuestado", key: "idCiudadano"}
   // ];
 
   // Filtro de la data para los excel
   const homeData: any[] = [];
   arrayQuestionsHome.forEach((question, index) => {
-    // headers.push({label: `PreguntaHog${index+1}`, key: "answer"})
+    // headers.push({label: `PreguntaHog${index+1}`, key: "answers"})
     question.answers.forEach((answer: ISurveyAnswers) => {
       homeData.push({
         Codigo_encuesta: transmitted[0].idSurvey,
@@ -137,16 +137,16 @@ export const Microdata = () => {
 
   const indData: any[] = [];
   arrayQuestionsInd.forEach((question, index) => {
-    // headers.push({label: `PreguntaHog${index+1}`, key: "answer"})
-    question.answers.forEach((answer: ISurveyAnswers) => {
-      indData.push({
-        Codigo_encuesta: transmitted[0].idSurvey,
-        Codigo_pregunta: `PreguntaInd${index + 1}`,
-        ID_ciudadano_responsable: answer.idEncuestaCiudadano,
-        ID_ciudadano_encuestado: answer.citizen,
-        Respuesta: answer.respuesta.value,
+    // headers.push({label: `PreguntaHog${index+1}`, key: "answers"})
+      question.answers.forEach((answer: ISurveyAnswers) => {
+        indData.push({
+          Codigo_encuesta: transmitted[0].idSurvey,
+          Codigo_pregunta: `PreguntaInd${index + 1}`,
+          ID_ciudadano_responsable: answer.idEncuestaCiudadano,
+          ID_ciudadano_encuestado: answer.citizen,
+          Respuesta: answer.respuesta.value,
+        });
       });
-    });
   });
 
   useEffect(() => {
@@ -203,7 +203,7 @@ export const Microdata = () => {
         surveyor.firstName &&
           surveyor.firstLastName &&
           names.push({
-            name: `${surveyor.firstName} ${surveyor.firstLastName}`,
+            name: `${surveyor.username}`,
             email: surveyor.id,
           });
       }
@@ -384,6 +384,8 @@ export const Microdata = () => {
               >
                 <CSVLink
                   data={homeData}
+                  // headers={headers}
+                  // data={arrayQuestionsHome}
                   separator={";"}
                   filename={`Microdatos_hogar_${transmitted[0].idSurvey}.csv`}
                 >
@@ -393,6 +395,7 @@ export const Microdata = () => {
                 </CSVLink>
                 <CSVLink
                   data={indData}
+                  // headers={headers}
                   separator={";"}
                   filename={`Microdatos_personas_${transmitted[0].idSurvey}.csv`}
                 >

@@ -213,6 +213,8 @@ export const startLoadingMicrodata = (data: any) => {
 
     if(resp.length === 0){
       dispatch( setTransmittedSurveys([]) );
+      dispatch( setInfoTransmittedSurveys([]) );
+      dispatch( setIdResponsibleCitizens([]));
     } else {
       dispatch( setInfoTransmittedSurveys(resp) );
       resp.forEach((survey) => {idSurveys.push(survey.idEncuesta); idResponsibleCitizen.push(survey.id)});
@@ -238,9 +240,6 @@ export const setIdResponsibleCitizens = (ids: any[]) => ({
   type: types.surveyorsIdResponsibleCitizens,
   payload: ids,
 });
-
-
-
 
 
 

@@ -8,7 +8,7 @@ import useStylesAuth from '../../components/auth/auth.styles';
 import { Fonts } from '../../shared/constants/AppEnums';
 import { AppState } from '../../redux/reducers/rootReducer';
 import { uiCloseErrorAlert } from '../../redux/actions/uiActions';
-import logo from '../../assets/images/logo-white-with-name.png';
+import logo from '../../assets/images/mi-alcaldia-logo.png';
 import { MyAlert } from '../../components/custom/MyAlert';
 
 export const LoginScreen: FC<{}> = () => {
