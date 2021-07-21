@@ -1,27 +1,25 @@
 import { FormattedMessage } from "react-intl";
-import { useSelector } from "react-redux";
 
 import {
   Box,
-  Checkbox,
   Card,
   CardMedia,
-  Typography,
-  Grid,
-  TextField,
+  Checkbox,
   FormControlLabel,
+  Grid,
+  Link,
   Radio,
+  TextField,
+  Typography,
 } from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/Home";
 import PersonIcon from "@material-ui/icons/Person";
 
 import { TypeQuestion } from "../../../enums/enums";
 import { getCopyArrayOrObject } from "../../../helpers/getCopyArrayOrObject";
-import { Survey, Chapter, ISurveyAnswers } from "../../../interfaces/Survey";
-import { AppState } from "../../../redux/reducers/rootReducer";
+import { Chapter, ISurveyAnswers } from "../../../interfaces/Survey"
 import { useStyles } from "../../../shared/styles/useStyles";
 import { convertDateDash } from "../../../helpers/convertDate";
-import { Link } from "@material-ui/core";
 
 interface Props {
   data: Chapter[];
