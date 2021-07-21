@@ -169,5 +169,6 @@
     "MessagePDF": "In this document you will find the meaning of the questions contained in the selected survey.",
     "Dictionary": "Dictionarys",                   
     "DictionaryQuestions": "Dictionary of questions",
-    "QuestionCode": "Question code"                     
+    "QuestionCode": "Question code",
+    "SurveyCode": "Código encuesta"                      
 }
