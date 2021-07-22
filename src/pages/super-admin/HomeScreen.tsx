@@ -9,7 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../../redux/reducers/rootReducer";
 import { EntitiesTable } from "../../components/super-admin/EntitiesTable";
 import CustomizedDialog from "../../components/custom/CustomizedDialog";
-import { uiCloseModalAdd, uiCloseModalDelete, uiCloseModalEdit } from "../../redux/actions/uiActions";
+import { uiCloseModalAdd, uiCloseModalDelete, uiCloseModalEdit, uiOpenModalAdd } from "../../redux/actions/uiActions";
+import { FormAddEntity } from "../../components/super-admin/FormAddEntity";
 export const useStyles = makeStyles((theme) => ({
   btnRoot: {
     background: theme.palette.error.main,
@@ -38,7 +39,10 @@ export const HomeScreen = () => {
   const {entities:Entities} = useSelector((state: AppState) => state.entities);
   const dispatch = useDispatch();
   const { modalAddOpen, modalEditOpen, modalDeleteOpen, modalAssignOpen, modalAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
-// Cerrar modal crear encuestador
+const onAdd = ()=>{
+  dispatch( uiOpenModalAdd() )
+}
+  // Cerrar modal crear encuestador
 const onDenyAdd = () => {
     dispatch(uiCloseModalAdd());
   }
@@ -69,7 +73,7 @@ const onDenyAdd = () => {
                 color="secondary"
                 className={classes.btnRoot}
                 type="button"
-                onClick={() => console.log("Abrir modal para agregar un admin")}
+                onClick={onAdd}
               >
                 <AddOutlinedIcon />
                 <FormattedMessage id="AddNewSurveyor" />
@@ -82,9 +86,9 @@ const onDenyAdd = () => {
           </Grid>
         </Box>
         <EntitiesTable/>
-        <CustomizedDialog open={modalAddOpen} cancelBtn={true} onDeny={onDenyAdd} title={`${intl.formatMessage({ id: 'CreateNewSurveyor' })}`} content={<> <h1>HOLAAAAAAAAAA</h1>   </>} width textButton="Accept" />
-        <CustomizedDialog open={modalEditOpen} cancelBtn={true} onDeny={onDenyEdit} title={`${intl.formatMessage({ id: 'EditSurveyor' })}`} content={<> <h1>EDITAR ENTIDAD</h1>   </>} width textButton="Accept" />
-        <CustomizedDialog open={modalDeleteOpen} cancelBtn={true} onDeny={onDenyDelete} title={`${intl.formatMessage({ id: 'DeleteSurveyor' })}`} content={<> <h1>BORRAR ENTIDAD</h1>   </>} seeActions textButton="Accept" />
+        <CustomizedDialog open={modalAddOpen} cancelBtn={true} onDeny={onDenyAdd} title={`${intl.formatMessage({ id: 'CreateNewEntity' })}`} content={<FormAddEntity/>} width textButton="Accept" />
+        <CustomizedDialog open={modalEditOpen} cancelBtn={true} onDeny={onDenyEdit} title={`${intl.formatMessage({ id: 'EditEntity' })}`} content={<> <h1>EDITAR ENTIDAD</h1>   </>} width textButton="Accept" />
+        <CustomizedDialog open={modalDeleteOpen} cancelBtn={true} onDeny={onDenyDelete} title={`${intl.formatMessage({ id: 'DeleteEntity' })}`} content={<> <h1>BORRAR ENTIDAD</h1>   </>} seeActions textButton="Accept" />
       </Box>
     </AppAnimate>
   );

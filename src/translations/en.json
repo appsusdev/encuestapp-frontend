@@ -172,7 +172,14 @@
     "QuestionCode": "Question code",
     "Entities":"Entities",
     "NameEntity":"NameEntity",
-    "Nit":"Nit"
+    "Nit":"Nit",
+    "CreateNewEntity":"CreateNewEntity",
+    "EditEntity":"EditEntity",
+    "DeleteEntity":"DeleteEntity",
+    "BusinessName":"BusinessName",
+    "Phone":"Phone",
+    "SystemAdmin":"system administrator" 
+
     
                        
 }

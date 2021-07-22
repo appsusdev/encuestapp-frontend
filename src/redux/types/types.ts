@@ -93,7 +93,7 @@ export interface IEntities {
   departamento:string,
   codigoSigep:string,
   codigoDane:string,
-  municipios:string[],
+  municipio:string,
 }
 export interface EntitiesState{
   entities:EntitiesType,
@@ -103,6 +103,14 @@ export type EntitiesType = IEntities[]
 export interface EntitiesAction {
   type:string,
   payload?:EntitiesType | IEntities
+}
+export interface IEntityForm extends IEntities {
+  adminPrimerNombre: string;
+  adminSegundoNombre: string;
+  adminPrimerApellido: string;
+  adminSegundoApellido: string;
+  adminCorreo: string;
+  adminIdentificacion: string;
 }
 
 // Auth

@@ -172,5 +172,11 @@
     "QuestionCode": "Código pregunta",
     "Entities":"Entidades",
     "NameEntity":"Nombre Entidad",
-    "Nit":"Nit"     
+    "Nit":"Nit",
+    "CreateNewEntity":"Crear una nueva entidad",
+    "EditEntity":"Editar entidad",
+    "DeleteEntity":"Borrar entidad",
+    "BusinessName":"Razón social",
+    "Phone":"Telefono",
+    "SystemAdmin":"Administrador del sistema" 
 }

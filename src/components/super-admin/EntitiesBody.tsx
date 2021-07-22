@@ -44,7 +44,7 @@ export const EntitiesBody:FC<Props> = ({entity}) => {
                     {entity.departamento}
                 </TableCell>
                 <TableCell style={{ width: 120 }}>
-                    {entity.municipios[0]}
+                    {entity.municipio}
                 </TableCell>
                 <TableCell style={{ width: 160 }}>
                     {entity.nit}

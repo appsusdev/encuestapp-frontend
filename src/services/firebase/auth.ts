@@ -1,4 +1,6 @@
 import { firebase, db } from "../../config/firebase/firebase-config";
+import { TypeUser } from "../../enums/enums";
+import { IEntityForm } from "../../redux/types/types";
 
 export interface IUserInfo {
   activo: boolean;
@@ -11,8 +13,9 @@ export interface IUserInfo {
   celular: number;
   direccion: string;
   identificacion: number;
-  rol: string;
-  municipios: string[];
+  rol: TypeUser;
+  municipios: string[];//este ya no
+  municipio:string
 }
 
 export const getUserRole = (
@@ -40,6 +43,40 @@ export const registerWithEmailPassword = async (
 ) => {
   return await firebase.auth().createUserWithEmailAndPassword(email, password);
 };
+export const addNewEntity = (entity:IEntityForm):Promise<any>=>{
+  const {adminCorreo,adminIdentificacion,adminPrimerNombre,adminPrimerApellido,adminSegundoApellido,adminSegundoNombre,codigoDane,codigoSigep,departamento,telefono,direccion,municipio,nit,razonSocial} = entity
+  return db.collection('Usuarios').doc(adminCorreo).set({
+    activo:true,
+    primerNombre: adminPrimerNombre.trim(),
+    segundoNombre: adminSegundoNombre.trim(),
+    primerApellido: adminPrimerApellido.trim(),
+    segundoApellido: adminSegundoApellido.trim(),
+    nombreCompleto: `${adminPrimerNombre} ${adminSegundoNombre} ${adminPrimerApellido} ${adminSegundoApellido}`,
+    avatar: "",
+    celular: telefono.trim(),
+    direccion,
+    identificacion: adminIdentificacion.toString().trim(),
+    rol: TypeUser.ADMIN,
+    departamento,
+    municipio,
+    codigoDane,
+    codigoSigep,
+    nit,
+    razonSocial,
+    fechaCreacion: firebase.firestore.Timestamp.now()
+  }).then(()=>{
+    //CREAR LA COLECCION DE LOS MUNICIPIOS
+    return db.collection('Municipios').doc(municipio).set({
+      departamento,
+      admin:adminIdentificacion,
+
+    }).then(()=>{
+      return {
+        ok:true
+      }
+    })
+  })
+}
 
 export const uploadFileAsync = async (
   file: File,
