@@ -61,6 +61,12 @@ export const CustomizedSearch = (props: PropsSearch) => {
                         const doc = data.document;
                         search = username+" "+email+" "+doc;
                     }
+                    //ENTITIES
+                    if(data.nit){
+                        const razonSocial = data.razonSocial.toUpperCase();
+                        const departamento = data.departamento.toUpperCase()
+                        search = data.nit+" "+razonSocial+" "+departamento
+                    }
                     const value = searchText.toUpperCase();
                     return search.indexOf(value) > -1;
                 });

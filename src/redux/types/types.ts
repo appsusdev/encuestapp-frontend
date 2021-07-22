@@ -75,6 +75,34 @@ export const types = {
     citizensLoadSurveysAnswered: '[citizen] Load surveys answered',
     citizenActive: '[citizen] Set active citizen',
     citizenCleanActive: '[citizen] Clean active citizen',
+    //ENTITIES
+    entitiesLoad: '[entities] load all entities',
+    purgeEntities:'[entities] purge all entities',
+    setActiveEntity:'[entities] set active entity',
+    purgeActiveEntity:'[entities] purge active entity',
+}
+
+//ENTITIES
+
+export interface IEntities {
+  activo:boolean,
+  razonSocial:string,
+  nit:string,
+  direccion:string,
+  telefono:string,
+  departamento:string,
+  codigoSigep:string,
+  codigoDane:string,
+  municipios:string[],
+}
+export interface EntitiesState{
+  entities:EntitiesType,
+  entityActive:IEntities|null
+}
+export type EntitiesType = IEntities[]
+export interface EntitiesAction {
+  type:string,
+  payload?:EntitiesType | IEntities
 }
 
 // Auth

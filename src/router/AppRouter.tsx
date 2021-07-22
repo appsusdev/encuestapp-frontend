@@ -17,6 +17,7 @@ import { useStyles } from "../shared/styles/useStyles";
 import { startLoadingSurveyors, startLoadingAssignedSurveys } from '../redux/actions/surveyorsActions';
 import { startLoadingDataSurveys } from '../redux/actions/surveysActions';
 import { startLoadingCitizens } from '../redux/actions/citizensActions';
+import { startLoadEntities } from "../redux/actions/entitiesActions";
 
 export const AppRouter: FC = () => {
   const dispatch = useDispatch();
@@ -46,10 +47,15 @@ export const AppRouter: FC = () => {
                 municipios: municipios,
               };
               dispatch(login(userMain));
-              dispatch(startLoadingSurveyors(municipios[0]));
-              await dispatch(startLoadingDataSurveys(municipios[0], true));
-              dispatch(startLoadingAssignedSurveys(municipios[0]));
-              dispatch(startLoadingCitizens());
+              if(rol === TypeUser.ADMIN){
+
+                dispatch(startLoadingSurveyors(municipios[0]));
+                await dispatch(startLoadingDataSurveys(municipios[0], true));
+                dispatch(startLoadingAssignedSurveys(municipios[0]));
+                dispatch(startLoadingCitizens());
+              }else{
+                await dispatch( startLoadEntities() )
+              }
               setIsLoggedIn(true);
             }
           } else {

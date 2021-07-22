@@ -34,7 +34,7 @@ const VerticalItem: React.FC<VerticalItemProps> = () => {
     ];
 
     const itemsSuper = [
-        { route: routes[0], name: routesName[0], component: (<HomeOutlinedIcon />) },
+        { route: routes[5], name: routesName[5], component: (<HomeOutlinedIcon />) },
     ];
 
     return (

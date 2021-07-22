@@ -33,9 +33,9 @@ export const DashboardRouter: FC = () => {
                 </Switch>
                 :
                 <Switch>
-                    <Route exact path={`/${routes[0]}`} component={ Home }/>
+                    <Route exact path={`/${routes[5]}`} component={ Home }/>
 
-                    <Redirect to={`/${routes[0]}`}/>
+                    <Redirect to={`/${routes[5]}`}/>
                 </Switch>
 
             }

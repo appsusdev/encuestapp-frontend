@@ -169,5 +169,8 @@
     "MessagePDF": "En este documento se encuentra el significado de las preguntas que contiene la encuesta seleccionada.",
     "Dictionary": "Diccionario",
     "DictionaryQuestions": "Diccionario de preguntas",
-    "QuestionCode": "Código pregunta"       
+    "QuestionCode": "Código pregunta",
+    "Entities":"Entidades",
+    "NameEntity":"Nombre Entidad",
+    "Nit":"Nit"     
 }

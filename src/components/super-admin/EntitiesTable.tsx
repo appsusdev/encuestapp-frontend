@@ -1,13 +1,12 @@
-import { useState } from 'react';
+import { createMuiTheme, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, ThemeProvider } from '@material-ui/core';
+import React, { useState } from 'react'
 import { FormattedMessage } from 'react-intl';
 import { useSelector } from 'react-redux';
-
-import { createMuiTheme, Paper, Table, TableCell, TableContainer, TableFooter, TablePagination, TableRow, TableHead, ThemeProvider, TableBody } from '@material-ui/core';
-import { SurveyorsBody } from './SurveyorsBody';
-import { TablePaginationAct } from '../../custom/TablePaginationAct';
-import { useStyles } from '../../../shared/styles/useStyles';
-import { AppState } from '../../../redux/reducers/rootReducer';
-import { Surveyor } from '../../../interfaces/Surveyor';
+import { AppState } from '../../redux/reducers/rootReducer';
+import { EntitiesState, EntitiesType } from '../../redux/types/types';
+import { useStyles } from '../../shared/styles/useStyles';
+import { TablePaginationAct } from '../custom/TablePaginationAct';
+import { EntitiesBody } from './EntitiesBody';
 
 const theme = createMuiTheme({
     typography: {
@@ -16,17 +15,16 @@ const theme = createMuiTheme({
     },
 });
 
-export const SurveyorsTable = () => {
-
+export const EntitiesTable = () => {
     const classes = useStyles();
-
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(3);
-    const { surveyors } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
-    const { data, value } = useSelector<AppState, AppState['search']>(state => state.search);
-    const list: Surveyor[] = surveyors;
-    let count: number = 0;
+    const {entities:ENTITIES} = useSelector((state:AppState) => state.entities);
+    const {data,value} = useSelector((state:AppState) => state.search);
+    const list: EntitiesType = ENTITIES;
 
+    let count: number = 0;
+    
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, list.length - page * rowsPerPage);
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -48,14 +46,14 @@ export const SurveyorsTable = () => {
 
     return (
         <ThemeProvider theme={theme}>
-            <TableContainer component={Paper} >
-                <Table className={classes.table} aria-label="custom pagination table" style={{ tableLayout: "auto" }}>
+            <TableContainer component={Paper}>
+            <Table className={classes.table} aria-label="custom pagination table" style={{ tableLayout: "auto" }}>
                     <TableHead>
                         <TableRow >
                             <TableCell><FormattedMessage id="NameEntity" /> </TableCell>
-                            <TableCell><FormattedMessage id="DocumentType" /> </TableCell>
-                            <TableCell><FormattedMessage id="Identification" /> </TableCell>
-                            <TableCell><FormattedMessage id="Email" /> </TableCell>
+                            <TableCell><FormattedMessage id="Department" /> </TableCell>
+                            <TableCell><FormattedMessage id="Town" /> </TableCell>
+                            <TableCell><FormattedMessage id="Nit" /> </TableCell>
                             <TableCell align="center"><FormattedMessage id="State" /> </TableCell>
                             <TableCell align="center"><FormattedMessage id="Actions" /> </TableCell>
                         </TableRow>
@@ -65,16 +63,16 @@ export const SurveyorsTable = () => {
                             (rowsPerPage > 0
                                 ? list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 : list
-                            ).map((surveyor) => (
-                                <SurveyorsBody key={surveyor.email} {...surveyor} />
+                            ).map((entity) => (
+                                <EntitiesBody key={entity.nit} entity={entity} />
                             ))
                             :
                             (data) &&
                             (rowsPerPage > 0
                                 ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 : data
-                            ).map((surveyor) => (
-                                <SurveyorsBody key={surveyor.email} {...surveyor} />
+                            ).map((entity) => (
+                                <EntitiesBody key={entity.nit} entity={entity} />
                             ))
                         }
                         {emptyRows > 0 && (
@@ -103,7 +101,7 @@ export const SurveyorsTable = () => {
                     </TableFooter>
                 </Table>
             </TableContainer>
-        </ThemeProvider>
 
-    );
+        </ThemeProvider>
+    )
 }
