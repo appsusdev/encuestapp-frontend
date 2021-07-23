@@ -170,5 +170,7 @@
     "Dictionary": "Dictionarys",                   
     "DictionaryQuestions": "Dictionary of questions",
     "QuestionCode": "Question code",
-    "SurveyCode": "Código encuesta"                      
+    "SurveyCode": "Código encuesta",
+    "Maps": "Maps",
+    "UpdateMap": "Update map"                          
 }
