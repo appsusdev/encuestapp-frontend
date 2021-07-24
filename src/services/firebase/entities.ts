@@ -1,14 +1,50 @@
-import { db } from "../../config/firebase/firebase-config";
+import { db,firebase } from "../../config/firebase/firebase-config";
 import { TypeUser } from "../../enums/enums";
-import { EntitiesType, IEntities } from "../../redux/types/types";
+import { EntitiesType, IEntity } from "../../redux/types/types";
 
 
 export const loadAllEntities = ():Promise<EntitiesType | []>=>{
     return db.collection('Usuarios').where('rol','==',TypeUser.ADMIN).get().then(snapShot=>{
         let Response:EntitiesType | [] = []
         snapShot.forEach(doc=>{
-            Response = [...Response,(doc.data() as IEntities)]
+            Response = [...Response,(doc.data() as IEntity)]
         });
         return Response;
     })
 }
+
+export const addNewEntity = (entity:IEntity):Promise<any>=>{
+    const {email,identificacion,primerNombre,primerApellido,segundoApellido,segundoNombre,codigoDane,codigoSigep,departamento,celular,direccion,municipio,nit,razonSocial} = entity
+    return db.collection('Usuarios').doc(email).set({
+      activo:true,
+      primerNombre: primerNombre.trim(),
+      segundoNombre: segundoNombre.trim(),
+      primerApellido: primerApellido.trim(),
+      segundoApellido: segundoApellido.trim(),
+      nombreCompleto: `${primerNombre} ${segundoNombre} ${primerApellido} ${segundoApellido}`,
+      avatar: "",
+      celular: celular.trim(),
+      direccion,
+      identificacion: identificacion.toString().trim(),
+      rol: TypeUser.ADMIN,
+      departamento,
+      municipio,
+      codigoDane,
+      codigoSigep,
+      nit,
+      razonSocial,
+      email,
+      fechaCreacion: firebase.firestore.Timestamp.now(),
+    }).then(()=>{
+      //CREAR LA COLECCION DE LOS MUNICIPIOS
+      return db.collection('Municipios').doc(municipio).set({
+        departamento,
+        admin:identificacion,
+  
+      }).then(()=>{
+        return {
+          ok:true
+        }
+      })
+    })
+  }

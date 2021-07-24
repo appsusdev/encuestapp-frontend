@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { FormattedMessage } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { AppState } from '../../redux/reducers/rootReducer';
-import { EntitiesState, EntitiesType } from '../../redux/types/types';
+import { EntitiesType } from '../../redux/types/types';
 import { useStyles } from '../../shared/styles/useStyles';
 import { TablePaginationAct } from '../custom/TablePaginationAct';
 import { EntitiesBody } from './EntitiesBody';

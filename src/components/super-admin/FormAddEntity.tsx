@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Axios from "axios";
 import {
   Box,
@@ -10,24 +10,57 @@ import {
 } from "@material-ui/core";
 import { Form, Formik } from "formik";
 import { FormattedMessage, useIntl } from "react-intl";
-import { IEntityForm } from "../../redux/types/types";
+import { IEntity } from "../../redux/types/types";
 import { useStyles } from "../../shared/styles/useStyles";
 import * as yup from "yup";
 import { MyTextField } from "../custom/MyTextField";
 import { TextField } from "@material-ui/core";
 import clsx from "clsx";
-import { addNewEntity, registerWithEmailPassword } from "../../services/firebase/auth";
+import { registerWithEmailPassword } from "../../services/firebase/auth";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  uiCloseModalAdd,
+  uiOpenErrorAlert,
+  uiOpenSuccessAlert,
+} from "../../redux/actions/uiActions";
+import {
+  purgeActiveEntity,
+  startAddNewEntity,
+} from "../../redux/actions/entitiesActions";
+import { addNewEntity } from "../../services/firebase/entities";
+import { AppState } from "../../redux/reducers/rootReducer";
 interface ILocationData {
   departamento: string;
   c_digo_dane_del_departamento: string;
   municipio: string;
   c_digo_dane_del_municipio: string;
 }
-export const FormAddEntity = () => {
+interface EntityFormProps {
+  edit?: boolean;
+}
+export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
   const [departmentSelected, setDepartmentSelected] = useState<string>("");
   const [departments, setDepartments] = useState<ILocationData[]>([]);
   const [municipioSelected, setMunicipioSelected] = useState<string>("");
   const [filteredTowns, setFilteredTowns] = useState<ILocationData[]>([]);
+  const { entityActive } = useSelector((state: AppState) => state.entities);
+  const [initialValues, setInitialValues] = useState<Partial<IEntity>>({
+    razonSocial: "",
+    nit: "",
+    direccion: "",
+    celular: "",
+    departamento: "", //CONSULYTAR AL API LOS DEPARTAMENTOS Y SELECCIONAR ANTIOQUIA POR DEFECTO
+    municipio: "",
+    codigoSigep: "",
+    codigoDane: "",
+    primerNombre: "",
+    segundoNombre: "",
+    primerApellido: "",
+    segundoApellido: "",
+    email: "",
+    identificacion: "",
+  });
+  const dispatch = useDispatch();
   const intl = useIntl();
   const classes = useStyles();
 
@@ -42,51 +75,51 @@ export const FormAddEntity = () => {
     direccion: yup
       .string()
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`),
-    telefono: yup
+    celular: yup
       .number()
       .typeError(`${intl.formatMessage({ id: "NumericValue" })}`)
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`),
-    adminPrimerNombre: yup
+    primerNombre: yup
       .string()
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`),
-    adminPrimerApellido: yup
+    primerApellido: yup
       .string()
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`),
-    adminCorreo: yup
+    email: yup
       .string()
       .email(`${intl.formatMessage({ id: "InvalidEmail" })}`)
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`),
-    adminIdentificacion: yup
+    identificacion: yup
       .number()
       .typeError(`${intl.formatMessage({ id: "NumericValue" })}`)
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`),
   });
-  let initialValues: Partial<IEntityForm> = {
-    razonSocial: "",
-    nit: "",
-    direccion: "",
-    telefono: "",
-    departamento: "", //CONSULYTAR AL API LOS DEPARTAMENTOS Y SELECCIONAR ANTIOQUIA POR DEFECTO
-    municipio: "",
-    codigoSigep: "",
-    codigoDane: "",
-    adminPrimerNombre: "",
-    adminSegundoNombre: "",
-    adminPrimerApellido: "",
-    adminSegundoApellido: "",
-    adminCorreo: "",
-    adminIdentificacion: "",
-  };
+
   useEffect(() => {
     //MADAR PETICION AL API DE LOS DEPARTAMENTOS Y MUNICIPIOS
     Axios.get(
       "https://www.datos.gov.co/resource/xdk5-pm3f.json?$select=departamento&$group=departamento&$order=departamento%20ASC"
-    ).then((response) => {
-      const { data } = response;
-      setDepartments(data);
+    )
+      .then((response) => {
+        const { data } = response;
+        setDepartments(data);
+        return data;
+        //setDepartmentSelected(data[0].departamento);
+      })
+      .then((data) => {
+        if (edit && entityActive) {
+          const {
+            departamento,
 
-      setDepartmentSelected(data[0].departamento);
-    });
+            municipio,
+          } = entityActive;
+          setDepartmentSelected(departamento);
+          setMunicipioSelected(municipio);
+          setInitialValues({ ...entityActive });
+        } else {
+          setDepartmentSelected(data[0].departamento);
+        }
+      });
   }, []);
 
   useEffect(() => {
@@ -100,21 +133,29 @@ export const FormAddEntity = () => {
       });
     }
   }, [departmentSelected]);
-  const handleCreateEntity = async(entity:IEntityForm)=>{
-    const {adminCorreo,adminIdentificacion} = entity;
+  const handleCreateEntity = async (entity: IEntity) => {
+    const { email, identificacion } = entity;
+    console.log("AGREGANDO...");
 
     try {
-        //crear el usuario
-        await registerWithEmailPassword(adminCorreo,adminIdentificacion.toString())
-        //agregarlo a la bd
-        const {ok} =await addNewEntity(entity);
-        console.log('CREO EL ADMIN')
-        //crear la collection del municipio que se acaba de crear con los datos del admin y el departamento al cual pertenece
-        
+      //crear el usuario
+      await registerWithEmailPassword(email, identificacion.toString());
+      //agregarlo a la bd
+      //crear la collection del municipio que se acaba de crear con los datos del admin y el departamento al cual pertenece
+      const { ok } = await addNewEntity(entity);
+      //agregarlo al state del redux
+
+      if (ok) {
+        dispatch(startAddNewEntity({ ...entity, activo: true }));
+        dispatch(purgeActiveEntity());
+        dispatch(uiCloseModalAdd());
+        dispatch(uiOpenSuccessAlert());
+      }
     } catch (error) {
-        console.log(error)
+      console.log(error);
+      dispatch(uiOpenErrorAlert());
     }
-  }
+  };
 
   return (
     <Box m={1}>
@@ -124,9 +165,9 @@ export const FormAddEntity = () => {
         initialValues={initialValues}
         validationSchema={validationSchema}
         validateOnMount
-        onSubmit={async (values, { setSubmitting }) => {
+        onSubmit={(values, { setSubmitting }) => {
+          //setSubmitting(true);
           /* if (!noValid) {
-              setSubmitting(true);
               setEmail(values.email);
               values.profileImage = profileFile;
               await dispatch(startNewSurveyor(values));
@@ -134,10 +175,12 @@ export const FormAddEntity = () => {
             } else {
               setSubmitting(false);
             } */
-            values.departamento=departmentSelected
-            values.municipio=municipioSelected
-            handleCreateEntity(values as IEntityForm)
-        
+
+          console.log("ENTRA SUBMIT-----------------");
+          console.log(values);
+          values.departamento = departmentSelected;
+          values.municipio = municipioSelected;
+          handleCreateEntity(values as IEntity);
         }}
       >
         {({ values, isSubmitting }) => (
@@ -178,7 +221,7 @@ export const FormAddEntity = () => {
                   <FormattedMessage id="Phone" />*
                 </label>
                 <MyTextField
-                  name="telefono"
+                  name="celular"
                   variant="outlined"
                   className={classes.myTextFieldRoot}
                 />
@@ -239,7 +282,7 @@ export const FormAddEntity = () => {
                   <FormattedMessage id="FirstName" />*
                 </label>
                 <MyTextField
-                  name="adminPrimerNombre"
+                  name="primerNombre"
                   variant="outlined"
                   className={classes.myTextFieldRoot}
                 />
@@ -250,7 +293,7 @@ export const FormAddEntity = () => {
                   <FormattedMessage id="SecondName" />
                 </label>
                 <MyTextField
-                  name="adminSegundoNombre"
+                  name="segundoNombre"
                   variant="outlined"
                   className={classes.myTextFieldRoot}
                 />
@@ -261,7 +304,7 @@ export const FormAddEntity = () => {
                   <FormattedMessage id="FirstLastName" />*
                 </label>
                 <MyTextField
-                  name="adminPrimerApellido"
+                  name="primerApellido"
                   variant="outlined"
                   className={classes.myTextFieldRoot}
                 />
@@ -272,7 +315,7 @@ export const FormAddEntity = () => {
                   <FormattedMessage id="SecondLastName" />
                 </label>
                 <MyTextField
-                  name="adminSegundoApellido"
+                  name="segundoApellido"
                   variant="outlined"
                   className={classes.myTextFieldRoot}
                 />
@@ -282,7 +325,7 @@ export const FormAddEntity = () => {
                   <FormattedMessage id="Email" />*
                 </label>
                 <MyTextField
-                  name="adminCorreo"
+                  name="email"
                   variant="outlined"
                   className={classes.myTextFieldRoot}
                 />
@@ -292,7 +335,7 @@ export const FormAddEntity = () => {
                   <FormattedMessage id="DocumentNumber" />*
                 </label>
                 <MyTextField
-                  name="adminIdentificacion"
+                  name="identificacion"
                   variant="outlined"
                   type="number"
                   className={classes.myTextFieldRoot}
@@ -319,7 +362,7 @@ export const FormAddEntity = () => {
                 )}
                 <Button
                   className={clsx(classes.btn, classes.cancel)}
-                  onClick={() => console.log("CANCEL BTN CLICK")}
+                  onClick={() => dispatch(uiCloseModalAdd())}
                 >
                   <FormattedMessage id="Cancel" />
                 </Button>

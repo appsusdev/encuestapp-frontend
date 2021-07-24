@@ -80,38 +80,40 @@ export const types = {
     purgeEntities:'[entities] purge all entities',
     setActiveEntity:'[entities] set active entity',
     purgeActiveEntity:'[entities] purge active entity',
+    addNewEntity:'[entities] add new entity',
+    deleteEntity:'[entities] delete entity',
+    updateEntity:'[entities] update entity',
 }
 
 //ENTITIES
 
-export interface IEntities {
+export interface IEntity {
   activo:boolean,
   razonSocial:string,
   nit:string,
   direccion:string,
-  telefono:string,
+  celular:string,
   departamento:string,
   codigoSigep:string,
   codigoDane:string,
   municipio:string,
+  primerNombre: string,
+  segundoNombre: string,
+  primerApellido: string,
+  segundoApellido: string,
+  email: string,
+  identificacion: string,
 }
 export interface EntitiesState{
   entities:EntitiesType,
-  entityActive:IEntities|null
+  entityActive:IEntity|null
 }
-export type EntitiesType = IEntities[]
+export type EntitiesType = IEntity[]
 export interface EntitiesAction {
   type:string,
-  payload?:EntitiesType | IEntities
+  payload?:EntitiesType | IEntity | string
 }
-export interface IEntityForm extends IEntities {
-  adminPrimerNombre: string;
-  adminSegundoNombre: string;
-  adminPrimerApellido: string;
-  adminSegundoApellido: string;
-  adminCorreo: string;
-  adminIdentificacion: string;
-}
+
 
 // Auth
 export interface IAuth {
@@ -119,7 +121,7 @@ export interface IAuth {
     displayName: string | undefined | null,
     email: string | undefined | null,
     rol: string | undefined | null,
-    municipios: string[]
+    municipios: string[],
 }
 
 export type AuthAction = {

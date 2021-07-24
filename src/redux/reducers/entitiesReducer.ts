@@ -2,7 +2,7 @@ import {
   EntitiesAction,
   EntitiesState,
   EntitiesType,
-  IEntities,
+  IEntity,
   types,
 } from "../types/types";
 const initialState: EntitiesState = {
@@ -29,12 +29,33 @@ export const entitiesReducer = (
     case types.setActiveEntity:
         return{
             ...state,
-            entityActive:payload as IEntities
+            entityActive:payload as IEntity
         }
     case types.purgeActiveEntity:
         return {
             ...state,
             entityActive:null
+        }
+      case types.addNewEntity:
+        return {
+          ...state,
+          entities:[...state.entities,payload as IEntity ]
+        }
+      case types.deleteEntity:{
+        return{
+          ...state,
+          entities:state.entities.filter(entity=> entity.nit !== payload)
+        }
+      }
+      case types.updateEntity:
+        let newEntities = [...state.entities];
+        const indexEntity = newEntities.findIndex(entity=> entity.nit === (payload as IEntity).nit);
+        if(indexEntity !== -1){
+          newEntities[indexEntity] = payload as IEntity
+        }
+        return{
+          ...state,
+          entities: [...newEntities]
         }
 
     default:

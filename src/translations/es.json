@@ -178,5 +178,6 @@
     "DeleteEntity":"Borrar entidad",
     "BusinessName":"Razón social",
     "Phone":"Telefono",
-    "SystemAdmin":"Administrador del sistema" 
+    "SystemAdmin":"Administrador del sistema",
+    "SavingEntitySuccess":"La entidad ha sido creada"
 }
