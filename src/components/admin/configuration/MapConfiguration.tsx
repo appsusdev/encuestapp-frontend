@@ -24,15 +24,15 @@ const initialPoint = {
 export const MapContainer = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { municipios } = useSelector((state: AppState) => state.auth);
+  const { municipio } = useSelector((state: AppState) => state.auth);
   const { coords, setRef } = useMapbox(initialPoint, true);
   const [loading, setLoading] = useState(false);
 
   const updateMap = async () => {
     setLoading(true);
-    if(municipios) {
+    if(municipio) {
       try {
-        await updateMapData(municipios[0], coords);
+        await updateMapData(municipio, coords);
         dispatch(uiOpenModalAlert());
       } catch (error) {
         dispatch(uiOpenAlert());

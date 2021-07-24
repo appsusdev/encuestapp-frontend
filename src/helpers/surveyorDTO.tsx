@@ -1,7 +1,7 @@
 import { TypeUser } from '../enums/enums';
 import { Surveyor } from '../interfaces/Surveyor';
 
-export const encuestadorDTO = (surveyor: Partial<Surveyor>, existsSurveyorDB?: any, municipios?: string[]) => {
+export const encuestadorDTO = (surveyor: Partial<Surveyor>, existsSurveyorDB?: any, municipios?: string[] ) => {
     let { firstName, secondName, firstLastName, secondLastName, document, email, address, profileImage, mobilePhone, typeDoc } = surveyor;
     if(secondName?.trim()){
         secondName = ` ${secondName}`;

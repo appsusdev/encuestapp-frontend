@@ -51,7 +51,7 @@ export const ViewSurvey = () => {
   const { chapters, activeSurvey } = useSelector<AppState, AppState["survey"]>(
     (state) => state.survey
   );
-  const { municipios } = useSelector<AppState, AppState["auth"]>(
+  const { municipio } = useSelector<AppState, AppState["auth"]>(
     (state) => state.auth
   );
   const { openQuestion } = useSelector<AppState, AppState["ui"]>(
@@ -61,9 +61,9 @@ export const ViewSurvey = () => {
   const survey: Survey = activeSurvey;
 
   useEffect(() => {
-    municipios &&
-      dispatch(startLoadingChapters(municipios[0], survey.idSurvey));
-  }, [dispatch, municipios]);
+    municipio &&
+      dispatch(startLoadingChapters(municipio, survey.idSurvey));
+  }, [dispatch, municipio]);
 
   const editQuestion = (
     question: SurveyQuestion,
@@ -77,7 +77,7 @@ export const ViewSurvey = () => {
 
   const deleteQuestion = async(question: SurveyQuestion, idChapter: string) => {
     await dispatch( startDeleteQuestion(question, idChapter) );
-    municipios && await dispatch( startLoadingCompleteSurveys(municipios[0]) );
+    municipio && await dispatch( startLoadingCompleteSurveys(municipio) );
   };
 
   const handleClose = () => {

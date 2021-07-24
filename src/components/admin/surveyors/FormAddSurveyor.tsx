@@ -65,7 +65,7 @@ export const FormAddSurveyor = () => {
     AppState,
     AppState["ui"]
   >((state) => state.ui);
-  const { municipios } = useSelector<AppState, AppState["auth"]>(
+  const { municipio } = useSelector<AppState, AppState["auth"]>(
     (state) => state.auth
   );
   const { surveyorFromDB } = useSelector<AppState, AppState["surveyor"]>(
@@ -112,16 +112,15 @@ export const FormAddSurveyor = () => {
 
     if (surveyorDB) {
       const townsSurveyor: string[] = surveyorDB.municipios;
-      municipios?.forEach((town: string) => {
-        townsSurveyor.push(town);
-      });
+     
+      (municipio) && townsSurveyor.push(municipio);
 
       const updateSurveyor = { municipios: townsSurveyor };
       await updateTowns(email, updateSurveyor);
     }
 
-    if (municipios) {
-      await addSurveyorToTown(municipios, email, surveyorTown);
+    if (municipio) {
+      await addSurveyorToTown(municipio, email, surveyorTown);
       dispatch(uiCloseModalAlert());
       dispatch(uiOpenSuccessAlert());
     }

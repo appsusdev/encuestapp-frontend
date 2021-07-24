@@ -8,7 +8,7 @@ export const startNewSurvey = (survey: Partial<Survey>) => {
     return async(dispatch: any, getState: any) => {
 
         const { auth } = getState();
-        const town = auth.municipios[0];
+        const town = auth.municipio;
         const { code } = survey;
 
         const existsSurveyDB = await existsSurvey(town, code);
@@ -80,7 +80,7 @@ export const startEditSurvey = (survey: Partial<Survey>) => {
     return async(dispatch: any, getState: any) => {
 
         const { auth } = getState();
-        const town = auth.municipios[0];
+        const town = auth.municipio;
         
         try {
             await editSurvey(survey, town);
@@ -97,7 +97,7 @@ export const startNewChapter = (chapter: Partial<Chapter>, idSurvey: string, act
     return async(dispatch: any, getState: any) => {
         const { auth } = getState();
         const { activeChapter } = getState().survey;
-        const town = auth.municipios[0];
+        const town = auth.municipio;
         const { name, number } = chapter;
 
         const existsChapterDB = await existsChapter(town, idSurvey, name);
@@ -158,7 +158,7 @@ export const setChapters = (chapters: Chapter[]) => ({
 export const startDeleteChapter = ( idSurvey: string, idChapter: string ) => {
     return async(dispatch: any, getState: any) => {
         const { auth } = getState();
-        const town = auth.municipios[0];
+        const town = auth.municipio;
 
         await deleteChapter(town, idSurvey, idChapter);
         dispatch( uiOpenModalAlert() );
@@ -180,7 +180,7 @@ export const startNewQuestion = (question: any, idSurvey: string) => {
     return async(dispatch: any, getState: any) => {
         const { auth, survey } = getState();
         const { surveys } = survey;
-        const town = auth.municipios[0];
+        const town = auth.municipio;
         const idChapter = question.chapter;
         let surveyFilter: Survey[] = surveys;
 
@@ -224,7 +224,7 @@ export const startEditQuestion = (question: any, idSurvey: string, idQuestion: s
         const { auth } = getState();
         const { activeSurvey: active } = getState().survey;
         const survey: Survey = active;
-        const town = auth.municipios[0];
+        const town = auth.municipio;
         const idChapter = question.chapter;
 
         let typeQuestion:string = '';
@@ -253,7 +253,7 @@ export const startDeleteQuestion = ( question: any, idChapter: string ) => {
         const { auth } = getState();
         const { activeSurvey: active } = getState().survey;
         const survey: Survey = active;
-        const town = auth.municipios[0];
+        const town = auth.municipio;
         
         await deleteQuestion(town, survey.idSurvey, idChapter, question.directedTo, question.id);
         const chapters = await getChapters(town, survey.idSurvey)
