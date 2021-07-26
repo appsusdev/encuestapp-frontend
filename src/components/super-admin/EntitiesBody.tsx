@@ -30,7 +30,7 @@ export const EntitiesBody: FC<Props> = ({ entity }) => {
     // Actualizacion en BD
     await db
       .collection("Usuarios")
-      .doc(entity.email)
+      .doc(entity.nit)
       .set({ activo: check }, { merge: true });
     //Actualizar la lista de las entidades
     dispatch(updateEntity({ ...entity, activo: check }));
@@ -42,9 +42,9 @@ export const EntitiesBody: FC<Props> = ({ entity }) => {
     dispatch(setActiveEntity(entity));
     dispatch(uiOpenModalEdit());
   };
-  const onDelete = () => {
+ /*  const onDelete = () => {
     dispatch(uiOpenModalDelete());
-  };
+  }; */
   return (
     <>
       <TableRow key={entity.nit}>
@@ -68,9 +68,9 @@ export const EntitiesBody: FC<Props> = ({ entity }) => {
         <TableCell style={{ width: 130 }} align="center">
           <CustomizedIcons
             editIcon
-            deleteIcon
+            //deleteIcon
             onEdit={onEdit}
-            onDelete={onDelete}
+            //onDelete={onDelete}
           />
         </TableCell>
       </TableRow>

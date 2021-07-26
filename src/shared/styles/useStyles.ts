@@ -125,5 +125,25 @@ export const useStyles = makeStyles((theme: Theme) => ({
     },
     helperText: {
         color: "red"
+    },
+    mapContainer: {
+        bottom: 0,
+        height: "100%",
+        left: 0,
+        right: 0,
+        top: 0,
+        zIndex: 1250,
+    },
+    infoMap: {
+        backgroundColor: "rgba(0,0,0,0.4)",
+        borderRadius: "20px",
+        color: theme.palette.common.white,
+        fontSize: 10,
+        left: "25px",
+        padding: "8px",
+        position: 'fixed',
+        top: "85px",
+        zIndex: 1251,
     }
+
 }));

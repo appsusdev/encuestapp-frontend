@@ -39,7 +39,7 @@ export const entitiesReducer = (
       case types.addNewEntity:
         return {
           ...state,
-          entities:[...state.entities,payload as IEntity ]
+          entities:[payload as IEntity ,...state.entities]
         }
       case types.deleteEntity:{
         return{

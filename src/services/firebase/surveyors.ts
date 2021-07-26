@@ -27,15 +27,15 @@ export const existsSurveyor = (
 
 // Agregar encuestador a la colección Municipios
 export const addSurveyorToTown = async (
-  townsAdmin: string[],
+  town: string,
   email: string | undefined,
   surveyorTown: {}
 ) => {
-  townsAdmin.forEach(async (townAdm: string) => {
-    const df = db.collection("Municipios").doc(townAdm);
+  
+    const df = db.collection("Municipios").doc(town);
     df.set({});
     await df.collection("Encuestadores").doc(email).set(surveyorTown);
-  });
+  ;
 };
 
 // Actualizar municipios del encuestador

@@ -179,8 +179,8 @@
     "BusinessName":"BusinessName",
     "Phone":"Phone",
     "SystemAdmin":"System administrator",
-    "SavingEntitySuccess":"Entity created"
-
-    
-                       
+    "SavingEntitySuccess":"Entity created",            
+    "SurveyCode": "Código encuesta",
+    "Maps": "Maps",
+    "UpdateMap": "Update map"                          
 }

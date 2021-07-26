@@ -6,13 +6,17 @@ import { finishLoading } from './uiActions';
 
 export const startLoadingCitizens = () => {
   return async (dispatch: Function, getState: Function) => {
-    const { municipios } = getState().auth;
-    const town: string = municipios[0];
+    const { municipio } = getState().auth;
+    const town: string = municipio;
     
     const jsonResponse: any = await getCitizens(town);
-    const parseJson = await JSON.parse(jsonResponse.data);
 
-    dispatch( setCitizens( JSON.parse(parseJson)) );
+    if(jsonResponse){
+
+      const parseJson = await JSON.parse(jsonResponse.data);
+      dispatch( setCitizens( JSON.parse(parseJson)) );
+    }
+
   };
 };
 
@@ -26,7 +30,7 @@ export const startLoadingSurveysAnswered = (idCitizen: string) => {
   return async (dispatch: Function, getState: Function) => {
     const { auth, survey } = getState();
     const { surveys } = survey;
-    const town = auth.municipios[0];
+    const town = auth.municipio;
     const idSurveys: string[] = [];
 
     const resp = await getTransmittedSurveysByCitizen(town, idCitizen)

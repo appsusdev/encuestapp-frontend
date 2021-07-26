@@ -121,7 +121,8 @@ export interface IAuth {
     displayName: string | undefined | null,
     email: string | undefined | null,
     rol: string | undefined | null,
-    municipios: string[],
+    municipios?: string[],
+    municipio: string,
 }
 
 export type AuthAction = {

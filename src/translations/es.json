@@ -179,5 +179,9 @@
     "BusinessName":"Razón social",
     "Phone":"Telefono",
     "SystemAdmin":"Administrador del sistema",
-    "SavingEntitySuccess":"La entidad ha sido creada"
+    "SavingEntitySuccess":"La entidad ha sido creada",
+    "SurveyCode": "Código encuesta",
+    "Maps": "Mapas",
+    "UpdateMap": "Actualizar mapa",     
+    "MessageUpdateMap": "Mapa actualizado correctamente"      
 }

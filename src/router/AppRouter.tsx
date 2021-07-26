@@ -35,7 +35,7 @@ export const AppRouter: FC = () => {
           const resp = await getUserRole(user.email);
                     
           if (resp) {
-            const { rol, municipios } = resp;
+            const { rol, municipio } = resp;
 
             if (rol === TypeUser.ADMIN || rol === TypeUser.SUPER_ADMIN) {
               dispatch(uiChangeRole(rol));
@@ -44,14 +44,13 @@ export const AppRouter: FC = () => {
                 displayName: user.displayName,
                 email: user.email,
                 rol: rol,
-                municipios: municipios,
+                municipio: municipio,
               };
               dispatch(login(userMain));
-              if(rol === TypeUser.ADMIN){
-
-                dispatch(startLoadingSurveyors(municipios[0]));
-                await dispatch(startLoadingDataSurveys(municipios[0], true));
-                dispatch(startLoadingAssignedSurveys(municipios[0]));
+              if( rol === TypeUser.ADMIN ){
+                dispatch(startLoadingSurveyors(municipio));
+                await dispatch(startLoadingDataSurveys(municipio, true));
+                dispatch(startLoadingAssignedSurveys(municipio));
                 dispatch(startLoadingCitizens());
               }else{
                 await dispatch( startLoadEntities() )

@@ -12,7 +12,7 @@ export const startLoginCorreoPassword = ( email:string, password: string) => {
         firebase.auth().signInWithEmailAndPassword( email, password )
             .then( async({ user }) => {
 
-                const { rol, municipios } = await getUserRole(user?.email);
+                const { rol, municipio } = await getUserRole(user?.email);
                 if(rol) {
 
                     if( rol === TypeUser.ADMIN || rol === TypeUser.SUPER_ADMIN) {
@@ -21,7 +21,7 @@ export const startLoginCorreoPassword = ( email:string, password: string) => {
                             displayName: user?.displayName,
                             email: user?.email,
                             rol: rol,
-                            municipios: municipios        
+                            municipio: municipio       
                         }
                         dispatch( login(userAuth) );
                         window.location.reload();
@@ -48,7 +48,7 @@ export const login = (user: IAuth) => ({
         displayName: user.displayName,
         email: user.email,
         rol: user.rol,
-        municipios: user.municipios
+        municipio: user.municipio
     }
 });
 

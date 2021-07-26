@@ -1,8 +1,9 @@
 import clsx from "clsx";
 import { Formik, Form } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
+import ReactToPrint from "react-to-print";
 import * as yup from "yup";
 
 import {
@@ -21,16 +22,35 @@ import { MyTextField } from "../../custom/MyTextField";
 import { convertDate } from "../../../helpers/convertDate";
 import { getCopyArrayOrObject } from "../../../helpers/getCopyArrayOrObject";
 import { Surveyor } from "../../../interfaces/Surveyor";
-import { Survey } from "../../../interfaces/Survey";
+import { Survey, Chapter } from "../../../interfaces/Survey";
 import { startLoadingMicrodata } from "../../../redux/actions/surveyorsActions";
 import { startLoading, finishLoading } from "../../../redux/actions/uiActions";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
+import { PDFSurveyors } from "./PDFSurveyors";
+
+const pageStyle = `
+@media all {
+  .page-break {
+    display: none;
+  }
+}
+@media print {
+  html, body {
+    -webkit-print-color-adjust: exact;
+  }
+}
+@page {
+  size: auto;
+}
+`;
+
 
 export const Surveyors = () => {
   const classes = useStyles();
   const intl = useIntl();
   const dispatch = useDispatch();
+  const componentRef = useRef<HTMLDivElement>(null);
 
   const { dataSurveys } = useSelector<AppState, AppState["survey"]>(
     (state) => state.survey
@@ -49,10 +69,12 @@ export const Surveyors = () => {
   const [errorSurvey, setErrorSurvey] = useState(false);
   const [valid, setValid] = useState({ survey: false, surveyor: false });
   const [show, setShow] = useState(false);
+  const [newList, setNewList] = useState<Chapter[]>([]);
   const transmitted: Partial<Survey>[] =
     getCopyArrayOrObject(surveysTransmitted);
   const infoTransmitted: any[] = infoSurveysTransmitted;
   const surveyorsList: Surveyor[] = surveyors;
+
   let list: Survey[] = dataSurveys;
 
   useEffect(() => {
@@ -97,7 +119,7 @@ export const Surveyors = () => {
   const handleSelect = (value: string, flag: boolean) => {
     setShow(false);
 
-    if ( flag ) {
+    if (flag) {
       setErrorSurvey(value === "");
       setSurveySelected(value);
       setValid({ ...valid, survey: true });
@@ -113,14 +135,40 @@ export const Surveyors = () => {
   if (infoTransmitted.length > 0 && transmitted.length > 0) {
     infoTransmitted.forEach((infoSurvey) => {
       const date = convertDate(
-        new Date(infoSurvey.fechaDeCarga.seconds * 1000).toLocaleDateString("en-CA")
+        new Date(infoSurvey.fechaDeCarga.seconds * 1000).toLocaleDateString(
+          "en-CA"
+        )
       );
       const getSurvey = transmitted.filter(
         (survey) => survey.idSurvey === infoSurvey.idEncuesta
       );
       const name = getSurvey[0].name ? getSurvey[0].name : "";
-      newData.push({ fecha: date, codeSurvey: infoSurvey.id, name: name });
+      newData.push({ date: date, surveyCode: infoSurvey.id, name: name });
     });
+  }
+
+  const getData = async (surveyCode: string) => {
+    const list: Chapter[] = getCopyArrayOrObject(transmitted[0].chapters);
+
+    const filter = list?.map((chapter) => {
+      chapter.questions.map((question) => {
+        question.answers = question.answers?.filter(
+          (answer) =>
+            answer.idEncuestaCiudadano === surveyCode &&
+            answer.idEncuestador === surveyorSelected
+        );
+        return question;
+      });
+      return chapter;
+    });
+    setNewList(filter);
+    await setTimeout(() => {}, 2500);
+  };
+
+  const onBeforePrint = () => {
+    setTimeout(() => {
+      
+    }, 2000);
   }
 
   return (
@@ -141,7 +189,6 @@ export const Surveyors = () => {
                 data.surveyor = surveyorSelected;
                 data.survey = surveySelected;
                 setSubmitting(true);
-                // console.log("DATAA", data);
                 await dispatch(startLoadingMicrodata(data));
                 setSubmitting(false);
                 dispatch(finishLoading());
@@ -163,7 +210,9 @@ export const Surveyors = () => {
                       }
                       InputLabelProps={{ shrink: false }}
                       name="surveyor"
-                      onChange={(event) => handleSelect(event.target.value,false)}
+                      onChange={(event) =>
+                        handleSelect(event.target.value, false)
+                      }
                       select
                       value={surveyorSelected}
                       variant="outlined"
@@ -221,7 +270,9 @@ export const Surveyors = () => {
                       size="small"
                       value={surveySelected}
                       variant="outlined"
-                      onChange={(event) => handleSelect(event.target.value,true)}
+                      onChange={(event) =>
+                        handleSelect(event.target.value, true)
+                      }
                       error={errorSurvey}
                       FormHelperTextProps={{
                         className: classes.helperText,
@@ -274,15 +325,36 @@ export const Surveyors = () => {
               <Grid container spacing={1}>
                 {newData.map((survey, index) => (
                   <React.Fragment key={index}>
-                    <Grid item xs={4} >
-                      <Link component="button">
-                        {survey.name} ({survey.codeSurvey})
-                      </Link>
-                    </Grid>
+                    <ReactToPrint
+                      onBeforeGetContent={async () =>
+                        await getData(survey.surveyCode)
+                      }
+                      onBeforePrint={onBeforePrint}
+                      trigger={() => (
+                        <Grid item xs={4}>
+                          <Link component="button">
+                            {survey.name} ({survey.surveyCode})
+                          </Link>
+                        </Grid>
+                      )}
+                      content={() => componentRef.current}
+                      documentTitle={`${survey.name} (${survey.surveyCode})`}
+                      pageStyle={pageStyle}
+                    />
 
                     <Grid item xs={8}>
-                      {survey.fecha}
+                      {survey.date}
                     </Grid>
+
+                    <div style={{ display: "none" }}>
+                      <div ref={componentRef}>
+                        <PDFSurveyors
+                          data={newList}
+                          title={transmitted[0].name}
+                          surveyCode={survey.surveyCode}
+                        />
+                      </div>
+                    </div>
                   </React.Fragment>
                 ))}
               </Grid>

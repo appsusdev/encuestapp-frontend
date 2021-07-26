@@ -47,7 +47,7 @@ export const FormEditSurveyor = () => {
   const { successAlert } = useSelector<AppState, AppState["ui"]>(
     (state) => state.ui
   );
-  const { municipios } = useSelector<AppState, AppState["auth"]>(
+  const { municipio } = useSelector<AppState, AppState["auth"]>(
     (state) => state.auth
   );
   const surveyor: any = activeSurveyor;
@@ -107,7 +107,7 @@ export const FormEditSurveyor = () => {
   const closeSuccess = async () => {
     dispatch(uiCloseSuccessAlert());
     dispatch(uiCloseModalEdit());
-    municipios && (await dispatch(startLoadingSurveyors(municipios[0])));
+    municipio && (await dispatch(startLoadingSurveyors(municipio)));
   };
 
   const handleSelectFile = (e: any) => {

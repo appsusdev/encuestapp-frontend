@@ -23,12 +23,14 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   uiCloseModalAdd,
+  uiCloseModalEdit,
   uiOpenErrorAlert,
   uiOpenSuccessAlert,
 } from "../../redux/actions/uiActions";
 import {
   purgeActiveEntity,
   startAddNewEntity,
+  updateEntity,
 } from "../../redux/actions/entitiesActions";
 import { addNewEntity } from "../../services/firebase/entities";
 import { AppState } from "../../redux/reducers/rootReducer";
@@ -102,7 +104,9 @@ export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
     identificacion: yup
       .number()
       .typeError(`${intl.formatMessage({ id: "NumericValue" })}`)
-      .required(`${intl.formatMessage({ id: "RequiredFile" })}`),
+      .required(`${intl.formatMessage({ id: "RequiredFile" })}`)
+      .min(6, `${intl.formatMessage({ id: "MinimumPassword" })}`),
+
   });
 
   useEffect(() => {
@@ -155,8 +159,7 @@ export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
           email,
           identificacion.toString()
         );
-      }else{
-
+      } else {
         await registerWithEmailPassword(email, identificacion.toString());
       }
       //agregarlo a la bd
@@ -165,9 +168,13 @@ export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
       //agregarlo al state del redux
 
       if (ok) {
-        dispatch(startAddNewEntity({ ...entity, activo: true }));
+        console.log("AGREGADO!");
+        edit
+          ? dispatch(updateEntity({ ...entity }))
+          : dispatch(startAddNewEntity({ ...entity, activo: true }));
         dispatch(purgeActiveEntity());
         dispatch(uiCloseModalAdd());
+        dispatch(uiCloseModalEdit());
         dispatch(uiOpenSuccessAlert());
       }
     } catch (error) {
@@ -194,9 +201,6 @@ export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
             } else {
               setSubmitting(false);
             } */
-
-          console.log("ENTRA SUBMIT-----------------");
-          console.log(values);
           values.departamento = departmentSelected;
           values.municipio = municipioSelected;
           handleCreateEntity(values as IEntity);
@@ -212,6 +216,7 @@ export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
                 <MyTextField
                   name="razonSocial"
                   variant="outlined"
+                  disabled={edit}
                   className={classes.myTextFieldRoot}
                 />
               </Grid>
@@ -222,6 +227,7 @@ export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
                 <MyTextField
                   name="nit"
                   variant="outlined"
+                  disabled={edit}
                   className={classes.myTextFieldRoot}
                 />
               </Grid>
@@ -232,6 +238,7 @@ export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
                 <MyTextField
                   name="direccion"
                   variant="outlined"
+                  disabled={edit}
                   className={classes.myTextFieldRoot}
                 />
               </Grid>
@@ -242,6 +249,7 @@ export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
                 <MyTextField
                   name="celular"
                   variant="outlined"
+                  disabled={edit}
                   className={classes.myTextFieldRoot}
                 />
               </Grid>
@@ -254,6 +262,7 @@ export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
                   name="departamento"
                   variant="outlined"
                   select
+                  disabled={edit}
                   value={departmentSelected}
                   onChange={(e: any) => setDepartmentSelected(e.target.value)}
                   className={classes.myTextFieldRoot}
@@ -278,6 +287,7 @@ export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
                   name="municipio"
                   variant="outlined"
                   select
+                  disabled={edit}
                   value={municipioSelected}
                   onChange={(e: any) => setMunicipioSelected(e.target.value)}
                   className={classes.myTextFieldRoot}

@@ -83,10 +83,6 @@ export const EntitiesScreen = () => {
     dispatch(uiCloseErrorAlert());
     dispatch(uiCloseAlert())
   };
-  useEffect(() => {
-    console.log("HOME SCREEN SUPER ADMIN ---------------------------");
-    console.log(Entities);
-  }, []);
 
   return (
     <AppAnimate animation="transition.slideUpIn" delay={200}>
@@ -103,7 +99,7 @@ export const EntitiesScreen = () => {
                 onClick={onAdd}
               >
                 <AddOutlinedIcon />
-                <FormattedMessage id="AddNewSurveyor" />
+                <FormattedMessage id="CreateNewEntity" />
               </Button>
             </Grid>
             <Grid item xs={2} />
