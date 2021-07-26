@@ -147,7 +147,7 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
   }, [departmentSelected]);
   const handleCreateEntity = async (entity: IEntity) => {
     const { email, identificacion } = entity;
-    console.log("AGREGANDO...");
+
 
     try {
       //crear el
@@ -168,7 +168,7 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
       //agregarlo al state del redux
 
       if (ok) {
-        console.log("AGREGADO!");
+       
         edit
           ? dispatch(updateEntity({ ...entity }))
           : dispatch(startAddNewEntity({ ...entity, activo: true }));
