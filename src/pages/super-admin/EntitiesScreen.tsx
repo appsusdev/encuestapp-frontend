@@ -18,7 +18,7 @@ import {
   uiCloseSuccessAlert,
   uiOpenModalAdd,
 } from "../../redux/actions/uiActions";
-import { FormAddEntity } from "../../components/super-admin/FormAddEntity";
+import { FormEntity } from "../../components/super-admin/FormEntity";
 import { MyAlert } from '../../components/custom/MyAlert';
 
 
@@ -114,7 +114,7 @@ export const EntitiesScreen = () => {
           cancelBtn={true}
           onDeny={onDenyAdd}
           title={`${intl.formatMessage({ id: "CreateNewEntity" })}`}
-          content={<FormAddEntity />}
+          content={<FormEntity />}
           width
           textButton="Accept"
         />
@@ -124,7 +124,7 @@ export const EntitiesScreen = () => {
           onDeny={onDenyEdit}
           title={`${intl.formatMessage({ id: "EditEntity" })}`}
           content={
-            <FormAddEntity edit />
+            <FormEntity edit />
           }
           width
           textButton="Accept"

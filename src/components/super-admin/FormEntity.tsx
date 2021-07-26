@@ -47,7 +47,7 @@ interface Icredentials {
   email: string;
   password: string;
 }
-export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
+export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
   const [departmentSelected, setDepartmentSelected] = useState<string>("");
   const [oldCredentials, setOldCredentials] = useState<Icredentials | null>(
     null
@@ -192,15 +192,6 @@ export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
         validationSchema={validationSchema}
         validateOnMount
         onSubmit={(values, { setSubmitting }) => {
-          //setSubmitting(true);
-          /* if (!noValid) {
-              setEmail(values.email);
-              values.profileImage = profileFile;
-              await dispatch(startNewSurveyor(values));
-              setSubmitting(false);
-            } else {
-              setSubmitting(false);
-            } */
           values.departamento = departmentSelected;
           values.municipio = municipioSelected;
           handleCreateEntity(values as IEntity);
@@ -216,7 +207,7 @@ export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
                 <MyTextField
                   name="razonSocial"
                   variant="outlined"
-                  disabled={edit}
+                 
                   className={classes.myTextFieldRoot}
                 />
               </Grid>
@@ -238,7 +229,7 @@ export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
                 <MyTextField
                   name="direccion"
                   variant="outlined"
-                  disabled={edit}
+              
                   className={classes.myTextFieldRoot}
                 />
               </Grid>
@@ -249,7 +240,7 @@ export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
                 <MyTextField
                   name="celular"
                   variant="outlined"
-                  disabled={edit}
+              
                   className={classes.myTextFieldRoot}
                 />
               </Grid>
