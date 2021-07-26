@@ -35,13 +35,13 @@ export const addNewEntity = (entity:IEntity):Promise<any>=>{
       razonSocial,
       email,
       fechaCreacion: firebase.firestore.Timestamp.now(),
-    }).then(()=>{
+    },{merge:true}).then(()=>{
       //CREAR LA COLECCION DE LOS MUNICIPIOS
       return db.collection('Municipios').doc(municipio).set({
         departamento,
         admin:identificacion,
   
-      }).then(()=>{
+      },{merge:true}).then(()=>{
         return {
           ok:true
         }

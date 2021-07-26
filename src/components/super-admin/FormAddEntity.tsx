@@ -16,7 +16,10 @@ import * as yup from "yup";
 import { MyTextField } from "../custom/MyTextField";
 import { TextField } from "@material-ui/core";
 import clsx from "clsx";
-import { registerWithEmailPassword } from "../../services/firebase/auth";
+import {
+  registerWithEmailPassword,
+  updateCredentialsEntity,
+} from "../../services/firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import {
   uiCloseModalAdd,
@@ -38,8 +41,15 @@ interface ILocationData {
 interface EntityFormProps {
   edit?: boolean;
 }
+interface Icredentials {
+  email: string;
+  password: string;
+}
 export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
   const [departmentSelected, setDepartmentSelected] = useState<string>("");
+  const [oldCredentials, setOldCredentials] = useState<Icredentials | null>(
+    null
+  );
   const [departments, setDepartments] = useState<ILocationData[]>([]);
   const [municipioSelected, setMunicipioSelected] = useState<string>("");
   const [filteredTowns, setFilteredTowns] = useState<ILocationData[]>([]);
@@ -108,14 +118,12 @@ export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
       })
       .then((data) => {
         if (edit && entityActive) {
-          const {
-            departamento,
-
-            municipio,
-          } = entityActive;
+          const { departamento, municipio, email, identificacion } =
+            entityActive;
           setDepartmentSelected(departamento);
           setMunicipioSelected(municipio);
           setInitialValues({ ...entityActive });
+          setOldCredentials({ email, password: identificacion });
         } else {
           setDepartmentSelected(data[0].departamento);
         }
@@ -138,8 +146,19 @@ export const FormAddEntity: FC<EntityFormProps> = ({ edit = false }) => {
     console.log("AGREGANDO...");
 
     try {
-      //crear el usuario
-      await registerWithEmailPassword(email, identificacion.toString());
+      //crear el
+      if (edit && oldCredentials) {
+        const { email: oldEmail, password: oldPassword } = oldCredentials;
+        await updateCredentialsEntity(
+          oldEmail,
+          oldPassword.toString(),
+          email,
+          identificacion.toString()
+        );
+      }else{
+
+        await registerWithEmailPassword(email, identificacion.toString());
+      }
       //agregarlo a la bd
       //crear la collection del municipio que se acaba de crear con los datos del admin y el departamento al cual pertenece
       const { ok } = await addNewEntity(entity);

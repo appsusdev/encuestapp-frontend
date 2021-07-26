@@ -43,10 +43,15 @@ export const registerWithEmailPassword = async (
 ) => {
   return await firebase.auth().createUserWithEmailAndPassword(email, password);
 };
-export const updateCredentialsEntity = (oldEmail:string,oldPassword:string,newEmail:string,newPassword:string)=>{
-  firebase.auth().signInWithEmailAndPassword(oldEmail,oldPassword).then(async (credential)=>{
+export const updateCredentialsEntity = (oldEmail:string,oldPassword:string,newEmail:string,newPassword:string):Promise<any>=>{
+  return firebase.auth().signInWithEmailAndPassword(oldEmail,oldPassword).then(async (credential)=>{
     await credential.user?.updateEmail(newEmail);
-    await credential.user?.updatePassword(newPassword);
+    return await credential.user?.updatePassword(newPassword);
+    /* //hacer el signIn con el nuevo email
+    return firebase.auth().signInWithEmailAndPassword(newEmail,oldPassword).then(async (newCredential)=>{
+      console.log('NEW CREDENTIAL')
+      console.log(newCredential)
+    }) */
   })
 }
 
