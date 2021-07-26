@@ -33,6 +33,7 @@ export const addNewEntity = (entity: IEntity): Promise<any> => {
     nit,
     razonSocial,
   } = entity;
+
   return db
     .collection("Usuarios")
     .doc(nit)

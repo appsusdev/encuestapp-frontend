@@ -182,5 +182,7 @@
     "SavingEntitySuccess":"Entity created",            
     "SurveyCode": "Código encuesta",
     "Maps": "Maps",
-    "UpdateMap": "Update map"                          
+    "UpdateMap": "Update map",
+    "ADMIN":"Administrator",
+    "SUPER_ADMIN": "Super administrator"
 }

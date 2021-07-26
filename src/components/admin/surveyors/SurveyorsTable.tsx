@@ -52,7 +52,7 @@ export const SurveyorsTable = () => {
                 <Table className={classes.table} aria-label="custom pagination table" style={{ tableLayout: "auto" }}>
                     <TableHead>
                         <TableRow >
-                            <TableCell><FormattedMessage id="NameEntity" /> </TableCell>
+                            <TableCell><FormattedMessage id="Name" /> </TableCell>
                             <TableCell><FormattedMessage id="DocumentType" /> </TableCell>
                             <TableCell><FormattedMessage id="Identification" /> </TableCell>
                             <TableCell><FormattedMessage id="Email" /> </TableCell>

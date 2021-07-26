@@ -183,5 +183,7 @@
     "SurveyCode": "Código encuesta",
     "Maps": "Mapas",
     "UpdateMap": "Actualizar mapa",     
-    "MessageUpdateMap": "Mapa actualizado correctamente"      
+    "MessageUpdateMap": "Mapa actualizado correctamente",
+    "ADMIN":"Administrador",
+    "SUPER_ADMIN": "Super administrador"    
 }
