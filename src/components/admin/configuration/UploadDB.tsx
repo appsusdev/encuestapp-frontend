@@ -12,9 +12,7 @@ import {
 import { useStyles } from "../../../shared/styles/useStyles";
 import { useState } from "react";
 import { excelToJson } from "../../../helpers/excelToJson";
-import {
-  uploadJsonCitizens,
-} from "../../../helpers/uploadCitizens";
+import { uploadJsonCitizens } from "../../../helpers/uploadCitizens";
 import { CitizensType } from "../../../interfaces/Citizens";
 import { useDispatch, useSelector } from "react-redux";
 import { MyAlert } from "../../custom/MyAlert";
@@ -32,7 +30,7 @@ import { TypeUser } from "../../../enums/enums";
 export const UploadDB = () => {
   const classes = useStyles();
   const { progress } = useSelector((state: AppState) => state.ui);
-  const {municipios,rol} = useSelector((state:AppState) => state.auth)
+  const { municipio, rol } = useSelector((state: AppState) => state.auth);
 
   const [fileToConvert, setFileToConvert] = useState<File | null>(null);
   const [, setCitizens] = useState<CitizensType | null>(null);
@@ -49,18 +47,19 @@ export const UploadDB = () => {
     dispatch(uiCloseErrorAlert());
   };
 
-  const handleSetprogress = async (totalInterted: number,lengthData:number) => {
-    if (lengthData>0) {
-      const progresPorcent = Math.round(
-        (totalInterted / lengthData) * 100
-      );
+  const handleSetprogress = async (
+    totalInterted: number,
+    lengthData: number
+  ) => {
+    if (lengthData > 0) {
+      const progresPorcent = Math.round((totalInterted / lengthData) * 100);
       await dispatch(setProgress(progresPorcent));
     }
   };
 
   const handleUpload = async () => {
     try {
-      if (fileToConvert && rol===TypeUser.ADMIN && municipios) {
+      if (fileToConvert && rol === TypeUser.ADMIN && municipio) {
         setloading(true);
         const jsonResponse: any = await excelToJson(
           fileToConvert,
@@ -69,7 +68,7 @@ export const UploadDB = () => {
         //const parseData: any[] = JSON.parse(jsonResponse);
         //await uploadCitizens(citizens, handleSetprogress);
         await dispatch(setProgress(100));
-        await uploadJsonCitizens(JSON.stringify(jsonResponse),municipios[0]);
+        await uploadJsonCitizens(JSON.stringify(jsonResponse), municipio);
 
         await setFileToConvert(null);
         await setloading(false);
@@ -113,7 +112,7 @@ export const UploadDB = () => {
             </Link>
           </Box>
 
-          <Grid container spacing={4}>
+          <Grid container spacing={1}>
             <Grid item xs={9} className={classes.typography}>
               <label className="form-text">
                 <FormattedMessage id="UploadExcel" />
@@ -168,7 +167,8 @@ export const UploadDB = () => {
               </>
             ) : (
               <Button
-                className={clsx(classes.btn, classes.save)}
+                style={{ width: "35%" }}
+                className={clsx(classes.btnAction, classes.save)}
                 onClick={handleUpload}
                 disabled={loading}
               >

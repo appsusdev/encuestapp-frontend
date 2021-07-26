@@ -13,7 +13,7 @@ import { AppState } from '../../../redux/reducers/rootReducer';
 export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
 
     const dispatch = useDispatch();
-    const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
+    const { municipio } = useSelector<AppState, AppState['auth']>(state => state.auth);
 
     const [state, setState] = useState({
         checkedA: surveyor.state
@@ -27,7 +27,7 @@ export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
         // Actualizacion en BD
         await db.collection('Usuarios').doc(surveyor.email).set({activo: check}, {merge: true});
         dispatch( uiOpenAlert() );
-        (municipios) && dispatch( startLoadingSurveyors(municipios[0]));
+        (municipio) && dispatch( startLoadingSurveyors(municipio));
     };
 
     const onEdit = () => {

@@ -5,7 +5,8 @@ const initialState = {
     displayName: '',
     email: '',
     rol: '',
-    municipios: []
+    municipios: [],
+    municipio: ''
 }
 
 export const authReducer = ( state: Partial<IAuth> = initialState, action: AuthAction) => {
@@ -16,7 +17,7 @@ export const authReducer = ( state: Partial<IAuth> = initialState, action: AuthA
                 displayName: action.payload.displayName,
                 email: action.payload.email, 
                 rol: action.payload.rol,
-                municipios: action.payload.municipios,
+                municipio: action.payload.municipio,
             }
         
         case types.logout:

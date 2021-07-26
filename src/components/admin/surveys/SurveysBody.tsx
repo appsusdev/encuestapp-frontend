@@ -14,7 +14,7 @@ import { AppState } from '../../../redux/reducers/rootReducer';
 export const SurveysBody = (survey: Partial<Survey>) => {
 
     const dispatch = useDispatch();
-    const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
+    const { municipio } = useSelector<AppState, AppState['auth']>(state => state.auth);
     const [state, setState] = useState({
         checkedA: survey.state
     });
@@ -29,7 +29,7 @@ export const SurveysBody = (survey: Partial<Survey>) => {
         await db.collection('Municipios').doc(survey.idTown).collection('Encuestas').doc(survey.idSurvey).set({activo: check}, {merge: true});
         
         dispatch( uiOpenAlert() );
-        (municipios) && await dispatch(startLoadingCompleteSurveys(municipios[0])); 
+        (municipio) && await dispatch(startLoadingCompleteSurveys(municipio)); 
     };
 
     const onEdit = () => {

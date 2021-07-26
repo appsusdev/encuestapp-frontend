@@ -103,7 +103,6 @@ export const LoginForm: FC<UserSigninProps> = props => {
           }}
           validationSchema={validationSchema}
           onSubmit={(data, { setSubmitting }) => {
-            console.log(data);
             setSubmitting(true);
             dispatch(startLoginCorreoPassword(data.email, data.password));
             setSubmitting(false);

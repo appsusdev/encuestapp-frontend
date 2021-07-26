@@ -42,17 +42,17 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
 
     const existsSurveyorDB = await existsSurveyor(email);
     dispatch(surveyorFromDB(existsSurveyorDB));
-    const townsAdmin: string[] = auth.municipios;
-    const userToDB = encuestadorDTO(surveyor, existsSurveyorDB, townsAdmin);
+    const town: string = auth.municipio;
+    let towns: string[] = [];
+    towns.push(town);
+    const userToDB = encuestadorDTO(surveyor, existsSurveyorDB, towns);
 
     if (existsSurveyorDB) {
       const townsSurveyor: string[] = existsSurveyorDB.municipios;
 
-      townsAdmin.forEach((town: string) => {
-        // Encuestador esta registrado o no en el municipio
-        if (townsSurveyor.includes(town)) return dispatch(uiOpenErrorAlert());
-        else return dispatch(uiOpenModalAlert());
-      });
+      // Encuestador esta registrado o no en el municipio
+      if (townsSurveyor.includes(town)) return dispatch(uiOpenErrorAlert());
+      else return dispatch(uiOpenModalAlert());
     } else {
       try {
         // Registrar encuestador correo y contrasena
@@ -65,9 +65,9 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
 
         // Agregar encuestador a coleccion Municipios
         const surveyorTown = { email: email, encuestasAsignadas: [] };
-        await addSurveyorToTown(townsAdmin, email, surveyorTown);
+        await addSurveyorToTown(town, email, surveyorTown);
         dispatch(uiOpenSuccessAlert());
-        dispatch(startLoadingSurveyors(townsAdmin[0]));
+        dispatch(startLoadingSurveyors(town));
       } catch (error) {
         throw new Error(error);
       }
@@ -112,7 +112,7 @@ export const cleanActiveSurvey = () => ({ type: types.surveyCleanActive });
 // Editar encuestador
 export const startEditSurveyor = (surveyor: Partial<Surveyor>, changeImage: boolean) => {
     return async(dispatch: any, getState: any) => {
-        const { municipios } = getState().auth;
+        const { municipio } = getState().auth;
         const { email, profileImage } = surveyor;
         if( changeImage ) {
           const uriResponse = await uploadFileAsync(
@@ -128,7 +128,7 @@ export const startEditSurveyor = (surveyor: Partial<Surveyor>, changeImage: bool
         dispatch( activeSurveyors(surveyor.email, {...surveyor}))
         await editSurveyor(userToDB);
         dispatch( uiOpenSuccessAlert());
-        await dispatch( startLoadingSurveyors(municipios[0]))
+        await dispatch( startLoadingSurveyors(municipio))
     }
 }
 
@@ -137,8 +137,8 @@ export const startAssignSurvey = (id: string, email: string, action: boolean) =>
     return async(dispatch: any, getState: any) => {
         const { dataSurveys } = getState().survey;
         const { assignedSurveys: surveys } = getState().surveyor;
-        const { municipios } = getState().auth;
-        const town: string = municipios[0];
+        const { municipio } = getState().auth;
+        const town: string = municipio;
       
         const arraySurveys = surveys.filter( (survey: any)  => survey.email  === email );
         const { assignedSurveys } = arraySurveys[0];
@@ -194,7 +194,7 @@ export const startLoadingMicrodata = (data: any) => {
   return async (dispatch: Function, getState: Function) => {
     const { auth } = getState();
     const { surveys } = getState().survey;
-    const town = auth.municipios[0];
+    const town = auth.municipio;
     const { survey, surveyor } = data;
     const idSurveys: string[] = [];
     const idResponsibleCitizen: any[] = [];

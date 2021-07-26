@@ -24,7 +24,7 @@ export const FormAddQuestion = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
 
-    const { municipios } = useSelector<AppState, AppState['auth']>(state => state.auth);
+    const { municipio } = useSelector<AppState, AppState['auth']>(state => state.auth);
     const { activeSurvey, activeQuestion, chapters, chapterQuestion } = useSelector<AppState, AppState['survey']>(state => state.survey);
     const { successAlert, openQuestion } = useSelector<AppState, AppState["ui"]>((state) => state.ui);
     const survey: Survey = activeSurvey;
@@ -34,7 +34,7 @@ export const FormAddQuestion = () => {
     const [state, setState] = useState(false);
 
     useEffect(() => {
-        (municipios) && dispatch( startLoadingChapters(municipios[0], survey.idSurvey));
+        (municipio) && dispatch( startLoadingChapters(municipio, survey.idSurvey));
     }, [dispatch]);
 
     const validationSchema = yup.object({
