@@ -16,7 +16,7 @@ import { Box, Grid } from "@material-ui/core";
 import { useStyles } from "../shared/styles/useStyles";
 import { startLoadingSurveyors, startLoadingAssignedSurveys } from '../redux/actions/surveyorsActions';
 import { startLoadingDataSurveys } from '../redux/actions/surveysActions';
-import { startLoadingCitizens } from '../redux/actions/citizensActions';
+import { startLoadingCitizens, startLoadingMapData } from '../redux/actions/citizensActions';
 
 export const AppRouter: FC = () => {
   const dispatch = useDispatch();
@@ -51,6 +51,7 @@ export const AppRouter: FC = () => {
                 await dispatch(startLoadingDataSurveys(municipio, true));
                 dispatch(startLoadingAssignedSurveys(municipio));
                 dispatch(startLoadingCitizens());
+                dispatch(startLoadingMapData(municipio));
               }
               setIsLoggedIn(true);
             }

@@ -1,4 +1,4 @@
-import { getCitizens, getTransmittedSurveysByCitizen } from '../../services/firebase/citizens';
+import { getCitizens, getTransmittedSurveysByCitizen, getMapData } from '../../services/firebase/citizens';
 import { CitizensType } from '../../interfaces/Citizens';
 import { types } from '../types/types';
 import { Survey } from '../../interfaces/Survey';
@@ -51,3 +51,24 @@ export const activeCitizen = (citizen: {} | null) => ({
 
 export const citizenCleanActive = () => ({type: types.citizenCleanActive});
 
+export const startLoadingGeoreferencingData = (idSurvey: string) => {
+  return async (dispatch: Function, getState: Function) => {
+    const { surveys } = getState().survey;
+    const newSurveys = surveys.filter( (survey: Partial<Survey>) => (survey.idSurvey) && survey.idSurvey === idSurvey);
+
+    dispatch( setSurveysAnswered(newSurveys) );
+  };
+};
+
+// Informacion del mata
+export const startLoadingMapData = (town: string) => {
+  return async (dispatch: Function) => {
+    const resp = await getMapData(town);
+    dispatch(setMapInfo(resp));
+  };
+};
+
+export const setMapInfo = (data: any)=> ({
+  type: types.citizensLoadMapData,
+  payload: data,
+});

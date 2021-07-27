@@ -173,5 +173,6 @@
     "SurveyCode": "Código encuesta",
     "Maps": "Mapas",
     "UpdateMap": "Actualizar mapa",     
-    "MessageUpdateMap": "Mapa actualizado correctamente"      
+    "MessageUpdateMap": "Mapa actualizado correctamente",
+    "NoGeolocationAnwers": "La encuesta no tiene respuestas de geolozación"      
 }

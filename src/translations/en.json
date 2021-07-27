@@ -172,5 +172,7 @@
     "QuestionCode": "Question code",
     "SurveyCode": "Código encuesta",
     "Maps": "Maps",
-    "UpdateMap": "Update map"                          
+    "UpdateMap": "Update map",
+    "MessageUpdateMap": "Correctly updated map",
+    "NoGeolocationAnwers": "The survey has no geolocation anwers"                           
 }

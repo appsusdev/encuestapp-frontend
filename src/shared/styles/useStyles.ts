@@ -139,11 +139,10 @@ export const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: "20px",
         color: theme.palette.common.white,
         fontSize: 10,
-        left: "25px",
         padding: "8px",
         position: 'fixed',
-        top: "85px",
         zIndex: 1251,
-    }
-
+        marginTop: '5px',
+        marginLeft: '5px',
+    },
 }));
