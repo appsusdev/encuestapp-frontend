@@ -170,7 +170,19 @@
     "Dictionary": "Dictionarys",                   
     "DictionaryQuestions": "Dictionary of questions",
     "QuestionCode": "Question code",
+    "Entities":"Entities",
+    "NameEntity":"NameEntity",
+    "Nit":"Nit",
+    "CreateNewEntity":"CreateNewEntity",
+    "EditEntity":"EditEntity",
+    "DeleteEntity":"DeleteEntity",
+    "BusinessName":"BusinessName",
+    "Phone":"Phone",
+    "SystemAdmin":"System administrator",
+    "SavingEntitySuccess":"Entity created",            
     "SurveyCode": "Código encuesta",
     "Maps": "Maps",
-    "UpdateMap": "Update map"                          
+    "UpdateMap": "Update map",
+    "ADMIN":"Administrator",
+    "SUPER_ADMIN": "Super administrator"
 }

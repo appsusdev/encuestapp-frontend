@@ -75,7 +75,45 @@ export const types = {
     citizensLoadSurveysAnswered: '[citizen] Load surveys answered',
     citizenActive: '[citizen] Set active citizen',
     citizenCleanActive: '[citizen] Clean active citizen',
+    //ENTITIES
+    entitiesLoad: '[entities] load all entities',
+    purgeEntities:'[entities] purge all entities',
+    setActiveEntity:'[entities] set active entity',
+    purgeActiveEntity:'[entities] purge active entity',
+    addNewEntity:'[entities] add new entity',
+    deleteEntity:'[entities] delete entity',
+    updateEntity:'[entities] update entity',
 }
+
+//ENTITIES
+
+export interface IEntity {
+  activo:boolean,
+  razonSocial:string,
+  nit:string,
+  direccion:string,
+  celular:string,
+  departamento:string,
+  codigoSigep:string,
+  codigoDane:string,
+  municipio:string,
+  primerNombre: string,
+  segundoNombre: string,
+  primerApellido: string,
+  segundoApellido: string,
+  email: string,
+  identificacion: string,
+}
+export interface EntitiesState{
+  entities:EntitiesType,
+  entityActive:IEntity|null
+}
+export type EntitiesType = IEntity[]
+export interface EntitiesAction {
+  type:string,
+  payload?:EntitiesType | IEntity | string
+}
+
 
 // Auth
 export interface IAuth {

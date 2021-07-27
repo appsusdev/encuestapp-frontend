@@ -10,9 +10,13 @@ export const startLoadingCitizens = () => {
     const town: string = municipio;
     
     const jsonResponse: any = await getCitizens(town);
-    const parseJson = await JSON.parse(jsonResponse.data);
 
-    dispatch( setCitizens( JSON.parse(parseJson)) );
+    if(jsonResponse){
+
+      const parseJson = await JSON.parse(jsonResponse.data);
+      dispatch( setCitizens( JSON.parse(parseJson)) );
+    }
+
   };
 };
 
