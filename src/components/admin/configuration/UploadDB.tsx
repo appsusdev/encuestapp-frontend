@@ -33,7 +33,7 @@ export const UploadDB = () => {
   const { municipio, rol } = useSelector((state: AppState) => state.auth);
 
   const [fileToConvert, setFileToConvert] = useState<File | null>(null);
-  const [, setCitizens] = useState<CitizensType | null>(null);
+  const [citizens, setCitizens] = useState<CitizensType | null>(null);
   const [noValid, setNoValid] = useState<boolean>(false);
   const [loading, setloading] = useState(false);
   const { successAlert, errorAlert } = useSelector(

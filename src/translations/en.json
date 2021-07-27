@@ -170,9 +170,21 @@
     "Dictionary": "Dictionarys",                   
     "DictionaryQuestions": "Dictionary of questions",
     "QuestionCode": "Question code",
+    "Entities":"Entities",
+    "NameEntity":"NameEntity",
+    "Nit":"Nit",
+    "CreateNewEntity":"CreateNewEntity",
+    "EditEntity":"EditEntity",
+    "DeleteEntity":"DeleteEntity",
+    "BusinessName":"BusinessName",
+    "Phone":"Phone",
+    "SystemAdmin":"System administrator",
+    "SavingEntitySuccess":"Entity created",            
     "SurveyCode": "Código encuesta",
     "Maps": "Maps",
     "UpdateMap": "Update map",
     "MessageUpdateMap": "Correctly updated map",
-    "NoGeolocationAnwers": "The survey has no geolocation anwers"                           
+    "NoGeolocationAnwers": "The survey has no geolocation anwers",                         
+    "ADMIN":"Administrator",
+    "SUPER_ADMIN": "Super administrator"
 }

@@ -170,9 +170,21 @@
     "Dictionary": "Diccionario",
     "DictionaryQuestions": "Diccionario de preguntas",
     "QuestionCode": "Código pregunta",
+    "Entities":"Entidades",
+    "NameEntity":"Nombre Entidad",
+    "Nit":"Nit",
+    "CreateNewEntity":"Crear una nueva entidad",
+    "EditEntity":"Editar entidad",
+    "DeleteEntity":"Borrar entidad",
+    "BusinessName":"Razón social",
+    "Phone":"Telefono",
+    "SystemAdmin":"Administrador del sistema",
+    "SavingEntitySuccess":"La entidad ha sido creada",
     "SurveyCode": "Código encuesta",
     "Maps": "Mapas",
     "UpdateMap": "Actualizar mapa",     
     "MessageUpdateMap": "Mapa actualizado correctamente",
-    "NoGeolocationAnwers": "La encuesta no tiene respuestas de geolozación"      
+    "NoGeolocationAnwers": "La encuesta no tiene respuestas de geolozación",      
+    "ADMIN":"Administrador",
+    "SUPER_ADMIN": "Super administrador"    
 }

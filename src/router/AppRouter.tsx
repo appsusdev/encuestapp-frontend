@@ -17,6 +17,7 @@ import { useStyles } from "../shared/styles/useStyles";
 import { startLoadingSurveyors, startLoadingAssignedSurveys } from '../redux/actions/surveyorsActions';
 import { startLoadingDataSurveys } from '../redux/actions/surveysActions';
 import { startLoadingCitizens, startLoadingMapData } from '../redux/actions/citizensActions';
+import { startLoadEntities } from "../redux/actions/entitiesActions";
 
 export const AppRouter: FC = () => {
   const dispatch = useDispatch();
@@ -52,6 +53,8 @@ export const AppRouter: FC = () => {
                 dispatch(startLoadingAssignedSurveys(municipio));
                 dispatch(startLoadingCitizens());
                 dispatch(startLoadingMapData(municipio));
+              }else{
+                await dispatch( startLoadEntities() )
               }
               setIsLoggedIn(true);
             }
