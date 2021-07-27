@@ -4,6 +4,11 @@ const initialState = {
     citizens: [],
     surveysAnswered: [],
     activeCitizen: null,
+    mapData: {
+        lat: 4.3628,
+        lng: -73.8432,
+        zoom: 4.06
+    },
 }
 
 export const citizensReducer = ( state: CitizenState = initialState, action: CitizensAction) => {
@@ -33,6 +38,14 @@ export const citizensReducer = ( state: CitizenState = initialState, action: Cit
             return {
                 ...state,
                 activeCitizen: null
+            }
+        
+        case types.citizensLoadMapData:
+            return {
+                ...state,
+                mapData: {
+                    ...action.payload
+                }
             }
         
         default:

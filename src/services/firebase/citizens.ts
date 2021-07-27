@@ -54,5 +54,16 @@ export const getTransmittedSurveysByCitizen = async (
   return surveys;
 };
 
+// Obtener informacion del mapa
+export const getMapData = async (
+  town: string
+) => {
+  const mapDataSnap = await db
+    .collection("Municipios").doc(town)
+    .get().then((snapShot) => {
+    return snapShot.data();
+  });
+  return mapDataSnap;
+};
 
 

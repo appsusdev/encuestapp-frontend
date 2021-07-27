@@ -183,6 +183,8 @@
     "SurveyCode": "Código encuesta",
     "Maps": "Maps",
     "UpdateMap": "Update map",
+    "MessageUpdateMap": "Correctly updated map",
+    "NoGeolocationAnwers": "The survey has no geolocation anwers",                         
     "ADMIN":"Administrator",
     "SUPER_ADMIN": "Super administrator"
 }

@@ -35,6 +35,7 @@ export const FormAddQuestion = () => {
 
     useEffect(() => {
         (municipio) && dispatch( startLoadingChapters(municipio, survey.idSurvey));
+        // eslint-disable-next-line
     }, [dispatch]);
 
     const validationSchema = yup.object({

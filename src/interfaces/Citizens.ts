@@ -13,3 +13,9 @@ export interface ICitizen {
   genero: GenderEnum;
 }
 export type CitizensType = ICitizen[];
+
+export interface IMap {
+  lat: number;
+  lng: number;
+  zoom: number;
+}

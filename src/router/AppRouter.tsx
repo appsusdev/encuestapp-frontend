@@ -16,7 +16,7 @@ import { Box, Grid } from "@material-ui/core";
 import { useStyles } from "../shared/styles/useStyles";
 import { startLoadingSurveyors, startLoadingAssignedSurveys } from '../redux/actions/surveyorsActions';
 import { startLoadingDataSurveys } from '../redux/actions/surveysActions';
-import { startLoadingCitizens } from '../redux/actions/citizensActions';
+import { startLoadingCitizens, startLoadingMapData } from '../redux/actions/citizensActions';
 import { startLoadEntities } from "../redux/actions/entitiesActions";
 
 export const AppRouter: FC = () => {
@@ -52,6 +52,7 @@ export const AppRouter: FC = () => {
                 await dispatch(startLoadingDataSurveys(municipio, true));
                 dispatch(startLoadingAssignedSurveys(municipio));
                 dispatch(startLoadingCitizens());
+                dispatch(startLoadingMapData(municipio));
               }else{
                 await dispatch( startLoadEntities() )
               }

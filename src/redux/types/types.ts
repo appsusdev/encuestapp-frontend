@@ -1,7 +1,7 @@
 import { TypeUser } from "../../enums/enums";
 import { Surveyor } from "../../interfaces/Surveyor";
 import { Survey, Chapter, SurveyQuestion } from '../../interfaces/Survey';
-import { CitizensType, ICitizen } from '../../interfaces/Citizens';
+import { CitizensType, ICitizen, IMap } from '../../interfaces/Citizens';
 
 export const types = {
     // auth
@@ -75,6 +75,8 @@ export const types = {
     citizensLoadSurveysAnswered: '[citizen] Load surveys answered',
     citizenActive: '[citizen] Set active citizen',
     citizenCleanActive: '[citizen] Clean active citizen',
+    citizensLoadMapData: '[citizen] Load map data',
+    
     //ENTITIES
     entitiesLoad: '[entities] load all entities',
     purgeEntities:'[entities] purge all entities',
@@ -199,6 +201,7 @@ export interface CitizenState {
   citizens: CitizensType,
   surveysAnswered: Partial<Survey>[],
   activeCitizen: Partial<ICitizen> | null,
+  mapData: IMap,
 }
 
 export type CitizensAction = {

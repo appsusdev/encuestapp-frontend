@@ -1,3 +1,8 @@
+import clsx from "clsx";
+import { useState } from "react";
+import { FormattedMessage } from "react-intl";
+import { useDispatch, useSelector } from "react-redux";
+
 import {
   Box,
   Divider,
@@ -5,34 +10,39 @@ import {
   Button,
   CircularProgress,
 } from "@material-ui/core";
-import { FormattedMessage } from "react-intl";
-import { useStyles } from "../../../shared/styles/useStyles";
-import clsx from "clsx";
-import { useMapbox } from "../../../hooks/useMapbox";
-import { useDispatch, useSelector } from "react-redux";
+
+import { useMapbox } from '../../../hooks/useMapbox';
+import { setMapInfo } from "../../../redux/actions/citizensActions";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { updateMapData } from "../../../services/firebase/settings";
-import { useState } from "react";
-import { uiOpenModalAlert, uiOpenAlert } from '../../../redux/actions/uiActions';
+import { useStyles } from "../../../shared/styles/useStyles";
+import {
+  uiOpenModalAlert,
+  uiOpenAlert,
+} from "../../../redux/actions/uiActions";
 
 const initialPoint = {
-  lng: -76.6131,
-  lat: 2.4382,
-  zoom: 6,
-};
+  lat: 4.3628,
+  lng: -73.8432,
+  zoom: 4.06
+}
 
 export const MapContainer = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { municipio } = useSelector((state: AppState) => state.auth);
-  const { coords, setRef } = useMapbox(initialPoint, true);
+  const { mapData } = useSelector<AppState, AppState["citizens"]>(
+    (state) => state.citizens
+  );
+  const { coords, setRef } = useMapbox((mapData) ? mapData : initialPoint, true);
   const [loading, setLoading] = useState(false);
 
   const updateMap = async () => {
     setLoading(true);
-    if(municipio) {
+    if (municipio) {
       try {
         await updateMapData(municipio, coords);
+        dispatch(setMapInfo(coords));
         dispatch(uiOpenModalAlert());
       } catch (error) {
         dispatch(uiOpenAlert());

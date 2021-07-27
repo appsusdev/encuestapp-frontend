@@ -18,9 +18,31 @@ export const useMapbox = (initialPoint: InitialPoint, showMarker: boolean) => {
     mapDiv.current = node;
   }, []);
 
+  // Referencia a los marcadores
+  // let markers: any[] = [];
+  const [markers, setMarkers] = useState<any[]>([]);
+
   // Mapa y coords
   const [coords, setCoords] = useState(initialPoint);
   const map = useRef() as React.MutableRefObject<mapboxgl.Map>;
+
+  const removeMarkers = () => {
+    markers.forEach( marker => marker.remove());
+    setMarkers([])
+  }
+
+  //  Funcion para agregar marcadores
+  const addMarker = useCallback((ev) => {
+    const { lat, lng } = ev;
+    if (lat && lng) {
+      const marker = new mapboxgl.Marker();
+
+      marker.setLngLat([lng, lat]).addTo(map.current).setDraggable(true);
+
+      setMarkers(oldMarkers => [...oldMarkers,marker]);
+    }
+  }, []);
+  // console.log(markers)
 
   useEffect(() => {
     const mapConfig = new mapboxgl.Map({
@@ -47,12 +69,27 @@ export const useMapbox = (initialPoint: InitialPoint, showMarker: boolean) => {
 
   // Agregar marcadores
   useEffect(() => {
-      if(showMarker) {
-          const marker = new mapboxgl.Marker();
-    
-          marker.setLngLat([coords.lng, coords.lat]).addTo(map.current).setDraggable(true);
-      }
+    if (showMarker) {
+      map.current?.on("load", () => {
+        const marker = new mapboxgl.Marker();
+
+        marker
+          .setLngLat([coords.lng, coords.lat])
+          .addTo(map.current)
+          .setDraggable(true);
+
+        markers.push(marker);
+      });
+    } 
+    // eslint-disable-next-line
   }, []);
 
-  return { coords, setRef };
+  useEffect(() => {
+    if (!showMarker) {
+      map.current?.on("data", addMarker);
+    }
+  }, [addMarker,showMarker]);
+
+
+  return { coords, setRef, addMarker, removeMarkers };
 };

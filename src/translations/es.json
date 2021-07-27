@@ -184,6 +184,7 @@
     "Maps": "Mapas",
     "UpdateMap": "Actualizar mapa",     
     "MessageUpdateMap": "Mapa actualizado correctamente",
+    "NoGeolocationAnwers": "La encuesta no tiene respuestas de geolozación",      
     "ADMIN":"Administrador",
     "SUPER_ADMIN": "Super administrador"    
 }

@@ -63,6 +63,7 @@ export const ViewSurvey = () => {
   useEffect(() => {
     municipio &&
       dispatch(startLoadingChapters(municipio, survey.idSurvey));
+      // eslint-disable-next-line
   }, [dispatch, municipio]);
 
   const editQuestion = (
