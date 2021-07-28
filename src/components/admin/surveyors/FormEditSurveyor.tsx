@@ -28,7 +28,6 @@ import { AppState } from "../../../redux/reducers/rootReducer";
 import { TypeDoc } from "../../../enums/enums";
 import {
   startEditSurveyor,
-  startLoadingSurveyors,
 } from "../../../redux/actions/surveyorsActions";
 import { Surveyor } from "../../../interfaces/Surveyor";
 import { MyAlert } from "../../custom/MyAlert";
@@ -87,6 +86,7 @@ export const FormEditSurveyor = () => {
   });
 
   const initialValues: Partial<Surveyor> = {
+    id: surveyor.id,
     typeDoc: surveyor.typeDoc,
     document: surveyor.document,
     firstName: surveyor.firstName,
@@ -98,6 +98,7 @@ export const FormEditSurveyor = () => {
     mobilePhone: surveyor.mobilePhone,
     address: surveyor.address,
     profileImage: "",
+    state: surveyor.state
   };
 
   const onClose = () => {
@@ -107,7 +108,6 @@ export const FormEditSurveyor = () => {
   const closeSuccess = async () => {
     dispatch(uiCloseSuccessAlert());
     dispatch(uiCloseModalEdit());
-    municipio && (await dispatch(startLoadingSurveyors(municipio)));
   };
 
   const handleSelectFile = (e: any) => {

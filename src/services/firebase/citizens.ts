@@ -58,11 +58,13 @@ export const getTransmittedSurveysByCitizen = async (
 export const getMapData = async (
   town: string
 ) => {
+  // let algo: any[] = [];
   const mapDataSnap = await db
     .collection("Municipios").doc(town)
     .get().then((snapShot) => {
     return snapShot.data();
   });
+  // console.log(algo)
   return mapDataSnap;
 };
 

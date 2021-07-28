@@ -1,3 +1,4 @@
+import { Surveyor } from '../../interfaces/Surveyor';
 import { SurveyorsAction, types } from '../types/types';
 const initialState = {
     surveyors: [],
@@ -11,6 +12,21 @@ const initialState = {
 
 export const surveyorsReducer = ( state = initialState, action: SurveyorsAction ) => {
     switch (action.type) {
+        case types.surveyorAddNew:
+            return {
+                ...state,
+                surveyors: [...state.surveyors, action.payload]
+            }
+
+        case types.surveyorUpdated:
+            return {
+                ...state,
+                surveyors: state.surveyors.map(
+                    (surveyor: Partial<Surveyor>) => surveyor.id === action.payload.id
+                        ? action.payload
+                        : surveyor
+                )
+            }
         case types.surveyorFromDB:
             return {
                 ...state,

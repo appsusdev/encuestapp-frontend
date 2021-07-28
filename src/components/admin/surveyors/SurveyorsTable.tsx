@@ -65,7 +65,7 @@ export const SurveyorsTable = () => {
                             (rowsPerPage > 0
                                 ? list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 : list
-                            ).map((surveyor) => (
+                            ).map((surveyor: Partial<Surveyor>) => (
                                 <SurveyorsBody key={surveyor.email} {...surveyor} />
                             ))
                             :

@@ -29,9 +29,9 @@ import { TypeQuestion } from "../../../enums/enums";
 import { useMapbox } from "../../../hooks/useMapbox";
 
 const initialPoint = {
-  lat: 4.3628,
-  lng: -73.8432,
-  zoom: 4.06,
+  lat: 2.495,
+  lng: -73.781,
+  zoom: 4.32
 };
 
 export const Georeferencing = () => {
