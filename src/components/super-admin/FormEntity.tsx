@@ -132,6 +132,7 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
           setDepartmentSelected(data[0].departamento);
         }
       });
+      // eslint-disable-next-line
   }, []);
 
   useEffect(() => {

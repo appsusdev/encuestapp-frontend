@@ -8,7 +8,6 @@ import {
 } from "../../redux/actions/entitiesActions";
 import {
   uiOpenAlert,
-  uiOpenModalDelete,
   uiOpenModalEdit,
 } from "../../redux/actions/uiActions";
 import { IEntity } from "../../redux/types/types";

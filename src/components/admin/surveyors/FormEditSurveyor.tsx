@@ -46,9 +46,6 @@ export const FormEditSurveyor = () => {
   const { successAlert } = useSelector<AppState, AppState["ui"]>(
     (state) => state.ui
   );
-  const { municipio } = useSelector<AppState, AppState["auth"]>(
-    (state) => state.auth
-  );
   const surveyor: any = activeSurveyor;
   const [profileFile, setProfileFile] = useState<File | null>(
     surveyor.profileImage

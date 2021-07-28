@@ -4,16 +4,14 @@ import { TableCell, TableRow } from '@material-ui/core';
 import { CustomizedIcons } from '../../custom/CustomizedIcons';
 import { AntSwitch } from '../../custom/CustomizedSwitch';
 import { Surveyor } from '../../../interfaces/Surveyor';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { uiOpenModalEdit, uiOpenModalDelete, uiOpenModalAssign, uiOpenAlert, uiOpenModalAlert } from '../../../redux/actions/uiActions';
 import { activeSurveyors, updateSurveyor } from '../../../redux/actions/surveyorsActions';
 import { db } from '../../../config/firebase/firebase-config';
-import { AppState } from '../../../redux/reducers/rootReducer';
 
 export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
 
     const dispatch = useDispatch();
-    const { municipio } = useSelector<AppState, AppState['auth']>(state => state.auth);
 
     const [state, setState] = useState({
         checkedA: surveyor.state

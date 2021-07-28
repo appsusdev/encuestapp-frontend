@@ -1,4 +1,3 @@
-import { truncate } from "node:fs";
 import { db } from "../../config/firebase/firebase-config";
 import { TypeUser } from "../../enums/enums";
 import { Surveyor } from "../../interfaces/Surveyor";

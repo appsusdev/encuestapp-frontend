@@ -134,7 +134,6 @@ export const startEditSurveyor = (
   changeImage: boolean
 ) => {
   return async (dispatch: any, getState: any) => {
-    const { municipio } = getState().auth;
     const { email, profileImage, firstName, firstLastName } = surveyor;
     let { secondName, secondLastName } = surveyor;
 
