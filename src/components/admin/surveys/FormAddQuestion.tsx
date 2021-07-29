@@ -16,7 +16,7 @@ import { startLoadingChapters, startNewQuestion, questionCleanActive, chapterQue
 import { AppState } from '../../../redux/reducers/rootReducer';
 import { TypeQuestion, TypeDirectedTo } from '../../../enums/enums';
 import { MyAlert } from '../../custom/MyAlert';
-import { cleanActiveSurvey } from '../../../redux/actions/surveyorsActions';
+import { surveyCleanActive } from '../../../redux/actions/surveysActions';
 
 export const FormAddQuestion = () => {
 
@@ -98,7 +98,7 @@ export const FormAddQuestion = () => {
             dispatch(uiCloseQuestion());
         } else {
             dispatch(uiCloseModalAssign());
-            dispatch(cleanActiveSurvey());
+            dispatch(surveyCleanActive());
         }
     }
 

@@ -1,4 +1,5 @@
 import { types, SurveysAction, ISurvey } from '../types/types';
+import { Survey } from '../../interfaces/Survey';
 
 const initialState = {
     surveys: [],
@@ -23,6 +24,16 @@ export const surveysReducer = ( state: ISurvey = initialState, action: SurveysAc
             return {
                 ...state,
                 dataSurveys: [...action.payload]
+            }
+
+        case types.surveyDataUpdated:
+            return {
+                ...state,
+                surveys: state.surveys.map(
+                    (survey: Partial<Survey>) => survey.idSurvey === action.payload.idSurvey
+                        ? action.payload
+                        : survey
+                )
             }
 
         case types.surveyActive:

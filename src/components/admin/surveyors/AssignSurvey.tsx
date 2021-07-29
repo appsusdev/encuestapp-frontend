@@ -38,14 +38,14 @@ export const AssignSurvey = () => {
     const [loading, setLoading] = useState(false);
     const [assign, setAssign] = useState(true);
     const [rowsPerPage, setRowsPerPage] = useState(3);
-    const { dataSurveys } = useSelector<AppState, AppState['survey']>(state => state.survey);
+    const { surveys } = useSelector<AppState, AppState['survey']>(state => state.survey);
     const { activeSurveyor } = useSelector<AppState, AppState['surveyor']>(state => state.surveyor);
     const { successAlert, errorAlert } = useSelector<AppState, AppState['ui']>(state => state.ui);
-    let list: Survey[] = dataSurveys;
+    let list: Survey[] = surveys;
     const surveyor: Surveyor = activeSurveyor;
     let action: boolean = true;
 
-    const surveysAssign = list.filter( (survey: Survey) => survey.surveyors.includes(surveyor.email));
+    const surveysAssign = list.filter( (survey: Survey) => (surveyor) && survey.surveyors.includes(surveyor.email));
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, surveysAssign.length - page * rowsPerPage);
 

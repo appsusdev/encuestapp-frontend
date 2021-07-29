@@ -38,7 +38,7 @@ export const startLoadingDataSurveys = ( town: string, flag?: boolean ) => {
         const surveys:any[] = [];
 
         if(flag) {
-            dispatch( startLoadingCompleteSurveys(town, resp) )
+            await dispatch( startLoadingCompleteSurveys(town, resp) )
         }
         resp.forEach( resp => {
             surveys.push(surveyDTO(resp));
@@ -262,3 +262,9 @@ export const startDeleteQuestion = ( question: any, idChapter: string ) => {
         dispatch( setChapters(chapters) );
     }
 }
+
+// Actualizar encuesta 
+export const updateDataSurvey = (survey: any) => ({
+    type: types.surveyDataUpdated,
+    payload: survey,
+});

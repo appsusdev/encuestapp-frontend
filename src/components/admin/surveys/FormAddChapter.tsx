@@ -13,7 +13,7 @@ import { MyTextField } from '../../custom/MyTextField';
 import { useStyles } from '../../../shared/styles/useStyles';
 import { uiCloseModalDelete, uiCloseErrorAlert, uiCloseSuccessAlert, uiCloseModalAlert } from '../../../redux/actions/uiActions';
 import { startNewChapter, setChapters, chapterCleanActive } from '../../../redux/actions/surveysActions';
-import { cleanActiveSurvey } from '../../../redux/actions/surveyorsActions';
+import { surveyCleanActive } from '../../../redux/actions/surveysActions';
 import { AppState } from '../../../redux/reducers/rootReducer';
 
 export const FormAddChapter = () => {
@@ -45,7 +45,7 @@ export const FormAddChapter = () => {
 
     const onClose = () => {
         dispatch( uiCloseModalDelete() );
-        dispatch( cleanActiveSurvey() );
+        dispatch( surveyCleanActive() );
         dispatch( chapterCleanActive() ); 
         dispatch( setChapters([]) );
     }

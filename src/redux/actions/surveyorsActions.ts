@@ -1,4 +1,7 @@
+import firebase from "firebase/app";
 import { db } from "../../config/firebase/firebase-config";
+
+import { types } from "../types/types";
 import { encuestadorDTO, surveyorDTO } from "../../helpers/surveyorDTO";
 import { Survey } from "../../interfaces/Survey";
 import { Surveyor } from "../../interfaces/Surveyor";
@@ -12,20 +15,15 @@ import {
   getSurveyors,
   editSurveyor,
   assignSurvey,
+  getAssignedSurveys,
+  getTransmittedSurveysBySurveyor,
 } from "../../services/firebase/surveyors";
-import { types } from "../types/types";
-import {
-  startLoadingDataSurveys,
-  startLoadingCompleteSurveys,
-} from "./surveysActions";
-import { getAssignedSurveys } from "../../services/firebase/surveyors";
-import firebase from "firebase/app";
-import { getTransmittedSurveysBySurveyor } from "../../services/firebase/surveyors";
 import {
   uiOpenSuccessAlert,
   uiOpenErrorAlert,
   uiOpenModalAlert,
 } from "./uiActions";
+import { updateDataSurvey } from "./surveysActions";
 
 // Agregar nuevo encuestador
 export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
@@ -82,6 +80,7 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
           `${firstName}${secondName} ${firstLastName} ${secondLastName}`.trim();
 
         dispatch(addNewSurveyor(surveyor));
+        dispatch(addNewAssignedSurveys({id: email, email, assignedSurveys: []}));
       } catch (error) {
         throw new Error(error);
       }
@@ -92,6 +91,11 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
 const addNewSurveyor = (surveyor: any) => ({
   type: types.surveyorAddNew,
   payload: surveyor,
+});
+
+const addNewAssignedSurveys = (data: any) => ({
+  type: types.surveyorsAddNewAssignedSurveys,
+  payload: data,
 });
 
 const surveyorFromDB = (surveyor: any) => ({
@@ -126,7 +130,7 @@ export const activeSurveyors = (id: string | undefined, surveyor: {}) => ({
   },
 });
 
-export const cleanActiveSurvey = () => ({ type: types.surveyCleanActive });
+export const surveyorCleanActive = () => ({ type: types.surveyorCleanActive });
 
 // Editar encuestador
 export const startEditSurveyor = (
@@ -150,7 +154,8 @@ export const startEditSurveyor = (
     delete userToDB.municipios;
     secondName?.trim() && (secondName = ` ${secondName}`);
     secondLastName?.trim() && (secondLastName = ` ${secondLastName}`);
-    surveyor.username = `${firstName}${secondName} ${firstLastName} ${secondLastName}`.trim();
+    surveyor.username =
+      `${firstName}${secondName} ${firstLastName} ${secondLastName}`.trim();
 
     dispatch(activeSurveyors(surveyor.email, { ...surveyor }));
 
@@ -172,16 +177,16 @@ export const startAssignSurvey = (
   action: boolean
 ) => {
   return async (dispatch: any, getState: any) => {
-    const { dataSurveys } = getState().survey;
-    const { assignedSurveys: surveys } = getState().surveyor;
+    const { surveys } = getState().survey;
+    const { assignedSurveys: surveysBySurveyor } = getState().surveyor;
     const { municipio } = getState().auth;
     const town: string = municipio;
 
-    const arraySurveys = surveys.filter(
+    const arraySurveys = surveysBySurveyor.filter(
       (survey: any) => survey.email === email
     );
     const { assignedSurveys } = arraySurveys[0];
-    const arraySurveyors = dataSurveys.filter(
+    const arraySurveyors = surveys.filter(
       (survey: Survey) => survey.code === id
     );
     const { surveyors } = arraySurveyors[0];
@@ -198,9 +203,10 @@ export const startAssignSurvey = (
 
         await assignSurvey(town, id, newSurveyors, email, newAssignedSurveys);
         dispatch(uiOpenSuccessAlert());
-        await dispatch(startLoadingDataSurveys(town));
-        await dispatch(startLoadingAssignedSurveys(town));
-        await dispatch(startLoadingCompleteSurveys(town));
+        dispatch(
+          updateDataSurvey({ ...arraySurveyors[0], surveyors: newSurveyors })
+        );
+        dispatch(updateAssignedSurveys({id: email, email, assignedSurveys: newAssignedSurveys}));
       }
     } else {
       // Eliminar encuesta asignada
@@ -211,9 +217,10 @@ export const startAssignSurvey = (
 
       await assignSurvey(town, id, newSurveyors, email, newAssignedSurveys);
       dispatch(uiOpenSuccessAlert());
-      await dispatch(startLoadingDataSurveys(town));
-      await dispatch(startLoadingAssignedSurveys(town));
-      await dispatch(startLoadingCompleteSurveys(town));
+      dispatch(
+        updateDataSurvey({ ...arraySurveyors[0], surveyors: newSurveyors })
+      );
+      dispatch(updateAssignedSurveys({id: email, email, assignedSurveys: newAssignedSurveys}));
     }
   };
 };
@@ -229,6 +236,12 @@ export const startLoadingAssignedSurveys = (town: string) => {
 export const setAssignedSurveys = (surveyors: any[]) => ({
   type: types.surveyorsLoadAssignedSurveys,
   payload: surveyors,
+});
+
+//Actualizar encuestas asignadas al encuestador
+export const updateAssignedSurveys = (data: any) => ({
+  type: types.surveyorsUpdatedAssignedSurveys,
+  payload: data,
 });
 
 // MICRODATA

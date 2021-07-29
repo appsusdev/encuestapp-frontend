@@ -48,7 +48,7 @@ export const FormEditSurveyor = () => {
   );
   const surveyor: any = activeSurveyor;
   const [profileFile, setProfileFile] = useState<File | null>(
-    surveyor.profileImage
+    (surveyor) ? surveyor.profileImage : ""
   );
 
   const validationSchema = yup.object({
@@ -83,19 +83,19 @@ export const FormEditSurveyor = () => {
   });
 
   const initialValues: Partial<Surveyor> = {
-    id: surveyor.id,
-    typeDoc: surveyor.typeDoc,
-    document: surveyor.document,
-    firstName: surveyor.firstName,
-    secondName: surveyor.secondName,
-    firstLastName: surveyor.firstLastName,
-    secondLastName: surveyor.secondLastName,
+    id: (surveyor) ? surveyor.id : "",
+    typeDoc: (surveyor) ? surveyor.typeDoc : "",
+    document: (surveyor) ? surveyor.document : "",
+    firstName: (surveyor) ? surveyor.firstName : "",
+    secondName: (surveyor) ? surveyor.secondName : "",
+    firstLastName: (surveyor) ? surveyor.firstLastName: "",
+    secondLastName: (surveyor) ? surveyor.secondLastName: "",
     username: "",
-    email: surveyor.email,
-    mobilePhone: surveyor.mobilePhone,
-    address: surveyor.address,
+    email: (surveyor) ? surveyor.email : "",
+    mobilePhone: (surveyor) ? surveyor.mobilePhone : "",
+    address: (surveyor) ? surveyor.address : "",
     profileImage: "",
-    state: surveyor.state
+    state: (surveyor) ? surveyor.state : false
   };
 
   const onClose = () => {
@@ -163,7 +163,7 @@ export const FormEditSurveyor = () => {
                     <CardMedia
                       className={classes.media}
                       image={
-                        surveyor.profileImage === ""
+                        (!surveyor || surveyor.profileImage === "")
                           ? logo
                           : surveyor.profileImage
                       }

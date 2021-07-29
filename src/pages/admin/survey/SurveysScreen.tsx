@@ -16,7 +16,7 @@ import AppAnimate from '../../../components/ui/AppAnimate/AppAnimate';
 import { Survey } from '../../../interfaces/Survey';
 import { uiOpenModalAdd, uiCloseModalAdd, uiCloseModalEdit, uiCloseModalAssign, uiCloseAlert, uiCloseModalDelete } from '../../../redux/actions/uiActions';
 import { AppState } from '../../../redux/reducers/rootReducer';
-import { cleanActiveSurvey } from '../../../redux/actions/surveyorsActions';
+import { surveyCleanActive } from '../../../redux/actions/surveysActions';
 import { FormAddChapter } from '../../../components/admin/surveys/FormAddChapter';
 import { setChapters, chapterCleanActive } from '../../../redux/actions/surveysActions';
 
@@ -47,20 +47,20 @@ export const SurveysScreen: FC = () => {
   }
 
   const onDenyEdit = () => {
-    dispatch(cleanActiveSurvey());
+    dispatch(surveyCleanActive());
     dispatch(uiCloseModalEdit());
     dispatch(setChapters([]));
   }
 
   const onDenyAssign = () => {
     dispatch(uiCloseModalAssign());
-    dispatch(cleanActiveSurvey());
+    dispatch(surveyCleanActive());
     dispatch(setChapters([]));
   }
 
   const onDenyDelete = () => {
     dispatch(uiCloseModalDelete());
-    dispatch(cleanActiveSurvey());
+    dispatch(surveyCleanActive());
     dispatch(chapterCleanActive());
     dispatch(setChapters([]));
   }
