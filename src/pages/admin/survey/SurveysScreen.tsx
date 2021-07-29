@@ -100,7 +100,7 @@ export const SurveysScreen: FC = () => {
         <CustomizedDialog open={modalAssignOpen} cancelBtn={true} onDeny={onDenyAssign} title={`${intl.formatMessage({ id: 'AddQuestion' })}`} content={<FormAddQuestion />} textButton="Accept" />
       
         <Box mt={3}>
-          <MyAlert open={alert} typeAlert="success" message="StateSurveyUpdated" time={2000} handleClose={closeSuccess}/>
+          <MyAlert open={alert} typeAlert="success" message="StateSurveyUpdated" time={1000} handleClose={closeSuccess}/>
         </Box>
       </Box>
     </AppAnimate>

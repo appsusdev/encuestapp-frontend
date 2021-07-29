@@ -78,7 +78,6 @@ export const addNewSurvey = async (
   surveyToDB: {}
 ) => {
   const docRef = db.collection("Municipios").doc(town);
-  docRef.set({});
   await docRef.collection("Encuestas").doc(code).set(surveyToDB);
 };
 
@@ -123,7 +122,6 @@ export const addNewChapter = async (
   chapter: any
 ) => {
   const docRef = db.collection("Municipios").doc(town);
-  docRef.set({});
   await docRef
     .collection("Encuestas")
     .doc(idSurvey)
@@ -140,7 +138,6 @@ export const editChapter = async (
   chapter: any
 ) => {
   const docRef = db.collection("Municipios").doc(town);
-  docRef.set({});
   await docRef
     .collection("Encuestas")
     .doc(idSurvey)
@@ -231,7 +228,6 @@ export const addQuestion = async (
   idQuestion: string
 ) => {
   const docRef = db.collection("Municipios").doc(town);
-  docRef.set({});
   await docRef
     .collection("Encuestas")
     .doc(idSurvey)
@@ -318,7 +314,6 @@ export const editQuestion = async (
   question: any
 ) => {
   const docRef = db.collection("Municipios").doc(town);
-  docRef.set({});
   await docRef
     .collection("Encuestas")
     .doc(idSurvey)

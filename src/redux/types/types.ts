@@ -59,7 +59,7 @@ export const types = {
     surveyCleanActive: '[survey] Clean active survey',
     surveysCompleteLoad: '[survey] Load complete surveys',
     surveysDataLoad: '[survey] Load data surveys',
-    surveyDataUpdated: '[survey] Updated data survey',
+    surveyUpdated: '[survey] Updated survey',
     surveyUpdatedSurveyors: '[survey] Updated survey surveyors',
     surveyDelete: '[survey] Delete survey',
     chaptersLoad: '[survey] Load chapters',

@@ -26,7 +26,13 @@ export const surveysReducer = ( state: ISurvey = initialState, action: SurveysAc
                 dataSurveys: [...action.payload]
             }
 
-        case types.surveyDataUpdated:
+        case types.surveyAddNew:
+            return {
+                ...state,
+                surveys: [...state.surveys, action.payload]
+            }
+
+        case types.surveyUpdated:
             return {
                 ...state,
                 surveys: state.surveys.map(

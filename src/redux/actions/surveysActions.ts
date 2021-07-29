@@ -10,6 +10,8 @@ export const startNewSurvey = (survey: Partial<Survey>) => {
         const { auth } = getState();
         const town = auth.municipio;
         const { code } = survey;
+        survey.idTown = town;
+        console.log(survey);
 
         const existsSurveyDB = await existsSurvey(town, code);
         
@@ -17,12 +19,10 @@ export const startNewSurvey = (survey: Partial<Survey>) => {
             dispatch( uiOpenErrorAlert() );
         } else {
             const surveyToDB = encuestaDTO(survey, town);
-
             try {
                 // Crear encuesta
                 await addNewSurvey(town, code, surveyToDB);
-
-                await dispatch( startLoadingCompleteSurveys(town));
+                dispatch( addNewSurveyRedux(survey) );
                 dispatch( uiOpenSuccessAlert() );
             } catch (error) {
                 throw new Error(error);
@@ -30,6 +30,12 @@ export const startNewSurvey = (survey: Partial<Survey>) => {
         }
     } 
 }
+
+// Agregar nueva encuesta al reducer
+const addNewSurveyRedux = (survey: any) => ({
+    type: types.surveyAddNew,
+    payload: survey,
+});
 
 // Cargar solo informacion de la encuesta
 export const startLoadingDataSurveys = ( town: string, flag?: boolean ) => {
@@ -78,13 +84,12 @@ export const surveyCleanActive = () => ({type: types.surveyCleanActive});
 // Editar encuesta
 export const startEditSurvey = (survey: Partial<Survey>) => {
     return async(dispatch: any, getState: any) => {
-
         const { auth } = getState();
         const town = auth.municipio;
         
         try {
             await editSurvey(survey, town);
-            await dispatch( startLoadingCompleteSurveys(town) );
+            dispatch( updateSurvey(survey) );
             dispatch( uiOpenSuccessAlert() );
         } catch (error) {
             throw new Error(error);
@@ -264,7 +269,7 @@ export const startDeleteQuestion = ( question: any, idChapter: string ) => {
 }
 
 // Actualizar encuesta 
-export const updateDataSurvey = (survey: any) => ({
-    type: types.surveyDataUpdated,
+export const updateSurvey = (survey: any) => ({
+    type: types.surveyUpdated,
     payload: survey,
 });
