@@ -32,10 +32,10 @@ export const addSurveyorToTown = async (
   surveyorTown: {}
 ) => {
   
-    const df = db.collection("Municipios").doc(town);
-    df.set({});
-    await df.collection("Encuestadores").doc(email).set(surveyorTown);
-  ;
+  const df = db.collection("Municipios").doc(town);
+    
+  await df.collection("Encuestadores").doc(email).set(surveyorTown, {merge: true});
+  
 };
 
 // Actualizar municipios del encuestador

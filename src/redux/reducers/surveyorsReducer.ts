@@ -1,3 +1,4 @@
+import { Surveyor } from '../../interfaces/Surveyor';
 import { SurveyorsAction, types } from '../types/types';
 const initialState = {
     surveyors: [],
@@ -11,6 +12,21 @@ const initialState = {
 
 export const surveyorsReducer = ( state = initialState, action: SurveyorsAction ) => {
     switch (action.type) {
+        case types.surveyorAddNew:
+            return {
+                ...state,
+                surveyors: [...state.surveyors, action.payload]
+            }
+
+        case types.surveyorUpdated:
+            return {
+                ...state,
+                surveyors: state.surveyors.map(
+                    (surveyor: Partial<Surveyor>) => surveyor.id === action.payload.id
+                        ? action.payload
+                        : surveyor
+                )
+            }
         case types.surveyorFromDB:
             return {
                 ...state,
@@ -31,10 +47,32 @@ export const surveyorsReducer = ( state = initialState, action: SurveyorsAction 
                 }
             }
         
+        case types.surveyorCleanActive:
+            return {
+                ...state,
+                activeSurveyor: null
+            }
+        
         case types.surveyorsLoadAssignedSurveys:
             return {
                 ...state,
                 assignedSurveys: [...action.payload]
+            }
+
+        case types.surveyorsAddNewAssignedSurveys:
+            return {
+                ...state,
+                assignedSurveys: [...state.assignedSurveys, action.payload]
+            }
+
+        case types.surveyorsUpdatedAssignedSurveys:
+            return {
+                ...state,
+                assignedSurveys: state.assignedSurveys.map(
+                    (surveyAssigned: Partial<Surveyor>) => surveyAssigned.id === action.payload.id
+                        ? action.payload
+                        : surveyAssigned
+                )
             }
 
         case types.surveyorsTransmittedSurveys:

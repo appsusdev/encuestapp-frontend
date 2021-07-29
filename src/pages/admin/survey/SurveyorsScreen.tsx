@@ -18,6 +18,7 @@ import { AppState } from '../../../redux/reducers/rootReducer';
 import { Fonts } from '../../../shared/constants/AppEnums';
 import { Surveyor } from '../../../interfaces/Surveyor';
 import { useStyles as Styles } from '../../../shared/styles/useStyles';
+import { surveyorCleanActive } from '../../../redux/actions/surveyorsActions';
 
 export const useStyles = makeStyles((theme) => ({
   btnRoot: {
@@ -68,16 +69,19 @@ export const SurveyorsScreen: FC = () => {
   // Cerra modal editar encuestador
   const onDenyEdit = () => {
     dispatch(uiCloseModalEdit());
+    dispatch(surveyorCleanActive());
   }
 
   // Cerrar modal eliminar encuestador
   const onDenyDelete = () => {
     dispatch(uiCloseModalDelete());
+    dispatch(surveyorCleanActive());
   }
 
   // Cerra modal asignar encuestas
   const onDenyAssign = () => {
     dispatch(uiCloseModalAssign());
+    dispatch(surveyorCleanActive());
   }
 
   // Cerrar alert

@@ -1,6 +1,5 @@
 import Axios from "axios";
 import { firebase, db } from "../../config/firebase/firebase-config";
-import { TypeUser } from "../../enums/enums";
 
 export interface IUserInfo {
   activo: boolean;

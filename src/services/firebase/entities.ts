@@ -70,6 +70,9 @@ export const addNewEntity = (entity: IEntity): Promise<any> => {
           {
             departamento,
             admin: identificacion,
+            lat: 2.495,
+            lng: -73.781,
+            zoom: 4.32
           },
           { merge: true }
         )

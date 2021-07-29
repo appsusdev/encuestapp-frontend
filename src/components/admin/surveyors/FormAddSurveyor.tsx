@@ -134,7 +134,7 @@ export const FormAddSurveyor = () => {
   const closeSuccess = () => {
     dispatch(uiCloseSuccessAlert());
     dispatch(uiCloseModalAdd());
-  };
+  }
 
   const handleSelectFile = (e: any) => {
     const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
@@ -405,14 +405,14 @@ export const FormAddSurveyor = () => {
         open={successAlert}
         typeAlert="success"
         message="SurveyorAddSuccess"
-        time={2000}
+        time={1000}
         handleClose={closeSuccess}
       />
       <MyAlert
         open={errorAlert}
         typeAlert="error"
         message="MessageExistsSurveyorTown"
-        time={2000}
+        time={1000}
         handleClose={closeDialog}
       />
     </Box>

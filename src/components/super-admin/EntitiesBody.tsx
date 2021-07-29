@@ -8,7 +8,6 @@ import {
 } from "../../redux/actions/entitiesActions";
 import {
   uiOpenAlert,
-  uiOpenModalDelete,
   uiOpenModalEdit,
 } from "../../redux/actions/uiActions";
 import { IEntity } from "../../redux/types/types";
@@ -35,7 +34,6 @@ export const EntitiesBody: FC<Props> = ({ entity }) => {
     //Actualizar la lista de las entidades
     dispatch(updateEntity({ ...entity, activo: check }));
     dispatch(uiOpenAlert());
-    //(municipios) && dispatch( startLoadingSurveyors(municipios[0]));
   };
 
   const onEdit = () => {
