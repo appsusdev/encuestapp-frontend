@@ -154,12 +154,14 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
       //crear el
       if (edit && oldCredentials) {
         const { email: oldEmail, password: oldPassword } = oldCredentials;
-        await updateCredentialsEntity(
-          oldEmail,
-          oldPassword.toString(),
-          email,
-          identificacion.toString()
-        );
+        if(email !== oldEmail || identificacion!== oldPassword){
+          await updateCredentialsEntity(
+            oldEmail,
+            oldPassword.toString(),
+            email,
+            identificacion.toString()
+          );
+        }
       } else {
         await registerWithEmailPassword(email, identificacion.toString());
       }
