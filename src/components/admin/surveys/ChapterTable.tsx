@@ -52,8 +52,8 @@ export const ChapterTable = () => {
         setPage(0);
     };
 
-    const onDelete = async(idChapter: string) => {
-        await dispatch(startDeleteChapter(surveyActive.idSurvey, idChapter));
+    const onDelete = (idChapter: string) => {
+        dispatch(startDeleteChapter(surveyActive.idSurvey, idChapter));
     }
 
     const onEdit = (chapter: any) => {

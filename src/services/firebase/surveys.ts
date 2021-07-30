@@ -43,11 +43,8 @@ export const getSurveys = async (town: string) => {
   return surveys;
 }  
 // Obtener encuestas con toda la informacion (capitulos y preguntas)
-export const getSurveysAndChapters = async (town: string, data?: any[]) => {
-  let surveys: any[] = [];
-  
-  (data) ? (surveys = data) : (surveys = await getSurveys(town));
-
+export const getSurveysAndChapters = async (town: string) => {
+  const surveys: any[] = await getSurveys(town);
 
   // Obtener cada encuesta con sus capitulos
   let surveysAndChapters: any[] = [];
@@ -119,14 +116,15 @@ export const existsChapter = (
 export const addNewChapter = async (
   town: string,
   idSurvey: string,
-  chapter: any
+  chapter: any,
+  idNewChapter: string
 ) => {
   const docRef = db.collection("Municipios").doc(town);
   await docRef
     .collection("Encuestas")
     .doc(idSurvey)
     .collection("Capitulos")
-    .doc(`capitulo${chapter.numero}-${Date.now()}`)
+    .doc(idNewChapter)
     .set(chapter);
 };
 

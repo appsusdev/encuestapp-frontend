@@ -35,7 +35,7 @@ import {
 } from "../../../redux/actions/uiActions";
 import { FormAddQuestion } from "./FormAddQuestion";
 import CustomizedDialog from "../../custom/CustomizedDialog";
-import { startDeleteQuestion, startLoadingCompleteSurveys } from '../../../redux/actions/surveysActions';
+import { startDeleteQuestion } from '../../../redux/actions/surveysActions';
 import {
   questionActive,
   questionCleanActive,
@@ -76,9 +76,9 @@ export const ViewSurvey = () => {
     dispatch(uiOpenQuestion());
   };
 
-  const deleteQuestion = async(question: SurveyQuestion, idChapter: string) => {
-    await dispatch( startDeleteQuestion(question, idChapter) );
-    municipio && await dispatch( startLoadingCompleteSurveys(municipio) );
+  const deleteQuestion = (question: SurveyQuestion, idChapter: string) => {
+    console.log(idChapter)
+    dispatch( startDeleteQuestion(question, idChapter) );
   };
 
   const handleClose = () => {

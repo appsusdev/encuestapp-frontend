@@ -1,6 +1,6 @@
-import { Chapter, Survey } from '../../interfaces/Survey';
-import { existsSurvey, getSurveys, addNewSurvey, editSurvey, existsChapter, addNewChapter, deleteChapter, editChapter, addQuestion, editQuestion, getChapters, deleteQuestion, getSurveysAndChapters } from '../../services/firebase/surveys';
-import { encuestaDTO, capituloDTO, preguntaDTO, surveyDTO } from '../../helpers/surveyDTO';
+import { Chapter, Survey, SurveyQuestion } from '../../interfaces/Survey';
+import { existsSurvey, addNewSurvey, editSurvey, existsChapter, addNewChapter, deleteChapter, editChapter, addQuestion, editQuestion, deleteQuestion, getSurveysAndChapters } from '../../services/firebase/surveys';
+import { encuestaDTO, capituloDTO, preguntaDTO } from '../../helpers/surveyDTO';
 import { uiOpenErrorAlert, uiOpenSuccessAlert, uiOpenModalAlert, uiCloseQuestion } from './uiActions';
 import { types } from '../types/types';
 
@@ -11,7 +11,6 @@ export const startNewSurvey = (survey: Partial<Survey>) => {
         const town = auth.municipio;
         const { code } = survey;
         survey.idTown = town;
-        console.log(survey);
 
         const existsSurveyDB = await existsSurvey(town, code);
         
@@ -37,39 +36,20 @@ const addNewSurveyRedux = (survey: any) => ({
     payload: survey,
 });
 
-// Cargar solo informacion de la encuesta
-export const startLoadingDataSurveys = ( town: string, flag?: boolean ) => {
-    return async(dispatch: any) => {
-        const resp = await getSurveys(town);
-        const surveys:any[] = [];
-
-        if(flag) {
-            await dispatch( startLoadingCompleteSurveys(town, resp) )
-        }
-        resp.forEach( resp => {
-            surveys.push(surveyDTO(resp));
-        });
-        dispatch( setDataSurveys(surveys) );
-    }
-};
-
-
 // Cargar encuestas por municipio
-export const startLoadingCompleteSurveys = ( town: string, data?: any[] ) => {
+export const startLoadingCompleteSurveys = ( town: string ) => {
     return async(dispatch: any) => {
-        const surveys = await getSurveysAndChapters(town, data);
-
-        await dispatch( setSurveys(surveys) );
+        try {
+            const surveys = await getSurveysAndChapters(town);
+            await dispatch( setSurveys(surveys) );
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 };
 
 export const setSurveys = (surveys: Survey[]) => ({
     type: types.surveysCompleteLoad,
-    payload: surveys
-});
-
-export const setDataSurveys = (surveys: Survey[]) => ({
-    type: types.surveysDataLoad,
     payload: surveys
 });
 
@@ -98,51 +78,76 @@ export const startEditSurvey = (survey: Partial<Survey>) => {
 }
 
 // Agregar nuevo capítulo o editar capitulo
-export const startNewChapter = (chapter: Partial<Chapter>, idSurvey: string, action: boolean, idChapter?: string) => {
-    return async(dispatch: any, getState: any) => {
-        const { auth } = getState();
-        const { activeChapter } = getState().survey;
-        const town = auth.municipio;
-        const { name, number } = chapter;
+export const startNewChapter = (
+  chapter: Partial<Chapter>,
+  idSurvey: string,
+  action: boolean,
+  idChapter?: string
+) => {
+  return async (dispatch: any, getState: any) => {
+    const { auth } = getState();
+    const { activeChapter, activeSurvey: survey } = getState().survey;
+    const town = auth.municipio;
+    const { name, number } = chapter;
 
-        const existsChapterDB = await existsChapter(town, idSurvey, name);
-        const chapterToDB = capituloDTO(chapter);
-        
-        if( existsChapterDB ) {
-            if(action) {
-                dispatch( uiOpenErrorAlert() );
-            } else {
-                if ( name === activeChapter.name) {
-                    // Editar capitulo
-                    (idChapter) && await editChapter(town, idSurvey, idChapter, chapterToDB);
-                    dispatch( chapterActive({...activeChapter, name: name, number: number}))
-                    await dispatch( uiOpenSuccessAlert() );
-                    await dispatch( startLoadingCompleteSurveys(town) );
-                    await dispatch( startLoadingChapters(town, idSurvey) );
-                    
-                } else {
-                    dispatch( uiOpenErrorAlert() );
-                }
-            }
+    const existsChapterDB = await existsChapter(town, idSurvey, name);
+    const chapterToDB = capituloDTO(chapter);
+    chapter.id = `capitulo${number}-${Date.now()}`;
+
+    if (existsChapterDB) {
+      if (action) {
+        dispatch(uiOpenErrorAlert());
+      } else {
+        if (name === activeChapter.name) {
+          // Editar capitulo
+          idChapter &&
+            (await editChapter(town, idSurvey, idChapter, chapterToDB));
+          dispatch(
+            chapterActive({ ...activeChapter, name: name, number: number })
+          );
+          dispatch(uiOpenSuccessAlert());
+          
+          // Cambio del estado en el reducer
+          const updatedChapters = survey.chapters.map((data: Partial<Chapter>) => data.id === idChapter ? chapter : data);
+          dispatch( activeSurvey({...survey, chapters: updatedChapters}));
+          dispatch( updateSurvey({...survey, chapters: updatedChapters}));
         } else {
-            try {
-                if(action) {
-                    // Crear capitulo
-                    await addNewChapter(town, idSurvey, chapterToDB);            
-                } else {
-                    // Editar capitulo
-                    (idChapter) && await editChapter(town, idSurvey, idChapter, chapterToDB);
-                    dispatch( chapterActive({...activeChapter, name: name, number: number}))
-                }
-                await dispatch( uiOpenSuccessAlert() );
-                await dispatch( startLoadingCompleteSurveys(town) );
-                await dispatch( startLoadingChapters(town, idSurvey) );
-            } catch (error) {
-                throw new Error(error);
-            }
+          dispatch(uiOpenErrorAlert());
         }
+      }
+    } else {
+      try {
+        if (action) {
+          // Crear capitulo
+          await addNewChapter(town, idSurvey, chapterToDB, chapter.id);
+          // Cambio del estado en el reducer
+          dispatch(
+            activeSurvey({ ...survey, chapters: [...survey.chapters, chapter] })
+          );
+          dispatch(
+            updateSurvey({ ...survey, chapters: [...survey.chapters, chapter] })
+          );
+        } else {
+          // Editar capitulo
+          idChapter &&
+            (await editChapter(town, idSurvey, idChapter, chapterToDB));
+          // Cambio del estado en el reducer
+          dispatch(
+            chapterActive({ ...activeChapter, name: name, number: number })
+          );
+
+          // Cambio del estado en el reducer
+          const updatedChapters = survey.chapters.map((data: Partial<Chapter>) => data.id === idChapter ? chapter : data);
+          dispatch( activeSurvey({...survey, chapters: updatedChapters}));
+          dispatch( updateSurvey({...survey, chapters: updatedChapters}));
+        }
+        dispatch(uiOpenSuccessAlert());
+      } catch (error) {
+        throw new Error(error);
+      }
     }
-}
+  };
+};
 
 // Cargar capitulos por encuesta
 export const startLoadingChapters = ( town: string, idSurvey: string ) => {
@@ -163,12 +168,19 @@ export const setChapters = (chapters: Chapter[]) => ({
 export const startDeleteChapter = ( idSurvey: string, idChapter: string ) => {
     return async(dispatch: any, getState: any) => {
         const { auth } = getState();
+        const { activeSurvey: survey } = getState().survey;
         const town = auth.municipio;
-
-        await deleteChapter(town, idSurvey, idChapter);
-        dispatch( uiOpenModalAlert() );
-        await dispatch( startLoadingCompleteSurveys(town) );
-        dispatch( chapterCleanActive() );
+        
+        try {
+            const filterChapters = survey.chapters.filter((data: Partial<Chapter>) => data.id !== idChapter);
+            await deleteChapter(town, idSurvey, idChapter);
+            dispatch( uiOpenModalAlert() );
+            dispatch( activeSurvey({...survey, chapters: filterChapters}) );
+            dispatch( updateSurvey({...survey, chapters: filterChapters}) );
+            dispatch( chapterCleanActive() );
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 }
 
@@ -183,24 +195,41 @@ export const chapterCleanActive = () => ({type: types.chapterCleanActive});
 // Agregar pregunta
 export const startNewQuestion = (question: any, idSurvey: string) => {
     return async(dispatch: any, getState: any) => {
-        const { auth, survey } = getState();
-        const { surveys } = survey;
+        const { auth } = getState();
+        const { activeSurvey: survey } = getState().survey;
         const town = auth.municipio;
         const idChapter = question.chapter;
-        let surveyFilter: Survey[] = surveys;
 
-        const getSurvey = surveyFilter.filter( survey => survey.idSurvey === idSurvey);
-        const getChapter = getSurvey[0].chapters.filter( chapter => chapter.id === question.chapter );
+        const getChapter = survey.chapters.filter( (chapter: Partial<Chapter>) => chapter.id === question.chapter );
         const idQuestion = `pregunta${getChapter[0].questions.length + 1}_${Date.now()}`;
-
         let typeQuestion:string = '';
         (question.directedTo === 0) ? (typeQuestion = 'PreguntasIndividual') : (typeQuestion = 'PreguntasHogar')
 
         const questionToDB = preguntaDTO(question, typeQuestion);
+        const questionToRedux = {
+            id: idQuestion,
+            question: question.question,
+            directedTo: typeQuestion,
+            type: question.type,
+            chart: question.chart,
+            options: question.options,
+            answers: question.answers
+        }
+
         try {
             await addQuestion(town, idSurvey, idChapter, typeQuestion, questionToDB, idQuestion);
             dispatch( uiOpenSuccessAlert() );
-            await dispatch( startLoadingCompleteSurveys(town) );
+
+            // Cambio del estado en el reducer
+            const updatedChapters = survey.chapters.map( ((chapter: Partial<Chapter>) => {
+                if(chapter.id === question.chapter){
+                    chapter.questions = [...getChapter[0].questions, questionToRedux]
+                }
+                return chapter;
+            }));
+            dispatch( activeSurvey({...survey, chapters: updatedChapters}) );
+            dispatch( updateSurvey({...survey, chapters: updatedChapters}) );
+
         } catch (error) {
             throw new Error(error);
         }
@@ -231,18 +260,41 @@ export const startEditQuestion = (question: any, idSurvey: string, idQuestion: s
         const survey: Survey = active;
         const town = auth.municipio;
         const idChapter = question.chapter;
+        const getChapter = survey.chapters.filter( (chapter: Partial<Chapter>) => chapter.id === question.chapter );
 
         let typeQuestion:string = '';
         (question.directedTo === 0) ? (typeQuestion = 'PreguntasIndividual') : (typeQuestion = 'PreguntasHogar')
 
         const questionToDB = preguntaDTO(question, typeQuestion);
+        const questionToRedux = {
+            id: idQuestion,
+            question: question.question,
+            directedTo: typeQuestion,
+            type: question.type,
+            chart: question.chart,
+            options: question.options,
+            answers: question.answers
+        }
+
         try {
             await editQuestion(town, idSurvey, idChapter, typeQuestion, idQuestion, questionToDB,);
-            const chapters = await getChapters(town, idSurvey)
             dispatch( uiOpenSuccessAlert() );
-            dispatch( activeSurvey({...survey, chapters: chapters}));
-            dispatch( setChapters(chapters) );
+
+            // Cambio de estado en el reducer
+            const updatedChapters = survey.chapters.map( ((chapter: Chapter) => {
+                if(chapter.id === question.chapter){
+                    chapter.questions = getChapter[0].questions.map((question) =>
+                    question.id === idQuestion 
+                    ? questionToRedux
+                    : question
+                    )
+                }
+                return chapter;
+            }));
             
+            dispatch( questionActive(questionToRedux) );
+            dispatch( activeSurvey({...survey, chapters: updatedChapters}));
+            dispatch( updateSurvey({...survey, chapters: updatedChapters}) );
         } catch (error) {
             throw new Error(error);
         }
@@ -256,15 +308,29 @@ export const startEditQuestion = (question: any, idSurvey: string, idQuestion: s
 export const startDeleteQuestion = ( question: any, idChapter: string ) => {
     return async(dispatch: any, getState: any) => {
         const { auth } = getState();
-        const { activeSurvey: active } = getState().survey;
-        const survey: Survey = active;
+        const { activeSurvey: survey } = getState().survey;
         const town = auth.municipio;
-        
-        await deleteQuestion(town, survey.idSurvey, idChapter, question.directedTo, question.id);
-        const chapters = await getChapters(town, survey.idSurvey)
-        dispatch( uiOpenSuccessAlert() );
-        dispatch( activeSurvey({...survey, chapters: chapters}));
-        dispatch( setChapters(chapters) );
+        const idQuestion = question.id;
+        const getChapter = survey.chapters.filter( (chapter: Partial<Chapter>) => chapter.id === idChapter );
+
+        try {
+            await deleteQuestion(town, survey.idSurvey, idChapter, question.directedTo, question.id);
+            dispatch( uiOpenSuccessAlert() );
+
+            // Cambio en el estado del reducer
+            const updatedChapters = survey.chapters.map( ((chapter: Chapter) => {
+                if(chapter.id === idChapter){
+                    console.log(chapter.id, idChapter)
+                    chapter.questions = getChapter[0].questions.filter((question: SurveyQuestion) => question.id !== idQuestion)
+                }
+                return chapter;
+            }));
+            dispatch( activeSurvey({...survey, chapters: updatedChapters}));
+            dispatch( updateSurvey({...survey, chapters: updatedChapters}) );
+            
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 }
 
