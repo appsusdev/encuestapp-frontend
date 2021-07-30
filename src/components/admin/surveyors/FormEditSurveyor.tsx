@@ -402,7 +402,7 @@ export const FormEditSurveyor = () => {
         open={successAlert}
         typeAlert="success"
         message="UpdatedSurveyor"
-        time={2000}
+        time={1000}
         handleClose={closeSuccess}
       />
     </Box>

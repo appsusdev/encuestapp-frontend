@@ -3,7 +3,6 @@ import { Survey } from '../../interfaces/Survey';
 
 const initialState = {
     surveys: [],
-    dataSurveys: [],
     activeSurvey: null,
     chapters: [],
     activeChapter: null,
@@ -19,14 +18,14 @@ export const surveysReducer = ( state: ISurvey = initialState, action: SurveysAc
                 ...state,
                 surveys: [...action.payload]
             }
-
-        case types.surveysDataLoad:
+            
+        case types.surveyAddNew:
             return {
                 ...state,
-                dataSurveys: [...action.payload]
+                surveys: [...state.surveys, action.payload]
             }
 
-        case types.surveyDataUpdated:
+        case types.surveyUpdated:
             return {
                 ...state,
                 surveys: state.surveys.map(

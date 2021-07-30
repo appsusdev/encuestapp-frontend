@@ -76,7 +76,7 @@ export const SurveysTabs = () => {
         </TabPanel>
       </div>
 
-      <MyAlert open={successAlert} typeAlert="success" message="UpdatedSurvey" time={2000} handleClose={closeSuccess}/>
+      <MyAlert open={successAlert} typeAlert="success" message="UpdatedSurvey" time={1000} handleClose={closeSuccess}/>
     </div>
   );
 };

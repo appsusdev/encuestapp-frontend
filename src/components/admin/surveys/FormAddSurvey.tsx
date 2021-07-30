@@ -26,25 +26,34 @@ export const FormAddSurvey = () => {
 
     const validationSchema = yup.object({
         code: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`),
-        creationDate: yup.date(),
+        creationDate: yup.date().max(new Date(), `${intl.formatMessage({ id: "GreaterCurrentDate" })}`).required(),
         state: yup.boolean(),
         name: yup.string().required(`${intl.formatMessage({ id: 'RequiredFile' })}`)
     });
 
     let initialValues: Partial<Survey> = {
+        idSurvey: '',
         code: '',
         creationDate: new Date().toLocaleDateString('en-CA'),
         state: false,
-        name: ''
+        name: '',
+        authorizationFormats: null,
+        surveyors: [],
+        chapters: []
     }
 
     if(active) {
         disable = true;
         initialValues = {
+            idSurvey: survey.idSurvey,
             code: survey.code,
             creationDate: survey.creationDate,
             state: survey.state,
-            name: survey.name
+            name: survey.name,
+            authorizationFormats: survey.authorizationFormats,
+            surveyors: survey.surveyors,
+            chapters: survey.chapters,
+            idTown: survey.idTown,
         }
     }
 
@@ -72,6 +81,7 @@ export const FormAddSurvey = () => {
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={async(data, { setSubmitting }) => {
+                    data.idSurvey = data.code;
                     setSubmitting(true);
                     if (active) {
                     dispatch( activeSurvey({...survey, name: data.name}))
@@ -87,7 +97,7 @@ export const FormAddSurvey = () => {
 
                         <Grid container spacing={2}>
 
-                            <Grid item xs={5}>
+                            <Grid item xs={(active) ? 6 : 5}>
                                 <label className="form-text"><FormattedMessage id='Code' /></label>
                                 <MyTextField
                                     name="code"
@@ -97,7 +107,7 @@ export const FormAddSurvey = () => {
                                 />
                             </Grid>
 
-                            <Grid item xs={5}>
+                            <Grid item xs={(active) ? 6 : 5}>
                                 <label className="form-text"><FormattedMessage id='CreationDate' /></label>
                                 <MyTextField
                                     name="creationDate"
@@ -116,7 +126,6 @@ export const FormAddSurvey = () => {
                                     </Box>
                                 </Grid>
                             }
-
 
                             <Grid item xs={12}>
                                 <label className="form-text"><FormattedMessage id='Name' /></label>

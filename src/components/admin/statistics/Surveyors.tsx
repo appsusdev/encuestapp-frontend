@@ -52,7 +52,7 @@ export const Surveyors = () => {
   const dispatch = useDispatch();
   const componentRef = useRef<HTMLDivElement>(null);
 
-  const { dataSurveys } = useSelector<AppState, AppState["survey"]>(
+  const { surveys } = useSelector<AppState, AppState["survey"]>(
     (state) => state.survey
   );
   const { surveyors, surveysTransmitted, infoSurveysTransmitted } = useSelector<
@@ -75,7 +75,7 @@ export const Surveyors = () => {
   const infoTransmitted: any[] = infoSurveysTransmitted;
   const surveyorsList: Surveyor[] = surveyors;
 
-  let list: Survey[] = dataSurveys;
+  let list: Survey[] = surveys;
 
   useEffect(() => {
     setSurveysAssign(
