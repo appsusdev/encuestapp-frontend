@@ -23,7 +23,7 @@ import {
   uiOpenErrorAlert,
   uiOpenModalAlert,
 } from "./uiActions";
-import { updateDataSurvey } from "./surveysActions";
+import { updateSurvey } from "./surveysActions";
 
 // Agregar nuevo encuestador
 export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
@@ -204,7 +204,7 @@ export const startAssignSurvey = (
         await assignSurvey(town, id, newSurveyors, email, newAssignedSurveys);
         dispatch(uiOpenSuccessAlert());
         dispatch(
-          updateDataSurvey({ ...arraySurveyors[0], surveyors: newSurveyors })
+          updateSurvey({ ...arraySurveyors[0], surveyors: newSurveyors })
         );
         dispatch(updateAssignedSurveys({id: email, email, assignedSurveys: newAssignedSurveys}));
       }
@@ -218,7 +218,7 @@ export const startAssignSurvey = (
       await assignSurvey(town, id, newSurveyors, email, newAssignedSurveys);
       dispatch(uiOpenSuccessAlert());
       dispatch(
-        updateDataSurvey({ ...arraySurveyors[0], surveyors: newSurveyors })
+        updateSurvey({ ...arraySurveyors[0], surveyors: newSurveyors })
       );
       dispatch(updateAssignedSurveys({id: email, email, assignedSurveys: newAssignedSurveys}));
     }

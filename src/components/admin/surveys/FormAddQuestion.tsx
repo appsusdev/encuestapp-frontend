@@ -61,6 +61,7 @@ export const FormAddQuestion = () => {
         description: boolean,
         textDescription: string,
         typeDescription: Partial<TypeQuestion>,
+        answers: any[]
     }
 
     let initialValues: Partial<myFormValues> = {
@@ -73,7 +74,8 @@ export const FormAddQuestion = () => {
         description: false,
         textDescription: '',
         typeDescription: TypeQuestion.TEXT_INPUT,
-        options: options
+        options: options,
+        answers: []
     }
 
     if( activeQuestion && chapterQuestion) {
@@ -88,6 +90,7 @@ export const FormAddQuestion = () => {
             textDescription: '',
             typeDescription: TypeQuestion.TEXT_INPUT,
             options: options,
+            answers: activeQuestion.answers
         }
     }
 
@@ -133,7 +136,6 @@ export const FormAddQuestion = () => {
     return (
         <Box m={1}>
             <Formik
-                validateOnChange={true}
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={async(data, { setSubmitting, resetForm }) => {
@@ -147,11 +149,12 @@ export const FormAddQuestion = () => {
                         // Editar pregunta 
                         await  dispatch( startEditQuestion(data, survey.idSurvey, activeQuestion.id) );
                     } else {
+                        data.answers = [];
                         // Agregar pregunta
                         await dispatch( startNewQuestion(data, survey.idSurvey) );
+                        resetForm({});
                     }
                     setSubmitting(false);
-                    resetForm({});
                 }}>
                 {({ values, isSubmitting, handleChange, handleSubmit }) => (
 
@@ -165,7 +168,6 @@ export const FormAddQuestion = () => {
                                     name="chapter"
                                     variant='outlined'
                                     select
-                                    value=""
                                     className={classes.myTextFieldRoot}
                                     disabled={(activeQuestion) ? true : false}
                                 >
@@ -390,7 +392,7 @@ export const FormAddQuestion = () => {
                 open={successAlert}
                 typeAlert="success"
                 message={"QuestionAddSuccess"}
-                time={2000}
+                time={1000}
                 handleClose={closeSuccess}
             />
         </Box>

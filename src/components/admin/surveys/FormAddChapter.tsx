@@ -28,13 +28,17 @@ export const FormAddChapter = () => {
     const chapter: Chapter = activeChapter;
     
     let initialValues: Partial<Chapter> = {
+        id: '',
         number: '',
-        name: ''
+        name: '',
+        questions: [],
     }
     if(chapter) {
         initialValues = {
+            id: chapter.id,
             number: chapter.number,
-            name: chapter.name
+            name: chapter.name,
+            questions: chapter.questions
         }
     }
     
@@ -158,7 +162,7 @@ export const FormAddChapter = () => {
                 open={errorAlert}
                 typeAlert="error"
                 message="MessageExistsChapter"
-                time={2000}
+                time={1000}
                 handleClose={closeError}
             />
 
@@ -166,7 +170,7 @@ export const FormAddChapter = () => {
                 open={successAlert}
                 typeAlert="success"
                 message={(chapter)? "ChapterEditSuccess" : "ChapterAddSuccess"}
-                time={2000}
+                time={1000}
                 handleClose={closeSuccess}
             />
 
@@ -174,7 +178,7 @@ export const FormAddChapter = () => {
                 open={modalAlert}
                 typeAlert="success"
                 message="ChapterDeletedSuccess"
-                time={2000}
+                time={1000}
                 handleClose={closeSuccess}
             />
 

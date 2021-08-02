@@ -15,7 +15,7 @@ import { getUserRole } from "../services/firebase/auth";
 import { Box, Grid } from "@material-ui/core";
 import { useStyles } from "../shared/styles/useStyles";
 import { startLoadingSurveyors, startLoadingAssignedSurveys } from '../redux/actions/surveyorsActions';
-import { startLoadingDataSurveys } from '../redux/actions/surveysActions';
+import { startLoadingCompleteSurveys } from '../redux/actions/surveysActions';
 import { startLoadingCitizens, startLoadingMapData } from '../redux/actions/citizensActions';
 import { startLoadEntities } from "../redux/actions/entitiesActions";
 
@@ -49,7 +49,7 @@ export const AppRouter: FC = () => {
               dispatch(login(userMain));
               if( rol === TypeUser.ADMIN ){
                 dispatch(startLoadingSurveyors(municipio));
-                await dispatch(startLoadingDataSurveys(municipio, true));
+                dispatch(startLoadingCompleteSurveys(municipio));
                 dispatch(startLoadingAssignedSurveys(municipio));
                 dispatch(startLoadingCitizens());
                 dispatch(startLoadingMapData(municipio));

@@ -53,7 +53,7 @@ export const Microdata = () => {
   const intl = useIntl();
   const dispatch = useDispatch();
   const componentRef = useRef<HTMLDivElement>(null);
-  const { dataSurveys } = useSelector<AppState, AppState["survey"]>(
+  const { surveys } = useSelector<AppState, AppState["survey"]>(
     (state) => state.survey
   );
   const { surveyors, surveysTransmitted, idResponsibleCitizens } = useSelector<
@@ -63,7 +63,7 @@ export const Microdata = () => {
   const { loading } = useSelector<AppState, AppState["ui"]>(
     (state) => state.ui
   );
-  const surveys: any[] = dataSurveys;
+  const surveysList: any[] = surveys;
   const idCitizens: string[] = idResponsibleCitizens;
   const listSurveyors: Partial<Surveyor>[] = surveyors;
   const [surveySelected, setSurveySelected] = useState("");
@@ -194,7 +194,7 @@ export const Microdata = () => {
     setErrorSurvey(value === "");
 
     setValid({ ...valid, survey: true });
-    const surveryFilter = surveys.filter((survey) => survey.code === value);
+    const surveryFilter = surveysList.filter((survey) => survey.code === value);
     setSurveyorsEmail(surveryFilter[0].surveyors);
 
     let names: any[] = [];
@@ -273,7 +273,7 @@ export const Microdata = () => {
                         className: classes.helperText,
                       }}
                     >
-                      {surveys.map((survey, index) => (
+                      {surveysList.map((survey, index) => (
                         <MenuItem key={index} value={survey.code}>
                           {survey.name}
                         </MenuItem>

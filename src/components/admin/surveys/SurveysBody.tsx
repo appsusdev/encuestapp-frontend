@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { TableCell, TableRow } from '@material-ui/core';
 import { CustomizedIcons } from '../../custom/CustomizedIcons';
@@ -8,13 +8,11 @@ import { db } from '../../../config/firebase/firebase-config';
 import { convertDate } from '../../../helpers/convertDate';
 import { Survey } from '../../../interfaces/Survey';
 import { uiOpenModalEdit, uiOpenModalAssign, uiOpenAlert, uiOpenModalDelete } from '../../../redux/actions/uiActions';
-import { activeSurvey, startLoadingCompleteSurveys } from '../../../redux/actions/surveysActions';
-import { AppState } from '../../../redux/reducers/rootReducer';
+import { activeSurvey, updateSurvey } from '../../../redux/actions/surveysActions';
 
 export const SurveysBody = (survey: Partial<Survey>) => {
 
     const dispatch = useDispatch();
-    const { municipio } = useSelector<AppState, AppState['auth']>(state => state.auth);
     const [state, setState] = useState({
         checkedA: survey.state
     });
@@ -29,7 +27,7 @@ export const SurveysBody = (survey: Partial<Survey>) => {
         await db.collection('Municipios').doc(survey.idTown).collection('Encuestas').doc(survey.idSurvey).set({activo: check}, {merge: true});
         
         dispatch( uiOpenAlert() );
-        (municipio) && await dispatch(startLoadingCompleteSurveys(municipio)); 
+        dispatch( updateSurvey({ ...survey, state: check }) );
     };
 
     const onEdit = () => {

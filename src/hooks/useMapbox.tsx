@@ -2,8 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { useCallback } from "react";
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoibmF0YWxpYW04IiwiYSI6ImNraWprMjFzazAwbmkyenU2empiNWR2NXYifQ.FBcmRw4_j_sPvaMxpn7a1g";
+mapboxgl.accessToken = `${process.env.REACT_APP_MAPBOX_APIKEY}`;
 
 export interface InitialPoint {
   lng: number;
@@ -19,7 +18,6 @@ export const useMapbox = (initialPoint: InitialPoint, showMarker: boolean) => {
   }, []);
 
   // Referencia a los marcadores
-  // let markers: any[] = [];
   const [markers, setMarkers] = useState<any[]>([]);
 
   // Mapa y coords
@@ -42,7 +40,6 @@ export const useMapbox = (initialPoint: InitialPoint, showMarker: boolean) => {
       setMarkers(oldMarkers => [...oldMarkers,marker]);
     }
   }, []);
-  // console.log(markers)
 
   useEffect(() => {
     const mapConfig = new mapboxgl.Map({

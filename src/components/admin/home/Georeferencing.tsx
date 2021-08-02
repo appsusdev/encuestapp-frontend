@@ -42,7 +42,7 @@ export const Georeferencing = () => {
   const { mapData } = useSelector<AppState, AppState["citizens"]>(
     (state) => state.citizens
   );
-  const { dataSurveys } = useSelector<AppState, AppState["survey"]>(
+  const { surveys } = useSelector<AppState, AppState["survey"]>(
     (state) => state.survey
   );
   const { surveysAnswered } = useSelector<AppState, AppState["citizens"]>(
@@ -57,7 +57,7 @@ export const Georeferencing = () => {
   );
   const [show, setShow] = useState(false);
   const [array, setArray] = useState<any[]>([]);
-  const surveys: any[] = dataSurveys;
+  const surveysList: any[] = surveys;
   let answersArray: any[] = [];
 
   useEffect(() => {
@@ -135,7 +135,7 @@ export const Georeferencing = () => {
                       select
                       variant="outlined"
                     >
-                      {surveys.map((survey, index) => (
+                      {surveysList.map((survey, index) => (
                         <MenuItem key={index} value={survey.code}>
                           {survey.name}
                         </MenuItem>
