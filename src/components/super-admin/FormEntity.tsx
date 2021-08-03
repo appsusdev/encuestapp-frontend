@@ -32,7 +32,7 @@ import {
   startAddNewEntity,
   updateEntity,
 } from "../../redux/actions/entitiesActions";
-import { addNewEntity } from "../../services/firebase/entities";
+import { addNewEntity,updateEntity as bdUpdateEntity } from "../../services/firebase/entities";
 import { AppState } from "../../redux/reducers/rootReducer";
 interface ILocationData {
   departamento: string;
@@ -162,15 +162,14 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
             identificacion.toString()
           );
         }
+        await bdUpdateEntity(entity)
       } else {
         await registerWithEmailPassword(email, identificacion.toString());
+        //agregarlo a la bd
+        //crear la collection del municipio que se acaba de crear con los datos del admin y el departamento al cual pertenece
+        await addNewEntity(entity);
+        //agregarlo al state del redux
       }
-      //agregarlo a la bd
-      //crear la collection del municipio que se acaba de crear con los datos del admin y el departamento al cual pertenece
-      const { ok } = await addNewEntity(entity);
-      //agregarlo al state del redux
-
-      if (ok) {
        
         edit
           ? dispatch(updateEntity({ ...entity }))
@@ -179,7 +178,7 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
         dispatch(uiCloseModalAdd());
         dispatch(uiCloseModalEdit());
         dispatch(uiOpenSuccessAlert());
-      }
+      
     } catch (error) {
       console.log(error);
       dispatch(uiOpenErrorAlert());
