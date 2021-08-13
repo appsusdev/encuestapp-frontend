@@ -1,7 +1,7 @@
 import { Chapter, Survey, SurveyQuestion } from '../../interfaces/Survey';
 import { existsSurvey, addNewSurvey, editSurvey, existsChapter, addNewChapter, deleteChapter, editChapter, addQuestion, editQuestion, deleteQuestion, getSurveysAndChapters } from '../../services/firebase/surveys';
 import { encuestaDTO, capituloDTO, preguntaDTO } from '../../helpers/surveyDTO';
-import { uiOpenErrorAlert, uiOpenSuccessAlert, uiOpenModalAlert, uiCloseQuestion } from './uiActions';
+import { uiOpenErrorAlert, uiOpenSuccessAlert, uiOpenModalAlert, uiCloseQuestion, startLoading, finishLoading } from './uiActions';
 import { types } from '../types/types';
 
 export const startNewSurvey = (survey: Partial<Survey>) => {
@@ -40,8 +40,10 @@ const addNewSurveyRedux = (survey: any) => ({
 export const startLoadingCompleteSurveys = ( town: string ) => {
     return async(dispatch: any) => {
         try {
+            dispatch( startLoading() );
             const surveys = await getSurveysAndChapters(town);
             await dispatch( setSurveys(surveys) );
+            dispatch( finishLoading() )
         } catch (error) {
             throw new Error(error);
         }
