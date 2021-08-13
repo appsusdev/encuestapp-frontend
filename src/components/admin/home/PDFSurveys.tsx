@@ -16,40 +16,28 @@ import HomeIcon from "@material-ui/icons/Home";
 import PersonIcon from "@material-ui/icons/Person";
 
 import { TypeQuestion } from "../../../enums/enums";
-import { getCopyArrayOrObject } from "../../../helpers/getCopyArrayOrObject";
-import { Survey, Chapter, ISurveyAnswers } from "../../../interfaces/Survey";
+import { Chapter, ISurveyAnswers } from "../../../interfaces/Survey";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { convertDateDash } from "../../../helpers/convertDate";
 import { Link } from "@material-ui/core";
 
 interface Props {
-  data: Partial<Survey>;
+  data: Chapter[];
+  title: string | undefined;
 }
 export const PDFSurveys = (props: Props) => {
-  const { data } = props;
+  const { data, title } = props;
   const classes = useStyles();
 
   const { activeCitizen } = useSelector<AppState, AppState["citizens"]>(
     (state) => state.citizens
   );
 
-  const list: Chapter[] | undefined = getCopyArrayOrObject(data.chapters);
-
-  const newList = list?.map((chapter) => {
-    chapter.questions.map((question) => {
-      question.answers = question.answers?.filter(
-        (answer) => answer.citizen === activeCitizen.identificacion
-      );
-      return question;
-    });
-    return chapter;
-  });
-
   return (
     <Box m={5}>
       <Box display="flex" justifyContent="center" className={classes.titlePDF}>
-        {data.name}
+        {title}
       </Box>
       <Box display="flex" justifyContent="space-between">
         <Box mt={3} display="flex" justifyContent="flex-start">
@@ -70,8 +58,8 @@ export const PDFSurveys = (props: Props) => {
         </Box>
       </Box>
 
-      {newList &&
-        newList.map((chapter) => (
+      {data &&
+        data.map((chapter) => (
           <Box key={chapter.id} mt={2}>
             <Typography className={classes.title} variant="h6">
               {chapter.number}. {chapter.name}
@@ -217,15 +205,19 @@ export const PDFSurveys = (props: Props) => {
                               )
                           )}
                         {question.type === TypeQuestion.GEOLOCATION && (
-                          <Box m={1}>
-                            <Card className={classes.cardPDF}>
-                              <CardMedia
-                                className={classes.media}
-                                image={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
-                                title="Map"
-                              />
-                            </Card>
-                          </Box>
+                          <>
+                            <Grid container>
+                              <Grid item xs={10}>
+                                <Card className={classes.card}>
+                                  <CardMedia
+                                    className={classes.media}
+                                    image={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
+                                    title="Map"
+                                  />
+                                </Card>
+                              </Grid>
+                            </Grid>
+                          </>
                         )}
                         {question.type === TypeQuestion.FILE && (
                           <Box mt={1}>

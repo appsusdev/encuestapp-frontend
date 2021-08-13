@@ -45,7 +45,6 @@ const pageStyle = `
 }
 `;
 
-
 export const Surveyors = () => {
   const classes = useStyles();
   const intl = useIntl();
@@ -164,12 +163,6 @@ export const Surveyors = () => {
     setNewList(filter);
     await setTimeout(() => {}, 2500);
   };
-
-  const onBeforePrint = () => {
-    setTimeout(() => {
-      
-    }, 2000);
-  }
 
   return (
     <>
@@ -329,7 +322,6 @@ export const Surveyors = () => {
                       onBeforeGetContent={async () =>
                         await getData(survey.surveyCode)
                       }
-                      onBeforePrint={onBeforePrint}
                       trigger={() => (
                         <Grid item xs={4}>
                           <Link component="button">
