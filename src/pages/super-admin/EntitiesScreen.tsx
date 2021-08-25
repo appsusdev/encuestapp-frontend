@@ -18,12 +18,12 @@ import {
   uiOpenModalAdd,
 } from "../../redux/actions/uiActions";
 import { FormEntity } from "../../components/super-admin/FormEntity";
-import { MyAlert } from '../../components/custom/MyAlert';
-
+import { MyAlert } from "../../components/custom/MyAlert";
+import { Colors } from "../../shared/constants/Colors";
 
 export const useStyles = makeStyles((theme) => ({
   btnRoot: {
-    background: theme.palette.error.main,
+    background: Colors.ACCENT,
     display: "flex",
     borderRadius: "4px",
     width: "20rem",
@@ -31,7 +31,7 @@ export const useStyles = makeStyles((theme) => ({
     fontSize: 16,
     textTransform: "none",
     "&:hover": {
-      background: theme.palette.error.dark,
+      background: Colors.LIGTH_ACCENT,
     },
     [theme.breakpoints.down("sm")]: {
       width: "20%",
@@ -49,12 +49,11 @@ export const EntitiesScreen = () => {
     (state: AppState) => state.entities
   );
   const dispatch = useDispatch();
-  const {
-    modalAddOpen,
-    modalEditOpen,
-    modalDeleteOpen,
-  } = useSelector<AppState, AppState["ui"]>((state) => state.ui);
-  const { alert } = useSelector<AppState, AppState['ui']>(state => state.ui);
+  const { modalAddOpen, modalEditOpen, modalDeleteOpen } = useSelector<
+    AppState,
+    AppState["ui"]
+  >((state) => state.ui);
+  const { alert } = useSelector<AppState, AppState["ui"]>((state) => state.ui);
 
   const { successAlert, errorAlert } = useSelector(
     (state: AppState) => state.ui
@@ -80,7 +79,7 @@ export const EntitiesScreen = () => {
   const closeSuccess = () => {
     dispatch(uiCloseSuccessAlert());
     dispatch(uiCloseErrorAlert());
-    dispatch(uiCloseAlert())
+    dispatch(uiCloseAlert());
   };
 
   return (
@@ -122,9 +121,7 @@ export const EntitiesScreen = () => {
           cancelBtn={true}
           onDeny={onDenyEdit}
           title={`${intl.formatMessage({ id: "EditEntity" })}`}
-          content={
-            <FormEntity edit />
-          }
+          content={<FormEntity edit />}
           width
           textButton="Accept"
         />
@@ -156,11 +153,17 @@ export const EntitiesScreen = () => {
           time={2000}
           handleClose={closeSuccess}
         />
-    
-      <Box mt={3}>
-          <MyAlert open={alert} typeAlert="success" message="StateSurveyorUpdated" time={2000} handleClose={closeSuccess}/>
+
+        <Box mt={3}>
+          <MyAlert
+            open={alert}
+            typeAlert="success"
+            message="StateSurveyorUpdated"
+            time={2000}
+            handleClose={closeSuccess}
+          />
         </Box>
       </Box>
     </AppAnimate>
   );
-}
+};

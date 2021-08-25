@@ -4,23 +4,23 @@
   --medium: 500;
   --bold: 600;
   --extra-bold: 700;
-  font-family: 'Poppins', serif;
+  font-family: "Poppins", serif;
 }
 
 a {
   text-decoration-line: none;
-  color: #0a8fdc;
+  color: rgb(101, 131, 254);
 }
 
 body {
   line-height: 1.35 !important;
-  font-family: 'Poppins', serif;
+  font-family: "Poppins", serif;
 }
 
 * {
   margin: 0;
   padding: 0;
-  font-family: 'Poppins', serif;
+  font-family: "Poppins", serif;
 }
 
 *,
@@ -30,9 +30,9 @@ body {
 }
 
 input {
-  font-family: 'Poppins', serif !important;
+  font-family: "Poppins", serif !important;
   ::placeholder {
-    font-family: 'Poppins', serif !important;
+    font-family: "Poppins", serif !important;
   }
 }
 
@@ -66,10 +66,10 @@ h6 {
 }
 
 #font {
-  font-family: 'Poppins', serif;
+  font-family: "Poppins", serif;
 }
 
 .content {
-  background-color: #F4F7FE;
+  background-color: #f4f7fe;
   color: #3e4246;
 }

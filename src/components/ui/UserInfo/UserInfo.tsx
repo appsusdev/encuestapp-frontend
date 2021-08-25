@@ -16,6 +16,7 @@ import { FormattedMessage } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
 import { startLogout } from "../../../redux/actions/authActions";
 import { AppState } from "../../../redux/reducers/rootReducer";
+import { TypeUser } from "../../../enums/enums";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -64,7 +65,7 @@ const useStyles = makeStyles((theme) => {
 const UserInfo: React.FC<{}> = () => {
   const { themeMode } = useContext<AppContextPropsType>(AppContext);
   const classes = useStyles({ themeMode });
-  const { rol } = useSelector((state: AppState) => state.auth);
+  const { rol, municipio } = useSelector((state: AppState) => state.auth);
   const dispatch = useDispatch();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -119,7 +120,9 @@ const UserInfo: React.FC<{}> = () => {
               </Menu>
             </Box>
           </Box>
-          <Box className={classes.designation}>Appsus</Box>
+          <Box className={classes.designation}>
+            {rol === TypeUser.ADMIN ? municipio : "APPSUS"}
+          </Box>
         </Box>
       </Box>
     </Box>
