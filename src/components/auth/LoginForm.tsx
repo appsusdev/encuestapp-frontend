@@ -92,7 +92,7 @@ export const LoginForm: FC<UserSigninProps> = (props) => {
     <Box flex={1} display="flex" flexDirection="column">
       <Box
         px={{ xs: 6, sm: 10, xl: 15 }}
-        pt={8}
+        pt={5}
         flex={1}
         display="flex"
         flexDirection="column"

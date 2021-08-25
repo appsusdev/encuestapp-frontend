@@ -11,7 +11,7 @@ import Typography from "@material-ui/core/Typography";
 
 import { MyTextField } from "../custom/MyTextField";
 import { Fonts } from "../../shared/constants/AppEnums";
-import logo from "../../assets/images/logo-encuestapp-blanco.png";
+import logo from "../../assets/images/logo-encuestapp.png";
 import useStylesAuth from "./auth.styles";
 
 export const ForgotForm: FC = () => {
@@ -32,85 +32,84 @@ export const ForgotForm: FC = () => {
       justifyContent="center"
       className={classes.appAuth}
     >
-      <Box mb={5} textAlign="center">
-        <img className={classes.imgRoot} src={logo} alt="crema-logo" />
-      </Box>
-
       <Box
-        m={1}
-        mt={2}
         display="flex"
         flexDirection="column"
         justifyContent="center"
         alignItems="center"
       >
-        <Card className={classes.card}>
-          <Box
-            component="h2"
-            mb={3}
-            fontWeight={Fonts.REGULAR}
-            fontSize={{ xs: 24, xl: 26 }}
-            className={classes.textGrey}
-          >
-            <FormattedMessage id="ForgetPassword" />
-          </Box>
-          <Box mb={{ xs: 6, xl: 12 }}>
-            <Typography id="font" className={classes.textSize}>
-              <FormattedMessage id="ForgetPasswordTextOne" /> <br />
-              <FormattedMessage id="ForgetPasswordTextTwo" />
-            </Typography>
-          </Box>
+        <Card className={classes.cardRoot}>
+          <Box m={3} mt={0}>
+            <Box textAlign="center">
+              <img className={classes.imgRoot} src={logo} alt="crema-logo" />
+            </Box>
+            <Box
+              mt={1}
+              component="h2"
+              fontWeight={Fonts.REGULAR}
+              fontSize={{ xs: 24, xl: 26 }}
+              className={classes.textGrey}
+            >
+              <FormattedMessage id="ForgetPassword" />
+            </Box>
+            <Box mt={1} mb={{ xs: 6, xl: 12 }}>
+              <Typography id="font" className={classes.textSize}>
+                <FormattedMessage id="ForgetPasswordTextOne" /> <br />
+                <FormattedMessage id="ForgetPasswordTextTwo" />
+              </Typography>
+            </Box>
 
-          <Formik
-            validateOnChange={true}
-            initialValues={{
-              email: "",
-            }}
-            validationSchema={validationSchema}
-            onSubmit={(data, { setSubmitting, resetForm }) => {
-              setSubmitting(true);
-              // reset password api  call here
-              setSubmitting(false);
-              resetForm();
-            }}
-          >
-            {({ isSubmitting }) => (
-              <Form className={classes.form}>
-                <Box>
-                  <MyTextField
-                    placeholder={intl.formatMessage({ id: "EmailAddress" })}
-                    name="email"
-                    label={<FormattedMessage id="EmailAddress" />}
-                    className={classes.textField}
-                    variant="outlined"
-                    autoComplete="off"
-                  />
-                </Box>
-                <Box mt={1} mb={3}>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    disabled={isSubmitting}
-                    className={classes.btnRoot}
-                    type="submit"
+            <Formik
+              validateOnChange={true}
+              initialValues={{
+                email: "",
+              }}
+              validationSchema={validationSchema}
+              onSubmit={(data, { setSubmitting, resetForm }) => {
+                setSubmitting(true);
+                // reset password api  call here
+                setSubmitting(false);
+                resetForm();
+              }}
+            >
+              {({ isSubmitting }) => (
+                <Form className={classes.form}>
+                  <Box>
+                    <MyTextField
+                      placeholder={intl.formatMessage({ id: "EmailAddress" })}
+                      name="email"
+                      label={<FormattedMessage id="EmailAddress" />}
+                      className={classes.textField}
+                      variant="outlined"
+                      autoComplete="off"
+                    />
+                  </Box>
+                  <Box mt={1} mb={3}>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      disabled={isSubmitting}
+                      className={classes.btnRoot}
+                      type="submit"
+                    >
+                      <FormattedMessage id="SendEmail" />
+                    </Button>
+                  </Box>
+
+                  <Box
+                    textAlign="center"
+                    fontSize={15}
+                    className={classes.textGrey}
                   >
-                    <FormattedMessage id="SendEmail" />
-                  </Button>
-                </Box>
-
-                <Box
-                  textAlign="center"
-                  fontSize={15}
-                  className={classes.textGrey}
-                >
-                  <FormattedMessage id="AlreadyHavePassword" /> &nbsp;
-                  <Link to="/auth/login" className={classes.underlineNone}>
-                    <FormattedMessage id="Login" />
-                  </Link>
-                </Box>
-              </Form>
-            )}
-          </Formik>
+                    <FormattedMessage id="AlreadyHavePassword" /> &nbsp;
+                    <Link to="/auth/login" className={classes.underlineNone}>
+                      <FormattedMessage id="Login" />
+                    </Link>
+                  </Box>
+                </Form>
+              )}
+            </Formik>
+          </Box>
         </Card>
       </Box>
     </Box>

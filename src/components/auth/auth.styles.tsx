@@ -29,11 +29,11 @@ export const useStylesAuth = makeStyles((theme) => ({
   imgRoot: {
     cursor: "pointer",
     display: "inline-block",
-    width: 330,
+    width: 300,
   },
   cardRoot: {
-    margin: -30,
-    maxWidth: "36rem",
+    // margin: -30,
+    maxWidth: "30rem",
     width: "100%",
     overflow: "hidden",
     boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
