@@ -8,7 +8,7 @@ import useStylesAuth from "../../components/auth/auth.styles";
 import { Fonts } from "../../shared/constants/AppEnums";
 import { AppState } from "../../redux/reducers/rootReducer";
 import { uiCloseErrorAlert } from "../../redux/actions/uiActions";
-import logo from "../../assets/images/logo-encuestapp-blanco-2.png";
+import logo from "../../assets/images/logo-encuestapp-blanco.png";
 import { MyAlert } from "../../components/custom/MyAlert";
 
 export const LoginScreen: FC<{}> = () => {
@@ -46,7 +46,7 @@ export const LoginScreen: FC<{}> = () => {
               <Box
                 component="h2"
                 mb={{ xs: 0, xl: 0 }}
-                color="#495047"
+                color={"#495047"}
                 fontWeight={Fonts.REGULAR}
                 fontSize={{ xs: 24, xl: 26 }}
               >

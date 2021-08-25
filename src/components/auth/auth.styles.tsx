@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/core/styles";
-import authBackground from "../../assets/images/auth-background.jpg";
+import authBackground from "../../assets/images/fondo.png";
 import { Fonts } from "../../shared/constants/AppEnums";
+import { Colors } from "../../shared/constants/Colors";
 
 export const useStylesAuth = makeStyles((theme) => ({
   appAuth: {
@@ -40,6 +41,7 @@ export const useStylesAuth = makeStyles((theme) => ({
     position: "relative",
     paddingTop: 20,
     marginBottom: 0,
+    borderRadius: 20,
     [theme.breakpoints.up("xl")]: {
       paddingTop: 32,
     },
@@ -56,7 +58,7 @@ export const useStylesAuth = makeStyles((theme) => ({
 
       marginRight: "auto",
       marginLeft: "auto",
-      backgroundColor: "#0A8FDC",
+      backgroundColor: Colors.ACCENT,
     },
   },
   textUppercase: {
@@ -72,6 +74,7 @@ export const useStylesAuth = makeStyles((theme) => ({
     overflow: "hidden",
     position: "relative",
     boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+    borderRadius: 20,
     [theme.breakpoints.up("sm")]: {
       padding: 40,
       paddingBottom: 20,
@@ -120,9 +123,9 @@ export const useStylesAuth = makeStyles((theme) => ({
     paddingTop: 12,
     paddingBottom: 12,
     borderRadius: "4px",
-    background: "#F04F47",
+    background: Colors.ACCENT,
     "&:hover": {
-      background: "#D94040",
+      background: Colors.LIGTH_ACCENT,
     },
   },
   textSecondary: {

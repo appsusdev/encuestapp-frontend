@@ -1,21 +1,20 @@
 import { FC } from "react";
-import Card from "@material-ui/core/Card";
-import Button from "@material-ui/core/Button";
+import { FormattedMessage, useIntl } from "react-intl";
+import { Link } from "react-router-dom";
 import { Form, Formik } from "formik";
 import * as yup from "yup";
+
+import Card from "@material-ui/core/Card";
+import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
-import { Fonts } from "../../shared/constants/AppEnums";
-import { Link } from "react-router-dom";
-import clsx from "clsx";
-import { FormattedMessage, useIntl } from "react-intl";
-import logo from "../../assets/images/logo-encuestapp-blanco-2.png";
-import useStylesAuth from "./auth.styles";
+
 import { MyTextField } from "../custom/MyTextField";
+import { Fonts } from "../../shared/constants/AppEnums";
+import logo from "../../assets/images/logo-encuestapp-blanco.png";
+import useStylesAuth from "./auth.styles";
 
-interface ForgetPasswordProps {}
-
-export const ForgotForm: FC<ForgetPasswordProps> = () => {
+export const ForgotForm: FC = () => {
   const intl = useIntl();
   const classes = useStylesAuth();
 
@@ -87,7 +86,7 @@ export const ForgotForm: FC<ForgetPasswordProps> = () => {
                     autoComplete="off"
                   />
                 </Box>
-                <Box mt={0} mb={3}>
+                <Box mt={1} mb={3}>
                   <Button
                     variant="contained"
                     color="secondary"
@@ -104,14 +103,8 @@ export const ForgotForm: FC<ForgetPasswordProps> = () => {
                   fontSize={15}
                   className={classes.textGrey}
                 >
-                  <FormattedMessage id="AlreadyHavePassword" />
-                  <Link
-                    to="/auth/login"
-                    className={clsx(
-                      classes.underlineNone,
-                      classes.textSecondary
-                    )}
-                  >
+                  <FormattedMessage id="AlreadyHavePassword" /> &nbsp;
+                  <Link to="/auth/login" className={classes.underlineNone}>
                     <FormattedMessage id="Login" />
                   </Link>
                 </Box>
