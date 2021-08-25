@@ -1,12 +1,12 @@
 import { Box } from "@material-ui/core";
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from "@material-ui/core/styles";
 
 interface TabPanelProps {
-    children?: React.ReactNode;
-    dir?: string;
-    index: any;
-    value: any;
-  }
+  children?: React.ReactNode;
+  dir?: string;
+  index: any;
+  value: any;
+}
 
 export const TabPanel = (props: TabPanelProps) => {
   const { children, value, index, ...other } = props;
@@ -19,46 +19,38 @@ export const TabPanel = (props: TabPanelProps) => {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-
-<Box >
-{children}
-</Box>
-      )}
+      {value === index && <Box>{children}</Box>}
     </div>
   );
-}
+};
 
 export const a11yProps = (index: any) => {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
-}
+};
 
 export const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    height: 'auto',
+    height: "auto",
   },
-  tabs: {  
-      color: theme.palette.info.dark,
-      backgroundColor: theme.palette.common.white,
-      indicatorColor: theme.palette.info.main, 
-      
+  tabs: {
+    color: "rgb(63, 81, 181)",
+    backgroundColor: theme.palette.common.white,
+    indicatorColor: "rgb(63, 81, 181)",
   },
   tab: {
-    textTransform: 'none',
-    fontFamily: [
-      'Poppins',
-    ].join(','),
-    '&:hover': {
-      color: theme.palette.info.main,
+    textTransform: "none",
+    fontFamily: ["Poppins"].join(","),
+    "&:hover": {
+      color: "rgb(63, 81, 181)",
       opacity: 2,
-      borderColor: 'primary'
+      borderColor: "primary",
     },
-    '&:focus': {
-      color: theme.palette.info.main,
+    "&:focus": {
+      color: "rgb(63, 81, 181)",
     },
-  }
+  },
 }));
