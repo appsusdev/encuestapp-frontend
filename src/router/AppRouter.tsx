@@ -14,9 +14,15 @@ import { uiChangeRole } from "../redux/actions/uiActions";
 import { getUserRole } from "../services/firebase/auth";
 import { Box, Grid } from "@material-ui/core";
 import { useStyles } from "../shared/styles/useStyles";
-import { startLoadingSurveyors, startLoadingAssignedSurveys } from '../redux/actions/surveyorsActions';
-import { startLoadingCompleteSurveys } from '../redux/actions/surveysActions';
-import { startLoadingCitizens, startLoadingMapData } from '../redux/actions/citizensActions';
+import {
+  startLoadingSurveyors,
+  startLoadingAssignedSurveys,
+} from "../redux/actions/surveyorsActions";
+import { startLoadingCompleteSurveys } from "../redux/actions/surveysActions";
+import {
+  startLoadingCitizens,
+  startLoadingMapData,
+} from "../redux/actions/citizensActions";
 import { startLoadEntities } from "../redux/actions/entitiesActions";
 
 export const AppRouter: FC = () => {
@@ -33,7 +39,7 @@ export const AppRouter: FC = () => {
         if (isAuthFlag) {
           isAuthFlag = false;
           const resp = await getUserRole(user.email);
-                    
+
           if (resp) {
             const { rol, municipio } = resp;
 
@@ -47,16 +53,19 @@ export const AppRouter: FC = () => {
                 municipio: municipio,
               };
               dispatch(login(userMain));
-              if( rol === TypeUser.ADMIN ){
-                dispatch(startLoadingSurveyors(municipio));
-                dispatch(startLoadingCompleteSurveys(municipio));
-                dispatch(startLoadingAssignedSurveys(municipio));
-                dispatch(startLoadingCitizens());
-                dispatch(startLoadingMapData(municipio));
-              }else{
-                await dispatch( startLoadEntities() )
-              }
               setIsLoggedIn(true);
+
+              if (isLoggedIn) {
+                if (rol === TypeUser.ADMIN) {
+                  dispatch(startLoadingSurveyors(municipio));
+                  dispatch(startLoadingCompleteSurveys(municipio));
+                  dispatch(startLoadingAssignedSurveys(municipio));
+                  dispatch(startLoadingCitizens());
+                  dispatch(startLoadingMapData(municipio));
+                } else {
+                  await dispatch(startLoadEntities());
+                }
+              }
             }
           } else {
             setIsLoggedIn(false);
@@ -67,6 +76,7 @@ export const AppRouter: FC = () => {
       }
       setChecking(false);
     });
+    // eslint-disable-next-line
   }, [dispatch, setChecking, setIsLoggedIn]);
 
   if (checking) {

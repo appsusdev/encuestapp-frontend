@@ -26,6 +26,7 @@ import {
 import { AppState } from "../../../redux/reducers/rootReducer";
 import CircularProgressWithLabel from "../../custom/CircularProgressWithLabel";
 import { TypeUser } from "../../../enums/enums";
+import { firebase } from "../../../config/firebase/firebase-config";
 
 export const UploadDB = () => {
   const classes = useStyles();
@@ -36,6 +37,7 @@ export const UploadDB = () => {
   const [, setCitizens] = useState<CitizensType | null>(null);
   const [noValid, setNoValid] = useState<boolean>(false);
   const [loading, setloading] = useState(false);
+  const [url, setUrl] = useState("");
   const { successAlert, errorAlert } = useSelector(
     (state: AppState) => state.ui
   );
@@ -98,6 +100,17 @@ export const UploadDB = () => {
     }
   };
 
+  const handleDownload = async () => {
+    const url = await firebase
+      .storage()
+      .ref("formatoExcelPlantilla/PlantillaCiudadanos.csv")
+      .getDownloadURL();
+    setUrl(url);
+
+    let content = document.getElementById("downloadExcel");
+    content?.click();
+  };
+
   return (
     <Paper>
       <Box>
@@ -107,9 +120,12 @@ export const UploadDB = () => {
         <Divider variant="middle" />
         <Box className={classes.root}>
           <Box display="flex" justifyContent="flex-end">
-            <Link component="button">
+            <Link component="button" onClick={handleDownload}>
               <FormattedMessage id="DownloadExcelTemplate" />
             </Link>
+            <a id="downloadExcel" style={{ display: "none" }} href={url}>
+              {url}
+            </a>
           </Box>
 
           <Grid container spacing={1}>
