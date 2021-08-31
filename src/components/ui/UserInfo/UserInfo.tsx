@@ -1,5 +1,6 @@
-import React, { useContext } from "react";
 import clsx from "clsx";
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
@@ -112,10 +113,14 @@ const UserInfo: React.FC<{}> = () => {
                 onClose={handleClose}
               >
                 <MenuItem>
-                  <FormattedMessage id="MyAccount" />
+                  <Link to="/account">
+                    <FormattedMessage id="ChangePassword" />
+                  </Link>
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>
-                  <FormattedMessage id="Logout" />
+                  <Link to="/auth/login">
+                    <FormattedMessage id="Logout" />
+                  </Link>
                 </MenuItem>
               </Menu>
             </Box>

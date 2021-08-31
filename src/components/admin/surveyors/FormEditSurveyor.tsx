@@ -26,9 +26,7 @@ import { MyTextField } from "../../custom/MyTextField";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { TypeDoc } from "../../../enums/enums";
-import {
-  startEditSurveyor,
-} from "../../../redux/actions/surveyorsActions";
+import { startEditSurveyor } from "../../../redux/actions/surveyorsActions";
 import { Surveyor } from "../../../interfaces/Surveyor";
 import { MyAlert } from "../../custom/MyAlert";
 import logo from "../../../assets/images/user.jpg";
@@ -48,7 +46,7 @@ export const FormEditSurveyor = () => {
   );
   const surveyor: any = activeSurveyor;
   const [profileFile, setProfileFile] = useState<File | null>(
-    (surveyor) ? surveyor.profileImage : ""
+    surveyor ? surveyor.profileImage : ""
   );
 
   const validationSchema = yup.object({
@@ -58,7 +56,7 @@ export const FormEditSurveyor = () => {
     document: yup
       .string()
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`)
-      .min(6, `${intl.formatMessage({ id: "MinimumPassword" })}`),
+      .min(8, `${intl.formatMessage({ id: "MinimumPassword" })}`),
     firstName: yup
       .string()
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`),
@@ -83,19 +81,19 @@ export const FormEditSurveyor = () => {
   });
 
   const initialValues: Partial<Surveyor> = {
-    id: (surveyor) ? surveyor.id : "",
-    typeDoc: (surveyor) ? surveyor.typeDoc : "",
-    document: (surveyor) ? surveyor.document : "",
-    firstName: (surveyor) ? surveyor.firstName : "",
-    secondName: (surveyor) ? surveyor.secondName : "",
-    firstLastName: (surveyor) ? surveyor.firstLastName: "",
-    secondLastName: (surveyor) ? surveyor.secondLastName: "",
+    id: surveyor ? surveyor.id : "",
+    typeDoc: surveyor ? surveyor.typeDoc : "",
+    document: surveyor ? surveyor.document : "",
+    firstName: surveyor ? surveyor.firstName : "",
+    secondName: surveyor ? surveyor.secondName : "",
+    firstLastName: surveyor ? surveyor.firstLastName : "",
+    secondLastName: surveyor ? surveyor.secondLastName : "",
     username: "",
-    email: (surveyor) ? surveyor.email : "",
-    mobilePhone: (surveyor) ? surveyor.mobilePhone : "",
-    address: (surveyor) ? surveyor.address : "",
+    email: surveyor ? surveyor.email : "",
+    mobilePhone: surveyor ? surveyor.mobilePhone : "",
+    address: surveyor ? surveyor.address : "",
     profileImage: "",
-    state: (surveyor) ? surveyor.state : false
+    state: surveyor ? surveyor.state : false,
   };
 
   const onClose = () => {
@@ -131,13 +129,15 @@ export const FormEditSurveyor = () => {
         initialValues={initialValues}
         validationSchema={validationSchema}
         validateOnMount
-        onSubmit={async(values, { setSubmitting }) => {
+        onSubmit={async (values, { setSubmitting }) => {
           if (!noValid) {
             setSubmitting(true);
             values.profileImage = profileFile;
             let changeImage = false;
-            (profileFile === surveyor.profileImage) ? (changeImage=false ) : (changeImage = true) 
-            await dispatch(startEditSurveyor(values, changeImage))
+            profileFile === surveyor.profileImage
+              ? (changeImage = false)
+              : (changeImage = true);
+            await dispatch(startEditSurveyor(values, changeImage));
             setSubmitting(false);
           } else {
             setSubmitting(false);
@@ -163,7 +163,7 @@ export const FormEditSurveyor = () => {
                     <CardMedia
                       className={classes.media}
                       image={
-                        (!surveyor || surveyor.profileImage === "")
+                        !surveyor || surveyor.profileImage === ""
                           ? logo
                           : surveyor.profileImage
                       }

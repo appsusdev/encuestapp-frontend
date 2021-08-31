@@ -32,7 +32,10 @@ import {
   startAddNewEntity,
   updateEntity,
 } from "../../redux/actions/entitiesActions";
-import { addNewEntity,updateEntity as bdUpdateEntity } from "../../services/firebase/entities";
+import {
+  addNewEntity,
+  updateEntity as bdUpdateEntity,
+} from "../../services/firebase/entities";
 import { AppState } from "../../redux/reducers/rootReducer";
 interface ILocationData {
   departamento: string;
@@ -83,7 +86,7 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
     nit: yup
       .string()
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`)
-      .min(6, `${intl.formatMessage({ id: "MinimumPassword" })}`),
+      .min(8, `${intl.formatMessage({ id: "MinimumPassword" })}`),
     direccion: yup
       .string()
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`),
@@ -105,8 +108,7 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
       .number()
       .typeError(`${intl.formatMessage({ id: "NumericValue" })}`)
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`)
-      .min(6, `${intl.formatMessage({ id: "MinimumPassword" })}`),
-
+      .min(8, `${intl.formatMessage({ id: "MinimumPassword" })}`),
   });
 
   useEffect(() => {
@@ -132,7 +134,7 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
           setDepartmentSelected(data[0].departamento);
         }
       });
-      // eslint-disable-next-line
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -149,12 +151,11 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
   const handleCreateEntity = async (entity: IEntity) => {
     const { email, identificacion } = entity;
 
-
     try {
       //crear el
       if (edit && oldCredentials) {
         const { email: oldEmail, password: oldPassword } = oldCredentials;
-        if(email !== oldEmail || identificacion!== oldPassword){
+        if (email !== oldEmail || identificacion !== oldPassword) {
           await updateCredentialsEntity(
             oldEmail,
             oldPassword.toString(),
@@ -162,7 +163,7 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
             identificacion.toString()
           );
         }
-        await bdUpdateEntity(entity)
+        await bdUpdateEntity(entity);
       } else {
         await registerWithEmailPassword(email, identificacion.toString());
         //agregarlo a la bd
@@ -170,15 +171,14 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
         await addNewEntity(entity);
         //agregarlo al state del redux
       }
-       
-        edit
-          ? dispatch(updateEntity({ ...entity }))
-          : dispatch(startAddNewEntity({ ...entity, activo: true }));
-        dispatch(purgeActiveEntity());
-        dispatch(uiCloseModalAdd());
-        dispatch(uiCloseModalEdit());
-        dispatch(uiOpenSuccessAlert());
-      
+
+      edit
+        ? dispatch(updateEntity({ ...entity }))
+        : dispatch(startAddNewEntity({ ...entity, activo: true }));
+      dispatch(purgeActiveEntity());
+      dispatch(uiCloseModalAdd());
+      dispatch(uiCloseModalEdit());
+      dispatch(uiOpenSuccessAlert());
     } catch (error) {
       console.log(error);
       dispatch(uiOpenErrorAlert());
@@ -209,7 +209,6 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
                 <MyTextField
                   name="razonSocial"
                   variant="outlined"
-                 
                   className={classes.myTextFieldRoot}
                 />
               </Grid>
@@ -231,7 +230,6 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
                 <MyTextField
                   name="direccion"
                   variant="outlined"
-              
                   className={classes.myTextFieldRoot}
                 />
               </Grid>
@@ -242,7 +240,6 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
                 <MyTextField
                   name="celular"
                   variant="outlined"
-              
                   className={classes.myTextFieldRoot}
                 />
               </Grid>
