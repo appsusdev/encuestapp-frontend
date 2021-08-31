@@ -46,16 +46,13 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
     const existsSurveyorDB = await existsSurveyor(email);
     dispatch(surveyorFromDB(existsSurveyorDB));
     const town: string = auth.municipio;
+    const nit: string = auth.nit;
     let towns: string[] = [];
     towns.push(town);
     const userToDB = encuestadorDTO(surveyor, existsSurveyorDB, towns);
 
     if (existsSurveyorDB) {
-      const townsSurveyor: string[] = existsSurveyorDB.municipios;
-
-      // Encuestador esta registrado o no en el municipio
-      if (townsSurveyor.includes(town)) return dispatch(uiOpenErrorAlert());
-      else return dispatch(uiOpenModalAlert());
+      dispatch(uiOpenModalAlert());
     } else {
       try {
         // Registrar encuestador correo y contrasena
@@ -64,10 +61,17 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
           (await registerWithEmailPassword(email, document.toString()));
 
         // Agregar en coleccion Usuarios
-        await db.collection("Usuarios").doc(`${email}`).set(userToDB);
+        await db
+          .collection("Usuarios")
+          .doc(`${email}`)
+          .set({ ...userToDB, entidad: nit });
 
         // Agregar encuestador a coleccion Municipios
-        const surveyorTown = { email: email, encuestasAsignadas: [] };
+        const surveyorTown = {
+          email: email,
+          encuestasAsignadas: [],
+          idEntidad: nit,
+        };
         await addSurveyorToTown(town, email, surveyorTown);
         dispatch(uiOpenSuccessAlert());
 
@@ -77,10 +81,16 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
         secondLastName?.trim() && (secondLastName = ` ${secondLastName}`);
         surveyor.username =
           `${firstName}${secondName} ${firstLastName} ${secondLastName}`.trim();
+        surveyor.entity = nit;
 
         dispatch(addNewSurveyor(surveyor));
         dispatch(
-          addNewAssignedSurveys({ id: email, email, assignedSurveys: [] })
+          addNewAssignedSurveys({
+            id: email,
+            email,
+            assignedSurveys: [],
+            entity: nit,
+          })
         );
       } catch (error) {
         throw new Error(error);
@@ -105,9 +115,9 @@ const surveyorFromDB = (surveyor: any) => ({
 });
 
 // Cargar encuestadores por municipio
-export const startLoadingSurveyors = (town: string) => {
+export const startLoadingSurveyors = (town: string, nit: string) => {
   return async (dispatch: any) => {
-    const resp = await getSurveyors(town);
+    const resp = await getSurveyors(town, nit);
     const surveyors: any[] = [];
 
     resp.forEach((resp) => {
@@ -142,7 +152,6 @@ export const startEditSurveyor = (
     const { email, profileImage, firstName, firstLastName } = surveyor;
     let { secondName, secondLastName } = surveyor;
 
-    console.log(surveyor.state);
     if (changeImage) {
       const uriResponse = await uploadFileAsync(
         profileImage as File,

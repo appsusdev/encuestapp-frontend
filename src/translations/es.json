@@ -103,7 +103,8 @@
     "Logout": "Cerrar sesión",
     "Account": "cuenta",
     "ValidFiles": "Archivos válidos: png, jpg, jpeg",
-    "MessageExistsSurveyor": "Ya existe un encuestador registrado con el correo:",
+    "MessageExistsSurveyorOne": "Ya existe un encuestador registrado en otra entidad con el correo:",
+    "MessageExistsSurveyorTwo": "Por favor, registre el encuestador con otra cuenta.",
     "MessageExistsSurveyorTown": "Ya existe un encuestador registrado en su municipio con el correo ingresado",
     "MessageAddSurveyor": "¿Desea agregar este encuestador a su municipio?",
     "SurveyorAddSuccess": "Encuestador registrado correctamente",
@@ -198,5 +199,6 @@
     "BackToHome": "Volver al inicio",
     "PasswordUpdated": "La contraseña ha sido actualizada existosamente. Inicie sesión nuevamente.",
     "ErrorUpdatingPassword": "Error al actualizar la contraseña.",
-    "CurrentPassword": "Contraseña actual"
+    "CurrentPassword": "Contraseña actual",
+    "NoRegisteredSurveyors": "No existen encuestadores registrados para esta entidad."
 }

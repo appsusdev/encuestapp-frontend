@@ -58,7 +58,7 @@ export const AppRouter: FC = () => {
               dispatch(login(userMain));
 
               if (rol === TypeUser.ADMIN) {
-                await dispatch(startLoadingSurveyors(municipio));
+                await dispatch(startLoadingSurveyors(municipio, nit));
                 await dispatch(startLoadingCompleteSurveys(municipio));
                 await dispatch(startLoadingAssignedSurveys(municipio));
                 await dispatch(startLoadingCitizens());

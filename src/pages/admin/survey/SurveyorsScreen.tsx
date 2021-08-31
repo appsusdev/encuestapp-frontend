@@ -153,7 +153,6 @@ export const SurveyorsScreen: FC = () => {
           onDeny={onDenyAdd}
           title={`${intl.formatMessage({ id: "CreateNewSurveyor" })}`}
           content={<FormAddSurveyor />}
-          width
           textButton="Accept"
         />
         <CustomizedDialog

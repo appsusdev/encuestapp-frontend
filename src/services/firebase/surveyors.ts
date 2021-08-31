@@ -31,11 +31,12 @@ export const addSurveyorToTown = async (
   email: string | undefined,
   surveyorTown: {}
 ) => {
-  
   const df = db.collection("Municipios").doc(town);
-    
-  await df.collection("Encuestadores").doc(email).set(surveyorTown, {merge: true});
-  
+
+  await df
+    .collection("Encuestadores")
+    .doc(email)
+    .set(surveyorTown, { merge: true });
 };
 
 // Actualizar municipios del encuestador
@@ -43,14 +44,19 @@ export const updateTowns = async (
   email: string | undefined,
   surveyorTowns: {}
 ) => {
-  await db.collection("Usuarios").doc(`${email}`).set(surveyorTowns, {merge: true});
+  await db
+    .collection("Usuarios")
+    .doc(`${email}`)
+    .set(surveyorTowns, { merge: true });
 };
 
 // Get encuestadores por municipio
-export const getSurveyors = async (town: string) => {
-  const surveyorsSnap = await db.collection("Usuarios")
+export const getSurveyors = async (town: string, nit: string) => {
+  const surveyorsSnap = await db
+    .collection("Usuarios")
     .where("rol", "==", TypeUser.SURVEYOR)
     .where("municipios", "array-contains", town)
+    .where("entidad", "==", nit)
     .get();
   const surveyors: any[] = [];
 
@@ -66,17 +72,34 @@ export const getSurveyors = async (town: string) => {
 
 // Editar encuestador en tabla usuarios
 export const editSurveyor = async (surveyor: Partial<Surveyor>) => {
-  await db.collection('Usuarios').doc(surveyor.id).set(surveyor, {merge: true});
-}
+  await db
+    .collection("Usuarios")
+    .doc(surveyor.id)
+    .set(surveyor, { merge: true });
+};
 
-// Asignar o eliminar encuestas al encuestador 
-export const assignSurvey = async (town: string, idSurvey: string, newSurveyors: string[], email: string, newAssignedSurveys: string[]) => {
-  await db.collection('Municipios').doc(town).collection('Encuestas').doc(idSurvey)
-    .set({encuestadores: [...newSurveyors]}, {merge: true});
-  
-  await db.collection('Municipios').doc(town).collection('Encuestadores').doc(email)
-    .set({encuestasAsignadas: [...newAssignedSurveys]}, {merge: true});
-}
+// Asignar o eliminar encuestas al encuestador
+export const assignSurvey = async (
+  town: string,
+  idSurvey: string,
+  newSurveyors: string[],
+  email: string,
+  newAssignedSurveys: string[]
+) => {
+  await db
+    .collection("Municipios")
+    .doc(town)
+    .collection("Encuestas")
+    .doc(idSurvey)
+    .set({ encuestadores: [...newSurveyors] }, { merge: true });
+
+  await db
+    .collection("Municipios")
+    .doc(town)
+    .collection("Encuestadores")
+    .doc(email)
+    .set({ encuestasAsignadas: [...newAssignedSurveys] }, { merge: true });
+};
 
 // Obtener coleccion de encuestadores con sus encuestas asignadas
 export const getAssignedSurveys = async (town: string) => {
@@ -91,12 +114,12 @@ export const getAssignedSurveys = async (town: string) => {
     resp.push({
       id: snap.id,
       email: snap.data().email,
-      assignedSurveys: snap.data().encuestasAsignadas
+      assignedSurveys: snap.data().encuestasAsignadas,
     });
   });
 
   return resp;
-}  
+};
 
 // Obtener encuestas transmitidas por el encuestador
 export const getTransmittedSurveysBySurveyor = async (
@@ -104,27 +127,26 @@ export const getTransmittedSurveysBySurveyor = async (
   idSurvey: string,
   idSurveyor: string,
   startDate: any,
-  endDate: any,
+  endDate: any
 ) => {
   let surveysSnap;
 
-  (idSurveyor === "Todos") ?
-  surveysSnap = await db
-    .collectionGroup("EncuestasTransmitidas")
-    .where("municipio", "==", town)
-    .where("idEncuesta", "==", idSurvey)
-    .where("fechaDeCarga", ">", startDate)
-    .where("fechaDeCarga", "<=", endDate)
-    .get()
-  :
-  surveysSnap = await db
-    .collectionGroup("EncuestasTransmitidas")
-    .where("municipio", "==", town)
-    .where("idEncuesta", "==", idSurvey)
-    .where("idEncuestador", "==", idSurveyor)
-    .where("fechaDeCarga", ">", startDate)
-    .where("fechaDeCarga", "<=", endDate)
-    .get(); 
+  idSurveyor === "Todos"
+    ? (surveysSnap = await db
+        .collectionGroup("EncuestasTransmitidas")
+        .where("municipio", "==", town)
+        .where("idEncuesta", "==", idSurvey)
+        .where("fechaDeCarga", ">", startDate)
+        .where("fechaDeCarga", "<=", endDate)
+        .get())
+    : (surveysSnap = await db
+        .collectionGroup("EncuestasTransmitidas")
+        .where("municipio", "==", town)
+        .where("idEncuesta", "==", idSurvey)
+        .where("idEncuestador", "==", idSurveyor)
+        .where("fechaDeCarga", ">", startDate)
+        .where("fechaDeCarga", "<=", endDate)
+        .get());
 
   const surveys: any[] = [];
 

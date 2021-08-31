@@ -103,7 +103,8 @@
     "Logout": "Logout",
     "Account": "Account",
     "ValidFiles": "Valid files: png, jpg, jpeg",
-    "MessageExistsSurveyor": "There is already a registered surveyor with the email:",
+    "MessageExistsSurveyorOne": "There is already a registered surveyor in another entity with the email:",
+    "MessageExistsSurveyorTwo": "Please register the surveyor with a different account.",
     "MessageExistsSurveyorTown": "There is already a registered surveyor in your town with the email you entered",
     "MessageAddSurveyor": "Do you want to add this surveyor to your town?",
     "SurveyorAddSuccess": "Surveyor added successfully",
@@ -198,5 +199,6 @@
     "BackToHome": "Back to home",
     "PasswordUpdated": "Password has been successfully updated. Log in again.",
     "ErrorUpdatingPassword": "Error updating password.",
-    "CurrentPassword": "Current password"
+    "CurrentPassword": "Current password",
+    "NoRegisteredSurveyors": "There are no registered surveyors for this entity."
 }

@@ -94,6 +94,7 @@ export const FormEditSurveyor = () => {
     address: surveyor ? surveyor.address : "",
     profileImage: "",
     state: surveyor ? surveyor.state : false,
+    entity: surveyor ? surveyor.entity : "",
   };
 
   const onClose = () => {
@@ -163,7 +164,7 @@ export const FormEditSurveyor = () => {
                     <CardMedia
                       className={classes.media}
                       image={
-                        !surveyor || surveyor.profileImage === ""
+                        !surveyor || !surveyor.profileImage
                           ? logo
                           : surveyor.profileImage
                       }
