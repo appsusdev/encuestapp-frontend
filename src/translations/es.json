@@ -200,5 +200,6 @@
     "PasswordUpdated": "La contraseña ha sido actualizada existosamente. Inicie sesión nuevamente.",
     "ErrorUpdatingPassword": "Error al actualizar la contraseña.",
     "CurrentPassword": "Contraseña actual",
-    "NoRegisteredSurveyors": "No existen encuestadores registrados para esta entidad."
+    "NoRegisteredSurveyors": "No existen encuestadores registrados para esta entidad.",
+    "NoCreatedSurveys": "No existen encuestas creadas para esta entidad."
 }
