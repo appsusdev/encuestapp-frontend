@@ -6,7 +6,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Paper, IconButton, InputBase } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import { valueSearched, arraySearch } from "../../redux/actions/searchActions";
-import { convertDate } from "../../helpers/convertDate";
 
 const useStyles = makeStyles((theme) => ({
   root: {

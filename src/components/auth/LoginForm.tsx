@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Form, Formik } from "formik";
@@ -8,10 +8,17 @@ import { useIntl, FormattedMessage } from "react-intl";
 import { makeStyles } from "@material-ui/core/styles";
 import { CremaTheme } from "../../types/AppContextPropsType";
 import { Fonts } from "../../shared/constants/AppEnums";
-import { Box, Button, Checkbox } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  Checkbox,
+  InputAdornment,
+  IconButton,
+} from "@material-ui/core";
 import { MyTextField } from "../custom/MyTextField";
 import { startLoginCorreoPassword } from "../../redux/actions/authActions";
 import { Colors } from "../../shared/constants/Colors";
+import { Visibility, VisibilityOff } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: CremaTheme) => ({
   formRoot: {
@@ -77,6 +84,7 @@ export const LoginForm: FC<UserSigninProps> = (props) => {
   const intl = useIntl();
   const classes = useStyles(props);
   const dispatch = useDispatch();
+  const [showPassword, setShowPassword] = useState(false);
 
   const validationSchema = yup.object({
     email: yup
@@ -88,6 +96,9 @@ export const LoginForm: FC<UserSigninProps> = (props) => {
       .required(`${intl.formatMessage({ id: "PasswordRequired" })}`),
   });
 
+  const handleClick = () => {
+    setShowPassword((prev) => !prev);
+  };
   return (
     <Box flex={1} display="flex" flexDirection="column">
       <Box
@@ -125,10 +136,22 @@ export const LoginForm: FC<UserSigninProps> = (props) => {
               <Box mb={{ xs: 3, lg: 4 }}>
                 <MyTextField
                   placeholder={intl.formatMessage({ id: "Password" })}
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   variant="outlined"
                   className={classes.myTextFieldRoot}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClick}
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Box>
 
@@ -150,7 +173,6 @@ export const LoginForm: FC<UserSigninProps> = (props) => {
                   component="span"
                   ml={{ sm: 4 }}
                   className={classes.pointer}
-                  // onClick={onGoToForgetPassword}
                   fontSize={15}
                 >
                   <Link to="/auth/forgot">

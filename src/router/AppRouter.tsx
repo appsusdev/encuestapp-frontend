@@ -42,7 +42,7 @@ export const AppRouter: FC = () => {
           const resp = await getUserRole(user.email);
 
           if (resp) {
-            const { rol, municipio } = resp;
+            const { rol, municipio, nit, razonSocial } = resp;
 
             if (rol === TypeUser.ADMIN || rol === TypeUser.SUPER_ADMIN) {
               dispatch(uiChangeRole(rol));
@@ -52,6 +52,8 @@ export const AppRouter: FC = () => {
                 email: user.email,
                 rol: rol,
                 municipio: municipio,
+                nit: nit,
+                razonSocial: razonSocial,
               };
               dispatch(login(userMain));
 
@@ -62,7 +64,7 @@ export const AppRouter: FC = () => {
                 await dispatch(startLoadingCitizens());
                 await dispatch(startLoadingMapData(municipio));
                 setIsLoggedIn(true);
-              } else {
+              } else if (rol === TypeUser.SUPER_ADMIN) {
                 await dispatch(startLoadEntities());
                 setIsLoggedIn(true);
               }
