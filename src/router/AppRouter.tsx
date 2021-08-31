@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import IdleTimer from 'react-idle-timer';
 
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { AuthRouter } from "./AuthRouter";
@@ -9,7 +10,7 @@ import { firebase } from "../config/firebase/firebase-config";
 import { TypeUser } from "../enums/enums";
 import { PublicRoute } from "./PublicRoute";
 import { PrivateRoute } from "./PrivateRoute";
-import { login } from "../redux/actions/authActions";
+import { login, startLogout } from "../redux/actions/authActions";
 import { uiChangeRole } from "../redux/actions/uiActions";
 import { getUserRole } from "../services/firebase/auth";
 import { Box, Grid } from "@material-ui/core";
@@ -93,29 +94,37 @@ export const AppRouter: FC = () => {
     );
   }
 
-  return (
-    <Router>
-      <div>
-        <Switch>
-          <PublicRoute
-            isAuthenticated={isLoggedIn}
-            path="/auth"
-            component={AuthRouter}
-          />
-          <PrivateRoute
-            path="/account"
-            isAuthenticated={isLoggedIn}
-            component={ChangeScreen}
-          />
-          <PrivateRoute
-            path="/"
-            isAuthenticated={isLoggedIn}
-            component={Layout}
-          />
+  const handleInactivity = () => {
+    dispatch(startLogout());
+  }
 
-          <Redirect to="/" />
-        </Switch>
-      </div>
-    </Router>
+  return (
+    <IdleTimer timeout={5 * 60 * 1000} onIdle={ handleInactivity } >
+      <Router>
+        <div>
+          <Switch>
+            <PublicRoute
+              isAuthenticated={isLoggedIn}
+              path="/auth"
+              component={AuthRouter}
+            />
+            <PrivateRoute
+              path="/account"
+              isAuthenticated={isLoggedIn}
+              component={ChangeScreen}
+            />
+            <PrivateRoute
+              path="/"
+              isAuthenticated={isLoggedIn}
+              component={Layout}
+            />
+
+            <Redirect to="/" />
+          </Switch>
+        </div>
+      </Router>
+    
+    </IdleTimer>
+
   );
 };
