@@ -1,5 +1,4 @@
 import { FC, useEffect, useState } from "react";
-import { useIntl } from "react-intl";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import { useDispatch } from "react-redux";
 

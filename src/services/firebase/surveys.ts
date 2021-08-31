@@ -1,6 +1,6 @@
 import { db } from "../../config/firebase/firebase-config";
-import { Survey, Chapter } from '../../interfaces/Survey';
-import { questionDTO, chapterDTO, surveyDTO } from '../../helpers/surveyDTO';
+import { Survey, Chapter } from "../../interfaces/Survey";
+import { questionDTO, chapterDTO, surveyDTO } from "../../helpers/surveyDTO";
 
 // Verificar si existe encuesta
 export const existsSurvey = (
@@ -18,7 +18,7 @@ export const existsSurvey = (
       snapShot.forEach((doc: any) => {
         survey = doc.data() as Survey;
       });
-      console.log("Consulta verificar si existe encuesta");
+
       return survey;
     })
     .catch((err) => console.log(err));
@@ -41,7 +41,7 @@ export const getSurveys = async (town: string) => {
   });
 
   return surveys;
-}  
+};
 // Obtener encuestas con toda la informacion (capitulos y preguntas)
 export const getSurveysAndChapters = async (town: string) => {
   const surveys: any[] = await getSurveys(town);
@@ -58,10 +58,10 @@ export const getSurveysAndChapters = async (town: string) => {
     };
     surveysAndChapters = [...surveysAndChapters, surveyDB];
   }
-  
+
   // DTO surveys
-  const resp:any[] = [];
-  surveysAndChapters.forEach( survey => {
+  const resp: any[] = [];
+  surveysAndChapters.forEach((survey) => {
     resp.push(surveyDTO(survey));
   });
 
@@ -179,9 +179,9 @@ export const getChapters = async (town: string, idSurvey: string) => {
   }
 
   // DTO chapters
-  const resp:any[] = [];
-  chaptersAndQuestions.forEach( chapter => {
-      resp.push(chapterDTO(chapter));
+  const resp: any[] = [];
+  chaptersAndQuestions.forEach((chapter) => {
+    resp.push(chapterDTO(chapter));
   });
 
   return resp;
@@ -251,9 +251,9 @@ export const getQuestions = async (
   let allQuestions: any[] = [];
 
   // Preguntas individuales
-  const individualQuestionsRef =  docChaptersRef
+  const individualQuestionsRef = docChaptersRef
     .doc(idChapter)
-    .collection("PreguntasIndividual")
+    .collection("PreguntasIndividual");
   const indQuestions = await individualQuestionsRef.get();
 
   indQuestions.forEach((snap) => {
@@ -266,8 +266,8 @@ export const getQuestions = async (
   // Preguntas hogar
   let homeQuestionsRef = docChaptersRef
     .doc(idChapter)
-    .collection("PreguntasHogar")
-  const homeQuestions = await  homeQuestionsRef.get();
+    .collection("PreguntasHogar");
+  const homeQuestions = await homeQuestionsRef.get();
 
   homeQuestions.forEach((snap) => {
     allQuestions.push({
@@ -276,31 +276,38 @@ export const getQuestions = async (
     });
   });
 
-  for( let doc of allQuestions ) {
+  for (let doc of allQuestions) {
     let answersRef;
-    if( doc.dirigida === 'PreguntasIndividual') {
-      answersRef = await individualQuestionsRef.doc(doc.id).collection('Respuestas').orderBy('idEncuestaCiudadano').get();
+    if (doc.dirigida === "PreguntasIndividual") {
+      answersRef = await individualQuestionsRef
+        .doc(doc.id)
+        .collection("Respuestas")
+        .orderBy("idEncuestaCiudadano")
+        .get();
     } else {
-      answersRef = await homeQuestionsRef.doc(doc.id).collection('Respuestas').orderBy('idEncuestaCiudadano').get();
+      answersRef = await homeQuestionsRef
+        .doc(doc.id)
+        .collection("Respuestas")
+        .orderBy("idEncuestaCiudadano")
+        .get();
     }
-    
+
     const answers: any[] = [];
     answersRef.forEach((resp) => {
-      answers.push({citizen:resp.id, ...resp.data()})
+      answers.push({ citizen: resp.id, ...resp.data() });
     });
 
     doc.answers = answers;
   }
 
   // DTO questions
-  const resp:any[] = [];
-  allQuestions.forEach( question => {
-      resp.push(questionDTO(question));
+  const resp: any[] = [];
+  allQuestions.forEach((question) => {
+    resp.push(questionDTO(question));
   });
 
   return resp;
 };
-
 
 // Editar pregunta
 export const editQuestion = async (
@@ -339,5 +346,5 @@ export const deleteQuestion = async (
     .doc(idChapter)
     .collection(typeQuestion)
     .doc(idQuestion)
-    .delete();    
-}
+    .delete();
+};

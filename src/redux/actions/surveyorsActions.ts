@@ -32,7 +32,6 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
     const { document, email, profileImage, firstName, firstLastName } =
       surveyor;
     let { secondName, secondLastName } = surveyor;
-    console.log(surveyor);
 
     if (profileImage) {
       const uriResponse = await uploadFileAsync(
@@ -80,7 +79,9 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
           `${firstName}${secondName} ${firstLastName} ${secondLastName}`.trim();
 
         dispatch(addNewSurveyor(surveyor));
-        dispatch(addNewAssignedSurveys({id: email, email, assignedSurveys: []}));
+        dispatch(
+          addNewAssignedSurveys({ id: email, email, assignedSurveys: [] })
+        );
       } catch (error) {
         throw new Error(error);
       }
@@ -206,7 +207,13 @@ export const startAssignSurvey = (
         dispatch(
           updateSurvey({ ...arraySurveyors[0], surveyors: newSurveyors })
         );
-        dispatch(updateAssignedSurveys({id: email, email, assignedSurveys: newAssignedSurveys}));
+        dispatch(
+          updateAssignedSurveys({
+            id: email,
+            email,
+            assignedSurveys: newAssignedSurveys,
+          })
+        );
       }
     } else {
       // Eliminar encuesta asignada
@@ -217,10 +224,14 @@ export const startAssignSurvey = (
 
       await assignSurvey(town, id, newSurveyors, email, newAssignedSurveys);
       dispatch(uiOpenSuccessAlert());
+      dispatch(updateSurvey({ ...arraySurveyors[0], surveyors: newSurveyors }));
       dispatch(
-        updateSurvey({ ...arraySurveyors[0], surveyors: newSurveyors })
+        updateAssignedSurveys({
+          id: email,
+          email,
+          assignedSurveys: newAssignedSurveys,
+        })
       );
-      dispatch(updateAssignedSurveys({id: email, email, assignedSurveys: newAssignedSurveys}));
     }
   };
 };
