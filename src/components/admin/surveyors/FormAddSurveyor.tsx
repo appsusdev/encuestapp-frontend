@@ -80,7 +80,7 @@ export const FormAddSurveyor = () => {
     document: yup
       .string()
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`)
-      .min(6, `${intl.formatMessage({ id: "MinimumPassword" })}`),
+      .min(8, `${intl.formatMessage({ id: "MinimumPassword" })}`),
     firstName: yup
       .string()
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`),
@@ -112,8 +112,8 @@ export const FormAddSurveyor = () => {
 
     if (surveyorDB) {
       const townsSurveyor: string[] = surveyorDB.municipios;
-     
-      (municipio) && townsSurveyor.push(municipio);
+
+      municipio && townsSurveyor.push(municipio);
 
       const updateSurveyor = { municipios: townsSurveyor };
       await updateTowns(email, updateSurveyor);
@@ -134,7 +134,7 @@ export const FormAddSurveyor = () => {
   const closeSuccess = () => {
     dispatch(uiCloseSuccessAlert());
     dispatch(uiCloseModalAdd());
-  }
+  };
 
   const handleSelectFile = (e: any) => {
     const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];

@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Form, Formik } from "formik";
 import * as yup from "yup";
@@ -13,10 +14,22 @@ import { MyTextField } from "../custom/MyTextField";
 import { Fonts } from "../../shared/constants/AppEnums";
 import logo from "../../assets/images/logo-encuestapp.png";
 import useStylesAuth from "./auth.styles";
+import { startPasswordRecovery } from "../../redux/actions/authActions";
+import { MyAlert } from "../custom/MyAlert";
+import {
+  uiCloseErrorAlert,
+  uiCloseSuccessAlert,
+} from "../../redux/actions/uiActions";
+import { AppState } from "../../redux/reducers/rootReducer";
 
 export const ForgotForm: FC = () => {
   const intl = useIntl();
   const classes = useStylesAuth();
+  const dispatch = useDispatch();
+
+  const { errorAlert, successAlert } = useSelector<AppState, AppState["ui"]>(
+    (state) => state.ui
+  );
 
   const validationSchema = yup.object({
     email: yup
@@ -24,6 +37,11 @@ export const ForgotForm: FC = () => {
       .email(`${intl.formatMessage({ id: "EmailFormat" })}`)
       .required(`${intl.formatMessage({ id: "EmailRequired" })}`),
   });
+
+  const closeAlert = () => {
+    dispatch(uiCloseErrorAlert());
+    dispatch(uiCloseSuccessAlert());
+  };
   return (
     <Box
       flex={1}
@@ -65,11 +83,10 @@ export const ForgotForm: FC = () => {
                 email: "",
               }}
               validationSchema={validationSchema}
-              onSubmit={(data, { setSubmitting, resetForm }) => {
+              onSubmit={(data, { setSubmitting }) => {
                 setSubmitting(true);
-                // reset password api  call here
+                dispatch(startPasswordRecovery(data.email));
                 setSubmitting(false);
-                resetForm();
               }}
             >
               {({ isSubmitting }) => (
@@ -78,7 +95,7 @@ export const ForgotForm: FC = () => {
                     <MyTextField
                       placeholder={intl.formatMessage({ id: "EmailAddress" })}
                       name="email"
-                      label={<FormattedMessage id="EmailAddress" />}
+                      InputLabelProps={{ shrink: false }}
                       className={classes.textField}
                       variant="outlined"
                       autoComplete="off"
@@ -112,6 +129,21 @@ export const ForgotForm: FC = () => {
           </Box>
         </Card>
       </Box>
+      <MyAlert
+        open={successAlert}
+        typeAlert="success"
+        message="PasswordRecoveryMessage"
+        time={2500}
+        handleClose={closeAlert}
+      />
+
+      <MyAlert
+        open={errorAlert}
+        typeAlert="error"
+        message="ErrorPasswordRecovery"
+        time={2500}
+        handleClose={closeAlert}
+      />
     </Box>
   );
 };

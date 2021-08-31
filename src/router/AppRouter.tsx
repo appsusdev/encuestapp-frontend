@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from "react";
+import { useIntl } from "react-intl";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
@@ -24,6 +25,7 @@ import {
   startLoadingMapData,
 } from "../redux/actions/citizensActions";
 import { startLoadEntities } from "../redux/actions/entitiesActions";
+import { ChangeScreen } from "../pages/auth/ChangeScreen";
 
 export const AppRouter: FC = () => {
   const dispatch = useDispatch();
@@ -53,18 +55,17 @@ export const AppRouter: FC = () => {
                 municipio: municipio,
               };
               dispatch(login(userMain));
-              setIsLoggedIn(true);
 
-              if (isLoggedIn) {
-                if (rol === TypeUser.ADMIN) {
-                  dispatch(startLoadingSurveyors(municipio));
-                  dispatch(startLoadingCompleteSurveys(municipio));
-                  dispatch(startLoadingAssignedSurveys(municipio));
-                  dispatch(startLoadingCitizens());
-                  dispatch(startLoadingMapData(municipio));
-                } else {
-                  await dispatch(startLoadEntities());
-                }
+              if (rol === TypeUser.ADMIN) {
+                await dispatch(startLoadingSurveyors(municipio));
+                await dispatch(startLoadingCompleteSurveys(municipio));
+                await dispatch(startLoadingAssignedSurveys(municipio));
+                await dispatch(startLoadingCitizens());
+                await dispatch(startLoadingMapData(municipio));
+                setIsLoggedIn(true);
+              } else {
+                await dispatch(startLoadEntities());
+                setIsLoggedIn(true);
               }
             }
           } else {
@@ -99,6 +100,11 @@ export const AppRouter: FC = () => {
             isAuthenticated={isLoggedIn}
             path="/auth"
             component={AuthRouter}
+          />
+          <PrivateRoute
+            path="/account"
+            isAuthenticated={isLoggedIn}
+            component={ChangeScreen}
           />
           <PrivateRoute
             path="/"
