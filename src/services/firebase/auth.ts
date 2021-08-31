@@ -15,6 +15,8 @@ export interface IUserInfo {
   rol: string;
   municipios: string[];
   municipio: string;
+  nit: string;
+  razonSocial: string;
 }
 
 export const getUserRole = (

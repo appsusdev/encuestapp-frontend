@@ -13,7 +13,10 @@ export const startLoginCorreoPassword = (email: string, password: string) => {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(async ({ user }) => {
-        const { rol, municipio } = await getUserRole(user?.email);
+        const { rol, municipio, nit, razonSocial } = await getUserRole(
+          user?.email
+        );
+
         if (rol) {
           if (rol === TypeUser.ADMIN || rol === TypeUser.SUPER_ADMIN) {
             const userAuth = {
@@ -22,6 +25,8 @@ export const startLoginCorreoPassword = (email: string, password: string) => {
               email: user?.email,
               rol: rol,
               municipio: municipio,
+              nit: nit,
+              razonSocial: razonSocial,
             };
             dispatch(login(userAuth));
             window.location.reload();
@@ -48,6 +53,8 @@ export const login = (user: IAuth) => ({
     email: user.email,
     rol: user.rol,
     municipio: user.municipio,
+    nit: user.nit,
+    razonSocial: user.razonSocial,
   },
 });
 

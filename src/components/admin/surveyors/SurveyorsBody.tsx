@@ -16,6 +16,7 @@ import {
   updateSurveyor,
 } from "../../../redux/actions/surveyorsActions";
 import { db } from "../../../config/firebase/firebase-config";
+import { uiOpenModalDelete } from "../../../redux/actions/uiActions";
 
 export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
   const dispatch = useDispatch();
@@ -52,6 +53,10 @@ export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
     }
   };
 
+  const onDelete = () => {
+    dispatch(uiOpenModalDelete());
+  };
+
   return (
     <>
       <TableRow key={surveyor.username}>
@@ -76,8 +81,10 @@ export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
           <CustomizedIcons
             editIcon
             assignIcon
+            deleteIcon
             onEdit={onEdit}
             onAssign={onAssign}
+            onDelete={onDelete}
           />
         </TableCell>
       </TableRow>

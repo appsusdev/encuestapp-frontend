@@ -105,7 +105,7 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
       .email(`${intl.formatMessage({ id: "InvalidEmail" })}`)
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`),
     identificacion: yup
-      .number()
+      .string()
       .typeError(`${intl.formatMessage({ id: "NumericValue" })}`)
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`)
       .min(8, `${intl.formatMessage({ id: "MinimumPassword" })}`),
@@ -194,9 +194,11 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
         validationSchema={validationSchema}
         validateOnMount
         onSubmit={(values, { setSubmitting }) => {
+          setSubmitting(true);
           values.departamento = departmentSelected;
           values.municipio = municipioSelected;
           handleCreateEntity(values as IEntity);
+          setSubmitting(false);
         }}
       >
         {({ values, isSubmitting }) => (
