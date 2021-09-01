@@ -246,9 +246,9 @@ export const startAssignSurvey = (
 };
 
 // Cargar coleccion de encuestadores con sus encuestas asignadas
-export const startLoadingAssignedSurveys = (town: string) => {
+export const startLoadingAssignedSurveys = (town: string, nit: string) => {
   return async (dispatch: any) => {
-    const resp = await getAssignedSurveys(town);
+    const resp = await getAssignedSurveys(town, nit);
     dispatch(setAssignedSurveys(resp));
   };
 };

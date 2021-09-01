@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import IdleTimer from 'react-idle-timer';
+import IdleTimer from "react-idle-timer";
 
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { AuthRouter } from "./AuthRouter";
@@ -60,10 +60,10 @@ export const AppRouter: FC = () => {
 
               if (rol === TypeUser.ADMIN) {
                 await dispatch(startLoadingSurveyors(municipio, nit));
-                await dispatch(startLoadingCompleteSurveys(municipio));
-                await dispatch(startLoadingAssignedSurveys(municipio));
+                await dispatch(startLoadingCompleteSurveys(municipio, nit));
+                await dispatch(startLoadingAssignedSurveys(municipio, nit));
                 await dispatch(startLoadingCitizens());
-                await dispatch(startLoadingMapData(municipio));
+                await dispatch(startLoadingMapData(nit));
                 setIsLoggedIn(true);
               } else if (rol === TypeUser.SUPER_ADMIN) {
                 await dispatch(startLoadEntities());
@@ -96,10 +96,10 @@ export const AppRouter: FC = () => {
 
   const handleInactivity = () => {
     dispatch(startLogout());
-  }
+  };
 
   return (
-    <IdleTimer timeout={5 * 60 * 1000} onIdle={ handleInactivity } >
+    <IdleTimer timeout={5 * 60 * 1000} onIdle={handleInactivity}>
       <Router>
         <div>
           <Switch>
@@ -123,8 +123,6 @@ export const AppRouter: FC = () => {
           </Switch>
         </div>
       </Router>
-    
     </IdleTimer>
-
   );
 };

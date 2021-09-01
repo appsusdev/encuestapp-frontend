@@ -25,11 +25,12 @@ export const existsSurvey = (
 };
 
 // Obtener solamente informacion de las encuestas
-export const getSurveys = async (town: string) => {
+export const getSurveys = async (town: string, nit: string) => {
   const surveyorsSnap = await db
     .collection("Municipios")
     .doc(town)
     .collection("Encuestas")
+    .where("idEntidad", "==", nit)
     .get();
   const surveys: any[] = [];
 
@@ -43,8 +44,8 @@ export const getSurveys = async (town: string) => {
   return surveys;
 };
 // Obtener encuestas con toda la informacion (capitulos y preguntas)
-export const getSurveysAndChapters = async (town: string) => {
-  const surveys: any[] = await getSurveys(town);
+export const getSurveysAndChapters = async (town: string, nit: string) => {
+  const surveys: any[] = await getSurveys(town, nit);
 
   // Obtener cada encuesta con sus capitulos
   let surveysAndChapters: any[] = [];
@@ -55,6 +56,7 @@ export const getSurveysAndChapters = async (town: string) => {
       id: survey.id,
       ...survey,
       chapters: chapters,
+      idEntity: nit,
     };
     surveysAndChapters = [...surveysAndChapters, surveyDB];
   }
