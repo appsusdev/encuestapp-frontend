@@ -53,7 +53,6 @@ export const EntitiesScreen = () => {
     AppState,
     AppState["ui"]
   >((state) => state.ui);
-  const { alert } = useSelector<AppState, AppState["ui"]>((state) => state.ui);
 
   const { successAlert, errorAlert } = useSelector(
     (state: AppState) => state.ui
@@ -142,7 +141,7 @@ export const EntitiesScreen = () => {
         <MyAlert
           open={successAlert}
           typeAlert="success"
-          message={"SavingEntitySuccess"}
+          message={!modalEditOpen ? "UpdatedEntity" : "SavingEntitySuccess"}
           time={2000}
           handleClose={closeSuccess}
         />
@@ -153,16 +152,6 @@ export const EntitiesScreen = () => {
           time={2000}
           handleClose={closeSuccess}
         />
-
-        <Box mt={3}>
-          <MyAlert
-            open={alert}
-            typeAlert="success"
-            message="StateSurveyorUpdated"
-            time={2000}
-            handleClose={closeSuccess}
-          />
-        </Box>
       </Box>
     </AppAnimate>
   );
