@@ -17,7 +17,6 @@ import {
   assignSurvey,
   getAssignedSurveys,
   getTransmittedSurveysBySurveyor,
-  updateTowns,
 } from "../../services/firebase/surveyors";
 import {
   uiOpenSuccessAlert,
@@ -53,25 +52,7 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
     const userToDB = encuestadorDTO(surveyor, existsSurveyorDB, towns);
 
     if (existsSurveyorDB) {
-      const townsSurveyor: string[] = existsSurveyorDB.municipios;
-
-      // Si el encuestador ya existe en el municipio no puede ser registrado con ese correo.
-      if (townsSurveyor.includes(town)) return dispatch(uiOpenModalAlert());
-      // Puede ser registrado en otro municipio
-      else {
-        const surveyorTown = {
-          email: email,
-          encuestasAsignadas: [],
-          idEntidad: nit,
-        };
-        town && townsSurveyor.push(town);
-
-        const updateSurveyor = { municipios: townsSurveyor };
-        await updateTowns(email, updateSurveyor);
-
-        await addSurveyorToTown(town, email, surveyorTown);
-        dispatch(uiOpenSuccessAlert());
-      }
+      dispatch(uiOpenModalAlert());
     } else {
       try {
         // Registrar encuestador correo y contrasena

@@ -15,8 +15,8 @@ export const startLoadingCitizens = () => {
     const jsonResponse: any = await getCitizens(nit);
 
     if (jsonResponse.ciudadanos) {
-      const parseJson = await JSON.parse(jsonResponse.ciudadanos);
-      dispatch(setCitizens(JSON.parse(parseJson)));
+      const parseJson = JSON.parse(jsonResponse.ciudadanos);
+      dispatch(setCitizens(parseJson));
     }
   };
 };

@@ -71,12 +71,13 @@ export const UploadDB = () => {
         //const parseData: any[] = JSON.parse(jsonResponse);
         //await uploadCitizens(citizens, handleSetprogress);
         await dispatch(setProgress(100));
-        nit && (await uploadJsonCitizens(JSON.stringify(jsonResponse), nit));
+        nit && (await uploadJsonCitizens(jsonResponse, nit));
 
+        const parseData = JSON.parse(jsonResponse);
+        console.log(parseData);
         await setFileToConvert(null);
         await setloading(false);
         await setCitizens(null);
-        const parseData = JSON.parse(jsonResponse);
         dispatch(loadCitizens(parseData));
         (
           document.getElementById("contained-button-file") as HTMLInputElement
