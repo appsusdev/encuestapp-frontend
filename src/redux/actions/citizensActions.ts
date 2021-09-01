@@ -32,9 +32,10 @@ export const startLoadingSurveysAnswered = (idCitizen: string) => {
     const { auth, survey } = getState();
     const { surveys } = survey;
     const town = auth.municipio;
+    const nit = auth.nit;
     const idSurveys: string[] = [];
 
-    const resp = await getTransmittedSurveysByCitizen(town, idCitizen);
+    const resp = await getTransmittedSurveysByCitizen(town, idCitizen, nit);
     resp.forEach((survey) => idSurveys.push(survey.idEncuesta));
     const newSurveys = surveys.filter(
       (survey: Partial<Survey>) =>

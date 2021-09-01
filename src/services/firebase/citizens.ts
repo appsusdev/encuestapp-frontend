@@ -40,12 +40,14 @@ export const getCitizens = async (town: string, nit: string) => {
 
 export const getTransmittedSurveysByCitizen = async (
   town: string,
-  idCitizen: string
+  idCitizen: string,
+  nit: string
 ) => {
   const surveysSnap = await db
     .collectionGroup("EncuestasTransmitidas")
     .where("encuestados", "array-contains", idCitizen)
     .where("municipio", "==", town)
+    .where("idEntidad", "==", nit)
     .get();
   const surveys: any[] = [];
 
