@@ -201,5 +201,7 @@
     "ErrorUpdatingPassword": "Error al actualizar la contraseña.",
     "CurrentPassword": "Contraseña actual",
     "NoRegisteredSurveyors": "No existen encuestadores registrados para esta entidad.",
-    "NoCreatedSurveys": "No existen encuestas creadas para esta entidad."
+    "NoRegisteredCitizens": "No existen ciudadanos registrados para esta entidad.",
+    "NoCreatedSurveys": "No existen encuestas creadas para esta entidad.",
+    "NoCreatedEntity": "No se ha creado ninguna entidad."
 }

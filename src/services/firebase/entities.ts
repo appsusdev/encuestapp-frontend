@@ -58,6 +58,9 @@ export const addNewEntity = (entity: IEntity): Promise<any> => {
         razonSocial,
         email,
         fechaCreacion: firebase.firestore.Timestamp.now(),
+        lat: 2.495,
+        lng: -73.781,
+        zoom: 4.32,
       },
       { merge: true }
     )
@@ -66,16 +69,7 @@ export const addNewEntity = (entity: IEntity): Promise<any> => {
       return db
         .collection("Municipios")
         .doc(municipio)
-        .set(
-          {
-            departamento,
-            admin: identificacion,
-            lat: 2.495,
-            lng: -73.781,
-            zoom: 4.32
-          },
-          { merge: true }
-        )
+        .set({})
         .then(() => {
           return {
             ok: true,

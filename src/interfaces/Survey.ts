@@ -1,40 +1,41 @@
-import { TypeQuestion, TypeDirectedTo } from '../enums/enums';
+import { TypeQuestion, TypeDirectedTo } from "../enums/enums";
 
 export interface Survey {
-    idSurvey: string,
-    code: string,
-    name: string,
-    creationDate: string,
-    state: boolean,
-    authorizationFormats: null | string[],
-    surveyors: string[],
-    idTown: string,
-    chapters: Chapter[] 
+  idSurvey: string;
+  code: string;
+  name: string;
+  creationDate: string;
+  state: boolean;
+  authorizationFormats: null | string[];
+  surveyors: string[];
+  idTown: string;
+  idEntity: string;
+  chapters: Chapter[];
 }
 
 export interface SurveyQuestion {
-    id: string;
-    question: string;
-    directedTo: string | TypeDirectedTo;
-    chart?: boolean;
-    type: TypeQuestion;
-    options?: QuestionOptions[] | null;
-    answers: ISurveyAnswers[] 
-    othersAnswers?: any[] | ISurveyAnswers[] |ISurveyAnswers
+  id: string;
+  question: string;
+  directedTo: string | TypeDirectedTo;
+  chart?: boolean;
+  type: TypeQuestion;
+  options?: QuestionOptions[] | null;
+  answers: ISurveyAnswers[];
+  othersAnswers?: any[] | ISurveyAnswers[] | ISurveyAnswers;
 }
 export interface QuestionOptions {
-    label: string;
-    value?: number;
-    description?: boolean;
-    textDescription?: string;
-    typeDescription?: Partial<TypeQuestion>
+  label: string;
+  value?: number;
+  description?: boolean;
+  textDescription?: string;
+  typeDescription?: Partial<TypeQuestion>;
 }
 
 export interface Chapter {
-    id: string;
-    number: number | string;
-    name: string;
-    questions: SurveyQuestion[],
+  id: string;
+  number: number | string;
+  name: string;
+  questions: SurveyQuestion[];
 }
 
 // export interface IAnswerWithDescription {
@@ -45,17 +46,17 @@ export interface Chapter {
 // type answer = IAnswerWithDescription[] | IAnswerWithDescription;
 
 export interface ISurveyAnswers {
-    respuesta: any;
-    citizen: string;
-    idEncuestador: string;
-    idEncuestaCiudadano: string;
+  respuesta: any;
+  citizen: string;
+  idEncuestador: string;
+  idEncuestaCiudadano: string;
 }
 
 export type answerFile = {
-    fileName: string;
-    path: string;
-    readableSize: string;
-    size: number;
-    type: string;
-    uri: string;
+  fileName: string;
+  path: string;
+  readableSize: string;
+  size: number;
+  type: string;
+  uri: string;
 };

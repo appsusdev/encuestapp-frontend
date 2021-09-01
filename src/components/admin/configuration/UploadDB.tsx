@@ -31,7 +31,7 @@ import { firebase } from "../../../config/firebase/firebase-config";
 export const UploadDB = () => {
   const classes = useStyles();
   const { progress } = useSelector((state: AppState) => state.ui);
-  const { municipio, rol } = useSelector((state: AppState) => state.auth);
+  const { municipio, rol, nit } = useSelector((state: AppState) => state.auth);
 
   const [fileToConvert, setFileToConvert] = useState<File | null>(null);
   const [, setCitizens] = useState<CitizensType | null>(null);
@@ -70,7 +70,12 @@ export const UploadDB = () => {
         //const parseData: any[] = JSON.parse(jsonResponse);
         //await uploadCitizens(citizens, handleSetprogress);
         await dispatch(setProgress(100));
-        await uploadJsonCitizens(JSON.stringify(jsonResponse), municipio);
+        nit &&
+          (await uploadJsonCitizens(
+            JSON.stringify(jsonResponse),
+            municipio,
+            nit
+          ));
 
         await setFileToConvert(null);
         await setloading(false);

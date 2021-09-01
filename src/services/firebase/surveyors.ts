@@ -102,11 +102,12 @@ export const assignSurvey = async (
 };
 
 // Obtener coleccion de encuestadores con sus encuestas asignadas
-export const getAssignedSurveys = async (town: string) => {
+export const getAssignedSurveys = async (town: string, nit: string) => {
   const surveyorsSnap = await db
     .collection("Municipios")
     .doc(town)
     .collection("Encuestadores")
+    .where("idEntidad", "==", nit)
     .get();
   const resp: any[] = [];
 

@@ -58,6 +58,7 @@ export const Home = () => {
   const [existsCitizens, setExistsCitizens] = useState(true);
   const [list, setList] = useState<ICitizen[] | []>([]);
   const [valid, setValid] = useState(true);
+  const [search, setSearch] = useState(false);
   const { citizens } = useSelector<AppState, AppState["citizens"]>(
     (state) => state.citizens
   );
@@ -90,6 +91,7 @@ export const Home = () => {
 
   const handleSearch = () => {
     if (value.length >= 3) {
+      setSearch(true);
       if (array.length > 0) {
         setValid(true);
         const newData = array.filter((data) => {
@@ -130,6 +132,7 @@ export const Home = () => {
       setExistsCitizens(true);
       setValid(false);
       setList([]);
+      setSearch(false);
     }
   };
 
@@ -260,7 +263,9 @@ export const Home = () => {
                         <TableCell>{citizen.identificacion}</TableCell>
                         <TableCell align="center">
                           <Tooltip
-                            title={`${intl.formatMessage({ id: "SeeSurveys" })}`}
+                            title={`${intl.formatMessage({
+                              id: "SeeSurveys",
+                            })}`}
                           >
                             <IconButton
                               aria-label="expand row"
@@ -305,6 +310,11 @@ export const Home = () => {
           {!existsCitizens && value.length >= 3 && (
             <Alert severity="info" color="info">
               <FormattedMessage id="CitizenNotFound" />
+            </Alert>
+          )}
+          {search && array.length === 0 && (
+            <Alert severity="info" color="info">
+              <FormattedMessage id="NoRegisteredCitizens" />
             </Alert>
           )}
         </Box>
