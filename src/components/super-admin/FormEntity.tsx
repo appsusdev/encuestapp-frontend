@@ -132,8 +132,6 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
         if (edit && entityActive) {
           const { departamento, municipio, email, identificacion } =
             entityActive;
-            console.log('ENTIDAD ACTIVA-------------')
-            console.log(entityActive)
           setDepartmentSelected(departamento);
           setMunicipioSelected(municipio);
           setInitialValues({ ...entityActive });
@@ -152,13 +150,12 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
       ).then(async (response) => {
         const { data } = response;
         await setFilteredTowns(data);
-        if(!edit){
-
+        if (!edit) {
           setMunicipioSelected(data[0].municipio);
         }
       });
     }
-  }, [departmentSelected,edit]);
+  }, [departmentSelected, edit]);
   const handleCreateEntity = async (entity: IEntity) => {
     const { email, identificacion, nit } = entity;
 
