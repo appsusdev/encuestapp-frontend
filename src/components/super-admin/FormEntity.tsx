@@ -64,6 +64,7 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
   const [municipioSelected, setMunicipioSelected] = useState<string>("");
   const [filteredTowns, setFilteredTowns] = useState<ILocationData[]>([]);
   const { entityActive } = useSelector((state: AppState) => state.entities);
+
   const [initialValues, setInitialValues] = useState<Partial<IEntity>>({
     razonSocial: "",
     nit: "",
@@ -149,10 +150,12 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
       ).then(async (response) => {
         const { data } = response;
         await setFilteredTowns(data);
-        setMunicipioSelected(data[0].municipio);
+        if (!edit) {
+          setMunicipioSelected(data[0].municipio);
+        }
       });
     }
-  }, [departmentSelected]);
+  }, [departmentSelected, edit]);
   const handleCreateEntity = async (entity: IEntity) => {
     const { email, identificacion, nit } = entity;
 
