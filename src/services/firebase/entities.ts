@@ -58,9 +58,6 @@ export const addNewEntity = (entity: IEntity): Promise<any> => {
         razonSocial,
         email,
         fechaCreacion: firebase.firestore.Timestamp.now(),
-        lat: 2.495,
-        lng: -73.781,
-        zoom: 4.32,
       },
       { merge: true }
     )
@@ -69,7 +66,19 @@ export const addNewEntity = (entity: IEntity): Promise<any> => {
       return db
         .collection("Municipios")
         .doc(municipio)
-        .set({})
+        .set({ departamento })
+        .then(() => {
+          return {
+            ok: true,
+          };
+        });
+    })
+    .then(() => {
+      //CREAR LA COLECCIÓN DE ENTIDADES
+      return db
+        .collection("Entidades")
+        .doc(nit)
+        .set({ ciudadanos: null, lat: 2.495, lng: -73.781, zoom: 4.32 })
         .then(() => {
           return {
             ok: true,
@@ -128,7 +137,6 @@ export const updateEntity = (entity: IEntity): Promise<any> => {
         .set(
           {
             departamento,
-            admin: identificacion,
           },
           { merge: true }
         )
@@ -138,4 +146,24 @@ export const updateEntity = (entity: IEntity): Promise<any> => {
           };
         });
     });
+};
+
+export const getEntity = (nit: string): Promise<any> => {
+  return db
+    .collection("Usuarios")
+    .where("rol", "==", TypeUser.ADMIN)
+    .where("nit", "==", nit)
+    .get()
+    .then((snapShot) => {
+      let users: any;
+      snapShot.forEach((doc: any) => {
+        users = {
+          id: doc.id,
+          ...(doc.data() as any),
+        };
+      });
+
+      return users;
+    })
+    .catch((err) => console.log(err));
 };

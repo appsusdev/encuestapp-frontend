@@ -12,17 +12,12 @@ export const uploadCitizens = async (
       callback(totalInserted);
     }
   } catch (error) {
-    console.log("ERROR AL INSERTAR DATOS");
     return new Error(`ERROR AL INSERTAR DATOS ${error}`);
   }
 };
-export const uploadJsonCitizens = async (
-  jsonData: string,
-  municipio: string,
-  nit: string
-) => {
+export const uploadJsonCitizens = async (jsonData: string, nit: string) => {
   try {
-    await addJsonCitizens(jsonData, municipio, nit);
+    await addJsonCitizens(jsonData, nit);
   } catch (error) {
     return new Error(`ERROR AL INSERTAR DATOS ${error}`);
   }

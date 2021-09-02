@@ -10,14 +10,13 @@ import { finishLoading } from "./uiActions";
 
 export const startLoadingCitizens = () => {
   return async (dispatch: Function, getState: Function) => {
-    const { municipio, nit } = getState().auth;
-    const town: string = municipio;
+    const { nit } = getState().auth;
 
-    const jsonResponse: any = await getCitizens(town, nit);
+    const jsonResponse: any = await getCitizens(nit);
 
-    if (jsonResponse) {
-      const parseJson = await JSON.parse(jsonResponse.data);
-      dispatch(setCitizens(JSON.parse(parseJson)));
+    if (jsonResponse.ciudadanos) {
+      const parseJson = JSON.parse(jsonResponse.ciudadanos);
+      dispatch(setCitizens(parseJson));
     }
   };
 };

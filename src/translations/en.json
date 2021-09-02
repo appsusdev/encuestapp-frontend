@@ -181,6 +181,8 @@
     "Phone":"Phone",
     "SystemAdmin":"System administrator",
     "SavingEntitySuccess":"Entity created",            
+    "UpdatedEntity":"Entity updated",            
+    "ExistsEntity":"There is already a registered entity with the NIT entered",            
     "SurveyCode": "Código encuesta",
     "Maps": "Maps",
     "UpdateMap": "Update map",

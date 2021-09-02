@@ -181,6 +181,8 @@
     "Phone":"Telefono",
     "SystemAdmin":"Administrador del sistema",
     "SavingEntitySuccess":"La entidad ha sido creada",
+    "UpdatedEntity":"La entidad ha sido actualizada",
+    "ExistsEntity":"Ya existe una entidad registrada con el NIT ingresado",
     "SurveyCode": "Código encuesta",
     "Maps": "Mapas",
     "UpdateMap": "Actualizar mapa",     

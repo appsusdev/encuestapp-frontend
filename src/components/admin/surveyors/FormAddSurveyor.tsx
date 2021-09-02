@@ -229,6 +229,7 @@ export const FormAddSurveyor = () => {
                   name="username"
                   variant="outlined"
                   className={classes.myTextFieldRoot}
+                  InputLabelProps={{ shrink: false }}
                   label={`${values.firstName} ${values.secondName} ${values.firstLastName} ${values.secondLastName}`}
                   disabled={true}
                   style={{ color: "black" }}

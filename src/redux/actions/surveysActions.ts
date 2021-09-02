@@ -384,7 +384,6 @@ export const startDeleteQuestion = (question: any, idChapter: string) => {
       // Cambio en el estado del reducer
       const updatedChapters = survey.chapters.map((chapter: Chapter) => {
         if (chapter.id === idChapter) {
-          console.log(chapter.id, idChapter);
           chapter.questions = getChapter[0].questions.filter(
             (question: SurveyQuestion) => question.id !== idQuestion
           );

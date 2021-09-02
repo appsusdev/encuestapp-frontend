@@ -27,6 +27,7 @@ import { AppState } from "../../../redux/reducers/rootReducer";
 import CircularProgressWithLabel from "../../custom/CircularProgressWithLabel";
 import { TypeUser } from "../../../enums/enums";
 import { firebase } from "../../../config/firebase/firebase-config";
+import { setCitizens as loadCitizens } from "../../../redux/actions/citizensActions";
 
 export const UploadDB = () => {
   const classes = useStyles();
@@ -70,21 +71,20 @@ export const UploadDB = () => {
         //const parseData: any[] = JSON.parse(jsonResponse);
         //await uploadCitizens(citizens, handleSetprogress);
         await dispatch(setProgress(100));
-        nit &&
-          (await uploadJsonCitizens(
-            JSON.stringify(jsonResponse),
-            municipio,
-            nit
-          ));
+        nit && (await uploadJsonCitizens(jsonResponse, nit));
 
+        const parseData = JSON.parse(jsonResponse);
+        console.log(parseData);
         await setFileToConvert(null);
         await setloading(false);
         await setCitizens(null);
+        dispatch(loadCitizens(parseData));
         (
           document.getElementById("contained-button-file") as HTMLInputElement
         ).value = "";
         dispatch(uiOpenSuccessAlert());
         dispatch(setProgress(0));
+        // const parseJson = JSON.parse(jsonResponse);
       }
     } catch (error) {
       dispatch(uiOpenErrorAlert());
