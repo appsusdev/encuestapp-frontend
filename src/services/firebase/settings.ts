@@ -5,7 +5,7 @@ import { InitialPoint } from "../../hooks/useMapbox";
 export const updateMapData = async (nit: string, coords: InitialPoint) => {
   const { lng, lat, zoom } = coords;
   await db
-    .collection("Usuarios")
+    .collection("Entidades")
     .doc(nit)
     .set({ lng, lat, zoom }, { merge: true });
 };
