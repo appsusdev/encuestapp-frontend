@@ -36,6 +36,7 @@
     "CreateNewSurveyor": "Create new surveyor",
     "EditSurveyor": "Edit surveyor",
     "DeleteSurveyor": "Delete surveyor",
+    "DeleteSurvey": "Delete survey",
     "Document": "Document",
     "DocumentType": "Document type",
     "DocumentNumber": "Document number",
@@ -174,7 +175,7 @@
     "Entities":"Entities",
     "NameEntity":"NameEntity",
     "Nit":"Nit",
-    "CreateNewEntity":"CreateNewEntity",
+    "CreateNewEntity":"Create new entity",
     "EditEntity":"EditEntity",
     "DeleteEntity":"DeleteEntity",
     "BusinessName":"BusinessName",
@@ -205,5 +206,8 @@
     "NoRegisteredSurveyors": "There are no surveyors registered for this entity.",
     "NoRegisteredCitizens": "There are no citizens registered for this entity.",
     "NoCreatedSurveys": "There are no surveys created for this entity.",
-    "NoCreatedEntity": "No entity has been created"
+    "NoCreatedEntity": "No entity has been created",
+    "YesDelete": "Yes, I want to delete it",
+    "MessageDeleteSurveyOne": "Are you sure you want the survey?",
+    "MessageDeleteSurveyTwo": "All collected data will be deleted. If you are not sure, click on the Cancel button and you can deactivate the survey."
 }

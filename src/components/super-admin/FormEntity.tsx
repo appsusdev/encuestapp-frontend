@@ -183,9 +183,9 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
         }
       }
       dispatch(purgeActiveEntity());
+      await dispatch(uiOpenSuccessAlert());
       dispatch(uiCloseModalAdd());
       dispatch(uiCloseModalEdit());
-      dispatch(uiOpenSuccessAlert());
     } catch (error) {
       dispatch(uiOpenErrorAlert());
     }
@@ -358,6 +358,7 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
                   name="email"
                   variant="outlined"
                   className={classes.myTextFieldRoot}
+                  disabled={edit}
                 />
               </Grid>
               <Grid item xs={6}>
