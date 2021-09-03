@@ -3,14 +3,11 @@ import { useSelector } from "react-redux";
 
 import {
   Box,
-  Checkbox,
   Card,
   CardMedia,
   Typography,
   Grid,
   TextField,
-  FormControlLabel,
-  Radio,
 } from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/Home";
 import PersonIcon from "@material-ui/icons/Person";
