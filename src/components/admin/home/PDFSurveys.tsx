@@ -147,46 +147,9 @@ export const PDFSurveys = (props: Props) => {
                             </Grid>
                           </>
                         )}
-                        {question.options &&
-                          question.type !== TypeQuestion.SELECT &&
-                          question.options.map((option, index) => (
-                            <Grid container key={index}>
-                              <Grid item xs={6}>
-                                {question.type === TypeQuestion.RADIO && (
-                                  <FormControlLabel
-                                    value={option.label}
-                                    control={<Radio />}
-                                    label={option.label}
-                                    checked={
-                                      option.value === answer.respuesta[0].value
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                )}
-                                {question.type === TypeQuestion.CHECK &&
-                                  option.value ===
-                                    answer.respuesta[0].value && (
-                                    <>
-                                      <Checkbox
-                                        color="default"
-                                        checked={
-                                          option.value ===
-                                          answer.respuesta[0].value
-                                            ? true
-                                            : false
-                                        }
-                                      />
-                                      <label className="form-text">
-                                        {option.label}
-                                      </label>
-                                    </>
-                                  )}
-                              </Grid>
-                            </Grid>
-                          ))}
-                        {question.options &&
-                          question.type === TypeQuestion.SELECT &&
+                        {(question.type === TypeQuestion.RADIO ||
+                          question.type === TypeQuestion.SELECT) &&
+                          question.options &&
                           question.options.map(
                             (option, index) =>
                               option.value === answer.respuesta.value && (
@@ -198,6 +161,26 @@ export const PDFSurveys = (props: Props) => {
                                   size="small"
                                   value={
                                     option.value === answer.respuesta.value
+                                      ? option.label
+                                      : ""
+                                  }
+                                />
+                              )
+                          )}
+
+                        {question.options &&
+                          question.type === TypeQuestion.CHECK &&
+                          question.options.map(
+                            (option, index) =>
+                              option.value === answer.respuesta[0].value && (
+                                <TextField
+                                  key={index}
+                                  name="input"
+                                  variant="outlined"
+                                  className={classes.myTextFieldRoot}
+                                  size="small"
+                                  value={
+                                    option.value === answer.respuesta[0].value
                                       ? option.label
                                       : ""
                                   }
