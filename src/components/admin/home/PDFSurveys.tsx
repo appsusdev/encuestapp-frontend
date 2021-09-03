@@ -129,17 +129,17 @@ export const PDFSurveys = (props: Props) => {
 
                         {question.type === TypeQuestion.PICTURE && (
                           <>
-                            <Grid container>
-                              <Grid item xs={8}>
-                                <Card className={classes.card}>
+                            <Grid container >
+                              <Grid item xs={12} >
+                                <Card className={classes.cardPDF}>
                                   <CardMedia
-                                    className={classes.media}
                                     image={
                                       answer.respuesta && answer.respuesta.value
                                     }
                                     title="Paella dish"
                                   />
                                 </Card>
+                                <p className={classes.page} ></p>
                               </Grid>
                             </Grid>
                           </>
@@ -187,14 +187,15 @@ export const PDFSurveys = (props: Props) => {
                         {question.type === TypeQuestion.GEOLOCATION && (
                           <>
                             <Grid container>
-                              <Grid item xs={10}>
-                                <Card className={classes.card}>
+                              <Grid item xs={12}>
+                                <Card className={classes.cardPDF}>
                                   <CardMedia
                                     className={classes.media}
                                     image={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
                                     title="Map"
                                   />
                                 </Card>
+                                <p className={classes.page} ></p>
                               </Grid>
                             </Grid>
                           </>
@@ -206,6 +207,9 @@ export const PDFSurveys = (props: Props) => {
                             </Link>
                           </Box>
                         )}
+                        {
+                          <p> Formato de Autenficación pendiente </p>
+                        }
                       </Grid>
                     )
                   )}
