@@ -22,7 +22,7 @@ import { Link } from "@material-ui/core";
 interface Props {
   data: Chapter[];
   title: string | undefined;
-  format: string[] | undefined | null;
+  format: string | undefined;
 }
 export const PDFSurveys = (props: Props) => {
   const { data, title, format } = props;
@@ -216,7 +216,7 @@ export const PDFSurveys = (props: Props) => {
             ))}
             {
                 <>
-                <h1>Formato de autorización</h1>
+                <h1><FormattedMessage id="AuthorizationFormat" /></h1>
                   <Grid container>
                     <Grid item xs={12}>
                       <Card className={classes.cardPDF}>
