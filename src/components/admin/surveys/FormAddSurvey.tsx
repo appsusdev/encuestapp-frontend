@@ -57,7 +57,7 @@ export const FormAddSurvey = () => {
     creationDate: new Date().toLocaleDateString("en-CA"),
     state: false,
     name: "",
-    authorizationFormats: null,
+    authorizationFormats: "",
     surveyors: [],
     chapters: [],
   };

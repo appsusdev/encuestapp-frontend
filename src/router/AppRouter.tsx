@@ -99,7 +99,7 @@ export const AppRouter: FC = () => {
   };
 
   return (
-    <IdleTimer timeout={10 * 60 * 1000} onIdle={handleInactivity}>
+    <IdleTimer timeout={20 * 60 * 1000} onIdle={handleInactivity}>
       <Router>
         <div>
           <Switch>

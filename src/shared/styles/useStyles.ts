@@ -77,12 +77,17 @@ export const useStyles = makeStyles((theme: Theme) => ({
     height: "247px !important",
     marginTop: "12px",
     maxWidth: 345,
+    pageBreakAfter: "always",
   },
   cardPDF: {
-    height: "350px",
-    maxWidth: "100%",
+    height: "500px",
+    maxWidth: "700px",
     objectFit: "cover",
     objectPosition: "center center",
+    pageBreakAfter: "always",
+  },
+  page: {
+    pageBreakAfter: "always"
   },
   paper: {
     minHeight: "400px",

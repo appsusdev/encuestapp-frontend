@@ -120,6 +120,7 @@
     "MessageAssignSurveyOne": "No es posible asignar encuestas a este encuestador.", 
     "MessageAssignSurveyTwo": "Cambie el estado del encuestador a habilitado.",
     "AssignedSurvey": "Encuesta asignada correctamente",
+    "AuthorizationFormat": "Formato de autorización",
     "ErrorAssignedSurvey": "La encuesta ya ha sido asignada a este encuestador",
     "Number": "Número",
     "Chapter": "Capítulo",
