@@ -6,7 +6,7 @@ export interface Survey {
   name: string;
   creationDate: string;
   state: boolean;
-  authorizationFormats: null | string[];
+  authorizationFormats: string;
   surveyors: string[];
   idTown: string;
   idEntity: string;

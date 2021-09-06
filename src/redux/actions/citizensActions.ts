@@ -38,9 +38,12 @@ export const startLoadingSurveysAnswered = (idCitizen: string) => {
     resp.forEach((survey) => idSurveys.push(survey.idEncuesta));
     const newSurveys = surveys.filter(
       (survey: Partial<Survey>) =>
-        survey.idSurvey && idSurveys.includes(survey.idSurvey)
-    );
-
+      survey.idSurvey && idSurveys.includes(survey.idSurvey)
+      );
+      for( let i = 0; i < resp.length ; i++ ){
+        const  surveysTransmitted = resp[i].formatoAutorizacion;
+        newSurveys[i].authorizationFormats = surveysTransmitted;
+      }
     dispatch(finishLoading());
     dispatch(setSurveysAnswered(newSurveys));
   };
