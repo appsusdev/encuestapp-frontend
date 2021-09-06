@@ -159,3 +159,25 @@ export const getTransmittedSurveysBySurveyor = async (
   });
   return surveys;
 };
+
+// Asignar o eliminar encuestas al encuestador
+export const changeAssignedSurveys = async (
+  email: string,
+  nit: string,
+  idSurvey: string,
+  newAssignedSurveys: string[]
+) => {
+  const docRef = await db
+    .collectionGroup("Encuestadores")
+    .where("email", "==", email)
+    .where("encuestasAsignadas", "array-contains", idSurvey)
+    .where("idEntidad", "==", nit)
+    .get();
+
+  docRef.forEach(async (snap) => {
+    await snap.ref.set(
+      { encuestasAsignadas: [...newAssignedSurveys] },
+      { merge: true }
+    );
+  });
+};

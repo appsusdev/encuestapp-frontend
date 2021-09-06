@@ -350,3 +350,86 @@ export const deleteQuestion = async (
     .doc(idQuestion)
     .delete();
 };
+
+// Eliminar encuesta: (Se eliminan respuestas, preguntas y capitulos)
+export const deleteSurveyFirebase = async (town: string, idSurvey: string) => {
+  const surveyRef = db
+    .collection("Municipios")
+    .doc(town)
+    .collection("Encuestas")
+    .doc(idSurvey);
+
+  // Eliminar capitulos de la encuesta
+  let chapters = await surveyRef.collection("Capitulos").get();
+  chapters.forEach(async (snapChapter) => {
+    // RECORRER PRREGUNTAS INDIVIDUAL
+    let ind = await surveyRef
+      .collection("Capitulos")
+      .doc(snapChapter.ref.id)
+      .collection("PreguntasIndividual")
+      .get();
+    ind.forEach(async (snapInd) => {
+      let respuestas = await surveyRef
+        .collection("Capitulos")
+        .doc(snapChapter.ref.id)
+        .collection("PreguntasIndividual")
+        .doc(snapInd.ref.id)
+        .collection("Respuestas")
+        .get();
+
+      respuestas.forEach(async (snapResp) => {
+        // Eliminar respuestas
+        await snapResp.ref.delete();
+      });
+
+      // Eliminar preguntas INDIVIDUAL
+      await snapInd.ref.delete();
+    });
+
+    // RECORRER PRREGUNTAS HOGAR
+    let home = await surveyRef
+      .collection("Capitulos")
+      .doc(snapChapter.ref.id)
+      .collection("PreguntasHogar")
+      .get();
+    home.forEach(async (snapHome) => {
+      let respuestas = await surveyRef
+        .collection("Capitulos")
+        .doc(snapChapter.ref.id)
+        .collection("PreguntasHogar")
+        .doc(snapHome.ref.id)
+        .collection("Respuestas")
+        .get();
+
+      respuestas.forEach(async (snapResp) => {
+        // Eliminar respuestas
+        await snapResp.ref.delete();
+      });
+
+      // Eliminar preguntas HOGAR
+      await snapHome.ref.delete();
+    });
+
+    // Eliminar el capitulo
+    await snapChapter.ref.delete();
+  });
+
+  // Eliminar la encuesta
+  await surveyRef.delete();
+};
+
+// Eliminar encuestas tranasmitidas
+export const deleteSurveysTransmitted = async (
+  nit: string,
+  idSurvey: string
+) => {
+  const surveys = await db
+    .collectionGroup("EncuestasTransmitidas")
+    .where("idEntidad", "==", nit)
+    .where("idEncuesta", "==", idSurvey)
+    .get();
+
+  surveys.forEach(async (snap) => {
+    await snap.ref.delete();
+  });
+};

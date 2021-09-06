@@ -92,7 +92,7 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
             entity: nit,
           })
         );
-      } catch (error) {
+      } catch (error: any) {
         throw new Error(error);
       }
     }
