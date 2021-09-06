@@ -90,7 +90,7 @@ export const ListSurveysAnswered = () => {
 
               <div style={{ display: "none" }}>
                 <div ref={componentRef}>
-                  <PDFSurveys data={newList} title={survey.name} />
+                  <PDFSurveys data={newList} title={survey.name} format={survey.authorizationFormats} />
                 </div>
               </div>
             </div>

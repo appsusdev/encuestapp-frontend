@@ -22,16 +22,13 @@ import { Link } from "@material-ui/core";
 interface Props {
   data: Chapter[];
   title: string | undefined;
+  format: string[] | undefined | null;
 }
 export const PDFSurveys = (props: Props) => {
-  const { data, title } = props;
+  const { data, title, format } = props;
   const classes = useStyles();
 
   const { activeCitizen } = useSelector<AppState, AppState["citizens"]>(
-    (state) => state.citizens
-  );
-
-  const { surveysAnswered } = useSelector<AppState, AppState["citizens"]>(
     (state) => state.citizens
   );
 
@@ -225,7 +222,7 @@ export const PDFSurveys = (props: Props) => {
                       <Card className={classes.cardPDF}>
                         <CardMedia
                           className={classes.media}
-                          image={`${surveysAnswered[0].authorizationFormats}`}
+                          image={`${format}`}
                           title="autorizationFormat"
                         />
                       </Card>
