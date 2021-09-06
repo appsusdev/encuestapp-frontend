@@ -452,7 +452,7 @@ export const startDeleteSurvey = (idSurvey: string) => {
   };
 };
 
-// Encuesta activa
+// Eliminar encuesta del reducer
 export const deleteSurvey = (idSurvey: string) => ({
   type: types.surveyDelete,
   payload: idSurvey,
