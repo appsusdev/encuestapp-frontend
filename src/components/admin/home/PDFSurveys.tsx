@@ -31,6 +31,10 @@ export const PDFSurveys = (props: Props) => {
     (state) => state.citizens
   );
 
+  const { surveysAnswered } = useSelector<AppState, AppState["citizens"]>(
+    (state) => state.citizens
+  );
+
   return (
     <Box m={5}>
       <Box display="flex" justifyContent="center" className={classes.titlePDF}>
@@ -207,15 +211,28 @@ export const PDFSurveys = (props: Props) => {
                             </Link>
                           </Box>
                         )}
-                        {
-                          <p> Formato de Autenficación pendiente </p>
-                        }
                       </Grid>
                     )
                   )}
                 </Grid>
               </Box>
             ))}
+            {
+                <>
+                <h1>Formato de autorización</h1>
+                  <Grid container>
+                    <Grid item xs={12}>
+                      <Card className={classes.cardPDF}>
+                        <CardMedia
+                          className={classes.media}
+                          image={`${surveysAnswered[0].authorizationFormats}`}
+                          title="autorizationFormat"
+                        />
+                      </Card>
+                    </Grid>
+                  </Grid>
+                </>
+              }
           </Box>
         ))}
     </Box>
