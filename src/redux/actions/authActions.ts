@@ -77,7 +77,7 @@ export const startPasswordRecovery = (email: string) => {
         .then(() => {
           dispatch(uiOpenSuccessAlert());
         });
-    } catch (error) {
+    } catch (error: any) {
       dispatch(uiOpenErrorAlert());
       throw new Error(error);
     }
