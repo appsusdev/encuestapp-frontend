@@ -5,7 +5,8 @@ import { AppBar, Tab, Tabs } from "@material-ui/core";
 import { a11yProps, TabPanel, useStyles } from "../../custom/Tabs";
 import { Microdata } from "./Microdata";
 import { Surveyors } from "./Surveyors";
-// import { Statistics } from "./Statistics";
+import { Statistics } from "./Statistics";
+// import { Statistics } from './Statistics';
 
 export const StatisticsTabs = () => {
   const classes = useStyles();
@@ -41,11 +42,11 @@ export const StatisticsTabs = () => {
             label={`${intl.formatMessage({ id: "Surveyors" })}`}
             {...a11yProps(1)}
           />
-          {/* <Tab
+          <Tab
             className={classes.tab}
             label={`${intl.formatMessage({ id: "Statistics" })}`}
             {...a11yProps(2)}
-          /> */}
+          />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -54,9 +55,9 @@ export const StatisticsTabs = () => {
       <TabPanel value={value} index={1}>
         <Surveyors />
       </TabPanel>
-      {/* <TabPanel value={value} index={2}>
+      <TabPanel value={value} index={2}>
         <Statistics />
-      </TabPanel> */}
+      </TabPanel>
     </div>
   );
 };

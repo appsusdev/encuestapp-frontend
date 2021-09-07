@@ -40,7 +40,6 @@ export const Statistics = () => {
                 <TextField
                   className={classes.myTextFieldRoot}
                   InputLabelProps={{ shrink: false }}
-                  label={`${intl.formatMessage({ id: "InputSelect" })}`}
                   name="value"
                   onChange={handleChange}
                   select

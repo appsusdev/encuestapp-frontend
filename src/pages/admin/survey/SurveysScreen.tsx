@@ -21,12 +21,16 @@ import {
   uiCloseModalAssign,
   uiCloseAlert,
   uiCloseModalDelete,
+  uiCloseModalAlert,
+  uiCloseDeleteSuccess,
 } from "../../../redux/actions/uiActions";
 import { AppState } from "../../../redux/reducers/rootReducer";
-import { surveyCleanActive } from "../../../redux/actions/surveysActions";
+import {
+  surveyCleanActive,
+  startDeleteSurvey,
+} from "../../../redux/actions/surveysActions";
 import { FormAddChapter } from "../../../components/admin/surveys/FormAddChapter";
 import { DeleteSurvey } from "../../../components/admin/surveys/DeleteSurvey";
-import { uiCloseModalAlert } from "../../../redux/actions/uiActions";
 import {
   setChapters,
   chapterCleanActive,
@@ -45,6 +49,7 @@ export const SurveysScreen: FC = () => {
     modalEditOpen,
     modalAssignOpen,
     modalDeleteOpen,
+    deleteSuccess,
   } = useSelector<AppState, AppState["ui"]>((state) => state.ui);
   const { activeSurvey, surveys } = useSelector<AppState, AppState["survey"]>(
     (state) => state.survey
@@ -95,15 +100,14 @@ export const SurveysScreen: FC = () => {
 
   const closeSuccess = () => {
     dispatch(uiCloseAlert());
+    dispatch(uiCloseDeleteSuccess());
   };
 
-  const handleDeleteSurvey = () => {
-    // TODO: Lógica para eliminar encuesta
+  const handleDeleteSurvey = async () => {
+    // Lógica para eliminar encuesta
     setLoading(true);
-    setTimeout(() => {
-      console.log("Inicia el proceso para eliminar encuesta");
-      setLoading(false);
-    }, 1500);
+    await dispatch(startDeleteSurvey(survey.idSurvey));
+    setLoading(false);
   };
 
   return (
@@ -181,7 +185,17 @@ export const SurveysScreen: FC = () => {
             open={alert}
             typeAlert="success"
             message="StateSurveyUpdated"
-            time={1000}
+            time={2000}
+            handleClose={closeSuccess}
+          />
+        </Box>
+
+        <Box mt={3}>
+          <MyAlert
+            open={deleteSuccess}
+            typeAlert="success"
+            message="SurveyDeleted"
+            time={2000}
             handleClose={closeSuccess}
           />
         </Box>

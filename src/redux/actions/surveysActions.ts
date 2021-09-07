@@ -20,8 +20,16 @@ import {
   uiCloseQuestion,
   startLoading,
   finishLoading,
+  uiCloseModalAlert,
+  uiOpenDeleteSuccess,
 } from "./uiActions";
 import { types } from "../types/types";
+import {
+  deleteSurveysTransmitted,
+  deleteSurveyFirebase,
+} from "../../services/firebase/surveys";
+import { updateAssignedSurveys } from "./surveyorsActions";
+import { changeAssignedSurveys } from "../../services/firebase/surveyors";
 
 export const startNewSurvey = (survey: Partial<Survey>) => {
   return async (dispatch: any, getState: any) => {
@@ -43,7 +51,7 @@ export const startNewSurvey = (survey: Partial<Survey>) => {
         await addNewSurvey(town, code, surveyToDB);
         dispatch(addNewSurveyRedux(survey));
         dispatch(uiOpenSuccessAlert());
-      } catch (error) {
+      } catch (error: any) {
         throw new Error(error);
       }
     }
@@ -64,7 +72,7 @@ export const startLoadingCompleteSurveys = (town: string, nit: string) => {
       const surveys = await getSurveysAndChapters(town, nit);
       await dispatch(setSurveys(surveys));
       dispatch(finishLoading());
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(error);
     }
   };
@@ -93,7 +101,7 @@ export const startEditSurvey = (survey: Partial<Survey>) => {
       await editSurvey(survey, town);
       dispatch(updateSurvey(survey));
       dispatch(uiOpenSuccessAlert());
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(error);
     }
   };
@@ -168,7 +176,7 @@ export const startNewChapter = (
           dispatch(updateSurvey({ ...survey, chapters: updatedChapters }));
         }
         dispatch(uiOpenSuccessAlert());
-      } catch (error) {
+      } catch (error: any) {
         throw new Error(error);
       }
     }
@@ -205,7 +213,7 @@ export const startDeleteChapter = (idSurvey: string, idChapter: string) => {
       dispatch(activeSurvey({ ...survey, chapters: filterChapters }));
       dispatch(updateSurvey({ ...survey, chapters: filterChapters }));
       dispatch(chapterCleanActive());
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(error);
     }
   };
@@ -271,7 +279,7 @@ export const startNewQuestion = (question: any, idSurvey: string) => {
       );
       dispatch(activeSurvey({ ...survey, chapters: updatedChapters }));
       dispatch(updateSurvey({ ...survey, chapters: updatedChapters }));
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(error);
     }
   };
@@ -351,7 +359,7 @@ export const startEditQuestion = (
       dispatch(questionActive(questionToRedux));
       dispatch(activeSurvey({ ...survey, chapters: updatedChapters }));
       dispatch(updateSurvey({ ...survey, chapters: updatedChapters }));
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(error);
     }
     dispatch(uiCloseQuestion());
@@ -392,7 +400,7 @@ export const startDeleteQuestion = (question: any, idChapter: string) => {
       });
       dispatch(activeSurvey({ ...survey, chapters: updatedChapters }));
       dispatch(updateSurvey({ ...survey, chapters: updatedChapters }));
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(error);
     }
   };
@@ -402,4 +410,50 @@ export const startDeleteQuestion = (question: any, idChapter: string) => {
 export const updateSurvey = (survey: any) => ({
   type: types.surveyUpdated,
   payload: survey,
+});
+
+// Eliminar encuesta
+export const startDeleteSurvey = (idSurvey: string) => {
+  return async (dispatch: any, getState: any) => {
+    const { municipio, nit } = getState().auth;
+    const { assignedSurveys } = getState().surveyor;
+    const town: string = municipio;
+
+    try {
+      await deleteSurveyFirebase(town, idSurvey);
+      await deleteSurveysTransmitted(nit, idSurvey);
+      dispatch(deleteSurvey(idSurvey));
+
+      assignedSurveys.forEach(async (data: any) => {
+        const { email, assignedSurveys } = data;
+
+        if (assignedSurveys.includes(idSurvey)) {
+          const arraySurveys: string[] = assignedSurveys.filter(
+            (id: any) => id !== idSurvey
+          );
+
+          dispatch(
+            updateAssignedSurveys({
+              id: email,
+              email,
+              assignedSurveys: arraySurveys,
+            })
+          );
+
+          await changeAssignedSurveys(email, nit, idSurvey, arraySurveys);
+        }
+      });
+      dispatch(surveyCleanActive());
+      dispatch(uiOpenDeleteSuccess());
+      dispatch(uiCloseModalAlert());
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  };
+};
+
+// Eliminar encuesta del reducer
+export const deleteSurvey = (idSurvey: string) => ({
+  type: types.surveyDelete,
+  payload: idSurvey,
 });
