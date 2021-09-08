@@ -47,6 +47,12 @@ export const uiCloseDeleteSuccess = () => ({
   type: types.uiCloseDeleteSuccess,
 });
 
+export const uiOpenDeleteError = () => ({ type: types.uiOpenDeleteError });
+
+export const uiCloseDeleteError = () => ({
+  type: types.uiCloseDeleteError,
+});
+
 export const uiOpenQuestion = () => ({ type: types.uiOpenQuestion });
 
 export const uiCloseQuestion = () => ({ type: types.uiCloseQuestion });

@@ -63,6 +63,7 @@ export const surveyorDTO = (surveyor: any) => {
     profileImage: surveyor.avatar,
     state: surveyor.activo,
     entity: surveyor.entidad,
+    uid: surveyor.uid,
   };
 
   return surveyorFromDB;

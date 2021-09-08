@@ -48,21 +48,24 @@ interface firebaseApiResponse {
 export const registerWithEmailPassword = async (
   email: string,
   password: string
-) => {
+):Promise<firebaseApiResponse> => {
   //CREAR EL USUARIO MEDIANTE EL API
   //return await firebase.auth().createUserWithEmailAndPassword(email, password);
 
   return Axios.post(
     `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_SERVER_KEY}`,
     { email, password, returnSecureToken: true }
-  );
+  ).then(resp=>{
+    const {data} = resp;
+    return data as firebaseApiResponse
+  })
 };
 export const updateCredentialsEntity = (
   oldEmail: string,
   oldPassword: string,
   newEmail: string,
   newPassword: string
-): Promise<any> => {
+): Promise<firebaseApiResponse> => {
   //HACER EL CAMBIO MEDIANTE EL API REST PARA NO GENERAR UNA NUEVA SESION EN LA APP
   return Axios.post(
     `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_SERVER_KEY}`,
@@ -92,7 +95,10 @@ export const updateCredentialsEntity = (
           password: newPassword,
           returnSecureToken: true,
         }
-      );
+      ).then(resp=>{
+        const {data} = resp;
+        return data as firebaseApiResponse
+      })
     });
   });
 };

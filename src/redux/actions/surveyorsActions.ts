@@ -24,6 +24,16 @@ import {
   uiOpenModalAlert,
 } from "./uiActions";
 import { updateSurvey } from "./surveysActions";
+import {
+  existsTransmittedSurveys,
+  deleteSurveyorFirebase,
+} from "../../services/firebase/surveyors";
+import {
+  uiOpenModalDelete,
+  uiOpenDeleteSuccess,
+  uiOpenDeleteError,
+} from "./uiActions";
+import { deleteUserFirebase } from "../../services/firebase/surveyors";
 
 // Agregar nuevo encuestador
 export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
@@ -55,16 +65,25 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
       dispatch(uiOpenModalAlert());
     } else {
       try {
-        // Registrar encuestador correo y contrasena
-        email &&
-          document &&
-          (await registerWithEmailPassword(email, document.toString()));
-
-        // Agregar en coleccion Usuarios
-        await db
-          .collection("Usuarios")
-          .doc(`${email}`)
-          .set({ ...userToDB, entidad: nit });
+        let uid = "";
+        if (email && document) {
+          // Registrar encuestador correo y contrasena
+          const { localId } = await registerWithEmailPassword(
+            email,
+            document.toString()
+          );
+          uid = localId;
+          // Agregar en coleccion Usuarios
+          await db
+            .collection("Usuarios")
+            .doc(`${email}`)
+            .set({
+              ...userToDB,
+              entidad: nit,
+              uid: localId,
+              fechaCreacion: firebase.firestore.Timestamp.now(),
+            });
+        }
 
         // Agregar encuestador a coleccion Municipios
         const surveyorTown = {
@@ -75,6 +94,7 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
         await addSurveyorToTown(town, email, surveyorTown);
         dispatch(uiOpenSuccessAlert());
 
+        surveyor.uid = uid;
         surveyor.id = email;
         surveyor.state = false;
         secondName?.trim() && (secondName = ` ${secondName}`);
@@ -325,4 +345,52 @@ export const setInfoTransmittedSurveys = (surveys: any[]) => ({
 export const setIdResponsibleCitizens = (ids: any[]) => ({
   type: types.surveyorsIdResponsibleCitizens,
   payload: ids,
+});
+
+// Cargar coleccion de encuestadores con sus encuestas asignadas
+export const startDeleteSurveyor = (idSurveyor: string) => {
+  return async (dispatch: Function, getState: Function) => {
+    const { municipio, nit } = getState().auth;
+    const { assignedSurveys } = getState().surveyor;
+    const transmitted = await existsTransmittedSurveys(nit, idSurveyor);
+
+    if (transmitted.length > 0) {
+      // Tiene encuestas transmitidas. No se puede eliminar.
+      dispatch(uiOpenModalDelete());
+    } else {
+      // Verificar si tiene encuestas asignadas
+      const infoAssignedSurveys = assignedSurveys.filter(
+        (data: any) => data.id === idSurveyor
+      );
+      const surveysSurveyor: string[] = infoAssignedSurveys[0].assignedSurveys;
+      if (surveysSurveyor.length === 0) {
+        // No tiene encuestas asignadas se puede eliminar
+        try {
+          await deleteSurveyorFirebase(municipio, idSurveyor);
+          await deleteUserFirebase(idSurveyor);
+          dispatch(deleteSurveyor(idSurveyor));
+          dispatch(deleteInfoAssignedSurveys(idSurveyor));
+          dispatch(surveyorCleanActive());
+          dispatch(uiOpenDeleteSuccess());
+        } catch (error: any) {
+          throw new Error(error);
+        }
+      } else {
+        // No se puede eliminar. Tiene encuestas asignadas
+        dispatch(uiOpenDeleteError());
+      }
+    }
+  };
+};
+
+// Eliminar encuesta del reducer
+export const deleteSurveyor = (idSurveyor: string) => ({
+  type: types.surveyorDelete,
+  payload: idSurveyor,
+});
+
+// Eliminar encuesta del reducer
+export const deleteInfoAssignedSurveys = (idSurveyor: string) => ({
+  type: types.surveyorsDeleteAssignedSurveys,
+  payload: idSurveyor,
 });
