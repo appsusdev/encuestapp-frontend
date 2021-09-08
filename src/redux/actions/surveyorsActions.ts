@@ -65,16 +65,23 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
       dispatch(uiOpenModalAlert());
     } else {
       try {
-        // Registrar encuestador correo y contrasena
-        email &&
-          document &&
-          (await registerWithEmailPassword(email, document.toString()));
-
-        // Agregar en coleccion Usuarios
-        await db
-          .collection("Usuarios")
-          .doc(`${email}`)
-          .set({ ...userToDB, entidad: nit });
+        if (email && document) {
+          // Registrar encuestador correo y contrasena
+          const { localId } = await registerWithEmailPassword(
+            email,
+            document.toString()
+          );
+          // Agregar en coleccion Usuarios
+          await db
+            .collection("Usuarios")
+            .doc(`${email}`)
+            .set({
+              ...userToDB,
+              entidad: nit,
+              uid: localId,
+              fechaCreacion: firebase.firestore.Timestamp.now(),
+            });
+        }
 
         // Agregar encuestador a coleccion Municipios
         const surveyorTown = {

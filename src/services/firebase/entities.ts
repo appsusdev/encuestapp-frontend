@@ -16,7 +16,7 @@ export const loadAllEntities = (): Promise<EntitiesType | []> => {
     });
 };
 
-export const addNewEntity = (entity: IEntity): Promise<any> => {
+export const addNewEntity = (entity: IEntity,uid:string): Promise<any> => {
   const {
     email,
     identificacion,
@@ -57,6 +57,7 @@ export const addNewEntity = (entity: IEntity): Promise<any> => {
         nit,
         razonSocial,
         email,
+        uid,
         fechaCreacion: firebase.firestore.Timestamp.now(),
       },
       { merge: true }

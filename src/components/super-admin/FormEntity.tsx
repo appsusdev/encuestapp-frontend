@@ -173,14 +173,15 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
         await bdUpdateEntity(entity);
         dispatch(updateEntity({ ...entity }));
       } else {
+        console.log("HAY QUE CREAR LA ENTIDAD")
         const existsEntity = await getEntity(nit);
 
         if (existsEntity) return dispatch(uiOpenAlert());
         else {
-          await registerWithEmailPassword(email, identificacion.toString());
+          const response=  await registerWithEmailPassword(email, identificacion.toString());
           // agregarlo a la bd
           // crear la collection del municipio que se acaba de crear con los datos del admin y el departamento al cual pertenece
-          await addNewEntity(entity);
+          await addNewEntity(entity,response.localId);
           // agregarlo al state del redux
           dispatch(startAddNewEntity({ ...entity, activo: true }));
         }
