@@ -368,7 +368,6 @@ export const startDeleteSurveyor = (idSurveyor: string) => {
         try {
           await deleteSurveyorFirebase(municipio, idSurveyor);
           await deleteUserFirebase(idSurveyor);
-          // TODO: Eliminar encuestador de auth Firebase
           dispatch(deleteSurveyor(idSurveyor));
           dispatch(deleteInfoAssignedSurveys(idSurveyor));
           dispatch(surveyorCleanActive());
