@@ -14,4 +14,5 @@ export interface Surveyor {
   state: boolean;
   page: number;
   entity: string;
+  uid: string;
 }

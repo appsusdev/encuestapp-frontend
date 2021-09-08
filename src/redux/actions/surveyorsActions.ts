@@ -65,12 +65,14 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
       dispatch(uiOpenModalAlert());
     } else {
       try {
+        let uid = "";
         if (email && document) {
           // Registrar encuestador correo y contrasena
           const { localId } = await registerWithEmailPassword(
             email,
             document.toString()
           );
+          uid = localId;
           // Agregar en coleccion Usuarios
           await db
             .collection("Usuarios")
@@ -92,6 +94,7 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
         await addSurveyorToTown(town, email, surveyorTown);
         dispatch(uiOpenSuccessAlert());
 
+        surveyor.uid = uid;
         surveyor.id = email;
         surveyor.state = false;
         secondName?.trim() && (secondName = ` ${secondName}`);

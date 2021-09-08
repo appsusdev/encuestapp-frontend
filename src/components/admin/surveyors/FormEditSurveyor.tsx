@@ -95,6 +95,7 @@ export const FormEditSurveyor = () => {
     profileImage: "",
     state: surveyor ? surveyor.state : false,
     entity: surveyor ? surveyor.entity : "",
+    uid: surveyor ? surveyor.uid : "",
   };
 
   const onClose = () => {
