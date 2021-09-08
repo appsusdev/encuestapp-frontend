@@ -163,17 +163,16 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
       if (edit && oldCredentials) {
         const { email: oldEmail, password: oldPassword } = oldCredentials;
         if (email !== oldEmail || identificacion !== oldPassword) {
-          await updateCredentialsEntity(
+          const {localId} = await updateCredentialsEntity(
             oldEmail,
             oldPassword.toString(),
             email,
             identificacion.toString()
           );
+          await bdUpdateEntity(entity,localId);
+          dispatch(updateEntity({ ...entity }));
         }
-        await bdUpdateEntity(entity);
-        dispatch(updateEntity({ ...entity }));
       } else {
-        console.log("HAY QUE CREAR LA ENTIDAD")
         const existsEntity = await getEntity(nit);
 
         if (existsEntity) return dispatch(uiOpenAlert());

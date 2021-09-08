@@ -65,7 +65,7 @@ export const updateCredentialsEntity = (
   oldPassword: string,
   newEmail: string,
   newPassword: string
-): Promise<any> => {
+): Promise<firebaseApiResponse> => {
   //HACER EL CAMBIO MEDIANTE EL API REST PARA NO GENERAR UNA NUEVA SESION EN LA APP
   return Axios.post(
     `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_SERVER_KEY}`,
@@ -95,7 +95,10 @@ export const updateCredentialsEntity = (
           password: newPassword,
           returnSecureToken: true,
         }
-      );
+      ).then(resp=>{
+        const {data} = resp;
+        return data as firebaseApiResponse
+      })
     });
   });
 };
