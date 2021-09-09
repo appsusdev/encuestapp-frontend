@@ -55,16 +55,16 @@ export const PDFSurveyors = (props: Props) => {
   );
 
   const surveyed = () =>{
-    let encuestados = [];
+    let surveyeds = [];
     for(let j=0; j < infoSurveysTransmitted.length; j++ ){
         for (let i=0; i < infoSurveysTransmitted[j].encuestados.length; i++){
-          encuestados[i] = infoSurveysTransmitted[j].encuestados[i]
+          surveyeds[i] = infoSurveysTransmitted[j].encuestados[i]
         }
     }
-    return encuestados;
+    return surveyeds;
   }
-  const encuestadosId = surveyed();
-  const citizensSuveyed: any[] = citizens.filter( (citezen) =>  (encuestadosId.includes(citezen.identificacion)) );
+  const surveyedsId = surveyed();
+  const citizensSuveyed: any[] = citizens.filter( (citezen) =>  (surveyedsId.includes(citezen.identificacion)) );
 
 
   return (
