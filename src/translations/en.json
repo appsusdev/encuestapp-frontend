@@ -184,8 +184,8 @@
     "SystemAdmin":"System administrator",
     "SavingEntitySuccess":"Entity created",            
     "UpdatedEntity":"Entity updated",            
-    "ExistsEntity":"There is already a registered entity with the NIT entered",            
-    "SurveyCode": "Código encuesta",
+    "ExistsEntity":"There is already a registered entity with the NIT entered",
+    "SurveyCode": "Survey Code",
     "Maps": "Maps",
     "UpdateMap": "Update map",
     "MessageUpdateMap": "Correctly updated map",
@@ -210,5 +210,7 @@
     "NoCreatedEntity": "No entity has been created",
     "YesDelete": "Yes, I want to delete it",
     "MessageDeleteSurveyOne": "Are you sure you want the survey?",
-    "MessageDeleteSurveyTwo": "All collected data will be deleted. If you are not sure, click on the Cancel button and you can deactivate the survey."
+    "MessageDeleteSurveyTwo": "All collected data will be deleted. If you are not sure, click on the Cancel button and you can deactivate the survey.",
+    "DateOfBirth": "Date of birth",
+    "Sex": "Sex"
 }

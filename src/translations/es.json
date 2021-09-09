@@ -210,5 +210,7 @@
     "NoCreatedEntity": "No se ha creado ninguna entidad.",
     "YesDelete": "Si, quiero eliminarla",
     "MessageDeleteSurveyOne": "¿Está seguro que desea eliminar la encuesta?",
-    "MessageDeleteSurveyTwo": "Se borrarán todos los datos recolectados. Si no esta seguro, de click en el botón de Cancelar y lo que puede hacer es desactivar la encuesta."
+    "MessageDeleteSurveyTwo": "Se borrarán todos los datos recolectados. Si no esta seguro, de click en el botón de Cancelar y lo que puede hacer es desactivar la encuesta.",
+    "DateOfBirth": "Fecha de nacimiento",
+    "Sex": "Sexo"
 }

@@ -253,10 +253,10 @@ export const Home = () => {
                           {citizen.segundoApellido.toLowerCase()}
                         </TableCell>
                         <TableCell>
-                          {citizen.tipoIdentificacion === "1" && "CC"}
-                          {citizen.tipoIdentificacion === "2" && "TI"}
-                          {citizen.tipoIdentificacion === "3" && "CE"}
-                          {citizen.tipoIdentificacion === "4" && "RC"}
+                          {citizen.tipoIdentificacion === 1 && "CC"}
+                          {citizen.tipoIdentificacion === 2 && "TI"}
+                          {citizen.tipoIdentificacion === 3 && "CE"}
+                          {citizen.tipoIdentificacion === 4 && "RC"}
                           {citizen.tipoIdentificacion === "NIT" && "NIT"}
                           {citizen.tipoIdentificacion === "Otro" && "Otro"}
                         </TableCell>
