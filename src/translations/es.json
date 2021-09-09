@@ -212,5 +212,10 @@
     "MessageDeleteSurveyOne": "¿Está seguro que desea eliminar la encuesta?",
     "MessageDeleteSurveyTwo": "Se borrarán todos los datos recolectados. Si no esta seguro, de click en el botón de Cancelar y lo que puede hacer es desactivar la encuesta.",
     "DateOfBirth": "Fecha de nacimiento",
-    "Sex": "Sexo"
+    "Sex": "Sexo",
+    "MessageDeleteSurveyorOne": "Atención: ¡No se puede eliminar el encuestador!",
+    "MessageDeleteSurveyorTwo": "Actualmente el encuestador está vinculado a una o varias encuestas que han sido transmitidas, por lo que no es posible eliminarlo. Solo puede desactivarlo.",
+    "MessageDeleteSurveyorThree": "El encuestador tiene una o varias encuestas asignadas, por lo que no puede ser eliminado.",
+    "Return": "Volver",
+    "SurveyorDeleted": "Encuestador eliminado correctamente"
 }

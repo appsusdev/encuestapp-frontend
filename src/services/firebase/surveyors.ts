@@ -181,3 +181,41 @@ export const changeAssignedSurveys = async (
     );
   });
 };
+
+// Verificar si el encuestador ha transmitido o no encuestas para poder eliminarlo
+export const existsTransmittedSurveys = async (
+  idEntity: string,
+  idSurveyor: string
+) => {
+  const transmittedSnap = await db
+    .collectionGroup("EncuestasTransmitidas")
+    .where("idEntidad", "==", idEntity)
+    .where("idEncuestador", "==", idSurveyor)
+    .get();
+  const transmitted: any[] = [];
+
+  transmittedSnap.forEach((snap) => {
+    transmitted.push({
+      id: snap.id,
+      ...snap.data(),
+    });
+  });
+  return transmitted;
+};
+
+// Eliminar encuestador
+export const deleteSurveyorFirebase = async (
+  town: string,
+  idSurveyor: string
+) => {
+  await db
+    .collection("Municipios")
+    .doc(town)
+    .collection("Encuestadores")
+    .doc(idSurveyor)
+    .delete();
+};
+
+export const deleteUserFirebase = async (idSurveyor: string) => {
+  await db.collection("Usuarios").doc(idSurveyor).delete();
+};

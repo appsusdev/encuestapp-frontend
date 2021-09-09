@@ -16,7 +16,7 @@ import {
   updateSurveyor,
 } from "../../../redux/actions/surveyorsActions";
 import { db } from "../../../config/firebase/firebase-config";
-import { uiOpenModalDelete } from "../../../redux/actions/uiActions";
+import { startDeleteSurveyor } from "../../../redux/actions/surveyorsActions";
 
 export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
   const dispatch = useDispatch();
@@ -54,7 +54,8 @@ export const SurveyorsBody = (surveyor: Partial<Surveyor>) => {
   };
 
   const onDelete = () => {
-    dispatch(uiOpenModalDelete());
+    dispatch(activeSurveyors(surveyor.email, surveyor));
+    surveyor.email && dispatch(startDeleteSurveyor(surveyor.email));
   };
 
   return (

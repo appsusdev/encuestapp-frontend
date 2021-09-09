@@ -212,5 +212,10 @@
     "MessageDeleteSurveyOne": "Are you sure you want the survey?",
     "MessageDeleteSurveyTwo": "All collected data will be deleted. If you are not sure, click on the Cancel button and you can deactivate the survey.",
     "DateOfBirth": "Date of birth",
-    "Sex": "Sex"
+    "Sex": "Sex",
+    "MessageDeleteSurveyorOne": "Attention: It is not possible to delete the surveyor!",
+    "MessageDeleteSurveyorTwo": "The surveyor is currently linked to one or more surveys that have been transmitted, so it is not possible to remove it. You can only deactivate it.",
+    "MessageDeleteSurveyorThree": "The surveyor has one or more surveys assigned to him/her, so he/she cannot be deleted.",
+    "Return": "Return",
+    "SurveyorDeleted": "Surveyor successfully deleted"
 }

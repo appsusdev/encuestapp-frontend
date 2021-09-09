@@ -34,6 +34,8 @@ export const types = {
   uiCloseErrorAlert: "[ui] Close error alert",
   uiOpenDeleteSuccess: "[ui] Open delete success",
   uiCloseDeleteSuccess: "[ui] Close delete success",
+  uiOpenDeleteError: "[ui] Open delete error",
+  uiCloseDeleteError: "[ui] Close delete error",
   uiOpenQuestion: "[ui] Open edit question",
   uiCloseQuestion: "[ui] Close edit question",
   uiChangeRole: "[ui] Change role",
@@ -47,6 +49,7 @@ export const types = {
   surveyorsLoad: "[surveyor] Load surveyors",
   surveyorsLoadAssignedSurveys: "[surveyor] Load assigned surveys",
   surveyorsAddNewAssignedSurveys: "[surveyor] Add new assigned surveys",
+  surveyorsDeleteAssignedSurveys: "[surveyor] Delete info assigned surveys",
   surveyorsUpdatedAssignedSurveys: "[surveyor] Updated assigned surveys",
   surveyorsDeleteAssignedSurvey: "[surveyor] Delete assigned survey",
   surveyorUpdated: "[surveyor] Updated surveyor",
@@ -151,6 +154,7 @@ export interface IUi {
   successAlert: boolean;
   errorAlert: boolean;
   deleteSuccess: boolean;
+  deleteError: boolean;
   openQuestion: boolean;
   role: TypeUser;
   progress: number;
