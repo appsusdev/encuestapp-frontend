@@ -77,6 +77,7 @@ export const ListSurveysAnswered = () => {
           {surveysAnswered.map((survey: Partial<Survey>, index: number) => (
             <div key={index}>
               <ReactToPrint
+                // bodyClass={ }
                 onBeforeGetContent={async () => await getData(survey.idSurvey)}
                 trigger={() => (
                   <Link className={classes.typography} component="button">

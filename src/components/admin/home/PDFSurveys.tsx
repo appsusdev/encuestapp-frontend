@@ -13,6 +13,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import PersonIcon from "@material-ui/icons/Person";
 
 import { TypeQuestion } from "../../../enums/enums";
+import { Surveyor } from "../../../interfaces/Surveyor";
 import { Chapter, ISurveyAnswers } from "../../../interfaces/Survey";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
@@ -28,14 +29,36 @@ export const PDFSurveys = (props: Props) => {
   const { data, title, format } = props;
   const classes = useStyles();
 
-  const { activeCitizen } = useSelector<AppState, AppState["citizens"]>(
+  const { activeCitizen, surveysAnswered } = useSelector<AppState, AppState["citizens"]>(
     (state) => state.citizens
   );
+
+  const { razonSocial: entityTitle } = useSelector<AppState, AppState["auth"]>(
+    (state) => state.auth
+  );
+
+  const  {surveyors} = useSelector<AppState, AppState["surveyor"]>(
+    (state) => state.surveyor
+  );
+
+  const listSurveyor : Surveyor[] = surveyors;
 
   return (
     <Box m={5}>
       <Box display="flex" justifyContent="center" className={classes.titlePDF}>
+        {entityTitle}
+      </Box>
+      <Box display="flex" justifyContent="center" className={classes.titlePDF}>
         {title}
+      </Box>
+      <Box display="flex" justifyContent="center" className={classes.titlePDF}>
+        {
+        data.map((survey) => (
+          <Box key={survey.id}>
+            <FormattedMessage id="Survey"/> { surveysAnswered[0].code }
+          </Box>
+          ))
+        }
       </Box>
       <Box display="flex" justifyContent="space-between">
         <Box mt={3} display="flex" justifyContent="flex-start">
@@ -53,6 +76,39 @@ export const PDFSurveys = (props: Props) => {
             <FormattedMessage id="Identification" />
           </div>
           &nbsp;{activeCitizen.identificacion}
+        </Box>
+      </Box>
+
+      <Box display="flex" justifyContent="space-between">
+        <Box mt={3} display="flex" justifyContent="flex-start">
+          <div style={{ fontWeight: "bold" }}>
+            <FormattedMessage id="SurveyorName" />:
+          </div>
+          &nbsp;
+            {
+              listSurveyor.map( (survey: any) => (
+                <Box key={survey.id} >
+                  <div className={classes.capitalize}>
+                    {survey.firstName.toLowerCase()}{" "}
+                    {survey.secondName.toLowerCase()}{" "}
+                    {survey.firstLastName.toLowerCase()}{" "}
+                    {survey.secondLastName.toLowerCase()}{" "}
+                  </div>
+                </Box>
+              ))
+            }
+        </Box>
+        <Box mt={3} display="flex" justifyContent="flex-start">
+          <div style={{ fontWeight: "bold" }}>
+            <FormattedMessage id="Date" />
+          </div>
+          &nbsp;{
+            surveysAnswered.map( (survey: any) => (
+              <Box key={survey.idSurvey}>
+                {survey.creationDate}
+              </Box>
+             ))
+          }
         </Box>
       </Box>
 
@@ -134,9 +190,8 @@ export const PDFSurveys = (props: Props) => {
                               <Grid item xs={12} >
                                 <Card className={classes.cardPDF}>
                                   <CardMedia
-                                    image={
-                                      answer.respuesta && answer.respuesta.value
-                                    }
+                                    className={ classes.media }
+                                    image={ answer.respuesta && answer.respuesta.value }
                                     title="Paella dish"
                                   />
                                 </Card>

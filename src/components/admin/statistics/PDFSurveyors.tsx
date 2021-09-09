@@ -4,39 +4,73 @@ import {
   Box,
   Card,
   CardMedia,
-  Checkbox,
-  FormControlLabel,
+  createMuiTheme,
   Grid,
   Link,
-  Radio,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   TextField,
+  ThemeProvider,
   Typography,
 } from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/Home";
 import PersonIcon from "@material-ui/icons/Person";
 
-import { TypeQuestion } from "../../../enums/enums";
+import { TypeQuestion, TypeDocEnum } from '../../../enums/enums';
 import { getCopyArrayOrObject } from "../../../helpers/getCopyArrayOrObject";
-import { Chapter, ISurveyAnswers } from "../../../interfaces/Survey"
+import { Chapter, ISurveyAnswers } from "../../../interfaces/Survey";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { convertDateDash } from "../../../helpers/convertDate";
+import { useSelector } from "react-redux";
+import { AppState } from "../../../redux/reducers/rootReducer";
 
 interface Props {
   data: Chapter[];
   title: string | undefined;
   surveyCode: string;
 }
+
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: "Poppins",
+    fontSize: 14,
+  },
+});
+
 export const PDFSurveyors = (props: Props) => {
   const { data, title, surveyCode } = props;
   const classes = useStyles();
 
   const list: Chapter[] = getCopyArrayOrObject(data);
 
+  const { citizens } = useSelector<AppState, AppState["citizens"]>(
+    (state) => state.citizens
+  );
+
+  const { infoSurveysTransmitted }: any = useSelector<AppState, AppState["surveyor"]>(
+    (state) => state.surveyor
+  );
+
+  const surveyed = () =>{
+    let surveyeds = [];
+    for(let j=0; j < infoSurveysTransmitted.length; j++ ){
+        for (let i=0; i < infoSurveysTransmitted[j].encuestados.length; i++){
+          surveyeds[i] = infoSurveysTransmitted[j].encuestados[i]
+        }
+    }
+    return surveyeds;
+  }
+  const surveyedsId = surveyed();
+  const citizensSuveyed: any[] = citizens.filter( (citezen) =>  (surveyedsId.includes(citezen.identificacion)) );
+
 
   return (
     <Box mt={2} m={5}>
       <Box display="flex" justifyContent="center" className={classes.titlePDF}>
-      {title}
+        {title}
       </Box>
       <Box display="flex" justifyContent="space-between">
         <Box mt={3} display="flex" justifyContent="flex-start">
@@ -44,9 +78,7 @@ export const PDFSurveyors = (props: Props) => {
             <FormattedMessage id="SurveyCode" />:
           </div>
           &nbsp;
-          <div className={classes.capitalize}>
-            {surveyCode}
-          </div>
+          <div className={classes.capitalize}>{surveyCode}</div>
         </Box>
       </Box>
 
@@ -125,8 +157,8 @@ export const PDFSurveyors = (props: Props) => {
                         {question.type === TypeQuestion.PICTURE && (
                           <>
                             <Grid container>
-                              <Grid item xs={8}>
-                                <Card className={classes.card}>
+                              <Grid item xs={12}>
+                                <Card className={classes.cardPDF}>
                                   <CardMedia
                                     className={classes.media}
                                     image={
@@ -135,50 +167,34 @@ export const PDFSurveyors = (props: Props) => {
                                     title="Paella dish"
                                   />
                                 </Card>
+                                {/* <p className={classes.page} ></p> */}
                               </Grid>
                             </Grid>
+
                           </>
                         )}
                         {question.options &&
-                          question.type !== TypeQuestion.SELECT &&
-                          question.options.map((option, index) => (
-                            <Grid container key={index}>
-                              <Grid item xs={6}>
-                                {question.type === TypeQuestion.RADIO && (
-                                  <FormControlLabel
-                                    value={option.label}
-                                    control={<Radio />}
-                                    label={option.label}
-                                    checked={
-                                      option.value === answer.respuesta[0].value
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                )}
-                                {question.type === TypeQuestion.CHECK &&
-                                  option.value ===
-                                    answer.respuesta[0].value && (
-                                    <>
-                                      <Checkbox
-                                        color="default"
-                                        checked={
-                                          option.value ===
-                                          answer.respuesta[0].value
-                                            ? true
-                                            : false
-                                        }
-                                      />
-                                      <label className="form-text">
-                                        {option.label}
-                                      </label>
-                                    </>
-                                  )}
-                              </Grid>
-                            </Grid>
-                          ))}
-                        {question.options &&
-                          question.type === TypeQuestion.SELECT &&
+                          question.type === TypeQuestion.CHECK &&
+                          question.options.map(
+                            (option, index) =>
+                              option.value === answer.respuesta[0].value && (
+                                <TextField
+                                  key={index}
+                                  name="input"
+                                  variant="outlined"
+                                  className={classes.myTextFieldRoot}
+                                  size="small"
+                                  value={
+                                    option.value === answer.respuesta[0].value
+                                      ? option.label
+                                      : ""
+                                  }
+                                />
+                              )
+                          )}
+                        {(question.type === TypeQuestion.RADIO ||
+                          question.type === TypeQuestion.SELECT) &&
+                          question.options &&
                           question.options.map(
                             (option, index) =>
                               option.value === answer.respuesta.value && (
@@ -222,6 +238,67 @@ export const PDFSurveyors = (props: Props) => {
             ))}
           </Box>
         ))}
+        {
+          <ThemeProvider theme={theme}>
+            <>
+              <Table
+                  className={classes.table}
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <FormattedMessage id="Name" />{" "}
+                    </TableCell>
+                    <TableCell>TD</TableCell>
+                    <TableCell>
+                      <FormattedMessage id="Document" />{" "}
+                    </TableCell>
+                    <TableCell>
+                      <FormattedMessage id="Phone" />{" "}
+                    </TableCell>
+                    <TableCell>
+                      <FormattedMessage id="Email" />{" "}
+                    </TableCell>
+                    <TableCell>
+                      <FormattedMessage id="DateOfBirth" />{" "}
+                    </TableCell>
+                    <TableCell>
+                      <FormattedMessage id="Sex" />{" "}
+                    </TableCell>
+                  </TableRow>
+                </TableHead><TableBody>
+                    {citizensSuveyed.map( (citizen, index) => (
+                      <TableRow key={index} className={classes.capitalize}>
+                        <TableCell component="th" scope="row">
+                            {`${citizen.primerNombre.toLowerCase() } 
+                              ${citizen.segundoNombre.toLowerCase() }
+                              ${citizen.primerApellido.toLowerCase() }
+                              ${citizen.segundoApellido.toLowerCase() }`}
+                          </TableCell>
+                        <TableCell>
+                          {citizen.tipoIdentificacion === TypeDocEnum.CC && "CC"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.TI && "TI"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.CE && "CE"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.RC && "RC"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.NIT && "NIT"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.Otro && "Otro"}
+                        </TableCell>
+                        <TableCell>{citizen.identificacion}</TableCell>
+                        <TableCell>{citizen.telefono}</TableCell>
+                        <TableCell>{citizen.correo}</TableCell>
+                        <TableCell>{citizen.fechaNacimiento}</TableCell>
+                        <TableCell>
+                          {citizen.tipoIdentificacion === 0 && "F"}
+                          {citizen.tipoIdentificacion === 1 && "M"}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </>
+          </ThemeProvider>
+        }
     </Box>
   );
 };
+
