@@ -41,7 +41,7 @@ export const PDFSurveys = (props: Props) => {
     (state) => state.surveyor
   );
 
-  const list : Surveyor[] = surveyors;
+  const listSurveyor : Surveyor[] = surveyors;
 
   return (
     <Box m={5}>
@@ -55,7 +55,7 @@ export const PDFSurveys = (props: Props) => {
         {
         data.map((survey) => (
           <Box key={survey.id}>
-            <FormattedMessage id="Survey"/> {survey.number } { survey.name }
+            <FormattedMessage id="Survey"/> { surveysAnswered[0].code }
           </Box>
           ))
         }
@@ -86,9 +86,14 @@ export const PDFSurveys = (props: Props) => {
           </div>
           &nbsp;
             {
-              list.map( (survey: any) => (
-                <Box key={survey.id}>
-                  {survey.username}
+              listSurveyor.map( (survey: any) => (
+                <Box key={survey.id} >
+                  <div className={classes.capitalize}>
+                    {survey.firstName.toLowerCase()}{" "}
+                    {survey.secondName.toLowerCase()}{" "}
+                    {survey.firstLastName.toLowerCase()}{" "}
+                    {survey.secondLastName.toLowerCase()}{" "}
+                  </div>
                 </Box>
               ))
             }

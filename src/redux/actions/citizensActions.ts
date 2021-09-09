@@ -42,7 +42,9 @@ export const startLoadingSurveysAnswered = (idCitizen: string) => {
       );
       for( let i = 0; i < resp.length ; i++ ){
         const  surveysTransmitted = resp[i].formatoAutorizacion;
+        const idSurvey = resp[i].id;
         newSurveys[i].authorizationFormats = surveysTransmitted;
+        newSurveys[i].code = idSurvey; 
       }
     dispatch(finishLoading());
     dispatch(setSurveysAnswered(newSurveys));
