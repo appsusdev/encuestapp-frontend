@@ -40,6 +40,7 @@ import {
 } from "../../../redux/actions/citizensActions";
 import { ListSurveysAnswered } from "./ListSurveysAnswered";
 import VisibilityOutlinedIcon from "@material-ui/icons/VisibilityOutlined";
+import { TypeDocEnum } from '../../../enums/enums';
 
 const theme = createMuiTheme({
   typography: {
@@ -253,12 +254,12 @@ export const Home = () => {
                           {citizen.segundoApellido.toLowerCase()}
                         </TableCell>
                         <TableCell>
-                          {citizen.tipoIdentificacion === 1 && "CC"}
-                          {citizen.tipoIdentificacion === 2 && "TI"}
-                          {citizen.tipoIdentificacion === 3 && "CE"}
-                          {citizen.tipoIdentificacion === 4 && "RC"}
-                          {citizen.tipoIdentificacion === "NIT" && "NIT"}
-                          {citizen.tipoIdentificacion === "Otro" && "Otro"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.CC && "CC"}
+                          {citizen.tipoIdentificacion ===TypeDocEnum.TI && "TI"}
+                          {citizen.tipoIdentificacion ===TypeDocEnum.CE && "CE"}
+                          {citizen.tipoIdentificacion ===TypeDocEnum.RC && "RC"}
+                          {citizen.tipoIdentificacion ===TypeDocEnum.NIT  && "NIT"}
+                          {citizen.tipoIdentificacion ===TypeDocEnum.Otro  && "Otro"}
                         </TableCell>
                         <TableCell>{citizen.identificacion}</TableCell>
                         <TableCell align="center">

@@ -19,7 +19,7 @@ import {
 import HomeIcon from "@material-ui/icons/Home";
 import PersonIcon from "@material-ui/icons/Person";
 
-import { TypeQuestion } from "../../../enums/enums";
+import { TypeQuestion, TypeDocEnum } from '../../../enums/enums';
 import { getCopyArrayOrObject } from "../../../helpers/getCopyArrayOrObject";
 import { Chapter, ISurveyAnswers } from "../../../interfaces/Survey";
 import { useStyles } from "../../../shared/styles/useStyles";
@@ -276,12 +276,12 @@ export const PDFSurveyors = (props: Props) => {
                               ${citizen.segundoApellido.toLowerCase() }`}
                           </TableCell>
                         <TableCell>
-                          {citizen.tipoIdentificacion === 1 && "CC"}
-                          {citizen.tipoIdentificacion === 2 && "TI"}
-                          {citizen.tipoIdentificacion === 3 && "CE"}
-                          {citizen.tipoIdentificacion === 4 && "RC"}
-                          {citizen.tipoIdentificacion === "NIT" && "NIT"}
-                          {citizen.tipoIdentificacion === "Otro" && "Otro"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.CC && "CC"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.TI && "TI"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.CE && "CE"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.RC && "RC"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.NIT && "NIT"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.Otro && "Otro"}
                         </TableCell>
                         <TableCell>{citizen.identificacion}</TableCell>
                         <TableCell>{citizen.telefono}</TableCell>
