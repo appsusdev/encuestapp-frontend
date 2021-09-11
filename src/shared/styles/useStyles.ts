@@ -87,7 +87,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
     pageBreakAfter: "always",
   },
   page: {
-    pageBreakAfter: "always"
+    pageBreakAfter: "always",
   },
   paper: {
     minHeight: "400px",
@@ -150,5 +150,8 @@ export const useStyles = makeStyles((theme: Theme) => ({
     zIndex: 1251,
     marginTop: "5px",
     marginLeft: "5px",
+  },
+  image: {
+    height: "800px",
   },
 }));

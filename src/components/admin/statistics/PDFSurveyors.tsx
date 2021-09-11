@@ -7,6 +7,7 @@ import {
   createMuiTheme,
   Grid,
   Link,
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -19,18 +20,25 @@ import {
 import HomeIcon from "@material-ui/icons/Home";
 import PersonIcon from "@material-ui/icons/Person";
 
-import { TypeQuestion, TypeDocEnum } from '../../../enums/enums';
+import { TypeQuestion, TypeDocEnum } from "../../../enums/enums";
 import { getCopyArrayOrObject } from "../../../helpers/getCopyArrayOrObject";
 import { Chapter, ISurveyAnswers } from "../../../interfaces/Survey";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { convertDateDash } from "../../../helpers/convertDate";
 import { useSelector } from "react-redux";
 import { AppState } from "../../../redux/reducers/rootReducer";
+import logo from "../../../assets/images/logo-encuestapp.png";
+import clsx from "clsx";
 
 interface Props {
   data: Chapter[];
   title: string | undefined;
   surveyCode: string;
+  idSurveyeds: string[];
+  dateSurvey: string;
+  nameSurveyor: string;
+  responsibleCitizen: string;
+  authorizationFormat: string;
 }
 
 const theme = createMuiTheme({
@@ -41,7 +49,17 @@ const theme = createMuiTheme({
 });
 
 export const PDFSurveyors = (props: Props) => {
-  const { data, title, surveyCode } = props;
+  const {
+    data,
+    title,
+    surveyCode,
+    idSurveyeds,
+    dateSurvey,
+    nameSurveyor,
+    responsibleCitizen,
+    authorizationFormat,
+  } = props;
+
   const classes = useStyles();
 
   const list: Chapter[] = getCopyArrayOrObject(data);
@@ -49,43 +67,122 @@ export const PDFSurveyors = (props: Props) => {
   const { citizens } = useSelector<AppState, AppState["citizens"]>(
     (state) => state.citizens
   );
-
-  const { infoSurveysTransmitted }: any = useSelector<AppState, AppState["surveyor"]>(
-    (state) => state.surveyor
+  const { razonSocial: entityTitle } = useSelector<AppState, AppState["auth"]>(
+    (state) => state.auth
   );
 
-  const surveyed = () =>{
-    let surveyeds = [];
-    for(let j=0; j < infoSurveysTransmitted.length; j++ ){
-        for (let i=0; i < infoSurveysTransmitted[j].encuestados.length; i++){
-          surveyeds[i] = infoSurveysTransmitted[j].encuestados[i]
-        }
-    }
-    return surveyeds;
-  }
-  const surveyedsId = surveyed();
-  const citizensSuveyed: any[] = citizens.filter( (citezen) =>  (surveyedsId.includes(citezen.identificacion)) );
-
+  const citizensSuveyed: any[] = citizens.filter((citezen) =>
+    idSurveyeds.includes(citezen.identificacion)
+  );
 
   return (
     <Box mt={2} m={5}>
+      {/* ----------------- INFORMACIÓN DE LA ENCUESTA ------------------- */}
+
+      <Box display="flex" justifyContent="center" className={classes.titlePDF}>
+        {entityTitle}
+      </Box>
       <Box display="flex" justifyContent="center" className={classes.titlePDF}>
         {title}
+      </Box>
+      <Box display="flex" justifyContent="center" className={classes.titlePDF}>
+        <FormattedMessage id="Survey" /> {surveyCode}
+      </Box>
+      <Box mt={3} display="flex" justifyContent="flex-start">
+        <div style={{ fontWeight: "bold" }}>
+          <FormattedMessage id="ResponsibleForSurvey" />:
+        </div>
+        &nbsp;
+        <div className={classes.capitalize}>{responsibleCitizen}</div>
       </Box>
       <Box display="flex" justifyContent="space-between">
         <Box mt={3} display="flex" justifyContent="flex-start">
           <div style={{ fontWeight: "bold" }}>
-            <FormattedMessage id="SurveyCode" />:
+            <FormattedMessage id="Surveyor" />:
           </div>
           &nbsp;
-          <div className={classes.capitalize}>{surveyCode}</div>
+          <div className={classes.capitalize}>{nameSurveyor}</div>
+        </Box>
+        <Box mt={3} mb={3} display="flex" justifyContent="flex-end">
+          <div style={{ fontWeight: "bold" }}>
+            <FormattedMessage id="Date" />:
+          </div>
+          &nbsp;
+          <Box>{dateSurvey}</Box>
         </Box>
       </Box>
+
+      <Box className={classes.titlePDF}>
+        <FormattedMessage id="Surveyeds" />:
+      </Box>
+
+      {/* ----------------- TABLA CIUDADANOS ENCUESTADOS ------------------- */}
+
+      <ThemeProvider theme={theme}>
+        <Table className={classes.table} size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <FormattedMessage id="Name" />{" "}
+              </TableCell>
+              <TableCell>TD</TableCell>
+              <TableCell>
+                <FormattedMessage id="Document" />{" "}
+              </TableCell>
+              <TableCell>
+                <FormattedMessage id="Phone" />{" "}
+              </TableCell>
+              <TableCell>
+                <FormattedMessage id="Email" />{" "}
+              </TableCell>
+              <TableCell>
+                <FormattedMessage id="DateOfBirth" />{" "}
+              </TableCell>
+              <TableCell>
+                <FormattedMessage id="Sex" />{" "}
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {citizensSuveyed.map((citizen, index) => (
+              <TableRow key={index} className={classes.capitalize}>
+                <TableCell component="th" scope="row">
+                  {`${citizen.primerNombre.toLowerCase()} 
+                              ${citizen.segundoNombre.toLowerCase()}
+                              ${citizen.primerApellido.toLowerCase()}
+                              ${citizen.segundoApellido.toLowerCase()}`}
+                </TableCell>
+                <TableCell>
+                  {citizen.tipoIdentificacion === TypeDocEnum.CC && "CC"}
+                  {citizen.tipoIdentificacion === TypeDocEnum.TI && "TI"}
+                  {citizen.tipoIdentificacion === TypeDocEnum.CE && "CE"}
+                  {citizen.tipoIdentificacion === TypeDocEnum.RC && "RC"}
+                  {citizen.tipoIdentificacion === TypeDocEnum.NIT && "NIT"}
+                  {citizen.tipoIdentificacion === TypeDocEnum.Otro && "Otro"}
+                </TableCell>
+                <TableCell>{citizen.identificacion}</TableCell>
+                <TableCell>{citizen.telefono}</TableCell>
+                <TableCell>{citizen.correo}</TableCell>
+                <TableCell>{citizen.fechaNacimiento}</TableCell>
+                <TableCell>
+                  {citizen.genero === 0 && "F"}
+                  {citizen.genero === 1 && "M"}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </ThemeProvider>
+
+      {/* ----------------- RESPUESTAS DE CIUDADANOS ENCUESTADOS ------------------- */}
 
       {list &&
         list.map((chapter) => (
           <Box key={chapter.id} mt={2}>
-            <Typography className={classes.title} variant="h6">
+            <Typography
+              className={clsx(classes.titlePDF, classes.capitalize)}
+              variant="h6"
+            >
               {chapter.number}. {chapter.name}
             </Typography>
 
@@ -167,10 +264,10 @@ export const PDFSurveyors = (props: Props) => {
                                     title="Paella dish"
                                   />
                                 </Card>
+                                {/* <img src={answer.respuesta && answer.respuesta.value} alt="Image" /> */}
                                 {/* <p className={classes.page} ></p> */}
                               </Grid>
                             </Grid>
-
                           </>
                         )}
                         {question.options &&
@@ -214,13 +311,15 @@ export const PDFSurveyors = (props: Props) => {
                           )}
                         {question.type === TypeQuestion.GEOLOCATION && (
                           <Box m={1}>
-                            <Card className={classes.cardPDF}>
-                              <CardMedia
+                            <Box className={classes.image} mb={1}>
+                              <img
+                                style={{ marginBottom: "10px" }}
                                 className={classes.media}
-                                image={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
-                                title="Map"
+                                src={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
+                                alt="Map"
                               />
-                            </Card>
+                              <br />
+                            </Box>
                           </Box>
                         )}
                         {question.type === TypeQuestion.FILE && (
@@ -238,67 +337,30 @@ export const PDFSurveyors = (props: Props) => {
             ))}
           </Box>
         ))}
-        {
-          <ThemeProvider theme={theme}>
-            <>
-              <Table
-                  className={classes.table}
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell>
-                      <FormattedMessage id="Name" />{" "}
-                    </TableCell>
-                    <TableCell>TD</TableCell>
-                    <TableCell>
-                      <FormattedMessage id="Document" />{" "}
-                    </TableCell>
-                    <TableCell>
-                      <FormattedMessage id="Phone" />{" "}
-                    </TableCell>
-                    <TableCell>
-                      <FormattedMessage id="Email" />{" "}
-                    </TableCell>
-                    <TableCell>
-                      <FormattedMessage id="DateOfBirth" />{" "}
-                    </TableCell>
-                    <TableCell>
-                      <FormattedMessage id="Sex" />{" "}
-                    </TableCell>
-                  </TableRow>
-                </TableHead><TableBody>
-                    {citizensSuveyed.map( (citizen, index) => (
-                      <TableRow key={index} className={classes.capitalize}>
-                        <TableCell component="th" scope="row">
-                            {`${citizen.primerNombre.toLowerCase() } 
-                              ${citizen.segundoNombre.toLowerCase() }
-                              ${citizen.primerApellido.toLowerCase() }
-                              ${citizen.segundoApellido.toLowerCase() }`}
-                          </TableCell>
-                        <TableCell>
-                          {citizen.tipoIdentificacion === TypeDocEnum.CC && "CC"}
-                          {citizen.tipoIdentificacion === TypeDocEnum.TI && "TI"}
-                          {citizen.tipoIdentificacion === TypeDocEnum.CE && "CE"}
-                          {citizen.tipoIdentificacion === TypeDocEnum.RC && "RC"}
-                          {citizen.tipoIdentificacion === TypeDocEnum.NIT && "NIT"}
-                          {citizen.tipoIdentificacion === TypeDocEnum.Otro && "Otro"}
-                        </TableCell>
-                        <TableCell>{citizen.identificacion}</TableCell>
-                        <TableCell>{citizen.telefono}</TableCell>
-                        <TableCell>{citizen.correo}</TableCell>
-                        <TableCell>{citizen.fechaNacimiento}</TableCell>
-                        <TableCell>
-                          {citizen.tipoIdentificacion === 0 && "F"}
-                          {citizen.tipoIdentificacion === 1 && "M"}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            </>
-          </ThemeProvider>
-        }
+
+      {/* ----------------- FORMATO DE AUTORIZACIÓN ------------------- */}
+      <Box mt={1}>
+        <Grid container>
+          <h1>
+            <FormattedMessage id="AuthorizationFormat" />
+          </h1>
+          <Grid item xs={12} className={classes.image}>
+            <img
+              className={classes.media}
+              src={authorizationFormat}
+              alt="Imagen"
+            />
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Box mt={1}>
+        <Box display="flex" justifyContent="center" alignContent="flex-end">
+          <Grid>
+            <img style={{ width: "600px" }} src={logo} alt="Logo" />
+          </Grid>
+        </Box>
+      </Box>
     </Box>
   );
 };
-

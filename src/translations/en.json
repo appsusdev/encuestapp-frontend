@@ -217,5 +217,7 @@
     "MessageDeleteSurveyorTwo": "The surveyor is currently linked to one or more surveys that have been transmitted, so it is not possible to remove it. You can only deactivate it.",
     "MessageDeleteSurveyorThree": "The surveyor has one or more surveys assigned to him/her, so he/she cannot be deleted.",
     "Return": "Return",
-    "SurveyorDeleted": "Surveyor successfully deleted"
+    "SurveyorDeleted": "Surveyor successfully deleted",
+    "Surveyeds": "Surveyeds",
+    "ResponsibleForSurvey": "Responsible for the survey"
 }
