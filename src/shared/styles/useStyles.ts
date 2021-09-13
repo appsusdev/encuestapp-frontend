@@ -85,6 +85,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
     objectFit: "cover",
     objectPosition: "center center",
     pageBreakAfter: "always",
+    position: "relative",
   },
   page: {
     pageBreakAfter: "always",
@@ -153,5 +154,6 @@ export const useStyles = makeStyles((theme: Theme) => ({
   },
   image: {
     height: "800px",
+    position: "relative",
   },
 }));
