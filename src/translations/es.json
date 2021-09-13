@@ -180,7 +180,7 @@
     "EditEntity":"Editar entidad",
     "DeleteEntity":"Borrar entidad",
     "BusinessName":"Razón social",
-    "Phone":"Telefono",
+    "Phone":"Teléfono",
     "SystemAdmin":"Administrador del sistema",
     "SavingEntitySuccess":"La entidad ha sido creada",
     "UpdatedEntity":"La entidad ha sido actualizada",
@@ -217,5 +217,7 @@
     "MessageDeleteSurveyorTwo": "Actualmente el encuestador está vinculado a una o varias encuestas que han sido transmitidas, por lo que no es posible eliminarlo. Solo puede desactivarlo.",
     "MessageDeleteSurveyorThree": "El encuestador tiene una o varias encuestas asignadas, por lo que no puede ser eliminado.",
     "Return": "Volver",
-    "SurveyorDeleted": "Encuestador eliminado correctamente"
+    "SurveyorDeleted": "Encuestador eliminado correctamente",
+    "Surveyeds": "Encuestados",
+    "ResponsibleForSurvey": "Responsable de la encuesta"
 }

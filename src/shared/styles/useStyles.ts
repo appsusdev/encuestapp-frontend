@@ -85,9 +85,10 @@ export const useStyles = makeStyles((theme: Theme) => ({
     objectFit: "cover",
     objectPosition: "center center",
     pageBreakAfter: "always",
+    position: "relative",
   },
   page: {
-    pageBreakAfter: "always"
+    pageBreakAfter: "always",
   },
   paper: {
     minHeight: "400px",
@@ -150,5 +151,9 @@ export const useStyles = makeStyles((theme: Theme) => ({
     zIndex: 1251,
     marginTop: "5px",
     marginLeft: "5px",
+  },
+  image: {
+    height: "800px",
+    position: "relative",
   },
 }));
