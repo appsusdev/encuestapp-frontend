@@ -1,4 +1,6 @@
+import clsx from "clsx";
 import { FormattedMessage } from "react-intl";
+import { useSelector } from "react-redux";
 
 import {
   Box,
@@ -7,7 +9,6 @@ import {
   createMuiTheme,
   Grid,
   Link,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -20,15 +21,13 @@ import {
 import HomeIcon from "@material-ui/icons/Home";
 import PersonIcon from "@material-ui/icons/Person";
 
+import logo from "../../../assets/images/logo-encuestapp.png";
 import { TypeQuestion, TypeDocEnum } from "../../../enums/enums";
 import { getCopyArrayOrObject } from "../../../helpers/getCopyArrayOrObject";
-import { Chapter, ISurveyAnswers } from "../../../interfaces/Survey";
-import { useStyles } from "../../../shared/styles/useStyles";
 import { convertDateDash } from "../../../helpers/convertDate";
-import { useSelector } from "react-redux";
+import { Chapter, ISurveyAnswers } from "../../../interfaces/Survey";
 import { AppState } from "../../../redux/reducers/rootReducer";
-import logo from "../../../assets/images/logo-encuestapp.png";
-import clsx from "clsx";
+import { useStyles } from "../../../shared/styles/useStyles";
 
 interface Props {
   data: Chapter[];
@@ -335,32 +334,39 @@ export const PDFSurveyors = (props: Props) => {
                 </Grid>
               </Box>
             ))}
+            {/* ----------------- FORMATO DE AUTORIZACIÓN ------------------- */}
+            <Box mt={1}>
+              <Grid container>
+                <h1>
+                  <FormattedMessage id="AuthorizationFormat" />
+                </h1>
+                <Grid item xs={12} className={classes.image}>
+                  <img
+                    className={classes.media}
+                    src={authorizationFormat}
+                    alt="Authorization Format"
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+
+            <Box mt={1}>
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignContent="flex-end"
+              >
+                <Grid>
+                  <img
+                    style={{ width: "600px" }}
+                    src={logo}
+                    alt="Logo Encuestapp"
+                  />
+                </Grid>
+              </Box>
+            </Box>
           </Box>
         ))}
-
-      {/* ----------------- FORMATO DE AUTORIZACIÓN ------------------- */}
-      <Box mt={1}>
-        <Grid container>
-          <h1>
-            <FormattedMessage id="AuthorizationFormat" />
-          </h1>
-          <Grid item xs={12} className={classes.image}>
-            <img
-              className={classes.media}
-              src={authorizationFormat}
-              alt="Imagen"
-            />
-          </Grid>
-        </Grid>
-      </Box>
-
-      <Box mt={1}>
-        <Box display="flex" justifyContent="center" alignContent="flex-end">
-          <Grid>
-            <img style={{ width: "600px" }} src={logo} alt="Logo" />
-          </Grid>
-        </Box>
-      </Box>
     </Box>
   );
 };
