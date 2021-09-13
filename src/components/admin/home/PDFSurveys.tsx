@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 
@@ -5,43 +6,47 @@ import {
   Box,
   Card,
   CardMedia,
-  Typography,
+  Link,
   Grid,
   TextField,
+  Typography,
 } from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/Home";
 import PersonIcon from "@material-ui/icons/Person";
 
 import { TypeQuestion } from "../../../enums/enums";
-import { Surveyor } from "../../../interfaces/Surveyor";
 import { Chapter, ISurveyAnswers } from "../../../interfaces/Survey";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { convertDateDash } from "../../../helpers/convertDate";
-import { Link } from "@material-ui/core";
+import logo from "../../../assets/images/logo-encuestapp.png";
 
 interface Props {
   data: Chapter[];
-  title: string | undefined;
-  format: string | undefined;
+  title: string;
+  surveyCode: string;
+  dateSurvey: string;
+  authorizationFormat: string;
+  nameSurveyor: string;
 }
 export const PDFSurveys = (props: Props) => {
-  const { data, title, format } = props;
+  const {
+    data,
+    title,
+    authorizationFormat,
+    surveyCode,
+    dateSurvey,
+    nameSurveyor,
+  } = props;
   const classes = useStyles();
 
-  const { activeCitizen, surveysAnswered } = useSelector<AppState, AppState["citizens"]>(
+  const { activeCitizen } = useSelector<AppState, AppState["citizens"]>(
     (state) => state.citizens
   );
 
   const { razonSocial: entityTitle } = useSelector<AppState, AppState["auth"]>(
     (state) => state.auth
   );
-
-  const  {surveyors} = useSelector<AppState, AppState["surveyor"]>(
-    (state) => state.surveyor
-  );
-
-  const listSurveyor : Surveyor[] = surveyors;
 
   return (
     <Box m={5}>
@@ -52,13 +57,7 @@ export const PDFSurveys = (props: Props) => {
         {title}
       </Box>
       <Box display="flex" justifyContent="center" className={classes.titlePDF}>
-        {
-        data.map((survey) => (
-          <Box key={survey.id}>
-            <FormattedMessage id="Survey"/> { surveysAnswered[0].code }
-          </Box>
-          ))
-        }
+        {surveyCode}
       </Box>
       <Box display="flex" justifyContent="space-between">
         <Box mt={3} display="flex" justifyContent="flex-start">
@@ -85,37 +84,24 @@ export const PDFSurveys = (props: Props) => {
             <FormattedMessage id="SurveyorName" />:
           </div>
           &nbsp;
-            {
-              listSurveyor.map( (survey: any) => (
-                <Box key={survey.id} >
-                  <div className={classes.capitalize}>
-                    {survey.firstName.toLowerCase()}{" "}
-                    {survey.secondName.toLowerCase()}{" "}
-                    {survey.firstLastName.toLowerCase()}{" "}
-                    {survey.secondLastName.toLowerCase()}{" "}
-                  </div>
-                </Box>
-              ))
-            }
+          <div className={classes.capitalize}>{nameSurveyor}</div>
         </Box>
         <Box mt={3} display="flex" justifyContent="flex-start">
           <div style={{ fontWeight: "bold" }}>
             <FormattedMessage id="Date" />
           </div>
-          &nbsp;{
-            surveysAnswered.map( (survey: any) => (
-              <Box key={survey.idSurvey}>
-                {survey.creationDate}
-              </Box>
-             ))
-          }
+          &nbsp;
+          {dateSurvey}
         </Box>
       </Box>
 
       {data &&
         data.map((chapter) => (
           <Box key={chapter.id} mt={2}>
-            <Typography className={classes.title} variant="h6">
+            <Typography
+              className={clsx(classes.titlePDF, classes.capitalize)}
+              variant="h6"
+            >
               {chapter.number}. {chapter.name}
             </Typography>
 
@@ -186,16 +172,18 @@ export const PDFSurveys = (props: Props) => {
 
                         {question.type === TypeQuestion.PICTURE && (
                           <>
-                            <Grid container >
-                              <Grid item xs={12} >
+                            <Grid container>
+                              <Grid item xs={12}>
                                 <Card className={classes.cardPDF}>
                                   <CardMedia
-                                    className={ classes.media }
-                                    image={ answer.respuesta && answer.respuesta.value }
-                                    title="Paella dish"
+                                    className={classes.media}
+                                    image={
+                                      answer.respuesta && answer.respuesta.value
+                                    }
+                                    title="Answer"
                                   />
                                 </Card>
-                                <p className={classes.page} ></p>
+                                <p className={classes.page}></p>
                               </Grid>
                             </Grid>
                           </>
@@ -251,7 +239,7 @@ export const PDFSurveys = (props: Props) => {
                                     title="Map"
                                   />
                                 </Card>
-                                <p className={classes.page} ></p>
+                                <p className={classes.page}></p>
                               </Grid>
                             </Grid>
                           </>
@@ -269,24 +257,31 @@ export const PDFSurveys = (props: Props) => {
                 </Grid>
               </Box>
             ))}
-            {
-                <>
-                <h1><FormattedMessage id="AuthorizationFormat" /></h1>
-                  <Grid container>
-                    <Grid item xs={12}>
-                      <Card className={classes.cardPDF}>
-                        <CardMedia
-                          className={classes.media}
-                          image={`${format}`}
-                          title="autorizationFormat"
-                        />
-                      </Card>
-                    </Grid>
-                  </Grid>
-                </>
-              }
           </Box>
         ))}
+      {/* ----------------- FORMATO DE AUTORIZACIÓN ------------------- */}
+      <Box mt={1}>
+        <Grid container>
+          <h1>
+            <FormattedMessage id="AuthorizationFormat" />
+          </h1>
+          <Grid item xs={12} className={classes.cardPDF}>
+            <img
+              style={{ position: "absolute" }}
+              className={classes.media}
+              src={authorizationFormat}
+              alt="Authorization Format"
+            />
+          </Grid>
+        </Grid>
+      </Box>
+      <Box mt={1}>
+        <Box display="flex" justifyContent="center" alignContent="flex-end">
+          <Grid>
+            <img style={{ width: "600px" }} src={logo} alt="Logo Encuestapp" />
+          </Grid>
+        </Box>
+      </Box>
     </Box>
   );
 };
