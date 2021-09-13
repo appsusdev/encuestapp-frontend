@@ -169,7 +169,7 @@ export const FormEditSurveyor = () => {
                           ? logo
                           : surveyor.profileImage
                       }
-                      title="Paella dish"
+                      title="Answer"
                     />
                   </Card>
                 </Grid>

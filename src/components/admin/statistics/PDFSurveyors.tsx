@@ -260,11 +260,9 @@ export const PDFSurveyors = (props: Props) => {
                                     image={
                                       answer.respuesta && answer.respuesta.value
                                     }
-                                    title="Paella dish"
+                                    title="Answer"
                                   />
                                 </Card>
-                                {/* <img src={answer.respuesta && answer.respuesta.value} alt="Image" /> */}
-                                {/* <p className={classes.page} ></p> */}
                               </Grid>
                             </Grid>
                           </>
