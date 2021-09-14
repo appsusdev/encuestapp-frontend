@@ -6,21 +6,35 @@ import {
   Box,
   Card,
   CardMedia,
+  createMuiTheme,
   Link,
   Grid,
   TextField,
   Typography,
+  ThemeProvider,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
 } from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/Home";
 import PersonIcon from "@material-ui/icons/Person";
 
-import { TypeQuestion } from "../../../enums/enums";
+import { TypeQuestion, TypeDocEnum } from "../../../enums/enums";
 import { Chapter, ISurveyAnswers } from "../../../interfaces/Survey";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { convertDateDash } from "../../../helpers/convertDate";
 import logo from "../../../assets/images/logo-encuestapp.png";
 import { useState } from "react";
+
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: "Poppins",
+    fontSize: 14,
+  },
+});
 
 interface Props {
   data: Chapter[];
@@ -29,6 +43,7 @@ interface Props {
   dateSurvey: string;
   authorizationFormat: string;
   nameSurveyor: string;
+  idSurveyeds: string[];
 }
 export const PDFSurveys = (props: Props) => {
   const {
@@ -38,21 +53,24 @@ export const PDFSurveys = (props: Props) => {
     surveyCode,
     dateSurvey,
     nameSurveyor,
+    idSurveyeds,
   } = props;
   const classes = useStyles();
-  //const [maxItemsForPage, setMaxItemsForPage] = useState(9);
-  const { activeCitizen } = useSelector<AppState, AppState["citizens"]>(
-    (state) => state.citizens
-  );
+
+  const { citizens, activeCitizen } = useSelector<
+    AppState,
+    AppState["citizens"]
+  >((state) => state.citizens);
 
   const { razonSocial: entityTitle } = useSelector<AppState, AppState["auth"]>(
     (state) => state.auth
   );
   const maxItemsForPage = 12;
-  //let maxItemsForPage = 8;
-  /* const changeMaxItemsForPage = (size: number) => {
-    setMaxItemsForPage(size)
-  }; */
+
+  const citizensSurveyeds: any[] = citizens.filter((citezen) =>
+    idSurveyeds.includes(citezen.identificacion)
+  );
+
   return (
     <Box m={5}>
       <Box display="flex" justifyContent="center" className={classes.titlePDF}>
@@ -84,14 +102,14 @@ export const PDFSurveys = (props: Props) => {
       </Box>
 
       <Box display="flex" justifyContent="space-between">
-        <Box mt={3} display="flex" justifyContent="flex-start">
+        <Box mt={2} display="flex" justifyContent="flex-start">
           <div style={{ fontWeight: "bold" }}>
             <FormattedMessage id="SurveyorName" />:
           </div>
           &nbsp;
           <div className={classes.capitalize}>{nameSurveyor}</div>
         </Box>
-        <Box mt={3} display="flex" justifyContent="flex-start">
+        <Box mt={2} display="flex" justifyContent="flex-start">
           <div style={{ fontWeight: "bold" }}>
             <FormattedMessage id="Date" />
           </div>
@@ -99,6 +117,74 @@ export const PDFSurveys = (props: Props) => {
           {dateSurvey}
         </Box>
       </Box>
+
+      <Box mt={2} className={classes.titlePDF}>
+        <FormattedMessage id="Surveyeds" />:
+      </Box>
+
+      {/* ----------------- TABLA CIUDADANOS ENCUESTADOS ------------------- */}
+
+      <ThemeProvider theme={theme}>
+        <Table className={classes.table} size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <FormattedMessage id="Name" />{" "}
+              </TableCell>
+              <TableCell>TD</TableCell>
+              <TableCell>
+                <FormattedMessage id="Document" />{" "}
+              </TableCell>
+              <TableCell>
+                <FormattedMessage id="Phone" />{" "}
+              </TableCell>
+              <TableCell>
+                <FormattedMessage id="Email" />{" "}
+              </TableCell>
+              <TableCell>
+                <FormattedMessage id="DateOfBirth" />{" "}
+              </TableCell>
+              <TableCell>
+                <FormattedMessage id="Sex" />{" "}
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {citizensSurveyeds.map((citizen, index) => (
+              <TableRow key={index}>
+                <TableCell
+                  component="th"
+                  scope="row"
+                  className={classes.capitalize}
+                >
+                  {`${citizen.primerNombre.toLowerCase()} 
+                              ${citizen.segundoNombre.toLowerCase()}
+                              ${citizen.primerApellido.toLowerCase()}
+                              ${citizen.segundoApellido.toLowerCase()}`}
+                </TableCell>
+                <TableCell>
+                  {citizen.tipoIdentificacion === TypeDocEnum.CC && "CC"}
+                  {citizen.tipoIdentificacion === TypeDocEnum.TI && "TI"}
+                  {citizen.tipoIdentificacion === TypeDocEnum.CE && "CE"}
+                  {citizen.tipoIdentificacion === TypeDocEnum.RC && "RC"}
+                  {citizen.tipoIdentificacion === TypeDocEnum.NIT && "NIT"}
+                  {citizen.tipoIdentificacion === TypeDocEnum.Otro && "Otro"}
+                </TableCell>
+                <TableCell>{citizen.identificacion}</TableCell>
+                <TableCell>{citizen.telefono}</TableCell>
+                <TableCell>{citizen.correo}</TableCell>
+                <TableCell>{citizen.fechaNacimiento}</TableCell>
+                <TableCell>
+                  {(citizen.genero === 0 || citizen.genero === "0") && "F"}
+                  {(citizen.genero === 1 || citizen.genero === "1") && "M"}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </ThemeProvider>
+
+      {/* ----------------- RESPUESTAS DE CIUDADANOS ENCUESTADOS ------------------- */}
 
       {data &&
         data.map((chapter) => (
@@ -140,6 +226,7 @@ export const PDFSurveys = (props: Props) => {
                             : 8
                         }
                       >
+
                         {(question.type === TypeQuestion.TEXT_INPUT ||
                           question.type === TypeQuestion.NUMBER ||
                           question.type === TypeQuestion.DEPARTMENT ||
@@ -177,28 +264,30 @@ export const PDFSurveys = (props: Props) => {
                         )}
 
                         {question.type === TypeQuestion.PICTURE && (
-                          <>
-                            <Grid container>
-                              <Grid item xs={12}>
-                                <Card className={classes.cardPDF}>
-                                  <CardMedia
-                                    className={classes.media}
-                                    image={
-                                      answer.respuesta && answer.respuesta.value
-                                    }
-                                    title="Answer"
-                                  />
-                                </Card>
-                                {
-                                 index%2 ===0 && (
-                                    
-                                    /* <h2>INDEX: {index}</h2> */
-                                     <div style={{ pageBreakAfter: "auto" }} /> 
-                                  )
-                                }
-                              </Grid>
+                          <Grid container>
+                            <Grid item xs={12}>
+                              <Card
+                                className={classes.cardPDF}
+                                style={{
+                                  marginBottom: "15px",
+                                }}
+                              >
+                                <CardMedia
+                                  className={classes.media}
+                                  image={
+                                    answer.respuesta && answer.respuesta.value
+                                  }
+                                  title="Answer"
+                                />
+                              </Card>
+                              { indexAnswer % 2 === 0 && (
+                                <>
+                                <div style={{ pageBreakAfter: "auto" }} />
+                                
+                                </>
+                              )}
                             </Grid>
-                          </>
+                          </Grid>
                         )}
                         {(question.type === TypeQuestion.RADIO ||
                           question.type === TypeQuestion.SELECT) &&
@@ -242,7 +331,17 @@ export const PDFSurveys = (props: Props) => {
                           )}
                         {question.type === TypeQuestion.GEOLOCATION && (
                           <>
-                            <Grid container>
+    
+                                  
+
+                                  {  index>=8 && indexAnswer % 2 === 1 && (
+                                  <>
+                               
+                                  <div style={{ pageBreakAfter: "always" }} />
+                                  
+                                  </>
+                                )}
+                            <Grid container style={{marginBottom:'2vh'}}>
                               <Grid item xs={12}>
                                 <Card className={classes.mapPDF}>
                                   <CardMedia
@@ -251,13 +350,6 @@ export const PDFSurveys = (props: Props) => {
                                     title="Map"
                                   />
                                 </Card>
-                                {
-                                  index>5 && index%2 ===0 && (
-                                    
-                                    /* <h2>INDEX: {index}</h2> */
-                                     <div style={{ pageBreakAfter: "auto" }} /> 
-                                  )
-                                }
                               </Grid>
                             </Grid>
                           </>
@@ -274,9 +366,9 @@ export const PDFSurveys = (props: Props) => {
                   )}
                 </Grid>
 
-                {index % maxItemsForPage === 0 && index > 0 && (
+                {/* {index % maxItemsForPage === 0 && index > 0 && (
                   <div style={{ pageBreakAfter: "always" }} />
-                )}
+                )} */}
               </Box>
             ))}
           </Box>
@@ -284,7 +376,7 @@ export const PDFSurveys = (props: Props) => {
       {
         // ----------------- FORMATO DE AUTORIZACIÓN -------------------
       }
-      <div style={{ pageBreakAfter: "always" }} />
+      <div style={{ pageBreakAfter: "auto" }} />
 
       <Box mt={1}>
         <Grid container>
