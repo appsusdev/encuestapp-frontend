@@ -80,8 +80,8 @@ export const useStyles = makeStyles((theme: Theme) => ({
     pageBreakAfter: "always",
   },
   cardPDF: {
-    height: "500px",
-    maxWidth: "700px",
+    height: "650px",
+    maxWidth: "100%",
     objectFit: "cover",
     objectPosition: "center center",
     pageBreakAfter: "always",
