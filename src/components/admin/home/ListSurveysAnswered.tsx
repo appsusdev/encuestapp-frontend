@@ -91,7 +91,7 @@ export const ListSurveysAnswered = () => {
     const filter = listFilter[0].chapters.map((chapter) => {
       chapter.questions.map((question) => {
         question.answers = question.answers?.filter(
-          (answer) => answer.citizen === activeCitizen.identificacion
+          (answer) => answer.idEncuestaCiudadano === listFilter[0].code
         );
         return question;
       });

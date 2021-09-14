@@ -260,9 +260,14 @@ export const PDFSurveys = (props: Props) => {
                         )}
 
                         {question.type === TypeQuestion.PICTURE && (
-                          <Grid container style={{ width: "100%" }}>
+                          <Grid container>
                             <Grid item xs={12}>
-                              <Card className={classes.cardPDF}>
+                              <Card
+                                className={classes.cardPDF}
+                                style={{
+                                  marginBottom: "15px",
+                                }}
+                              >
                                 <CardMedia
                                   className={classes.media}
                                   image={
@@ -271,7 +276,6 @@ export const PDFSurveys = (props: Props) => {
                                   title="Answer"
                                 />
                               </Card>
-                              <p className={classes.page}></p>
                             </Grid>
                           </Grid>
                         )}
