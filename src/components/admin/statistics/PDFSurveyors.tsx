@@ -70,7 +70,7 @@ export const PDFSurveyors = (props: Props) => {
     (state) => state.auth
   );
 
-  const citizensSuveyed: any[] = citizens.filter((citezen) =>
+  const citizensSurveyeds: any[] = citizens.filter((citezen) =>
     idSurveyeds.includes(citezen.identificacion)
   );
 
@@ -143,9 +143,13 @@ export const PDFSurveyors = (props: Props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {citizensSuveyed.map((citizen, index) => (
-              <TableRow key={index} className={classes.capitalize}>
-                <TableCell component="th" scope="row">
+            {citizensSurveyeds.map((citizen, index) => (
+              <TableRow key={index}>
+                <TableCell
+                  component="th"
+                  scope="row"
+                  className={classes.capitalize}
+                >
                   {`${citizen.primerNombre.toLowerCase()} 
                               ${citizen.segundoNombre.toLowerCase()}
                               ${citizen.primerApellido.toLowerCase()}
@@ -164,8 +168,8 @@ export const PDFSurveyors = (props: Props) => {
                 <TableCell>{citizen.correo}</TableCell>
                 <TableCell>{citizen.fechaNacimiento}</TableCell>
                 <TableCell>
-                  {citizen.genero === 0 && "F"}
-                  {citizen.genero === 1 && "M"}
+                  {(citizen.genero === 0 || citizen.genero === "0") && "F"}
+                  {(citizen.genero === 1 || citizen.genero === "1") && "M"}
                 </TableCell>
               </TableRow>
             ))}
@@ -254,7 +258,12 @@ export const PDFSurveyors = (props: Props) => {
                           <>
                             <Grid container>
                               <Grid item xs={12}>
-                                <Card className={classes.cardPDF}>
+                                <Card
+                                  className={classes.cardPDF}
+                                  style={{
+                                    marginBottom: "15px",
+                                  }}
+                                >
                                   <CardMedia
                                     className={classes.media}
                                     image={

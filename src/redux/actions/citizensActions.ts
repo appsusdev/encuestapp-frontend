@@ -7,6 +7,7 @@ import { CitizensType } from "../../interfaces/Citizens";
 import { types } from "../types/types";
 import { Survey } from "../../interfaces/Survey";
 import { finishLoading } from "./uiActions";
+import { setInfoTransmittedSurveys } from "./surveyorsActions";
 
 export const startLoadingCitizens = () => {
   return async (dispatch: Function, getState: Function) => {
@@ -38,14 +39,15 @@ export const startLoadingSurveysAnswered = (idCitizen: string) => {
     resp.forEach((survey) => idSurveys.push(survey.idEncuesta));
     const newSurveys = surveys.filter(
       (survey: Partial<Survey>) =>
-      survey.idSurvey && idSurveys.includes(survey.idSurvey)
-      );
-      for( let i = 0; i < resp.length ; i++ ){
-        const  surveysTransmitted = resp[i].formatoAutorizacion;
-        const idSurvey = resp[i].id;
-        newSurveys[i].authorizationFormats = surveysTransmitted;
-        newSurveys[i].code = idSurvey; 
-      }
+        survey.idSurvey && idSurveys.includes(survey.idSurvey)
+    );
+    for (let i = 0; i < resp.length; i++) {
+      const surveysTransmitted = resp[i].formatoAutorizacion;
+      const idSurvey = resp[i].id;
+      newSurveys[i].authorizationFormats = surveysTransmitted;
+      newSurveys[i].code = idSurvey;
+    }
+    dispatch(setInfoTransmittedSurveys(resp));
     dispatch(finishLoading());
     dispatch(setSurveysAnswered(newSurveys));
   };
