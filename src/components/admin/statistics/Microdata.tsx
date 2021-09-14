@@ -87,8 +87,8 @@ export const Microdata = () => {
           (question.answers = question.answers.filter(
             (answer: Partial<ISurveyAnswers>) =>
               answer.idEncuestador === surveyorSelected &&
-              (answer.idEncuestaCiudadano &&
-              idCitizens.includes(answer.idEncuestaCiudadano))
+              answer.idEncuestaCiudadano &&
+              idCitizens.includes(answer.idEncuestaCiudadano)
           ));
 
         if (question.directedTo === "PreguntasIndividual") {
@@ -112,12 +112,12 @@ export const Microdata = () => {
       })
     );
   }
-  
+
   // const headers: any[] = [
   //   {label: "Pregunta", key: "id"},
-    // {label: "Encuesta", key: "encuesta"},
-    // {label: "ID ciudadano responsable", key: "idEncuestaCiudadano"},
-    // {label: "ID ciudadano encuestado", key: "idCiudadano"}
+  // {label: "Encuesta", key: "encuesta"},
+  // {label: "ID ciudadano responsable", key: "idEncuestaCiudadano"},
+  // {label: "ID ciudadano encuestado", key: "idCiudadano"}
   // ];
 
   // Filtro de la data para los excel
@@ -138,15 +138,15 @@ export const Microdata = () => {
   const indData: any[] = [];
   arrayQuestionsInd.forEach((question, index) => {
     // headers.push({label: `PreguntaHog${index+1}`, key: "answers"})
-      question.answers.forEach((answer: ISurveyAnswers) => {
-        indData.push({
-          Codigo_encuesta: transmitted[0].idSurvey,
-          Codigo_pregunta: `PreguntaInd${index + 1}`,
-          ID_ciudadano_responsable: answer.idEncuestaCiudadano,
-          ID_ciudadano_encuestado: answer.citizen,
-          Respuesta: answer.respuesta.value,
-        });
+    question.answers.forEach((answer: ISurveyAnswers) => {
+      indData.push({
+        Codigo_encuesta: transmitted[0].idSurvey,
+        Codigo_pregunta: `PreguntaInd${index + 1}`,
+        ID_ciudadano_responsable: answer.idEncuestaCiudadano,
+        ID_ciudadano_encuestado: answer.citizen,
+        Respuesta: answer.respuesta.value,
       });
+    });
   });
 
   useEffect(() => {
@@ -384,24 +384,25 @@ export const Microdata = () => {
               >
                 <CSVLink
                   data={homeData}
-                  // headers={headers}
-                  // data={arrayQuestionsHome}
                   separator={";"}
                   filename={`Microdatos_hogar_${transmitted[0].idSurvey}.csv`}
                 >
-                  <Link component="button">
-                    Encuesta{transmitted[0].idSurvey}_microdatos_hogar
-                  </Link>
+                  {homeData.length > 0 && (
+                    <Link component="button">
+                      Encuesta{transmitted[0].idSurvey}_microdatos_hogar
+                    </Link>
+                  )}
                 </CSVLink>
                 <CSVLink
                   data={indData}
-                  // headers={headers}
                   separator={";"}
                   filename={`Microdatos_personas_${transmitted[0].idSurvey}.csv`}
                 >
-                  <Link component="button">
-                    Encuesta{transmitted[0].idSurvey}_microdatos_personas
-                  </Link>
+                  {indData.length > 0 && (
+                    <Link component="button">
+                      Encuesta{transmitted[0].idSurvey}_microdatos_personas
+                    </Link>
+                  )}
                 </CSVLink>
 
                 <ReactToPrint
