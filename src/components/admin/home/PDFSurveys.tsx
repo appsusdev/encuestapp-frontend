@@ -20,6 +20,7 @@ import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { convertDateDash } from "../../../helpers/convertDate";
 import logo from "../../../assets/images/logo-encuestapp.png";
+import { useState } from "react";
 
 interface Props {
   data: Chapter[];
@@ -39,7 +40,7 @@ export const PDFSurveys = (props: Props) => {
     nameSurveyor,
   } = props;
   const classes = useStyles();
-
+  //const [maxItemsForPage, setMaxItemsForPage] = useState(9);
   const { activeCitizen } = useSelector<AppState, AppState["citizens"]>(
     (state) => state.citizens
   );
@@ -47,7 +48,11 @@ export const PDFSurveys = (props: Props) => {
   const { razonSocial: entityTitle } = useSelector<AppState, AppState["auth"]>(
     (state) => state.auth
   );
-
+  const maxItemsForPage = 12;
+  //let maxItemsForPage = 8;
+  /* const changeMaxItemsForPage = (size: number) => {
+    setMaxItemsForPage(size)
+  }; */
   return (
     <Box m={5}>
       <Box display="flex" justifyContent="center" className={classes.titlePDF}>
@@ -118,11 +123,12 @@ export const PDFSurveys = (props: Props) => {
                       <HomeIcon fontSize="small" style={{ marginTop: "2px" }} />
                     )}
                   </Grid>
+
                   <Grid item xs={11} style={{ marginLeft: "-10px" }}>
                     {chapter.number}.{index + 1} {question.question}
                   </Grid>
                   {question.answers.map(
-                    (answer: ISurveyAnswers, index: number) => (
+                    (answer: ISurveyAnswers, indexAnswer: number) => (
                       <Grid
                         key={index}
                         item
@@ -183,7 +189,13 @@ export const PDFSurveys = (props: Props) => {
                                     title="Answer"
                                   />
                                 </Card>
-                                <p className={classes.page}></p>
+                                {
+                                 index%2 ===0 && (
+                                    
+                                    /* <h2>INDEX: {index}</h2> */
+                                     <div style={{ pageBreakAfter: "auto" }} /> 
+                                  )
+                                }
                               </Grid>
                             </Grid>
                           </>
@@ -232,14 +244,20 @@ export const PDFSurveys = (props: Props) => {
                           <>
                             <Grid container>
                               <Grid item xs={12}>
-                                <Card className={classes.cardPDF}>
+                                <Card className={classes.mapPDF}>
                                   <CardMedia
                                     className={classes.media}
                                     image={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
                                     title="Map"
                                   />
                                 </Card>
-                                <p className={classes.page}></p>
+                                {
+                                  index>5 && index%2 ===0 && (
+                                    
+                                    /* <h2>INDEX: {index}</h2> */
+                                     <div style={{ pageBreakAfter: "auto" }} /> 
+                                  )
+                                }
                               </Grid>
                             </Grid>
                           </>
@@ -255,11 +273,19 @@ export const PDFSurveys = (props: Props) => {
                     )
                   )}
                 </Grid>
+
+                {index % maxItemsForPage === 0 && index > 0 && (
+                  <div style={{ pageBreakAfter: "always" }} />
+                )}
               </Box>
             ))}
           </Box>
         ))}
-      {/* ----------------- FORMATO DE AUTORIZACIÓN ------------------- */}
+      {
+        // ----------------- FORMATO DE AUTORIZACIÓN -------------------
+      }
+      <div style={{ pageBreakAfter: "always" }} />
+
       <Box mt={1}>
         <Grid container>
           <h1>

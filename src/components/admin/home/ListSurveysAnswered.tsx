@@ -16,16 +16,28 @@ import { Surveyor } from "../../../interfaces/Surveyor";
 const pageStyle = `
 @media all {
   .page-break {
-    display: none;
+     display: none;
   }
+}
+
+@media print {
+  .page-break {
+      display: block;
+      page-break-before: auto;
+    }
 }
 @media print {
   html, body {
+    height: initial !important;
+    overflow: initial !important;
     -webkit-print-color-adjust: exact;
-  }
+  };
 }
+
 @page {
   size: auto;
+  margin: 5vw;
+  padding:30vw
 }
 `;
 
@@ -88,7 +100,7 @@ export const ListSurveysAnswered = () => {
   };
 
   return (
-    <Box m={2}>
+    <Box m={2} >
       {loading ? (
         <Box display="flex" justifyContent="center">
           <CircularProgress className={classes.colorLoading} />
@@ -105,12 +117,14 @@ export const ListSurveysAnswered = () => {
             <div key={index}>
               <ReactToPrint
                 // bodyClass={ }
+
                 onBeforeGetContent={async () => await getData(survey.idSurvey)}
                 trigger={() => (
                   <Link className={classes.typography} component="button">
                     {index + 1}. {survey.name}
                   </Link>
                 )}
+                //pageStyle={{margin: 120px 50px 80px 50px;}}
                 content={() => componentRef.current}
                 documentTitle={`${survey.name}_${activeCitizen.identificacion}`}
                 pageStyle={pageStyle}
