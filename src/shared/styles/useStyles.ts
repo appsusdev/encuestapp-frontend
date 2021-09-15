@@ -80,20 +80,20 @@ export const useStyles = makeStyles((theme: Theme) => ({
     //pageBreakAfter: "always",
   },
   cardPDF: {
-    height:'46vh',
-    width:'100vw',
+    height: "50vh",
+    width: "100%",
     objectFit: "cover",
     objectPosition: "center center",
     pageBreakAfter: "always",
     position: "relative",
   },
-  mapPDF:{
-    height:'40vh',
-    width:'70vw',
+  mapPDF: {
+    height: "50vh",
+    width: "90vw",
     //pageBreakAfter:'always'
   },
   page: {
-    pageBreakAfter:"always",
+    pageBreakAfter: "always",
   },
   paper: {
     minHeight: "400px",

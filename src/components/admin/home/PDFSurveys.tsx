@@ -27,7 +27,6 @@ import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { convertDateDash } from "../../../helpers/convertDate";
 import logo from "../../../assets/images/logo-encuestapp.png";
-import { useState } from "react";
 
 const theme = createMuiTheme({
   typography: {
@@ -65,7 +64,6 @@ export const PDFSurveys = (props: Props) => {
   const { razonSocial: entityTitle } = useSelector<AppState, AppState["auth"]>(
     (state) => state.auth
   );
-  const maxItemsForPage = 12;
 
   const citizensSurveyeds: any[] = citizens.filter((citezen) =>
     idSurveyeds.includes(citezen.identificacion)
@@ -216,7 +214,7 @@ export const PDFSurveys = (props: Props) => {
                   {question.answers.map(
                     (answer: ISurveyAnswers, indexAnswer: number) => (
                       <Grid
-                        key={index}
+                        key={indexAnswer}
                         item
                         xs={
                           question.type === TypeQuestion.TEXT_AREA ||
@@ -226,7 +224,6 @@ export const PDFSurveys = (props: Props) => {
                             : 8
                         }
                       >
-
                         {(question.type === TypeQuestion.TEXT_INPUT ||
                           question.type === TypeQuestion.NUMBER ||
                           question.type === TypeQuestion.DEPARTMENT ||
@@ -280,10 +277,9 @@ export const PDFSurveys = (props: Props) => {
                                   title="Answer"
                                 />
                               </Card>
-                              { indexAnswer % 2 === 0 && (
+                              {indexAnswer % 2 === 0 && (
                                 <>
-                                <div style={{ pageBreakAfter: "auto" }} />
-                                
+                                  <div style={{ pageBreakAfter: "auto" }} />
                                 </>
                               )}
                             </Grid>
@@ -331,17 +327,12 @@ export const PDFSurveys = (props: Props) => {
                           )}
                         {question.type === TypeQuestion.GEOLOCATION && (
                           <>
-    
-                                  
-
-                                  {  index>=8 && indexAnswer % 2 === 1 && (
-                                  <>
-                               
-                                  <div style={{ pageBreakAfter: "always" }} />
-                                  
-                                  </>
-                                )}
-                            <Grid container style={{marginBottom:'2vh'}}>
+                            {index >= 8 && indexAnswer % 2 === 1 && (
+                              <>
+                                <div style={{ pageBreakAfter: "always" }} />
+                              </>
+                            )}
+                            <Grid container style={{ marginBottom: "2vh" }}>
                               <Grid item xs={12}>
                                 <Card className={classes.mapPDF}>
                                   <CardMedia
