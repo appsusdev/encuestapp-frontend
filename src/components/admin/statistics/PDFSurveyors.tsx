@@ -206,7 +206,7 @@ export const PDFSurveyors = (props: Props) => {
                     {chapter.number}.{index + 1} {question.question}
                   </Grid>
                   {question.answers.map(
-                    (answer: ISurveyAnswers, index: number) => (
+                    (answer: ISurveyAnswers, indexAnswer: number) => (
                       <Grid
                         key={index}
                         item
@@ -272,6 +272,12 @@ export const PDFSurveyors = (props: Props) => {
                                     title="Answer"
                                   />
                                 </Card>
+                                { indexAnswer % 2 === 0 && (
+                                <>
+                                <div style={{ pageBreakAfter: "auto" }} />
+                                
+                                </>
+                              )}
                               </Grid>
                             </Grid>
                           </>
@@ -316,20 +322,26 @@ export const PDFSurveyors = (props: Props) => {
                               )
                           )}
                         {question.type === TypeQuestion.GEOLOCATION && (
-                          <Box m={1}>
-                            <Box className={classes.image} mb={1}>
-                              <img
-                                style={{
-                                  marginBottom: "10px",
-                                  position: "absolute",
-                                }}
-                                className={classes.media}
-                                src={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
-                                alt="Map"
-                              />
-                              <br />
-                            </Box>
-                          </Box>
+                          <>
+                           {  index>=8 && indexAnswer % 2 === 1 && (
+                                  <>
+                               
+                                  <div style={{ pageBreakAfter: "always" }} />
+                                  
+                                  </>
+                                )}
+                           <Grid container style={{marginBottom:'2vh'}}>
+                           <Grid item xs={12}>
+                             <Card className={classes.mapPDF}>
+                               <CardMedia
+                                 className={classes.media}
+                                 image={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
+                                 title="Map"
+                               />
+                             </Card>
+                           </Grid>
+                         </Grid>
+                          </>
                         )}
                         {question.type === TypeQuestion.FILE && (
                           <Box mt={1}>
@@ -345,12 +357,14 @@ export const PDFSurveyors = (props: Props) => {
               </Box>
             ))}
             {/* ----------------- FORMATO DE AUTORIZACIÓN ------------------- */}
+      <div style={{ pageBreakAfter: "auto" }} />
+
             <Box mt={1}>
               <Grid container>
                 <h1>
                   <FormattedMessage id="AuthorizationFormat" />
                 </h1>
-                <Grid item xs={12} className={classes.image}>
+                <Grid item xs={12} className={classes.cardPDF}>
                   <img
                     style={{ position: "absolute" }}
                     className={classes.media}
@@ -369,7 +383,7 @@ export const PDFSurveyors = (props: Props) => {
               >
                 <Grid>
                   <img
-                    style={{ width: "600px" }}
+                    style={{ width: "600px",height:'20vh' }}
                     src={logo}
                     alt="Logo Encuestapp"
                   />
