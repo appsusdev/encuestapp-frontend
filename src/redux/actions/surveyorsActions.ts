@@ -293,6 +293,10 @@ export const startLoadingMicrodata = (data: any) => {
     const { survey, surveyor } = data;
     const idSurveys: string[] = [];
     const idResponsibleCitizen: any[] = [];
+    // Limpiar todo cada que se vaya a buscar una nueva encuesta
+    dispatch(setTransmittedSurveys([]));
+    dispatch(setInfoTransmittedSurveys([]));
+    dispatch(setIdResponsibleCitizens([]));
 
     // Manejo de fechas
     let date1 = new Date(data.startDate);
@@ -312,11 +316,7 @@ export const startLoadingMicrodata = (data: any) => {
       endDate
     );
 
-    if (resp.length === 0) {
-      dispatch(setTransmittedSurveys([]));
-      dispatch(setInfoTransmittedSurveys([]));
-      dispatch(setIdResponsibleCitizens([]));
-    } else {
+    if (resp.length > 0) {
       dispatch(setInfoTransmittedSurveys(resp));
       resp.forEach((survey) => {
         idSurveys.push(survey.idEncuesta);
