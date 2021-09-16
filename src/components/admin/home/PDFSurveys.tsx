@@ -196,6 +196,9 @@ export const PDFSurveys = (props: Props) => {
 
             {chapter.questions.map((question, index) => (
               <Box m={1} mb={1} key={question.id}>
+                {chapter.questions[index].type === TypeQuestion.GEOLOCATION && (
+                  <div style={{ pageBreakAfter: "always" }} />
+                )}
                 <Grid container>
                   <Grid item xs={1}>
                     {question.directedTo === "PreguntasIndividual" ? (
@@ -327,12 +330,7 @@ export const PDFSurveys = (props: Props) => {
                           )}
                         {question.type === TypeQuestion.GEOLOCATION && (
                           <>
-                            {index >= 8 && indexAnswer % 2 === 1 && (
-                              <>
-                                <div style={{ pageBreakAfter: "always" }} />
-                              </>
-                            )}
-                            <Grid container style={{ marginBottom: "2vh" }}>
+                            <Grid container style={{marginBottom:'5vh'}}>
                               <Grid item xs={12}>
                                 <Card className={classes.mapPDF}>
                                   <CardMedia
@@ -356,10 +354,6 @@ export const PDFSurveys = (props: Props) => {
                     )
                   )}
                 </Grid>
-
-                {/* {index % maxItemsForPage === 0 && index > 0 && (
-                  <div style={{ pageBreakAfter: "always" }} />
-                )} */}
               </Box>
             ))}
           </Box>
@@ -367,7 +361,7 @@ export const PDFSurveys = (props: Props) => {
       {
         // ----------------- FORMATO DE AUTORIZACIÓN -------------------
       }
-      <div style={{ pageBreakAfter: "auto" }} />
+      <div style={{ pageBreakAfter: "always" }} />
 
       <Box mt={1}>
         <Grid container>

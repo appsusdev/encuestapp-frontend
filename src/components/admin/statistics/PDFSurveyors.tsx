@@ -191,6 +191,9 @@ export const PDFSurveyors = (props: Props) => {
 
             {chapter.questions.map((question, index) => (
               <Box m={1} mb={1} key={question.id}>
+                 {chapter.questions[index].type === TypeQuestion.GEOLOCATION &&(
+                  <div style={{ pageBreakAfter: "always" }} />
+                )}
                 <Grid container>
                   <Grid item xs={1}>
                     {question.directedTo === "PreguntasIndividual" ? (
@@ -205,10 +208,11 @@ export const PDFSurveyors = (props: Props) => {
                   <Grid item xs={11} style={{ marginLeft: "-10px" }}>
                     {chapter.number}.{index + 1} {question.question}
                   </Grid>
+
                   {question.answers.map(
-                    (answer: ISurveyAnswers, index: number) => (
+                    (answer: ISurveyAnswers, indexAnswer: number) => (
                       <Grid
-                        key={index}
+                        key={indexAnswer}
                         item
                         xs={
                           question.type === TypeQuestion.TEXT_AREA ||
@@ -218,6 +222,7 @@ export const PDFSurveyors = (props: Props) => {
                             : 8
                         }
                       >
+                        {/*  <h5>BREAK ANSWER {indexAnswer}</h5> */}
                         {(question.type === TypeQuestion.TEXT_INPUT ||
                           question.type === TypeQuestion.NUMBER ||
                           question.type === TypeQuestion.DEPARTMENT ||
@@ -272,6 +277,11 @@ export const PDFSurveyors = (props: Props) => {
                                     title="Answer"
                                   />
                                 </Card>
+                                {indexAnswer % 2 === 0 && (
+                                  <>
+                                    <div style={{ pageBreakAfter: "auto" }} />
+                                  </>
+                                )}
                               </Grid>
                             </Grid>
                           </>
@@ -316,20 +326,19 @@ export const PDFSurveyors = (props: Props) => {
                               )
                           )}
                         {question.type === TypeQuestion.GEOLOCATION && (
-                          <Box m={1}>
-                            <Box className={classes.image} mb={1}>
-                              <img
-                                style={{
-                                  marginBottom: "10px",
-                                  position: "absolute",
-                                }}
-                                className={classes.media}
-                                src={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
-                                alt="Map"
-                              />
-                              <br />
-                            </Box>
-                          </Box>
+                          <>
+                            <Grid container style={{marginBottom:'5vh'}}>
+                              <Grid item xs={12}>
+                                <Card className={classes.mapPDF}>
+                                  <CardMedia
+                                    className={classes.media}
+                                    image={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
+                                    title="Map"
+                                  />
+                                </Card>
+                              </Grid>
+                            </Grid>
+                          </>
                         )}
                         {question.type === TypeQuestion.FILE && (
                           <Box mt={1}>
@@ -342,42 +351,43 @@ export const PDFSurveyors = (props: Props) => {
                     )
                   )}
                 </Grid>
+    
+                 
               </Box>
             ))}
-            {/* ----------------- FORMATO DE AUTORIZACIÓN ------------------- */}
-            <Box mt={1}>
-              <Grid container>
-                <h1>
-                  <FormattedMessage id="AuthorizationFormat" />
-                </h1>
-                <Grid item xs={12} className={classes.image}>
-                  <img
-                    style={{ position: "absolute" }}
-                    className={classes.media}
-                    src={authorizationFormat}
-                    alt="Authorization Format"
-                  />
-                </Grid>
-              </Grid>
-            </Box>
-
-            <Box mt={1}>
-              <Box
-                display="flex"
-                justifyContent="center"
-                alignContent="flex-end"
-              >
-                <Grid>
-                  <img
-                    style={{ width: "600px" }}
-                    src={logo}
-                    alt="Logo Encuestapp"
-                  />
-                </Grid>
-              </Box>
-            </Box>
           </Box>
         ))}
+      {/* ----------------- FORMATO DE AUTORIZACIÓN ------------------- */}
+
+      <div style={{ pageBreakAfter: "always" }} />
+
+      <Box mt={1}>
+        <Grid container>
+          <h1>
+            <FormattedMessage id="AuthorizationFormat" />
+          </h1>
+          <Grid item xs={12} className={classes.cardPDF}>
+            <img
+              style={{ position: "absolute" }}
+              className={classes.media}
+              src={authorizationFormat}
+              alt="Authorization Format"
+            />
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Box mt={1}>
+        <Box display="flex" justifyContent="center" alignContent="flex-end">
+          <Grid>
+            <img
+              style={{ width: "600px", height: "20vh" }}
+              src={logo}
+              alt="Logo Encuestapp"
+            />
+          </Grid>
+        </Box>
+      </Box>
     </Box>
   );
 };
