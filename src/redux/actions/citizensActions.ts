@@ -5,9 +5,10 @@ import {
 } from "../../services/firebase/citizens";
 import { CitizensType } from "../../interfaces/Citizens";
 import { types } from "../types/types";
-import { Survey } from "../../interfaces/Survey";
-import { finishLoading } from "./uiActions";
+import { Survey, SurveyQuestion } from "../../interfaces/Survey";
 import { setInfoTransmittedSurveys } from "./surveyorsActions";
+import { getAnswers } from "../../services/firebase/surveys";
+import { getCopyArrayOrObject } from "../../helpers/getCopyArrayOrObject";
 
 export const startLoadingCitizens = () => {
   return async (dispatch: Function, getState: Function) => {
@@ -34,22 +35,51 @@ export const startLoadingSurveysAnswered = (idCitizen: string) => {
     const town = auth.municipio;
     const nit = auth.nit;
     const idSurveys: string[] = [];
+    const idSurveysCitizen: string[] = [];
 
     const resp = await getTransmittedSurveysByCitizen(town, idCitizen, nit);
-    resp.forEach((survey) => idSurveys.push(survey.idEncuesta));
+    resp.forEach((survey) => {
+      idSurveys.push(survey.idEncuesta);
+      idSurveysCitizen.push(survey.id);
+    });
+
     const newSurveys = surveys.filter(
       (survey: Partial<Survey>) =>
         survey.idSurvey && idSurveys.includes(survey.idSurvey)
     );
+
     for (let i = 0; i < resp.length; i++) {
       const surveysTransmitted = resp[i].formatoAutorizacion;
       const idSurvey = resp[i].id;
       newSurveys[i].authorizationFormats = surveysTransmitted;
       newSurveys[i].code = idSurvey;
     }
+
+    // Obtener respuestas de ciudadano con su núcleo familiar
+    const array = getCopyArrayOrObject(newSurveys);
+    const surveyWidhAnswers = array.map((survey: Survey) => {
+      survey.chapters.map((chapter) => {
+        chapter.questions.map(async (question: SurveyQuestion) => {
+          if (idSurveysCitizen.includes(survey.code)) {
+            const resp = await getAnswers(
+              town,
+              survey.idSurvey,
+              chapter.id,
+              question.directedTo,
+              question.id,
+              survey.code
+            );
+            question.answers = resp;
+            return question.answers;
+          }
+          return question;
+        });
+        return chapter;
+      });
+      return survey;
+    });
     dispatch(setInfoTransmittedSurveys(resp));
-    dispatch(finishLoading());
-    dispatch(setSurveysAnswered(newSurveys));
+    dispatch(setSurveysAnswered(surveyWidhAnswers));
   };
 };
 

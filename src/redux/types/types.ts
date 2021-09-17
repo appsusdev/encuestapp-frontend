@@ -210,7 +210,7 @@ export type SearchAction = {
 // Citizens
 export interface CitizenState {
   citizens: CitizensType;
-  surveysAnswered: Partial<Survey>[];
+  surveysAnswered: Survey[];
   activeCitizen: Partial<ICitizen> | null;
   mapData: IMap;
 }
