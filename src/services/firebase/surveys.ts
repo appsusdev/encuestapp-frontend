@@ -411,27 +411,41 @@ export const deleteSurveysTransmitted = async (
   });
 };
 
-// Obtener respuestas
+// Obtener respuestas del ciudadano buscado
 export const getAnswers = async (
   town: string,
   idSurvey: string,
   idChapter: string,
   typeQuestion: string,
   idQuestion: string,
-  idCitizen: string
+  idCitizen?: string
 ) => {
-  const answersRef = await db
-    .collection("Municipios")
-    .doc(town)
-    .collection("Encuestas")
-    .doc(idSurvey)
-    .collection("Capitulos")
-    .doc(idChapter)
-    .collection(typeQuestion)
-    .doc(idQuestion)
-    .collection("Respuestas")
-    .where("idEncuestaCiudadano", "==", idCitizen)
-    .get();
+  let answersRef;
+
+  idCitizen
+    ? (answersRef = await db
+        .collection("Municipios")
+        .doc(town)
+        .collection("Encuestas")
+        .doc(idSurvey)
+        .collection("Capitulos")
+        .doc(idChapter)
+        .collection(typeQuestion)
+        .doc(idQuestion)
+        .collection("Respuestas")
+        .where("idEncuestaCiudadano", "==", idCitizen)
+        .get())
+    : (answersRef = await db
+        .collection("Municipios")
+        .doc(town)
+        .collection("Encuestas")
+        .doc(idSurvey)
+        .collection("Capitulos")
+        .doc(idChapter)
+        .collection(typeQuestion)
+        .doc(idQuestion)
+        .collection("Respuestas")
+        .get());
 
   const answers: any[] = [];
   answersRef.forEach((resp: any) => {

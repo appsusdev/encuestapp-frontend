@@ -191,7 +191,7 @@ export const PDFSurveyors = (props: Props) => {
 
             {chapter.questions.map((question, index) => (
               <Box m={1} mb={1} key={question.id}>
-                 {chapter.questions[index].type === TypeQuestion.GEOLOCATION &&(
+                {chapter.questions[index].type === TypeQuestion.GEOLOCATION && (
                   <div style={{ pageBreakAfter: "always" }} />
                 )}
                 <Grid container>
@@ -327,7 +327,7 @@ export const PDFSurveyors = (props: Props) => {
                           )}
                         {question.type === TypeQuestion.GEOLOCATION && (
                           <>
-                            <Grid container style={{marginBottom:'5vh'}}>
+                            <Grid container style={{ marginBottom: "5vh" }}>
                               <Grid item xs={12}>
                                 <Card className={classes.mapPDF}>
                                   <CardMedia
@@ -351,8 +351,6 @@ export const PDFSurveyors = (props: Props) => {
                     )
                   )}
                 </Grid>
-    
-                 
               </Box>
             ))}
           </Box>
@@ -380,11 +378,7 @@ export const PDFSurveyors = (props: Props) => {
       <Box mt={1}>
         <Box display="flex" justifyContent="center" alignContent="flex-end">
           <Grid>
-            <img
-              style={{ width: "600px", height: "20vh" }}
-              src={logo}
-              alt="Logo Encuestapp"
-            />
+            <img style={{ width: "600px" }} src={logo} alt="Logo Encuestapp" />
           </Grid>
         </Box>
       </Box>

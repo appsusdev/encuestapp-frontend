@@ -24,6 +24,7 @@ import {
   uiOpenModalAlert,
 } from "./uiActions";
 import { updateSurvey } from "./surveysActions";
+import { getCopyArrayOrObject } from "../../helpers/getCopyArrayOrObject";
 import {
   existsTransmittedSurveys,
   deleteSurveyorFirebase,
@@ -33,7 +34,10 @@ import {
   uiOpenDeleteSuccess,
   uiOpenDeleteError,
 } from "./uiActions";
-import { deleteUserFirebase } from "../../services/firebase/surveyors";
+import {
+  deleteUserFirebase,
+  getAnswersBySurveyor,
+} from "../../services/firebase/surveyors";
 
 // Agregar nuevo encuestador
 export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
@@ -302,7 +306,7 @@ export const startLoadingMicrodata = (data: any) => {
     let date1 = new Date(data.startDate);
     date1.setDate(date1.getDate());
     let date2 = new Date(data.endDate);
-    date2.setDate(date2.getDate() + 1);
+    date2.setDate(date2.getDate() + 2);
 
     const startDate = firebase.firestore.Timestamp.fromDate(new Date(date1));
     const endDate = firebase.firestore.Timestamp.fromDate(new Date(date2));
@@ -327,12 +331,32 @@ export const startLoadingMicrodata = (data: any) => {
         (survey: Partial<Survey>) =>
           survey.idSurvey && idSurveys.includes(survey.idSurvey)
       );
-      dispatch(setTransmittedSurveys(newSurveys));
+
+      const array = getCopyArrayOrObject(newSurveys);
+      const surveysWithAnswers = array.map((survey: Survey) => {
+        survey.chapters.map((chapter) => {
+          chapter.questions.map(async (question) => {
+            const resp = await getAnswersBySurveyor(
+              town,
+              survey.idSurvey,
+              chapter.id,
+              question.directedTo,
+              question.id,
+              surveyor
+            );
+            question.answers = resp;
+            return question;
+          });
+          return chapter;
+        });
+        return survey;
+      });
+      await dispatch(setTransmittedSurveys(surveysWithAnswers));
     }
   };
 };
 
-export const setTransmittedSurveys = (surveys: any[]) => ({
+export const setTransmittedSurveys = (surveys: Survey[]) => ({
   type: types.surveyorsTransmittedSurveys,
   payload: surveys,
 });

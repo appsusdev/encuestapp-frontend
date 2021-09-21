@@ -57,7 +57,7 @@ export const startLoadingSurveysAnswered = (idCitizen: string) => {
 
     // Obtener respuestas de ciudadano con su núcleo familiar
     const array = getCopyArrayOrObject(newSurveys);
-    const surveyWidhAnswers = array.map((survey: Survey) => {
+    const surveysWithAnswers = array.map((survey: Survey) => {
       survey.chapters.map((chapter) => {
         chapter.questions.map(async (question: SurveyQuestion) => {
           if (idSurveysCitizen.includes(survey.code)) {
@@ -79,7 +79,7 @@ export const startLoadingSurveysAnswered = (idCitizen: string) => {
       return survey;
     });
     dispatch(setInfoTransmittedSurveys(resp));
-    dispatch(setSurveysAnswered(surveyWidhAnswers));
+    dispatch(setSurveysAnswered(surveysWithAnswers));
   };
 };
 
@@ -95,18 +95,6 @@ export const activeCitizen = (citizen: {} | null) => ({
 });
 
 export const citizenCleanActive = () => ({ type: types.citizenCleanActive });
-
-export const startLoadingGeoreferencingData = (idSurvey: string) => {
-  return async (dispatch: Function, getState: Function) => {
-    const { surveys } = getState().survey;
-    const newSurveys = surveys.filter(
-      (survey: Partial<Survey>) =>
-        survey.idSurvey && survey.idSurvey === idSurvey
-    );
-
-    dispatch(setSurveysAnswered(newSurveys));
-  };
-};
 
 // Informacion del mata
 export const startLoadingMapData = (nit: string) => {

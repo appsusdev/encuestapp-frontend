@@ -171,7 +171,7 @@ export interface ISurveyor {
   activeSurveyor: Partial<Surveyor> | null;
   assignedSurveys: any;
   surveyorFromToDB: any;
-  surveysTransmitted: any[];
+  surveysTransmitted: Survey[];
   infoSurveysTransmitted: any[];
   idResponsibleCitizens: any[];
 }

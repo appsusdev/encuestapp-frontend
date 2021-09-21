@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 import ReactToPrint from "react-to-print";
@@ -10,7 +10,6 @@ import { Survey, Chapter } from "../../../interfaces/Survey";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { PDFSurveys } from "./PDFSurveys";
-import { getCopyArrayOrObject } from "../../../helpers/getCopyArrayOrObject";
 import { Surveyor } from "../../../interfaces/Surveyor";
 
 const pageStyle = `
