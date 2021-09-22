@@ -262,6 +262,7 @@ export const getQuestions = async (
     allQuestions.push({
       id: snap.id,
       ...snap.data(),
+      answers: [],
     });
   });
 
@@ -275,34 +276,10 @@ export const getQuestions = async (
     allQuestions.push({
       id: snap.id,
       ...snap.data(),
+      answers: [],
     });
   });
 
-  for (let doc of allQuestions) {
-    let answersRef;
-    if (doc.dirigida === "PreguntasIndividual") {
-      answersRef = await individualQuestionsRef
-        .doc(doc.id)
-        .collection("Respuestas")
-        .orderBy("idEncuestaCiudadano")
-        .get();
-    } else {
-      answersRef = await homeQuestionsRef
-        .doc(doc.id)
-        .collection("Respuestas")
-        .orderBy("idEncuestaCiudadano")
-        .get();
-    }
-
-    const answers: any[] = [];
-    answersRef.forEach((resp) => {
-      answers.push({ citizen: resp.id, ...resp.data() });
-    });
-
-    doc.answers = answers;
-  }
-
-  // DTO questions
   const resp: any[] = [];
   allQuestions.forEach((question) => {
     resp.push(questionDTO(question));
@@ -432,4 +409,48 @@ export const deleteSurveysTransmitted = async (
   surveys.forEach(async (snap) => {
     await snap.ref.delete();
   });
+};
+
+// Obtener respuestas del ciudadano buscado
+export const getAnswers = async (
+  town: string,
+  idSurvey: string,
+  idChapter: string,
+  typeQuestion: string,
+  idQuestion: string,
+  idCitizen?: string
+) => {
+  let answersRef;
+
+  idCitizen
+    ? (answersRef = await db
+        .collection("Municipios")
+        .doc(town)
+        .collection("Encuestas")
+        .doc(idSurvey)
+        .collection("Capitulos")
+        .doc(idChapter)
+        .collection(typeQuestion)
+        .doc(idQuestion)
+        .collection("Respuestas")
+        .where("idEncuestaCiudadano", "==", idCitizen)
+        .get())
+    : (answersRef = await db
+        .collection("Municipios")
+        .doc(town)
+        .collection("Encuestas")
+        .doc(idSurvey)
+        .collection("Capitulos")
+        .doc(idChapter)
+        .collection(typeQuestion)
+        .doc(idQuestion)
+        .collection("Respuestas")
+        .get());
+
+  const answers: any[] = [];
+  answersRef.forEach((resp: any) => {
+    answers.push({ citizen: resp.id, ...resp.data() });
+  });
+
+  return answers;
 };

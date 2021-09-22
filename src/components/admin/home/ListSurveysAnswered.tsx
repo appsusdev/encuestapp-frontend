@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 import ReactToPrint from "react-to-print";
@@ -10,7 +10,6 @@ import { Survey, Chapter } from "../../../interfaces/Survey";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { PDFSurveys } from "./PDFSurveys";
-import { getCopyArrayOrObject } from "../../../helpers/getCopyArrayOrObject";
 import { Surveyor } from "../../../interfaces/Surveyor";
 
 const pageStyle = `
@@ -41,7 +40,11 @@ const pageStyle = `
 }
 `;
 
-export const ListSurveysAnswered = () => {
+interface Props {
+  answered: Survey[];
+}
+export const ListSurveysAnswered = (props: Props) => {
+  const { answered } = props;
   const classes = useStyles();
   const componentRef = useRef<HTMLDivElement>(null);
 
@@ -66,13 +69,10 @@ export const ListSurveysAnswered = () => {
     surveyeds: [],
   });
   const citizen: ICitizen = activeCitizen;
-  const answered: Survey[] = getCopyArrayOrObject(surveysAnswered);
   const listSurveyors: Surveyor[] = surveyors;
   const infoTransmitted: any[] = infoSurveysTransmitted;
 
   const getData = (idSurvey: string | undefined) => {
-    // console.log(infoFilter);
-
     const listFilter = answered.filter(
       (survey) => survey.idSurvey === idSurvey
     );
@@ -113,7 +113,7 @@ export const ListSurveysAnswered = () => {
   };
 
   return (
-    <Box m={2} >
+    <Box m={2}>
       {loading ? (
         <Box display="flex" justifyContent="center">
           <CircularProgress className={classes.colorLoading} />
@@ -129,15 +129,12 @@ export const ListSurveysAnswered = () => {
           {surveysAnswered.map((survey: Partial<Survey>, index: number) => (
             <div key={index}>
               <ReactToPrint
-        
-
                 onBeforeGetContent={async () => await getData(survey.idSurvey)}
                 trigger={() => (
                   <Link className={classes.typography} component="button">
                     {index + 1}. {survey.name}
                   </Link>
                 )}
-              
                 content={() => componentRef.current}
                 documentTitle={`${survey.name}_${activeCitizen.identificacion}`}
                 pageStyle={pageStyle}

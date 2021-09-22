@@ -45,7 +45,12 @@ const pageStyle = `
 }
 `;
 
-export const Surveyors = () => {
+interface Props {
+  transmitted: Survey[];
+}
+
+export const Surveyors = (props: Props) => {
+  const { transmitted } = props;
   const classes = useStyles();
   const intl = useIntl();
   const dispatch = useDispatch();
@@ -54,7 +59,7 @@ export const Surveyors = () => {
   const { surveys } = useSelector<AppState, AppState["survey"]>(
     (state) => state.survey
   );
-  const { surveyors, surveysTransmitted, infoSurveysTransmitted } = useSelector<
+  const { surveyors, infoSurveysTransmitted } = useSelector<
     AppState,
     AppState["surveyor"]
   >((state) => state.surveyor);
@@ -80,8 +85,8 @@ export const Surveyors = () => {
   });
   const [show, setShow] = useState(false);
   const [newList, setNewList] = useState<Chapter[]>([]);
-  const transmitted: Partial<Survey>[] =
-    getCopyArrayOrObject(surveysTransmitted);
+  // const transmitted: Partial<Survey>[] =
+  //   getCopyArrayOrObject(surveysTransmitted);
   const infoTransmitted: any[] = infoSurveysTransmitted;
   const surveyorsList: Surveyor[] = surveyors;
 

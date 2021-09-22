@@ -219,5 +219,7 @@
     "Return": "Volver",
     "SurveyorDeleted": "Encuestador eliminado correctamente",
     "Surveyeds": "Encuestados",
-    "ResponsibleForSurvey": "Responsable de la encuesta"
+    "ResponsibleForSurvey": "Responsable de la encuesta",
+    "NoInformationHome": "No hay información disponible sobre los microdatos del hogar",
+    "NoInformationIndividual": "No hay información disponible sobre los microdatos de personas"
 }

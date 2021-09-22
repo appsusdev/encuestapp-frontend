@@ -30,6 +30,7 @@ import {
   uiOpenModalAdd,
   uiCloseModalAdd,
   startLoading,
+  finishLoading,
 } from "../../../redux/actions/uiActions";
 import CustomizedDialog from "../../custom/CustomizedDialog";
 import {
@@ -40,7 +41,7 @@ import {
 } from "../../../redux/actions/citizensActions";
 import { ListSurveysAnswered } from "./ListSurveysAnswered";
 import VisibilityOutlinedIcon from "@material-ui/icons/VisibilityOutlined";
-import { TypeDocEnum } from '../../../enums/enums';
+import { TypeDocEnum } from "../../../enums/enums";
 
 const theme = createMuiTheme({
   typography: {
@@ -60,9 +61,10 @@ export const Home = () => {
   const [list, setList] = useState<ICitizen[] | []>([]);
   const [valid, setValid] = useState(true);
   const [search, setSearch] = useState(false);
-  const { citizens } = useSelector<AppState, AppState["citizens"]>(
-    (state) => state.citizens
-  );
+  const { surveysAnswered, citizens } = useSelector<
+    AppState,
+    AppState["citizens"]
+  >((state) => state.citizens);
   const { modalAddOpen } = useSelector<AppState, AppState["ui"]>(
     (state) => state.ui
   );
@@ -137,12 +139,13 @@ export const Home = () => {
     }
   };
 
-  const handleSeeSurveys = (citizen: ICitizen) => {
+  const handleSeeSurveys = async (citizen: ICitizen) => {
     dispatch(activeCitizen(citizen));
     dispatch(startLoading());
     dispatch(uiOpenModalAdd());
     // Consultar encuestas del ciudadano
-    dispatch(startLoadingSurveysAnswered(citizen.identificacion));
+    await dispatch(startLoadingSurveysAnswered(citizen.identificacion));
+    dispatch(finishLoading());
   };
 
   const handlePress = (e: any) => {
@@ -254,12 +257,18 @@ export const Home = () => {
                           {citizen.segundoApellido.toLowerCase()}
                         </TableCell>
                         <TableCell>
-                          {citizen.tipoIdentificacion === TypeDocEnum.CC && "CC"}
-                          {citizen.tipoIdentificacion ===TypeDocEnum.TI && "TI"}
-                          {citizen.tipoIdentificacion ===TypeDocEnum.CE && "CE"}
-                          {citizen.tipoIdentificacion ===TypeDocEnum.RC && "RC"}
-                          {citizen.tipoIdentificacion ===TypeDocEnum.NIT  && "NIT"}
-                          {citizen.tipoIdentificacion ===TypeDocEnum.Otro  && "Otro"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.CC &&
+                            "CC"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.TI &&
+                            "TI"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.CE &&
+                            "CE"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.RC &&
+                            "RC"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.NIT &&
+                            "NIT"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.Otro &&
+                            "Otro"}
                         </TableCell>
                         <TableCell>{citizen.identificacion}</TableCell>
                         <TableCell align="center">
@@ -327,7 +336,7 @@ export const Home = () => {
         cancelBtn={false}
         onDeny={onDeny}
         title={`${intl.formatMessage({ id: "SurveysConducted" })}`}
-        content={<ListSurveysAnswered />}
+        content={<ListSurveysAnswered answered={surveysAnswered} />}
         textButton="Accept"
         seeActions
       />

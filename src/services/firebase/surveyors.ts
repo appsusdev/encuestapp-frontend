@@ -219,3 +219,47 @@ export const deleteSurveyorFirebase = async (
 export const deleteUserFirebase = async (idSurveyor: string) => {
   await db.collection("Usuarios").doc(idSurveyor).delete();
 };
+
+// Obtener respuestas del ciudadano buscado
+export const getAnswersBySurveyor = async (
+  town: string,
+  idSurvey: string,
+  idChapter: string,
+  typeQuestion: string,
+  idQuestion: string,
+  idSurveyor: string
+) => {
+  let answersRef;
+
+  idSurveyor === "Todos"
+    ? (answersRef = await db
+        .collection("Municipios")
+        .doc(town)
+        .collection("Encuestas")
+        .doc(idSurvey)
+        .collection("Capitulos")
+        .doc(idChapter)
+        .collection(typeQuestion)
+        .doc(idQuestion)
+        .collection("Respuestas")
+        .get())
+    : (answersRef = await db
+        .collection("Municipios")
+        .doc(town)
+        .collection("Encuestas")
+        .doc(idSurvey)
+        .collection("Capitulos")
+        .doc(idChapter)
+        .collection(typeQuestion)
+        .doc(idQuestion)
+        .collection("Respuestas")
+        .where("idEncuestador", "==", idSurveyor)
+        .get());
+
+  const answers: any[] = [];
+  answersRef.forEach((resp: any) => {
+    answers.push({ citizen: resp.id, ...resp.data() });
+  });
+
+  return answers;
+};

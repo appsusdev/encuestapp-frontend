@@ -171,7 +171,7 @@ export interface ISurveyor {
   activeSurveyor: Partial<Surveyor> | null;
   assignedSurveys: any;
   surveyorFromToDB: any;
-  surveysTransmitted: any[];
+  surveysTransmitted: Survey[];
   infoSurveysTransmitted: any[];
   idResponsibleCitizens: any[];
 }
@@ -210,7 +210,7 @@ export type SearchAction = {
 // Citizens
 export interface CitizenState {
   citizens: CitizensType;
-  surveysAnswered: Partial<Survey>[];
+  surveysAnswered: Survey[];
   activeCitizen: Partial<ICitizen> | null;
   mapData: IMap;
 }
