@@ -80,32 +80,34 @@ export const Georeferencing = () => {
 
     const chapters: Chapter[] = newSurveys[0].chapters;
 
-    await chapters.forEach((chapter) => {
-      chapter.questions.forEach(async (question) => {
-        if (town) {
-          const resp = await getAnswers(
-            town,
-            idSurvey,
-            chapter.id,
-            question.directedTo,
-            question.id
-          );
-          question.answers = resp;
-        }
+    if (chapters) {
+      chapters.forEach((chapter) => {
+        chapter.questions.forEach(async (question) => {
+          if (town) {
+            const resp = await getAnswers(
+              town,
+              idSurvey,
+              chapter.id,
+              question.directedTo,
+              question.id
+            );
+            question.answers = resp;
+          }
 
-        if (question.type === TypeQuestion.GEOLOCATION) {
-          question.answers.forEach((answer) => {
-            answersArray.push({
-              lat: answer.respuesta.value.coords.latitude,
-              lng: answer.respuesta.value.coords.longitude,
+          if (question.type === TypeQuestion.GEOLOCATION) {
+            question.answers.forEach((answer) => {
+              answersArray.push({
+                lat: answer.respuesta.value.coords.latitude,
+                lng: answer.respuesta.value.coords.longitude,
+              });
             });
-          });
-        }
+          }
 
-        answersArray.length > 0 ? setArray(answersArray) : setArray([]);
+          answersArray.length > 0 ? setArray(answersArray) : setArray([]);
+        });
       });
-    });
-    return array;
+      return array;
+    }
   };
 
   useEffect(() => {
