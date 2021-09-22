@@ -30,6 +30,7 @@ import {
   uiOpenModalAdd,
   uiCloseModalAdd,
   startLoading,
+  finishLoading,
 } from "../../../redux/actions/uiActions";
 import CustomizedDialog from "../../custom/CustomizedDialog";
 import {
@@ -40,6 +41,7 @@ import {
 } from "../../../redux/actions/citizensActions";
 import { ListSurveysAnswered } from "./ListSurveysAnswered";
 import VisibilityOutlinedIcon from "@material-ui/icons/VisibilityOutlined";
+import { TypeDocEnum } from "../../../enums/enums";
 
 const theme = createMuiTheme({
   typography: {
@@ -58,9 +60,11 @@ export const Home = () => {
   const [existsCitizens, setExistsCitizens] = useState(true);
   const [list, setList] = useState<ICitizen[] | []>([]);
   const [valid, setValid] = useState(true);
-  const { citizens } = useSelector<AppState, AppState["citizens"]>(
-    (state) => state.citizens
-  );
+  const [search, setSearch] = useState(false);
+  const { surveysAnswered, citizens } = useSelector<
+    AppState,
+    AppState["citizens"]
+  >((state) => state.citizens);
   const { modalAddOpen } = useSelector<AppState, AppState["ui"]>(
     (state) => state.ui
   );
@@ -90,6 +94,7 @@ export const Home = () => {
 
   const handleSearch = () => {
     if (value.length >= 3) {
+      setSearch(true);
       if (array.length > 0) {
         setValid(true);
         const newData = array.filter((data) => {
@@ -130,15 +135,17 @@ export const Home = () => {
       setExistsCitizens(true);
       setValid(false);
       setList([]);
+      setSearch(false);
     }
   };
 
-  const handleSeeSurveys = (citizen: ICitizen) => {
+  const handleSeeSurveys = async (citizen: ICitizen) => {
     dispatch(activeCitizen(citizen));
     dispatch(startLoading());
     dispatch(uiOpenModalAdd());
     // Consultar encuestas del ciudadano
-    dispatch(startLoadingSurveysAnswered(citizen.identificacion));
+    await dispatch(startLoadingSurveysAnswered(citizen.identificacion));
+    dispatch(finishLoading());
   };
 
   const handlePress = (e: any) => {
@@ -250,17 +257,25 @@ export const Home = () => {
                           {citizen.segundoApellido.toLowerCase()}
                         </TableCell>
                         <TableCell>
-                          {citizen.tipoIdentificacion === "1" && "CC"}
-                          {citizen.tipoIdentificacion === "2" && "TI"}
-                          {citizen.tipoIdentificacion === "3" && "CE"}
-                          {citizen.tipoIdentificacion === "4" && "RC"}
-                          {citizen.tipoIdentificacion === "NIT" && "NIT"}
-                          {citizen.tipoIdentificacion === "Otro" && "Otro"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.CC &&
+                            "CC"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.TI &&
+                            "TI"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.CE &&
+                            "CE"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.RC &&
+                            "RC"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.NIT &&
+                            "NIT"}
+                          {citizen.tipoIdentificacion === TypeDocEnum.Otro &&
+                            "Otro"}
                         </TableCell>
                         <TableCell>{citizen.identificacion}</TableCell>
                         <TableCell align="center">
                           <Tooltip
-                            title={`${intl.formatMessage({ id: "SeeSurveys" })}`}
+                            title={`${intl.formatMessage({
+                              id: "SeeSurveys",
+                            })}`}
                           >
                             <IconButton
                               aria-label="expand row"
@@ -307,6 +322,11 @@ export const Home = () => {
               <FormattedMessage id="CitizenNotFound" />
             </Alert>
           )}
+          {search && array.length === 0 && (
+            <Alert severity="info" color="info">
+              <FormattedMessage id="NoRegisteredCitizens" />
+            </Alert>
+          )}
         </Box>
       </Paper>
 
@@ -316,7 +336,7 @@ export const Home = () => {
         cancelBtn={false}
         onDeny={onDeny}
         title={`${intl.formatMessage({ id: "SurveysConducted" })}`}
-        content={<ListSurveysAnswered />}
+        content={<ListSurveysAnswered answered={surveysAnswered} />}
         textButton="Accept"
         seeActions
       />

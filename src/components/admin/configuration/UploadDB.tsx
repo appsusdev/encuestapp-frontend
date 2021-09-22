@@ -27,11 +27,12 @@ import { AppState } from "../../../redux/reducers/rootReducer";
 import CircularProgressWithLabel from "../../custom/CircularProgressWithLabel";
 import { TypeUser } from "../../../enums/enums";
 import { firebase } from "../../../config/firebase/firebase-config";
+import { setCitizens as loadCitizens } from "../../../redux/actions/citizensActions";
 
 export const UploadDB = () => {
   const classes = useStyles();
   const { progress } = useSelector((state: AppState) => state.ui);
-  const { municipio, rol } = useSelector((state: AppState) => state.auth);
+  const { municipio, rol, nit } = useSelector((state: AppState) => state.auth);
 
   const [fileToConvert, setFileToConvert] = useState<File | null>(null);
   const [, setCitizens] = useState<CitizensType | null>(null);
@@ -70,16 +71,20 @@ export const UploadDB = () => {
         //const parseData: any[] = JSON.parse(jsonResponse);
         //await uploadCitizens(citizens, handleSetprogress);
         await dispatch(setProgress(100));
-        await uploadJsonCitizens(JSON.stringify(jsonResponse), municipio);
+        nit && (await uploadJsonCitizens(jsonResponse, nit));
 
+        const parseData = JSON.parse(jsonResponse);
+        console.log(parseData);
         await setFileToConvert(null);
         await setloading(false);
         await setCitizens(null);
+        dispatch(loadCitizens(parseData));
         (
           document.getElementById("contained-button-file") as HTMLInputElement
         ).value = "";
         dispatch(uiOpenSuccessAlert());
         dispatch(setProgress(0));
+        // const parseJson = JSON.parse(jsonResponse);
       }
     } catch (error) {
       dispatch(uiOpenErrorAlert());

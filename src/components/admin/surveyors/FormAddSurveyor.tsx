@@ -22,7 +22,6 @@ import {
   uiCloseModalAdd,
   uiCloseSuccessAlert,
   uiCloseErrorAlert,
-  uiOpenSuccessAlert,
   uiCloseModalAlert,
 } from "../../../redux/actions/uiActions";
 import { MyTextField } from "../../custom/MyTextField";
@@ -33,10 +32,6 @@ import { useState } from "react";
 import { startNewSurveyor } from "../../../redux/actions/surveyorsActions";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { MyAlert } from "../../custom/MyAlert";
-import {
-  addSurveyorToTown,
-  updateTowns,
-} from "../../../services/firebase/surveyors";
 
 export const FormAddSurveyor = () => {
   const initialValues: Partial<Surveyor> = {
@@ -61,17 +56,9 @@ export const FormAddSurveyor = () => {
   const [labelImage, setLabelImage] = useState("");
   const [profileFile, setProfileFile] = useState<File | null>(null);
   const [email, setEmail] = useState<string | undefined>("");
-  const { errorAlert, modalAlert, successAlert } = useSelector<
-    AppState,
-    AppState["ui"]
-  >((state) => state.ui);
-  const { municipio } = useSelector<AppState, AppState["auth"]>(
-    (state) => state.auth
+  const { modalAlert, successAlert } = useSelector<AppState, AppState["ui"]>(
+    (state) => state.ui
   );
-  const { surveyorFromDB } = useSelector<AppState, AppState["surveyor"]>(
-    (state) => state.surveyor
-  );
-  const surveyorDB: any = surveyorFromDB;
 
   const validationSchema = yup.object({
     typeDoc: yup
@@ -80,7 +67,7 @@ export const FormAddSurveyor = () => {
     document: yup
       .string()
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`)
-      .min(6, `${intl.formatMessage({ id: "MinimumPassword" })}`),
+      .min(8, `${intl.formatMessage({ id: "MinimumPassword" })}`),
     firstName: yup
       .string()
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`),
@@ -107,25 +94,6 @@ export const FormAddSurveyor = () => {
     dispatch(uiCloseModalAdd());
   };
 
-  const handleAddSurveyor = async () => {
-    const surveyorTown = { email: email, encuestasAsignadas: [] };
-
-    if (surveyorDB) {
-      const townsSurveyor: string[] = surveyorDB.municipios;
-     
-      (municipio) && townsSurveyor.push(municipio);
-
-      const updateSurveyor = { municipios: townsSurveyor };
-      await updateTowns(email, updateSurveyor);
-    }
-
-    if (municipio) {
-      await addSurveyorToTown(municipio, email, surveyorTown);
-      dispatch(uiCloseModalAlert());
-      dispatch(uiOpenSuccessAlert());
-    }
-  };
-
   const closeDialog = () => {
     dispatch(uiCloseModalAlert());
     dispatch(uiCloseErrorAlert());
@@ -134,7 +102,7 @@ export const FormAddSurveyor = () => {
   const closeSuccess = () => {
     dispatch(uiCloseSuccessAlert());
     dispatch(uiCloseModalAdd());
-  }
+  };
 
   const handleSelectFile = (e: any) => {
     const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
@@ -261,6 +229,7 @@ export const FormAddSurveyor = () => {
                   name="username"
                   variant="outlined"
                   className={classes.myTextFieldRoot}
+                  InputLabelProps={{ shrink: false }}
                   label={`${values.firstName} ${values.secondName} ${values.firstLastName} ${values.secondLastName}`}
                   disabled={true}
                   style={{ color: "black" }}
@@ -384,18 +353,15 @@ export const FormAddSurveyor = () => {
       >
         <DialogContent>
           <DialogContentText>
-            <FormattedMessage id="MessageExistsSurveyor" /> <br />
+            <FormattedMessage id="MessageExistsSurveyorOne" /> <br />
             {email}
             <br />
             <br />
-            <FormattedMessage id="MessageAddSurveyor" />
+            <FormattedMessage id="MessageExistsSurveyorTwo" />
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={closeDialog} color="primary">
-            <FormattedMessage id="Cancel" />
-          </Button>
-          <Button onClick={handleAddSurveyor} color="primary" autoFocus>
             <FormattedMessage id="Accept" />
           </Button>
         </DialogActions>
@@ -407,13 +373,6 @@ export const FormAddSurveyor = () => {
         message="SurveyorAddSuccess"
         time={1000}
         handleClose={closeSuccess}
-      />
-      <MyAlert
-        open={errorAlert}
-        typeAlert="error"
-        message="MessageExistsSurveyorTown"
-        time={1000}
-        handleClose={closeDialog}
       />
     </Box>
   );

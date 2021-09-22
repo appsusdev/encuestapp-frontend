@@ -1,10 +1,10 @@
-import { TypeUser } from '../../enums/enums';
-import { types } from '../types/types';
+import { TypeUser } from "../../enums/enums";
+import { types } from "../types/types";
 
-export const setProgress = (number:number)=>({
-    type:types.uiSetprogres,
-    payload:number
-})
+export const setProgress = (number: number) => ({
+  type: types.uiSetprogres,
+  payload: number,
+});
 export const uiOpenModalAdd = () => ({ type: types.uiOpenModalAdd });
 
 export const uiCloseModalAdd = () => ({ type: types.uiCloseModalAdd });
@@ -41,12 +41,23 @@ export const uiOpenErrorAlert = () => ({ type: types.uiOpenErrorAlert });
 
 export const uiCloseErrorAlert = () => ({ type: types.uiCloseErrorAlert });
 
+export const uiOpenDeleteSuccess = () => ({ type: types.uiOpenDeleteSuccess });
+
+export const uiCloseDeleteSuccess = () => ({
+  type: types.uiCloseDeleteSuccess,
+});
+
+export const uiOpenDeleteError = () => ({ type: types.uiOpenDeleteError });
+
+export const uiCloseDeleteError = () => ({
+  type: types.uiCloseDeleteError,
+});
+
 export const uiOpenQuestion = () => ({ type: types.uiOpenQuestion });
 
 export const uiCloseQuestion = () => ({ type: types.uiCloseQuestion });
 
-
-export const uiChangeRole = (role: TypeUser) => ({ 
-    type: types.uiChangeRole,
-    payload: role
+export const uiChangeRole = (role: TypeUser) => ({
+  type: types.uiChangeRole,
+  payload: role,
 });

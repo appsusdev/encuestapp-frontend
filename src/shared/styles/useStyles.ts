@@ -77,12 +77,23 @@ export const useStyles = makeStyles((theme: Theme) => ({
     height: "247px !important",
     marginTop: "12px",
     maxWidth: 345,
+    //pageBreakAfter: "always",
   },
   cardPDF: {
-    height: "350px",
-    maxWidth: "100%",
+    height: "50vh",
+    width: "100%",
     objectFit: "cover",
     objectPosition: "center center",
+    pageBreakAfter: "always",
+    position: "relative",
+  },
+  mapPDF: {
+    height: "50vh",
+    width: "90vw",
+    //pageBreakAfter:'always'
+  },
+  page: {
+    pageBreakAfter: "always",
   },
   paper: {
     minHeight: "400px",
@@ -145,5 +156,9 @@ export const useStyles = makeStyles((theme: Theme) => ({
     zIndex: 1251,
     marginTop: "5px",
     marginLeft: "5px",
+  },
+  image: {
+    height: "800px",
+    position: "relative",
   },
 }));

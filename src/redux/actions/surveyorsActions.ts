@@ -24,6 +24,20 @@ import {
   uiOpenModalAlert,
 } from "./uiActions";
 import { updateSurvey } from "./surveysActions";
+import { getCopyArrayOrObject } from "../../helpers/getCopyArrayOrObject";
+import {
+  existsTransmittedSurveys,
+  deleteSurveyorFirebase,
+} from "../../services/firebase/surveyors";
+import {
+  uiOpenModalDelete,
+  uiOpenDeleteSuccess,
+  uiOpenDeleteError,
+} from "./uiActions";
+import {
+  deleteUserFirebase,
+  getAnswersBySurveyor,
+} from "../../services/firebase/surveyors";
 
 // Agregar nuevo encuestador
 export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
@@ -32,7 +46,6 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
     const { document, email, profileImage, firstName, firstLastName } =
       surveyor;
     let { secondName, secondLastName } = surveyor;
-    console.log(surveyor);
 
     if (profileImage) {
       const uriResponse = await uploadFileAsync(
@@ -47,41 +60,63 @@ export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
     const existsSurveyorDB = await existsSurveyor(email);
     dispatch(surveyorFromDB(existsSurveyorDB));
     const town: string = auth.municipio;
+    const nit: string = auth.nit;
     let towns: string[] = [];
     towns.push(town);
     const userToDB = encuestadorDTO(surveyor, existsSurveyorDB, towns);
 
     if (existsSurveyorDB) {
-      const townsSurveyor: string[] = existsSurveyorDB.municipios;
-
-      // Encuestador esta registrado o no en el municipio
-      if (townsSurveyor.includes(town)) return dispatch(uiOpenErrorAlert());
-      else return dispatch(uiOpenModalAlert());
+      dispatch(uiOpenModalAlert());
     } else {
       try {
-        // Registrar encuestador correo y contrasena
-        email &&
-          document &&
-          (await registerWithEmailPassword(email, document.toString()));
-
-        // Agregar en coleccion Usuarios
-        await db.collection("Usuarios").doc(`${email}`).set(userToDB);
+        let uid = "";
+        if (email && document) {
+          // Registrar encuestador correo y contrasena
+          const { localId } = await registerWithEmailPassword(
+            email,
+            document.toString()
+          );
+          uid = localId;
+          // Agregar en coleccion Usuarios
+          await db
+            .collection("Usuarios")
+            .doc(`${email}`)
+            .set({
+              ...userToDB,
+              entidad: nit,
+              uid: localId,
+              fechaCreacion: firebase.firestore.Timestamp.now(),
+            });
+        }
 
         // Agregar encuestador a coleccion Municipios
-        const surveyorTown = { email: email, encuestasAsignadas: [] };
+        const surveyorTown = {
+          email: email,
+          encuestasAsignadas: [],
+          idEntidad: nit,
+        };
         await addSurveyorToTown(town, email, surveyorTown);
         dispatch(uiOpenSuccessAlert());
 
+        surveyor.uid = uid;
         surveyor.id = email;
         surveyor.state = false;
         secondName?.trim() && (secondName = ` ${secondName}`);
         secondLastName?.trim() && (secondLastName = ` ${secondLastName}`);
         surveyor.username =
           `${firstName}${secondName} ${firstLastName} ${secondLastName}`.trim();
+        surveyor.entity = nit;
 
         dispatch(addNewSurveyor(surveyor));
-        dispatch(addNewAssignedSurveys({id: email, email, assignedSurveys: []}));
-      } catch (error) {
+        dispatch(
+          addNewAssignedSurveys({
+            id: email,
+            email,
+            assignedSurveys: [],
+            entity: nit,
+          })
+        );
+      } catch (error: any) {
         throw new Error(error);
       }
     }
@@ -104,9 +139,9 @@ const surveyorFromDB = (surveyor: any) => ({
 });
 
 // Cargar encuestadores por municipio
-export const startLoadingSurveyors = (town: string) => {
+export const startLoadingSurveyors = (town: string, nit: string) => {
   return async (dispatch: any) => {
-    const resp = await getSurveyors(town);
+    const resp = await getSurveyors(town, nit);
     const surveyors: any[] = [];
 
     resp.forEach((resp) => {
@@ -141,7 +176,6 @@ export const startEditSurveyor = (
     const { email, profileImage, firstName, firstLastName } = surveyor;
     let { secondName, secondLastName } = surveyor;
 
-    console.log(surveyor.state);
     if (changeImage) {
       const uriResponse = await uploadFileAsync(
         profileImage as File,
@@ -206,7 +240,13 @@ export const startAssignSurvey = (
         dispatch(
           updateSurvey({ ...arraySurveyors[0], surveyors: newSurveyors })
         );
-        dispatch(updateAssignedSurveys({id: email, email, assignedSurveys: newAssignedSurveys}));
+        dispatch(
+          updateAssignedSurveys({
+            id: email,
+            email,
+            assignedSurveys: newAssignedSurveys,
+          })
+        );
       }
     } else {
       // Eliminar encuesta asignada
@@ -217,18 +257,22 @@ export const startAssignSurvey = (
 
       await assignSurvey(town, id, newSurveyors, email, newAssignedSurveys);
       dispatch(uiOpenSuccessAlert());
+      dispatch(updateSurvey({ ...arraySurveyors[0], surveyors: newSurveyors }));
       dispatch(
-        updateSurvey({ ...arraySurveyors[0], surveyors: newSurveyors })
+        updateAssignedSurveys({
+          id: email,
+          email,
+          assignedSurveys: newAssignedSurveys,
+        })
       );
-      dispatch(updateAssignedSurveys({id: email, email, assignedSurveys: newAssignedSurveys}));
     }
   };
 };
 
 // Cargar coleccion de encuestadores con sus encuestas asignadas
-export const startLoadingAssignedSurveys = (town: string) => {
+export const startLoadingAssignedSurveys = (town: string, nit: string) => {
   return async (dispatch: any) => {
-    const resp = await getAssignedSurveys(town);
+    const resp = await getAssignedSurveys(town, nit);
     dispatch(setAssignedSurveys(resp));
   };
 };
@@ -253,12 +297,16 @@ export const startLoadingMicrodata = (data: any) => {
     const { survey, surveyor } = data;
     const idSurveys: string[] = [];
     const idResponsibleCitizen: any[] = [];
+    // Limpiar todo cada que se vaya a buscar una nueva encuesta
+    dispatch(setTransmittedSurveys([]));
+    dispatch(setInfoTransmittedSurveys([]));
+    dispatch(setIdResponsibleCitizens([]));
 
     // Manejo de fechas
     let date1 = new Date(data.startDate);
     date1.setDate(date1.getDate());
     let date2 = new Date(data.endDate);
-    date2.setDate(date2.getDate() + 1);
+    date2.setDate(date2.getDate() + 2);
 
     const startDate = firebase.firestore.Timestamp.fromDate(new Date(date1));
     const endDate = firebase.firestore.Timestamp.fromDate(new Date(date2));
@@ -272,11 +320,7 @@ export const startLoadingMicrodata = (data: any) => {
       endDate
     );
 
-    if (resp.length === 0) {
-      dispatch(setTransmittedSurveys([]));
-      dispatch(setInfoTransmittedSurveys([]));
-      dispatch(setIdResponsibleCitizens([]));
-    } else {
+    if (resp.length > 0) {
       dispatch(setInfoTransmittedSurveys(resp));
       resp.forEach((survey) => {
         idSurveys.push(survey.idEncuesta);
@@ -287,12 +331,32 @@ export const startLoadingMicrodata = (data: any) => {
         (survey: Partial<Survey>) =>
           survey.idSurvey && idSurveys.includes(survey.idSurvey)
       );
-      dispatch(setTransmittedSurveys(newSurveys));
+
+      const array = getCopyArrayOrObject(newSurveys);
+      const surveysWithAnswers = array.map((survey: Survey) => {
+        survey.chapters.map((chapter) => {
+          chapter.questions.map(async (question) => {
+            const resp = await getAnswersBySurveyor(
+              town,
+              survey.idSurvey,
+              chapter.id,
+              question.directedTo,
+              question.id,
+              surveyor
+            );
+            question.answers = resp;
+            return question;
+          });
+          return chapter;
+        });
+        return survey;
+      });
+      await dispatch(setTransmittedSurveys(surveysWithAnswers));
     }
   };
 };
 
-export const setTransmittedSurveys = (surveys: any[]) => ({
+export const setTransmittedSurveys = (surveys: Survey[]) => ({
   type: types.surveyorsTransmittedSurveys,
   payload: surveys,
 });
@@ -305,4 +369,52 @@ export const setInfoTransmittedSurveys = (surveys: any[]) => ({
 export const setIdResponsibleCitizens = (ids: any[]) => ({
   type: types.surveyorsIdResponsibleCitizens,
   payload: ids,
+});
+
+// Cargar coleccion de encuestadores con sus encuestas asignadas
+export const startDeleteSurveyor = (idSurveyor: string) => {
+  return async (dispatch: Function, getState: Function) => {
+    const { municipio, nit } = getState().auth;
+    const { assignedSurveys } = getState().surveyor;
+    const transmitted = await existsTransmittedSurveys(nit, idSurveyor);
+
+    if (transmitted.length > 0) {
+      // Tiene encuestas transmitidas. No se puede eliminar.
+      dispatch(uiOpenModalDelete());
+    } else {
+      // Verificar si tiene encuestas asignadas
+      const infoAssignedSurveys = assignedSurveys.filter(
+        (data: any) => data.id === idSurveyor
+      );
+      const surveysSurveyor: string[] = infoAssignedSurveys[0].assignedSurveys;
+      if (surveysSurveyor.length === 0) {
+        // No tiene encuestas asignadas se puede eliminar
+        try {
+          await deleteSurveyorFirebase(municipio, idSurveyor);
+          await deleteUserFirebase(idSurveyor);
+          dispatch(deleteSurveyor(idSurveyor));
+          dispatch(deleteInfoAssignedSurveys(idSurveyor));
+          dispatch(surveyorCleanActive());
+          dispatch(uiOpenDeleteSuccess());
+        } catch (error: any) {
+          throw new Error(error);
+        }
+      } else {
+        // No se puede eliminar. Tiene encuestas asignadas
+        dispatch(uiOpenDeleteError());
+      }
+    }
+  };
+};
+
+// Eliminar encuesta del reducer
+export const deleteSurveyor = (idSurveyor: string) => ({
+  type: types.surveyorDelete,
+  payload: idSurveyor,
+});
+
+// Eliminar encuesta del reducer
+export const deleteInfoAssignedSurveys = (idSurveyor: string) => ({
+  type: types.surveyorsDeleteAssignedSurveys,
+  payload: idSurveyor,
 });

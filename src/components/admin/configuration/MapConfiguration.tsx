@@ -11,7 +11,7 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 
-import { useMapbox } from '../../../hooks/useMapbox';
+import { useMapbox } from "../../../hooks/useMapbox";
 import { setMapInfo } from "../../../redux/actions/citizensActions";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { updateMapData } from "../../../services/firebase/settings";
@@ -24,24 +24,24 @@ import {
 const initialPoint = {
   lat: 2.495,
   lng: -73.781,
-  zoom: 4.32
-}
+  zoom: 4.32,
+};
 
 export const MapContainer = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { municipio } = useSelector((state: AppState) => state.auth);
+  const { nit } = useSelector((state: AppState) => state.auth);
   const { mapData } = useSelector<AppState, AppState["citizens"]>(
     (state) => state.citizens
   );
-  const { coords, setRef } = useMapbox((mapData) ? mapData : initialPoint, true);
+  const { coords, setRef } = useMapbox(mapData ? mapData : initialPoint, true);
   const [loading, setLoading] = useState(false);
 
   const updateMap = async () => {
     setLoading(true);
-    if (municipio) {
+    if (nit) {
       try {
-        await updateMapData(municipio, coords);
+        await updateMapData(nit, coords);
         dispatch(setMapInfo(coords));
         dispatch(uiOpenModalAlert());
       } catch (error) {

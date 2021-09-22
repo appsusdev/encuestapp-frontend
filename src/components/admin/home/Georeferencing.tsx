@@ -20,18 +20,17 @@ import { MyTextField } from "../../custom/MyTextField";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { startLoading, finishLoading } from "../../../redux/actions/uiActions";
-import {
-  startLoadingGeoreferencingData,
-  setSurveysAnswered,
-} from "../../../redux/actions/citizensActions";
-import { Chapter } from "../../../interfaces/Survey";
+
+import { Chapter, Survey } from "../../../interfaces/Survey";
 import { TypeQuestion } from "../../../enums/enums";
 import { useMapbox } from "../../../hooks/useMapbox";
+import { getCopyArrayOrObject } from "../../../helpers/getCopyArrayOrObject";
+import { getAnswers } from "../../../services/firebase/surveys";
 
 const initialPoint = {
   lat: 2.495,
   lng: -73.781,
-  zoom: 4.32
+  zoom: 4.32,
 };
 
 export const Georeferencing = () => {
@@ -45,11 +44,11 @@ export const Georeferencing = () => {
   const { surveys } = useSelector<AppState, AppState["survey"]>(
     (state) => state.survey
   );
-  const { surveysAnswered } = useSelector<AppState, AppState["citizens"]>(
-    (state) => state.citizens
-  );
   const { loading } = useSelector<AppState, AppState["ui"]>(
     (state) => state.ui
+  );
+  const { municipio } = useSelector<AppState, AppState["auth"]>(
+    (state) => state.auth
   );
   const { coords, setRef, addMarker, removeMarkers } = useMapbox(
     mapData ? mapData : initialPoint,
@@ -58,11 +57,7 @@ export const Georeferencing = () => {
   const [show, setShow] = useState(false);
   const [array, setArray] = useState<any[]>([]);
   const surveysList: any[] = surveys;
-  let answersArray: any[] = [];
-
-  useEffect(() => {
-    dispatch(setSurveysAnswered([]));
-  }, [dispatch]);
+  const town: string | undefined = municipio;
 
   const initialValues = {
     survey: "",
@@ -74,32 +69,54 @@ export const Georeferencing = () => {
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`),
   });
 
-  useEffect(() => {
-    if (surveysAnswered.length > 0 && surveysAnswered[0].chapters) {
-      setArray([]);
-      surveysAnswered[0].chapters.forEach((chapter: Partial<Chapter>) => {
-        chapter.questions?.forEach((question) => {
-          if (question.type === TypeQuestion.GEOLOCATION) {
-            question.answers.forEach((answer) =>
-              answersArray.push({
-                lat: answer.respuesta.value.coords.latitude,
-                lng: answer.respuesta.value.coords.longitude,
-              })
-            );
-            // question.answers.forEach((answer) => setArray(oldArray => [...oldArray, {lat: answer.respuesta.value.coords.latitude, lng: answer.respuesta.value.coords.longitude}]));
-          }
-        });
+  const getData = async (idSurvey: string) => {
+    let answersArray: any[] = [];
+
+    const list = getCopyArrayOrObject(surveysList);
+    const newSurveys = list.filter(
+      (survey: Partial<Survey>) =>
+        survey.idSurvey && survey.idSurvey === idSurvey
+    );
+
+    const chapters: Chapter[] = newSurveys[0].chapters;
+
+    await chapters.forEach((chapter) => {
+      chapter.questions.forEach(async (question) => {
+        if (town) {
+          const resp = await getAnswers(
+            town,
+            idSurvey,
+            chapter.id,
+            question.directedTo,
+            question.id
+          );
+          question.answers = resp;
+        }
+
+        if (question.type === TypeQuestion.GEOLOCATION) {
+          question.answers.forEach((answer) => {
+            answersArray.push({
+              lat: answer.respuesta.value.coords.latitude,
+              lng: answer.respuesta.value.coords.longitude,
+            });
+          });
+        }
+
+        answersArray.length > 0 ? setArray(answersArray) : setArray([]);
       });
-      setArray(answersArray);
-      if (answersArray.length > 0) {
-        removeMarkers();
-        answersArray.forEach((answer) => addMarker(answer));
-      } else {
-        removeMarkers();
-      }
+    });
+    return array;
+  };
+
+  useEffect(() => {
+    if (array.length > 0) {
+      removeMarkers();
+      array.forEach((answer) => addMarker(answer));
+    } else {
+      removeMarkers();
     }
     // eslint-disable-next-line
-  }, [surveysAnswered]);
+  }, [array]);
 
   return (
     <>
@@ -114,10 +131,8 @@ export const Georeferencing = () => {
               dispatch(startLoading());
               setShow(true);
               setSubmitting(true);
-              setTimeout(async () => {
-                await dispatch(startLoadingGeoreferencingData(data.survey));
-                dispatch(finishLoading());
-              }, 1500);
+              await getData(data.survey);
+              await dispatch(finishLoading());
               setSubmitting(false);
             }}
           >
@@ -172,7 +187,7 @@ export const Georeferencing = () => {
           </Formik>
 
           <Box mt={2}>
-            {(show && array.length === 0 && !loading)  && (
+            {show && array.length === 0 && !loading && (
               <Alert severity="info" color="info">
                 <FormattedMessage id="NoGeolocationAnwers" />
               </Alert>

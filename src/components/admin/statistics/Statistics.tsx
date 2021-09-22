@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import clsx from "clsx";
-import { FormattedMessage, useIntl } from "react-intl";
+import { FormattedMessage } from "react-intl";
 
 import {
   Box,
@@ -15,7 +15,6 @@ import { useStyles } from "../../../shared/styles/useStyles";
 
 export const Statistics = () => {
   const classes = useStyles();
-  const intl = useIntl();
   const [value, setValue] = useState("");
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -40,7 +39,6 @@ export const Statistics = () => {
                 <TextField
                   className={classes.myTextFieldRoot}
                   InputLabelProps={{ shrink: false }}
-                  label={`${intl.formatMessage({ id: "InputSelect" })}`}
                   name="value"
                   onChange={handleChange}
                   select

@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   uiCloseModalAdd,
   uiCloseModalEdit,
+  uiOpenAlert,
   uiOpenErrorAlert,
   uiOpenSuccessAlert,
 } from "../../redux/actions/uiActions";
@@ -32,8 +33,14 @@ import {
   startAddNewEntity,
   updateEntity,
 } from "../../redux/actions/entitiesActions";
-import { addNewEntity,updateEntity as bdUpdateEntity } from "../../services/firebase/entities";
+import {
+  addNewEntity,
+  updateEntity as bdUpdateEntity,
+} from "../../services/firebase/entities";
 import { AppState } from "../../redux/reducers/rootReducer";
+import { getEntity } from "../../services/firebase/entities";
+import { MyAlert } from "../custom/MyAlert";
+import { uiCloseAlert } from "../../redux/actions/uiActions";
 interface ILocationData {
   departamento: string;
   c_digo_dane_del_departamento: string;
@@ -48,6 +55,7 @@ interface Icredentials {
   password: string;
 }
 export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
+  const { alert } = useSelector<AppState, AppState["ui"]>((state) => state.ui);
   const [departmentSelected, setDepartmentSelected] = useState<string>("");
   const [oldCredentials, setOldCredentials] = useState<Icredentials | null>(
     null
@@ -56,6 +64,7 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
   const [municipioSelected, setMunicipioSelected] = useState<string>("");
   const [filteredTowns, setFilteredTowns] = useState<ILocationData[]>([]);
   const { entityActive } = useSelector((state: AppState) => state.entities);
+
   const [initialValues, setInitialValues] = useState<Partial<IEntity>>({
     razonSocial: "",
     nit: "",
@@ -83,7 +92,7 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
     nit: yup
       .string()
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`)
-      .min(6, `${intl.formatMessage({ id: "MinimumPassword" })}`),
+      .min(8, `${intl.formatMessage({ id: "MinimumPassword" })}`),
     direccion: yup
       .string()
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`),
@@ -102,11 +111,10 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
       .email(`${intl.formatMessage({ id: "InvalidEmail" })}`)
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`),
     identificacion: yup
-      .number()
+      .string()
       .typeError(`${intl.formatMessage({ id: "NumericValue" })}`)
       .required(`${intl.formatMessage({ id: "RequiredFile" })}`)
-      .min(6, `${intl.formatMessage({ id: "MinimumPassword" })}`),
-
+      .min(8, `${intl.formatMessage({ id: "MinimumPassword" })}`),
   });
 
   useEffect(() => {
@@ -132,7 +140,7 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
           setDepartmentSelected(data[0].departamento);
         }
       });
-      // eslint-disable-next-line
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -142,49 +150,53 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
       ).then(async (response) => {
         const { data } = response;
         await setFilteredTowns(data);
-        setMunicipioSelected(data[0].municipio);
+        if (!edit) {
+          setMunicipioSelected(data[0].municipio);
+        }
       });
     }
-  }, [departmentSelected]);
+  }, [departmentSelected, edit]);
   const handleCreateEntity = async (entity: IEntity) => {
-    const { email, identificacion } = entity;
-
+    const { email, identificacion, nit } = entity;
 
     try {
-      //crear el
       if (edit && oldCredentials) {
         const { email: oldEmail, password: oldPassword } = oldCredentials;
-        if(email !== oldEmail || identificacion!== oldPassword){
-          await updateCredentialsEntity(
+        if (email !== oldEmail || identificacion !== oldPassword) {
+          const {localId} = await updateCredentialsEntity(
             oldEmail,
             oldPassword.toString(),
             email,
             identificacion.toString()
           );
+          await bdUpdateEntity(entity,localId);
+          dispatch(updateEntity({ ...entity }));
         }
-        await bdUpdateEntity(entity)
       } else {
-        await registerWithEmailPassword(email, identificacion.toString());
-        //agregarlo a la bd
-        //crear la collection del municipio que se acaba de crear con los datos del admin y el departamento al cual pertenece
-        await addNewEntity(entity);
-        //agregarlo al state del redux
+        const existsEntity = await getEntity(nit);
+
+        if (existsEntity) return dispatch(uiOpenAlert());
+        else {
+          const response=  await registerWithEmailPassword(email, identificacion.toString());
+          // agregarlo a la bd
+          // crear la collection del municipio que se acaba de crear con los datos del admin y el departamento al cual pertenece
+          await addNewEntity(entity,response.localId);
+          // agregarlo al state del redux
+          dispatch(startAddNewEntity({ ...entity, activo: true }));
+        }
       }
-       
-        edit
-          ? dispatch(updateEntity({ ...entity }))
-          : dispatch(startAddNewEntity({ ...entity, activo: true }));
-        dispatch(purgeActiveEntity());
-        dispatch(uiCloseModalAdd());
-        dispatch(uiCloseModalEdit());
-        dispatch(uiOpenSuccessAlert());
-      
+      dispatch(purgeActiveEntity());
+      await dispatch(uiOpenSuccessAlert());
+      dispatch(uiCloseModalAdd());
+      dispatch(uiCloseModalEdit());
     } catch (error) {
-      console.log(error);
       dispatch(uiOpenErrorAlert());
     }
   };
 
+  const closeAlert = () => {
+    dispatch(uiCloseAlert());
+  };
   return (
     <Box m={1}>
       <Formik
@@ -193,13 +205,15 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
         initialValues={initialValues}
         validationSchema={validationSchema}
         validateOnMount
-        onSubmit={(values, { setSubmitting }) => {
+        onSubmit={async (values, { setSubmitting }) => {
+          setSubmitting(true);
           values.departamento = departmentSelected;
           values.municipio = municipioSelected;
-          handleCreateEntity(values as IEntity);
+          await handleCreateEntity(values as IEntity);
+          setSubmitting(false);
         }}
       >
-        {({ values, isSubmitting }) => (
+        {({ isSubmitting }) => (
           <Form className={classes.input}>
             <Grid container spacing={2}>
               <Grid item xs={6}>
@@ -209,7 +223,6 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
                 <MyTextField
                   name="razonSocial"
                   variant="outlined"
-                 
                   className={classes.myTextFieldRoot}
                 />
               </Grid>
@@ -231,7 +244,6 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
                 <MyTextField
                   name="direccion"
                   variant="outlined"
-              
                   className={classes.myTextFieldRoot}
                 />
               </Grid>
@@ -242,7 +254,6 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
                 <MyTextField
                   name="celular"
                   variant="outlined"
-              
                   className={classes.myTextFieldRoot}
                 />
               </Grid>
@@ -350,6 +361,7 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
                   name="email"
                   variant="outlined"
                   className={classes.myTextFieldRoot}
+                  disabled={edit}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -363,7 +375,13 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
                   className={classes.myTextFieldRoot}
                 />
               </Grid>
-              <Box mt={2} display="flex">
+              <Box
+                mt={2}
+                width={1}
+                display="flex"
+                justifyContent="flex-start"
+                flexDirection="row-reverse"
+              >
                 {!isSubmitting ? (
                   <Button
                     className={clsx(classes.btn, classes.save)}
@@ -393,6 +411,16 @@ export const FormEntity: FC<EntityFormProps> = ({ edit = false }) => {
           </Form>
         )}
       </Formik>
+
+      <Box mt={3}>
+        <MyAlert
+          open={alert}
+          typeAlert="error"
+          message="ExistsEntity"
+          time={3000}
+          handleClose={closeAlert}
+        />
+      </Box>
     </Box>
   );
 };

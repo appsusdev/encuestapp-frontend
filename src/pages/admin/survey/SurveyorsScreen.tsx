@@ -30,6 +30,7 @@ import {
   uiCloseModalAssign,
   uiCloseAlert,
   uiCloseModalAlert,
+  uiCloseDeleteSuccess,
 } from "../../../redux/actions/uiActions";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { Fonts } from "../../../shared/constants/AppEnums";
@@ -37,6 +38,7 @@ import { Surveyor } from "../../../interfaces/Surveyor";
 import { useStyles as Styles } from "../../../shared/styles/useStyles";
 import { surveyorCleanActive } from "../../../redux/actions/surveyorsActions";
 import { Colors } from "../../../shared/constants/Colors";
+import { uiCloseDeleteError } from "../../../redux/actions/uiActions";
 
 export const useStyles = makeStyles((theme) => ({
   btnRoot: {
@@ -65,6 +67,8 @@ export const SurveyorsScreen: FC = () => {
   const intl = useIntl();
   const dispatch = useDispatch();
   const {
+    deleteError,
+    deleteSuccess,
     modalAddOpen,
     modalEditOpen,
     modalDeleteOpen,
@@ -102,6 +106,7 @@ export const SurveyorsScreen: FC = () => {
   // Cerrar modal eliminar encuestador
   const onDenyDelete = () => {
     dispatch(uiCloseModalDelete());
+    dispatch(uiCloseDeleteError());
     dispatch(surveyorCleanActive());
   };
 
@@ -114,6 +119,7 @@ export const SurveyorsScreen: FC = () => {
   // Cerrar alert
   const closeSuccess = () => {
     dispatch(uiCloseAlert());
+    dispatch(uiCloseDeleteSuccess());
   };
 
   // Cerrar modal de alerta
@@ -153,7 +159,6 @@ export const SurveyorsScreen: FC = () => {
           onDeny={onDenyAdd}
           title={`${intl.formatMessage({ id: "CreateNewSurveyor" })}`}
           content={<FormAddSurveyor />}
-          width
           textButton="Accept"
         />
         <CustomizedDialog
@@ -167,12 +172,23 @@ export const SurveyorsScreen: FC = () => {
         />
         <CustomizedDialog
           open={modalDeleteOpen}
-          cancelBtn={true}
+          cancelBtn={false}
+          onConfirm={onDenyDelete}
           onDeny={onDenyDelete}
           title={`${intl.formatMessage({ id: "DeleteSurveyor" })}`}
-          content={<DeleteSurveyor />}
+          content={<DeleteSurveyor existsAssigned={false} />}
           seeActions
-          textButton="Accept"
+          textButton="Return"
+        />
+        <CustomizedDialog
+          open={deleteError}
+          cancelBtn={false}
+          onConfirm={onDenyDelete}
+          onDeny={onDenyDelete}
+          title={`${intl.formatMessage({ id: "DeleteSurveyor" })}`}
+          content={<DeleteSurveyor existsAssigned={true} />}
+          seeActions
+          textButton="Return"
         />
         <CustomizedDialog
           open={modalAssignOpen}
@@ -190,6 +206,14 @@ export const SurveyorsScreen: FC = () => {
             open={alert}
             typeAlert="success"
             message="StateSurveyorUpdated"
+            time={2000}
+            handleClose={closeSuccess}
+          />
+
+          <MyAlert
+            open={deleteSuccess}
+            typeAlert="success"
+            message="SurveyorDeleted"
             time={2000}
             handleClose={closeSuccess}
           />

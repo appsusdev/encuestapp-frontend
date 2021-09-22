@@ -16,7 +16,7 @@ export const loadAllEntities = (): Promise<EntitiesType | []> => {
     });
 };
 
-export const addNewEntity = (entity: IEntity): Promise<any> => {
+export const addNewEntity = (entity: IEntity,uid:string): Promise<any> => {
   const {
     email,
     identificacion,
@@ -57,6 +57,7 @@ export const addNewEntity = (entity: IEntity): Promise<any> => {
         nit,
         razonSocial,
         email,
+        uid,
         fechaCreacion: firebase.firestore.Timestamp.now(),
       },
       { merge: true }
@@ -66,16 +67,19 @@ export const addNewEntity = (entity: IEntity): Promise<any> => {
       return db
         .collection("Municipios")
         .doc(municipio)
-        .set(
-          {
-            departamento,
-            admin: identificacion,
-            lat: 2.495,
-            lng: -73.781,
-            zoom: 4.32
-          },
-          { merge: true }
-        )
+        .set({ departamento })
+        .then(() => {
+          return {
+            ok: true,
+          };
+        });
+    })
+    .then(() => {
+      //CREAR LA COLECCIÓN DE ENTIDADES
+      return db
+        .collection("Entidades")
+        .doc(nit)
+        .set({ ciudadanos: null, lat: 2.495, lng: -73.781, zoom: 4.32 })
         .then(() => {
           return {
             ok: true,
@@ -84,7 +88,7 @@ export const addNewEntity = (entity: IEntity): Promise<any> => {
     });
 };
 
-export const updateEntity = (entity: IEntity): Promise<any> => {
+export const updateEntity = (entity: IEntity,uid:string): Promise<any> => {
   const {
     email,
     identificacion,
@@ -123,6 +127,7 @@ export const updateEntity = (entity: IEntity): Promise<any> => {
         nit,
         razonSocial,
         email,
+        uid
       },
       { merge: true }
     )
@@ -134,7 +139,6 @@ export const updateEntity = (entity: IEntity): Promise<any> => {
         .set(
           {
             departamento,
-            admin: identificacion,
           },
           { merge: true }
         )
@@ -144,4 +148,24 @@ export const updateEntity = (entity: IEntity): Promise<any> => {
           };
         });
     });
+};
+
+export const getEntity = (nit: string): Promise<any> => {
+  return db
+    .collection("Usuarios")
+    .where("rol", "==", TypeUser.ADMIN)
+    .where("nit", "==", nit)
+    .get()
+    .then((snapShot) => {
+      let users: any;
+      snapShot.forEach((doc: any) => {
+        users = {
+          id: doc.id,
+          ...(doc.data() as any),
+        };
+      });
+
+      return users;
+    })
+    .catch((err) => console.log(err));
 };

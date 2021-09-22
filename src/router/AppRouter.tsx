@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import IdleTimer from "react-idle-timer";
 
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { AuthRouter } from "./AuthRouter";
@@ -9,7 +10,7 @@ import { firebase } from "../config/firebase/firebase-config";
 import { TypeUser } from "../enums/enums";
 import { PublicRoute } from "./PublicRoute";
 import { PrivateRoute } from "./PrivateRoute";
-import { login } from "../redux/actions/authActions";
+import { login, startLogout } from "../redux/actions/authActions";
 import { uiChangeRole } from "../redux/actions/uiActions";
 import { getUserRole } from "../services/firebase/auth";
 import { Box, Grid } from "@material-ui/core";
@@ -24,6 +25,7 @@ import {
   startLoadingMapData,
 } from "../redux/actions/citizensActions";
 import { startLoadEntities } from "../redux/actions/entitiesActions";
+import { ChangeScreen } from "../pages/auth/ChangeScreen";
 
 export const AppRouter: FC = () => {
   const dispatch = useDispatch();
@@ -41,7 +43,7 @@ export const AppRouter: FC = () => {
           const resp = await getUserRole(user.email);
 
           if (resp) {
-            const { rol, municipio } = resp;
+            const { rol, municipio, nit, razonSocial } = resp;
 
             if (rol === TypeUser.ADMIN || rol === TypeUser.SUPER_ADMIN) {
               dispatch(uiChangeRole(rol));
@@ -51,20 +53,21 @@ export const AppRouter: FC = () => {
                 email: user.email,
                 rol: rol,
                 municipio: municipio,
+                nit: nit,
+                razonSocial: razonSocial,
               };
               dispatch(login(userMain));
-              setIsLoggedIn(true);
 
-              if (isLoggedIn) {
-                if (rol === TypeUser.ADMIN) {
-                  dispatch(startLoadingSurveyors(municipio));
-                  dispatch(startLoadingCompleteSurveys(municipio));
-                  dispatch(startLoadingAssignedSurveys(municipio));
-                  dispatch(startLoadingCitizens());
-                  dispatch(startLoadingMapData(municipio));
-                } else {
-                  await dispatch(startLoadEntities());
-                }
+              if (rol === TypeUser.ADMIN) {
+                await dispatch(startLoadingSurveyors(municipio, nit));
+                await dispatch(startLoadingCompleteSurveys(municipio, nit));
+                await dispatch(startLoadingAssignedSurveys(municipio, nit));
+                await dispatch(startLoadingCitizens());
+                await dispatch(startLoadingMapData(nit));
+                setIsLoggedIn(true);
+              } else if (rol === TypeUser.SUPER_ADMIN) {
+                await dispatch(startLoadEntities());
+                setIsLoggedIn(true);
               }
             }
           } else {
@@ -91,24 +94,35 @@ export const AppRouter: FC = () => {
     );
   }
 
-  return (
-    <Router>
-      <div>
-        <Switch>
-          <PublicRoute
-            isAuthenticated={isLoggedIn}
-            path="/auth"
-            component={AuthRouter}
-          />
-          <PrivateRoute
-            path="/"
-            isAuthenticated={isLoggedIn}
-            component={Layout}
-          />
+  const handleInactivity = () => {
+    dispatch(startLogout());
+  };
 
-          <Redirect to="/" />
-        </Switch>
-      </div>
-    </Router>
+  return (
+    <IdleTimer timeout={20 * 60 * 1000} onIdle={handleInactivity}>
+      <Router>
+        <div>
+          <Switch>
+            <PublicRoute
+              isAuthenticated={isLoggedIn}
+              path="/auth"
+              component={AuthRouter}
+            />
+            <PrivateRoute
+              path="/account"
+              isAuthenticated={isLoggedIn}
+              component={ChangeScreen}
+            />
+            <PrivateRoute
+              path="/"
+              isAuthenticated={isLoggedIn}
+              component={Layout}
+            />
+
+            <Redirect to="/" />
+          </Switch>
+        </div>
+      </Router>
+    </IdleTimer>
   );
 };

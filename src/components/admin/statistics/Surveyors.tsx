@@ -45,7 +45,12 @@ const pageStyle = `
 }
 `;
 
-export const Surveyors = () => {
+interface Props {
+  transmitted: Survey[];
+}
+
+export const Surveyors = (props: Props) => {
+  const { transmitted } = props;
   const classes = useStyles();
   const intl = useIntl();
   const dispatch = useDispatch();
@@ -54,12 +59,15 @@ export const Surveyors = () => {
   const { surveys } = useSelector<AppState, AppState["survey"]>(
     (state) => state.survey
   );
-  const { surveyors, surveysTransmitted, infoSurveysTransmitted } = useSelector<
+  const { surveyors, infoSurveysTransmitted } = useSelector<
     AppState,
     AppState["surveyor"]
   >((state) => state.surveyor);
   const { loading } = useSelector<AppState, AppState["ui"]>(
     (state) => state.ui
+  );
+  const { citizens } = useSelector<AppState, AppState["citizens"]>(
+    (state) => state.citizens
   );
   const [surveyorSelected, setSurveyorSelected] = useState("");
   const [surveySelected, setSurveySelected] = useState("");
@@ -67,10 +75,18 @@ export const Surveyors = () => {
   const [errorSurveyor, setErrorSurveyor] = useState(false);
   const [errorSurvey, setErrorSurvey] = useState(false);
   const [valid, setValid] = useState({ survey: false, surveyor: false });
+  const [dataSurvey, setDataSurvey] = useState({
+    surveyeds: [],
+    codeSurvey: "",
+    dateSurvey: "",
+    surveyor: "",
+    responsibleCitizen: "",
+    authorizationFormat: "",
+  });
   const [show, setShow] = useState(false);
   const [newList, setNewList] = useState<Chapter[]>([]);
-  const transmitted: Partial<Survey>[] =
-    getCopyArrayOrObject(surveysTransmitted);
+  // const transmitted: Partial<Survey>[] =
+  //   getCopyArrayOrObject(surveysTransmitted);
   const infoTransmitted: any[] = infoSurveysTransmitted;
   const surveyorsList: Surveyor[] = surveyors;
 
@@ -142,11 +158,56 @@ export const Surveyors = () => {
         (survey) => survey.idSurvey === infoSurvey.idEncuesta
       );
       const name = getSurvey[0].name ? getSurvey[0].name : "";
-      newData.push({ date: date, surveyCode: infoSurvey.id, name: name });
+      newData.push({
+        date: date,
+        surveyCode: infoSurvey.id,
+        name: name,
+      });
     });
   }
 
+  //  **************************************************************************************** //
+  // ------------- FUNCIÓON PARA OBTENER INFRORMACIÓN DE CADA ENCUESTA TRANSMITIDA ----------- //
+  //  **************************************************************************************** //
+
   const getData = async (surveyCode: string) => {
+    // Se obtiene la información correspondiente a la encuesta seleccionada
+    const infoFilter = infoTransmitted.filter((info) => info.id === surveyCode);
+
+    // Obtener la fecha en que se transmitió la encuesta
+    const date = convertDate(
+      new Date(infoFilter[0].fechaDeCarga.seconds * 1000).toLocaleDateString(
+        "en-CA"
+      )
+    );
+
+    // Obtener el nombre del encuestador
+    const surveyorInfo = surveyorsList.filter(
+      (surveyor) => surveyor.email === surveyorSelected
+    );
+    const usernameSurveyor = surveyorInfo[0].username;
+
+    // Obtener el nombre del ciudadano responsable de la encuesta
+    const idResponsibleCitizen = citizens.filter(
+      (citizen) =>
+        citizen.identificacion === infoFilter[0].idCiudadanoResponsable
+    );
+    let nameResponsableCitizen = "";
+    idResponsibleCitizen[0] &&
+      (nameResponsableCitizen = `${idResponsibleCitizen[0].primerNombre.toLowerCase()} ${idResponsibleCitizen[0].segundoNombre.toLowerCase()} ${idResponsibleCitizen[0].primerApellido.toLowerCase()} ${idResponsibleCitizen[0].segundoApellido.toLowerCase()}`);
+
+    // Se setean los datos (info de cada encuesta)
+    setDataSurvey({
+      ...dataSurvey,
+      surveyeds: infoFilter[0].encuestados,
+      codeSurvey: infoFilter[0].id,
+      dateSurvey: date,
+      surveyor: usernameSurveyor,
+      responsibleCitizen: nameResponsableCitizen,
+      authorizationFormat: infoFilter[0].formatoAutorizacion,
+    });
+
+    // Filtro para obtener las respuestas correspondientes a la encuesta seleccionada
     const list: Chapter[] = getCopyArrayOrObject(transmitted[0].chapters);
 
     const filter = list?.map((chapter) => {
@@ -161,7 +222,6 @@ export const Surveyors = () => {
       return chapter;
     });
     setNewList(filter);
-    await setTimeout(() => {}, 2500);
   };
 
   return (
@@ -319,9 +379,9 @@ export const Surveyors = () => {
                 {newData.map((survey, index) => (
                   <React.Fragment key={index}>
                     <ReactToPrint
-                      onBeforeGetContent={async () =>
-                        await getData(survey.surveyCode)
-                      }
+                      onBeforeGetContent={async () => {
+                        await getData(survey.surveyCode);
+                      }}
                       trigger={() => (
                         <Grid item xs={4}>
                           <Link component="button">
@@ -343,7 +403,12 @@ export const Surveyors = () => {
                         <PDFSurveyors
                           data={newList}
                           title={transmitted[0].name}
-                          surveyCode={survey.surveyCode}
+                          surveyCode={dataSurvey.codeSurvey}
+                          idSurveyeds={dataSurvey.surveyeds}
+                          dateSurvey={dataSurvey.dateSurvey}
+                          nameSurveyor={dataSurvey.surveyor}
+                          responsibleCitizen={dataSurvey.responsibleCitizen}
+                          authorizationFormat={dataSurvey.authorizationFormat}
                         />
                       </div>
                     </div>

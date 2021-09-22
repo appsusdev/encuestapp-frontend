@@ -10,22 +10,13 @@ export const addCitizen = (citizen: ICitizen) => {
   return docRef.set({ ...citizen }, { merge: true });
 };
 
-export const addJsonCitizens = (jsonStr: string, municipio: string) => {
-  //const docRef = db.collection('Ciudadanos').doc('jsonCitizens')
-  const docRef = db
-    .collection("Municipios")
-    .doc(municipio)
-    .collection("Ciudadanos")
-    .doc("jsonCitizens");
-  return docRef.set({ data: jsonStr }, { merge: true });
+export const addJsonCitizens = (jsonStr: string, nit: string) => {
+  const docRef = db.collection("Entidades").doc(nit);
+  return docRef.set({ ciudadanos: jsonStr }, { merge: true });
 };
 
-export const getCitizens = async (town: string) => {
-  const citizensRef = db
-    .collection("Municipios")
-    .doc(town)
-    .collection("Ciudadanos")
-    .doc("jsonCitizens");
+export const getCitizens = async (nit: string) => {
+  const citizensRef = db.collection("Entidades").doc(nit);
 
   const citizens = await citizensRef.get().then((snapShot) => {
     return snapShot.data();
@@ -36,12 +27,14 @@ export const getCitizens = async (town: string) => {
 
 export const getTransmittedSurveysByCitizen = async (
   town: string,
-  idCitizen: string
+  idCitizen: string,
+  nit: string
 ) => {
   const surveysSnap = await db
     .collectionGroup("EncuestasTransmitidas")
     .where("encuestados", "array-contains", idCitizen)
     .where("municipio", "==", town)
+    .where("idEntidad", "==", nit)
     .get();
   const surveys: any[] = [];
 
@@ -55,15 +48,13 @@ export const getTransmittedSurveysByCitizen = async (
 };
 
 // Obtener informacion del mapa
-export const getMapData = async (
-  town: string
-) => {
+export const getMapData = async (nit: string) => {
   const mapDataSnap = await db
-    .collection("Municipios").doc(town)
-    .get().then((snapShot) => {
-    return snapShot.data();
-  });
+    .collection("Entidades")
+    .doc(nit)
+    .get()
+    .then((snapShot) => {
+      return snapShot.data();
+    });
   return mapDataSnap;
 };
-
-

@@ -1,12 +1,12 @@
-import React, { useContext } from "react";
 import clsx from "clsx";
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
 import Box from "@material-ui/core/Box";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import { orange } from "@material-ui/core/colors";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AppContext from "../../../context/AppContext";
 import AppContextPropsType from "../../../types/AppContextPropsType";
@@ -22,8 +22,8 @@ const useStyles = makeStyles((theme) => {
   return {
     crUserInfo: {
       backgroundColor: "rgba(0,0,0,.08)",
-      paddingTop: 9,
-      paddingBottom: 9,
+      // paddingTop: 9,
+      // paddingBottom: 9,
       minHeight: 56,
       display: "flex",
       flexDirection: "column",
@@ -35,11 +35,13 @@ const useStyles = makeStyles((theme) => {
       },
     },
     profilePic: {
-      fontSize: 24,
-      backgroundColor: orange[500],
+      height: "55px",
+      width: "55px",
+      marginLeft: "-15px",
+      marginRight: "-15px",
     },
     userInfo: {
-      width: "calc(100% - 75px)",
+      width: "calc(100% - 60px)",
     },
     userName: {
       overflow: "hidden",
@@ -59,13 +61,20 @@ const useStyles = makeStyles((theme) => {
     pointer: {
       cursor: "pointer",
     },
+    name: {
+      fontSize: 11,
+      color: "#74788d",
+      marginTop: "3px",
+    },
   };
 });
 
 const UserInfo: React.FC<{}> = () => {
   const { themeMode } = useContext<AppContextPropsType>(AppContext);
   const classes = useStyles({ themeMode });
-  const { rol, municipio } = useSelector((state: AppState) => state.auth);
+  const { rol, municipio, razonSocial } = useSelector(
+    (state: AppState) => state.auth
+  );
   const dispatch = useDispatch();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -87,9 +96,9 @@ const UserInfo: React.FC<{}> = () => {
       px={{ xs: 4, xl: 7 }}
       className={clsx(classes.crUserInfo, "cr-user-info")}
     >
-      <Box display="flex" alignItems="center">
+      <Box display="flex" alignItems="center" justifyContent="space-between">
         <Avatar className={classes.profilePic} src={user} />
-        <Box ml={4} className={clsx(classes.userInfo, "user-info")}>
+        <Box ml={3} className={clsx(classes.userInfo, "user-info")}>
           <Box
             display="flex"
             alignItems="center"
@@ -112,10 +121,14 @@ const UserInfo: React.FC<{}> = () => {
                 onClose={handleClose}
               >
                 <MenuItem>
-                  <FormattedMessage id="MyAccount" />
+                  <Link to="/account">
+                    <FormattedMessage id="ChangePassword" />
+                  </Link>
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>
-                  <FormattedMessage id="Logout" />
+                  <Link to="/auth/login">
+                    <FormattedMessage id="Logout" />
+                  </Link>
                 </MenuItem>
               </Menu>
             </Box>
@@ -123,6 +136,9 @@ const UserInfo: React.FC<{}> = () => {
           <Box className={classes.designation}>
             {rol === TypeUser.ADMIN ? municipio : "APPSUS"}
           </Box>
+          {rol === TypeUser.ADMIN && (
+            <Box className={classes.name}>{razonSocial?.toUpperCase()}</Box>
+          )}
         </Box>
       </Box>
     </Box>

@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { Box, Button, Grid, makeStyles } from "@material-ui/core";
 import AppAnimate from "../../components/ui/AppAnimate/AppAnimate";
 import AddOutlinedIcon from "@material-ui/icons/AddOutlined";
@@ -20,6 +22,7 @@ import {
 import { FormEntity } from "../../components/super-admin/FormEntity";
 import { MyAlert } from "../../components/custom/MyAlert";
 import { Colors } from "../../shared/constants/Colors";
+import { purgeActiveEntity } from "../../redux/actions/entitiesActions";
 
 export const useStyles = makeStyles((theme) => ({
   btnRoot: {
@@ -45,6 +48,7 @@ export const EntitiesScreen = () => {
   const classes = useStyles();
   const intl = useIntl();
 
+  const [add, setAdd] = useState(false);
   const { entities: Entities } = useSelector(
     (state: AppState) => state.entities
   );
@@ -53,22 +57,24 @@ export const EntitiesScreen = () => {
     AppState,
     AppState["ui"]
   >((state) => state.ui);
-  const { alert } = useSelector<AppState, AppState["ui"]>((state) => state.ui);
 
   const { successAlert, errorAlert } = useSelector(
     (state: AppState) => state.ui
   );
   const onAdd = () => {
     dispatch(uiOpenModalAdd());
+    setAdd(true);
   };
   // Cerrar modal crear encuestador
   const onDenyAdd = () => {
+    setAdd(false);
     dispatch(uiCloseModalAdd());
   };
 
   // Cerra modal editar encuestador
   const onDenyEdit = () => {
     dispatch(uiCloseModalEdit());
+    dispatch(purgeActiveEntity());
   };
 
   // Cerrar modal eliminar encuestador
@@ -142,7 +148,7 @@ export const EntitiesScreen = () => {
         <MyAlert
           open={successAlert}
           typeAlert="success"
-          message={"SavingEntitySuccess"}
+          message={!add ? "UpdatedEntity" : "SavingEntitySuccess"}
           time={2000}
           handleClose={closeSuccess}
         />
@@ -153,16 +159,6 @@ export const EntitiesScreen = () => {
           time={2000}
           handleClose={closeSuccess}
         />
-
-        <Box mt={3}>
-          <MyAlert
-            open={alert}
-            typeAlert="success"
-            message="StateSurveyorUpdated"
-            time={2000}
-            handleClose={closeSuccess}
-          />
-        </Box>
       </Box>
     </AppAnimate>
   );

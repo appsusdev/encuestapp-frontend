@@ -1,16 +1,22 @@
 import React from "react";
 import { useIntl } from "react-intl";
+import { useSelector } from "react-redux";
 
 import { AppBar, Tab, Tabs } from "@material-ui/core";
 import { a11yProps, TabPanel, useStyles } from "../../custom/Tabs";
 import { Microdata } from "./Microdata";
 import { Surveyors } from "./Surveyors";
-// import { Statistics } from "./Statistics";
+import { AppState } from "../../../redux/reducers/rootReducer";
+// import { Statistics } from './Statistics';
 
 export const StatisticsTabs = () => {
   const classes = useStyles();
   const intl = useIntl();
   const [value, setValue] = React.useState(0);
+
+  const { surveysTransmitted } = useSelector<AppState, AppState["surveyor"]>(
+    (state) => state.surveyor
+  );
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -49,10 +55,10 @@ export const StatisticsTabs = () => {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <Microdata />
+        <Microdata transmitted={surveysTransmitted} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Surveyors />
+        <Surveyors transmitted={surveysTransmitted} />
       </TabPanel>
       {/* <TabPanel value={value} index={2}>
         <Statistics />
