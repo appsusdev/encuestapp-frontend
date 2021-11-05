@@ -10,6 +10,8 @@ import { ISurveyAnswers, Survey, Chapter } from "../../../interfaces/Survey";
 import { DictionaryQuestions } from "./DictionaryQuestions";
 import { TypeQuestion } from "../../../enums/enums";
 import { MyAlert } from "../../custom/MyAlert";
+import { AppState } from "../../../redux/reducers/rootReducer";
+import { useSelector } from "react-redux";
 
 const pageStyle = `
 @media all {
@@ -53,6 +55,7 @@ interface IData {
 
 export const DownloadData = (props: Props) => {
   const classes = useStyles();
+  const { citizens } = useSelector((state: AppState) => state.citizens);
   const { transmitted, surveyor, idCitizens } = props;
   const csvLinkHome = useRef<
     CSVLink & HTMLAnchorElement & { link: HTMLAnchorElement }
@@ -108,6 +111,10 @@ export const DownloadData = (props: Props) => {
 
     setData({ ...data, questions: questionsData });
   };
+  const getInfoCitizen = (id: string) => {
+    const citizen = citizens.find((cit) => cit.identificacion === id);
+    return citizen;
+  };
   const getData = async (flag: boolean) => {
     setLoad({ home: false, ind: false });
     transmitted[0].chapters.forEach((chapter: Chapter) => {
@@ -151,27 +158,34 @@ export const DownloadData = (props: Props) => {
       const homeData: any[] = [];
       arrayQuestionsHome.forEach((question, index) => {
         question.answers.forEach((answer: ISurveyAnswers) => {
-          homeData.push({
-            Codigo_encuesta: transmitted[0].idSurvey,
-            Codigo_pregunta: `PreguntaHog${index + 1}`,
-            ID_ciudadano_responsable: answer.idEncuestaCiudadano,
-            ID_ciudadano_encuestado: answer.citizen,
-            Respuesta:
-              question.type === TypeQuestion.RADIO ||
-              question.type === TypeQuestion.SELECT
-                ? question.options.map((option: any) =>
-                    option.value === answer.respuesta.value ? option.label : ""
-                  )
-                : question.type === TypeQuestion.CHECK
-                ? question.options.map((option: any) =>
-                    option.value === answer.respuesta[0].value
-                      ? option.label
-                      : ""
-                  )
-                : question.type === TypeQuestion.GEOLOCATION
-                ? `Latitud: ${answer.respuesta.value.coords.latitude}, Longitud: ${answer.respuesta.value.coords.longitude}`
-                : answer.respuesta.value,
-          });
+          const indexRow = homeData.findIndex(
+            (el) => el.ID_ciudadano_responsable === answer.idEncuestaCiudadano
+          );
+          const answerValue =
+            question.type === TypeQuestion.RADIO ||
+            question.type === TypeQuestion.SELECT
+              ? question.options.map((option: any) =>
+                  option.value === answer.respuesta.value ? option.label : ""
+                )
+              : question.type === TypeQuestion.CHECK
+              ? question.options.map((option: any) =>
+                  option.value === answer.respuesta[0].value ? option.label : ""
+                )
+              : question.type === TypeQuestion.GEOLOCATION
+              ? `Latitud: ${answer.respuesta.value.coords.latitude}, Longitud: ${answer.respuesta.value.coords.longitude}`
+              : answer.respuesta.value;
+          if (indexRow >= 0) {
+            homeData[indexRow][`PreguntaHog${index + 1}`] = answerValue;
+          } else {
+            let objHomeData: any = {
+              Codigo_encuesta: transmitted[0].idSurvey,
+
+              ID_ciudadano_responsable: answer.idEncuestaCiudadano,
+            };
+            objHomeData[`PreguntaHog${index + 1}`] = answerValue;
+
+            homeData.push(objHomeData);
+          }
         });
       });
 
@@ -183,12 +197,14 @@ export const DownloadData = (props: Props) => {
       const indData: any[] = [];
       arrayQuestionsInd.forEach((question, index) => {
         question.answers.forEach((answer: ISurveyAnswers) => {
-          indData.push({
-            Codigo_encuesta: transmitted[0].idSurvey,
-            Codigo_pregunta: `PreguntaInd${index + 1}`,
-            ID_ciudadano_responsable: answer.idEncuestaCiudadano,
-            ID_ciudadano_encuestado: answer.citizen,
-            Respuesta:
+          const citizenInfo = getInfoCitizen(answer.citizen);
+          if (citizenInfo) {
+            const indexRow = indData.findIndex(
+              (el) =>
+                el.ID_ciudadano_responsable === answer.idEncuestaCiudadano &&
+                el.ID_ciudadano_encuestado === answer.citizen
+            );
+            const answerValue =
               question.type === TypeQuestion.RADIO ||
               question.type === TypeQuestion.SELECT
                 ? question.options.map((option: any) =>
@@ -202,8 +218,29 @@ export const DownloadData = (props: Props) => {
                   )
                 : question.type === TypeQuestion.GEOLOCATION
                 ? `Latitud: ${answer.respuesta.value.coords.latitude}, Longitud: ${answer.respuesta.value.coords.longitude}`
-                : answer.respuesta.value,
-          });
+                : answer.respuesta.value;
+            if (indexRow >= 0) {
+              indData[indexRow][`PreguntaInd${index + 1}`] = answerValue;
+            } else {
+              const objIndData: any = {
+                Codigo_encuesta: transmitted[0].idSurvey,
+                ID_ciudadano_responsable: answer.idEncuestaCiudadano,
+                ID_ciudadano_encuestado: answer.citizen,
+                PrimerNombre: citizenInfo.primerNombre,
+                SegundoNombre: citizenInfo.segundoNombre,
+                PrimerApellido: citizenInfo.primerApellido,
+                SegundoApellido: citizenInfo.segundoApellido,
+                Tipo_Documento: citizenInfo.tipoIdentificacion,
+                Numero_Documento: citizenInfo.identificacion,
+                Telefono: citizenInfo.telefono,
+                Correo: citizenInfo.correo,
+                Fecha_Nacimiento: citizenInfo.fechaNacimiento,
+                Genero: citizenInfo.genero,
+              };
+              objIndData[`PreguntaInd${index + 1}`] = answerValue;
+              indData.push(objIndData);
+            }
+          }
         });
       });
       setLoad({ ...load, ind: true });
