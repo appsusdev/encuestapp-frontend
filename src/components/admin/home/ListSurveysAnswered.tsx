@@ -1,7 +1,6 @@
-import { useRef, useState } from "react";
+import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { useSelector } from "react-redux";
-import ReactToPrint from "react-to-print";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Box, CircularProgress, Link } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
@@ -9,44 +8,20 @@ import { ICitizen } from "../../../interfaces/Citizens";
 import { Survey, Chapter } from "../../../interfaces/Survey";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
-import { PDFSurveys } from "./PDFSurveys";
 import { Surveyor } from "../../../interfaces/Surveyor";
-
-const pageStyle = `
-@media all {
-  .page-break {
-     display: none;
-  }
-}
-
-@media print {
-  .page-break {
-      display: block;
-      page-break-before: auto;
-    }
-}
-@media print {
-  html, body {
-    height: initial !important;
-    overflow: initial !important;
-    -webkit-print-color-adjust: exact;
-  };
-}
-
-@page {
-  size: auto;
-  margin: 5vw;
-  padding:25vw
-}
-`;
-
+import { CustomizedDialogPDF } from "../../custom/CustomizedDialogPDF";
+import {
+  uiOpenModalAssign,
+  uiCloseModalAssign,
+} from "../../../redux/actions/uiActions";
+import { PDFSurveys } from "./PDFSurveys";
 interface Props {
   answered: Survey[];
 }
 export const ListSurveysAnswered = (props: Props) => {
   const { answered } = props;
   const classes = useStyles();
-  const componentRef = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch();
 
   const { surveysAnswered, activeCitizen } = useSelector<
     AppState,
@@ -56,7 +31,7 @@ export const ListSurveysAnswered = (props: Props) => {
     AppState,
     AppState["surveyor"]
   >((state) => state.surveyor);
-  const { loading } = useSelector<AppState, AppState["ui"]>(
+  const { loading, modalAssignOpen } = useSelector<AppState, AppState["ui"]>(
     (state) => state.ui
   );
   const [newList, setNewList] = useState<Chapter[]>([]);
@@ -110,6 +85,11 @@ export const ListSurveysAnswered = (props: Props) => {
       return chapter;
     });
     setNewList(filter);
+    dispatch(uiOpenModalAssign());
+  };
+
+  const onDeny = () => {
+    dispatch(uiCloseModalAssign());
   };
 
   return (
@@ -127,21 +107,22 @@ export const ListSurveysAnswered = (props: Props) => {
           </Box>
 
           {surveysAnswered.map((survey: Partial<Survey>, index: number) => (
-            <div key={index}>
-              <ReactToPrint
-                onBeforeGetContent={async () => await getData(survey.idSurvey)}
-                trigger={() => (
-                  <Link className={classes.typography} component="button">
-                    {index + 1}. {survey.name}
-                  </Link>
-                )}
-                content={() => componentRef.current}
-                documentTitle={`${survey.name}_${activeCitizen.identificacion}`}
-                pageStyle={pageStyle}
-              />
+            <React.Fragment>
+              <Link
+                key={index}
+                className={classes.typography}
+                component="button"
+                onClick={() => getData(survey.idSurvey)}
+              >
+                {index + 1}. {survey.name}
+              </Link>
 
-              <div style={{ display: "none" }}>
-                <div ref={componentRef}>
+              <CustomizedDialogPDF
+                open={modalAssignOpen}
+                onConfirm={onDeny}
+                onDeny={onDeny}
+                title={dataSurvey.title}
+                content={
                   <PDFSurveys
                     data={newList}
                     title={dataSurvey.title}
@@ -151,9 +132,10 @@ export const ListSurveysAnswered = (props: Props) => {
                     nameSurveyor={dataSurvey.nameSurveyor}
                     idSurveyeds={dataSurvey.surveyeds}
                   />
-                </div>
-              </div>
-            </div>
+                }
+                textButton="Download"
+              />
+            </React.Fragment>
           ))}
         </>
       ) : (
