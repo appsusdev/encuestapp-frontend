@@ -30,7 +30,7 @@ export const DictionaryQuestions = (props: Props) => {
   const classes = useStyles();
 
   return (
-    <>
+    <Box m={8} mt={3}>
       <Box
         mb={4}
         display="flex"
@@ -71,6 +71,6 @@ export const DictionaryQuestions = (props: Props) => {
           </Table>
         </TableContainer>
       </ThemeProvider>
-    </>
+    </Box>
   );
 };

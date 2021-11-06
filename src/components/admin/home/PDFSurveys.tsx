@@ -70,7 +70,7 @@ export const PDFSurveys = (props: Props) => {
   );
 
   return (
-    <Box m={5}>
+    <Box m={8} mt={3}>
       <Box display="flex" justifyContent="center" className={classes.titlePDF}>
         {entityTitle}
       </Box>
@@ -330,7 +330,7 @@ export const PDFSurveys = (props: Props) => {
                           )}
                         {question.type === TypeQuestion.GEOLOCATION && (
                           <>
-                            <Grid container style={{marginBottom:'5vh'}}>
+                            <Grid container style={{ marginBottom: "5vh" }}>
                               <Grid item xs={12}>
                                 <Card className={classes.mapPDF}>
                                   <CardMedia
