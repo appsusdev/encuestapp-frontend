@@ -1,9 +1,11 @@
 import clsx from "clsx";
 import { Formik, Form } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 
 import {
   Divider,
@@ -33,6 +35,8 @@ import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { PDFSurveyors } from "./PDFSurveyors";
 import { CustomizedDialogPDF } from "../../custom/CustomizedDialogPDF";
+//@ts-ignore
+import { useScreenshot } from "use-react-screenshot";
 interface Props {
   transmitted: Survey[];
 }
@@ -42,12 +46,12 @@ export const Surveyors = (props: Props) => {
   const classes = useStyles();
   const intl = useIntl();
   const dispatch = useDispatch();
+  const componentRef = useRef() as React.MutableRefObject<HTMLDivElement>;
 
   useEffect(() => {
     dispatch(uiCloseModalAssign());
     // eslint-disable-next-line
   }, []);
-
   const { surveys } = useSelector<AppState, AppState["survey"]>(
     (state) => state.survey
   );
@@ -81,6 +85,8 @@ export const Surveyors = (props: Props) => {
   const surveyorsList: Surveyor[] = surveyors;
 
   let list: Survey[] = surveys;
+
+  const [image, takeScreenshot] = useScreenshot();
 
   useEffect(() => {
     setSurveysAssign(
@@ -213,10 +219,34 @@ export const Surveyors = (props: Props) => {
     });
     setNewList(filter);
     dispatch(uiOpenModalAssign());
+    console.log(typeof componentRef.current);
   };
 
   const onDeny = () => {
     dispatch(uiCloseModalAssign());
+  };
+
+  const onDownloadDocument = async () => {
+    await html2canvas(componentRef.current).then((canvas) => {
+      const imgData = canvas.toDataURL("image/jpeg");
+      const imgWidth = 210;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      const doc = new jsPDF("p", "mm");
+      let position = 0;
+
+      doc.addImage(imgData, "jpeg", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        doc.addPage();
+        doc.addImage(imgData, "jpeg", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+        doc.save("file.pdf");
+    });
   };
 
   return (
@@ -388,20 +418,22 @@ export const Surveyors = (props: Props) => {
 
                     <CustomizedDialogPDF
                       open={modalAssignOpen}
-                      onConfirm={onDeny}
+                      onConfirm={onDownloadDocument}
                       onDeny={onDeny}
                       title={transmitted[0].name}
                       content={
-                        <PDFSurveyors
-                          data={newList}
-                          title={transmitted[0].name}
-                          surveyCode={dataSurvey.codeSurvey}
-                          idSurveyeds={dataSurvey.surveyeds}
-                          dateSurvey={dataSurvey.dateSurvey}
-                          nameSurveyor={dataSurvey.surveyor}
-                          responsibleCitizen={dataSurvey.responsibleCitizen}
-                          authorizationFormat={dataSurvey.authorizationFormat}
-                        />
+                        <div ref={componentRef}>
+                          <PDFSurveyors
+                            data={newList}
+                            title={transmitted[0].name}
+                            surveyCode={dataSurvey.codeSurvey}
+                            idSurveyeds={dataSurvey.surveyeds}
+                            dateSurvey={dataSurvey.dateSurvey}
+                            nameSurveyor={dataSurvey.surveyor}
+                            responsibleCitizen={dataSurvey.responsibleCitizen}
+                            authorizationFormat={dataSurvey.authorizationFormat}
+                          />
+                        </div>
                       }
                       textButton="Download"
                     />
