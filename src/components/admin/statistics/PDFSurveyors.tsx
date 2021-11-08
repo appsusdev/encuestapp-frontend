@@ -378,7 +378,11 @@ export const PDFSurveyors = (props: Props) => {
       <Box mt={1}>
         <Box display="flex" justifyContent="center" alignContent="flex-end">
           <Grid>
-            <img style={{ width: "600px" }} src={logo} alt="Logo Encuestapp" />
+            <img
+              style={{ height: "400px", objectFit: "cover" }}
+              src={logo}
+              alt="Logo Encuestapp"
+            />
           </Grid>
         </Box>
       </Box>

@@ -26,7 +26,11 @@ import {
   setTransmittedSurveys,
   setInfoTransmittedSurveys,
 } from "../../../redux/actions/surveyorsActions";
-import { startLoading, finishLoading } from "../../../redux/actions/uiActions";
+import {
+  startLoading,
+  finishLoading,
+  uiCloseModalAssign,
+} from "../../../redux/actions/uiActions";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { DownloadData } from "./DownloadData";
 
@@ -39,6 +43,11 @@ export const Microdata = (props: Props) => {
   const classes = useStyles();
   const intl = useIntl();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(uiCloseModalAssign());
+    // eslint-disable-next-line
+  }, []);
 
   const { surveys } = useSelector<AppState, AppState["survey"]>(
     (state) => state.survey

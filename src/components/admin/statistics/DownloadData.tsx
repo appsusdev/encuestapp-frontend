@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { CSVLink } from "react-csv";
 import { FormattedMessage } from "react-intl";
-import ReactToPrint from "react-to-print";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Box, Link } from "@material-ui/core";
 
@@ -10,37 +10,12 @@ import { ISurveyAnswers, Survey, Chapter } from "../../../interfaces/Survey";
 import { DictionaryQuestions } from "./DictionaryQuestions";
 import { TypeQuestion } from "../../../enums/enums";
 import { MyAlert } from "../../custom/MyAlert";
+import { CustomizedDialogPDF } from "../../custom/CustomizedDialogPDF";
 import { AppState } from "../../../redux/reducers/rootReducer";
-import { useSelector } from "react-redux";
-
-const pageStyle = `
-@media all {
-  .page-break {
-     display: none;
-  }
-}
-
-@media print {
-  .page-break {
-      display: block;
-      page-break-before: auto;
-    }
-}
-@media print {
-  html, body {
-    height: initial !important;
-    overflow: initial !important;
-    -webkit-print-color-adjust: exact;
-  };
-}
-
-@page {
-  size: auto;
-  margin: 5vw;
-  padding:25vw
-}
-`;
-
+import {
+  uiCloseModalAssign,
+  uiOpenModalAssign,
+} from "../../../redux/actions/uiActions";
 interface Props {
   transmitted: Survey[];
   surveyor: string;
@@ -56,6 +31,10 @@ interface IData {
 export const DownloadData = (props: Props) => {
   const classes = useStyles();
   const { citizens } = useSelector((state: AppState) => state.citizens);
+  const dispatch = useDispatch();
+  const { modalAssignOpen } = useSelector<AppState, AppState["ui"]>(
+    (state) => state.ui
+  );
   const { transmitted, surveyor, idCitizens } = props;
   const csvLinkHome = useRef<
     CSVLink & HTMLAnchorElement & { link: HTMLAnchorElement }
@@ -63,7 +42,6 @@ export const DownloadData = (props: Props) => {
   const csvLinkInd = useRef<
     CSVLink & HTMLAnchorElement & { link: HTMLAnchorElement }
   >(null);
-  const componentRef = useRef<HTMLDivElement>(null);
   const [load, setLoad] = useState({ home: false, ind: false });
   const [data, setData] = useState<IData>({
     home: [],
@@ -110,11 +88,13 @@ export const DownloadData = (props: Props) => {
     );
 
     setData({ ...data, questions: questionsData });
+    dispatch(uiOpenModalAssign());
   };
   const getInfoCitizen = (id: string) => {
     const citizen = citizens.find((cit) => cit.identificacion === id);
     return citizen;
   };
+
   const getData = async (flag: boolean) => {
     setLoad({ home: false, ind: false });
     transmitted[0].chapters.forEach((chapter: Chapter) => {
@@ -249,6 +229,10 @@ export const DownloadData = (props: Props) => {
     }
   };
 
+  const onDeny = () => {
+    dispatch(uiCloseModalAssign());
+  };
+
   return (
     <Box
       m={2}
@@ -283,26 +267,38 @@ export const DownloadData = (props: Props) => {
         />
       )}
 
-      <ReactToPrint
-        onBeforeGetContent={async () => await getQuestions()}
-        trigger={() => (
-          <Link className={classes.typography} component="button">
-            <FormattedMessage id="DictionaryQuestions" />
-          </Link>
-        )}
-        content={() => componentRef.current}
-        documentTitle={`Diccionario_encuesta_${transmitted[0].idSurvey}`}
-        pageStyle={pageStyle}
-      />
+      <React.Fragment>
+        <Link
+          className={classes.typography}
+          component="button"
+          onClick={() => getQuestions()}
+        >
+          <FormattedMessage id="DictionaryQuestions" />
+        </Link>
 
-      <div style={{ display: "none" }}>
+        <CustomizedDialogPDF
+          open={modalAssignOpen}
+          onConfirm={onDeny}
+          onDeny={onDeny}
+          title={transmitted[0].name}
+          content={
+            <DictionaryQuestions
+              title={transmitted[0].name}
+              questions={data.questions}
+            />
+          }
+          textButton="Download"
+        />
+      </React.Fragment>
+
+      {/* <div style={{ display: "none" }}>
         <div ref={componentRef}>
           <DictionaryQuestions
             title={transmitted[0].name}
             questions={data.questions}
           />
         </div>
-      </div>
+      </div> */}
 
       <MyAlert
         open={data.home.length === 0 && load.home}
