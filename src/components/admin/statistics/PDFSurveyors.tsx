@@ -180,8 +180,9 @@ export const PDFSurveyors = (props: Props) => {
       {/* ----------------- RESPUESTAS DE CIUDADANOS ENCUESTADOS ------------------- */}
 
       {list &&
-        list.map((chapter) => (
+        list.map((chapter, indexChapter) => (
           <Box key={chapter.id} mt={2}>
+            {indexChapter > 0 && <div style={{ pageBreakAfter: "always" }} />}
             <Typography
               className={clsx(classes.titlePDF, classes.capitalize)}
               variant="h6"
@@ -277,11 +278,6 @@ export const PDFSurveyors = (props: Props) => {
                                     title="Answer"
                                   />
                                 </Card>
-                                {indexAnswer % 2 === 0 && (
-                                  <>
-                                    <div style={{ pageBreakAfter: "auto" }} />
-                                  </>
-                                )}
                               </Grid>
                             </Grid>
                           </>

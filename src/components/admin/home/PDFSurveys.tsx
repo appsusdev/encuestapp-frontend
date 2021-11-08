@@ -185,8 +185,9 @@ export const PDFSurveys = (props: Props) => {
       {/* ----------------- RESPUESTAS DE CIUDADANOS ENCUESTADOS ------------------- */}
 
       {data &&
-        data.map((chapter) => (
+        data.map((chapter, indexChapter) => (
           <Box key={chapter.id} mt={2}>
+            {indexChapter > 0 && <div style={{ pageBreakAfter: "always" }} />}
             <Typography
               className={clsx(classes.titlePDF, classes.capitalize)}
               variant="h6"
@@ -280,11 +281,6 @@ export const PDFSurveys = (props: Props) => {
                                   title="Answer"
                                 />
                               </Card>
-                              {indexAnswer % 2 === 0 && (
-                                <>
-                                  <div style={{ pageBreakAfter: "auto" }} />
-                                </>
-                              )}
                             </Grid>
                           </Grid>
                         )}
