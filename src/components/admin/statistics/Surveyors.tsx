@@ -4,8 +4,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 
 import {
   Divider,
@@ -395,7 +393,9 @@ export const Surveyors = (props: Props) => {
                       componentRef={componentRef}
                       onDeny={onDeny}
                       title={transmitted[0].name}
-                      titlePDF={`${intl.formatMessage({id: "Survey"})}${dataSurvey.codeSurvey}`}
+                      titlePDF={`${intl.formatMessage({ id: "Survey" })}${
+                        dataSurvey.codeSurvey
+                      }`}
                       content={
                         <div ref={componentRef}>
                           <PDFSurveyors
