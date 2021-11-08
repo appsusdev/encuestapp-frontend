@@ -35,8 +35,7 @@ import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { PDFSurveyors } from "./PDFSurveyors";
 import { CustomizedDialogPDF } from "../../custom/CustomizedDialogPDF";
-//@ts-ignore
-import { useScreenshot } from "use-react-screenshot";
+
 interface Props {
   transmitted: Survey[];
 }
@@ -85,8 +84,6 @@ export const Surveyors = (props: Props) => {
   const surveyorsList: Surveyor[] = surveyors;
 
   let list: Survey[] = surveys;
-
-  const [image, takeScreenshot] = useScreenshot();
 
   useEffect(() => {
     setSurveysAssign(
@@ -224,29 +221,6 @@ export const Surveyors = (props: Props) => {
 
   const onDeny = () => {
     dispatch(uiCloseModalAssign());
-  };
-
-  const onDownloadDocument = async () => {
-    await html2canvas(componentRef.current).then((canvas) => {
-      const imgData = canvas.toDataURL("image/jpeg");
-      const imgWidth = 210;
-      const pageHeight = 295;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      const doc = new jsPDF("p", "mm");
-      let position = 0;
-
-      doc.addImage(imgData, "jpeg", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        doc.addPage();
-        doc.addImage(imgData, "jpeg", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-        doc.save("file.pdf");
-    });
   };
 
   return (
@@ -418,9 +392,10 @@ export const Surveyors = (props: Props) => {
 
                     <CustomizedDialogPDF
                       open={modalAssignOpen}
-                      onConfirm={onDownloadDocument}
+                      componentRef={componentRef}
                       onDeny={onDeny}
                       title={transmitted[0].name}
+                      titlePDF={`${intl.formatMessage({id: "Survey"})}${dataSurvey.codeSurvey}`}
                       content={
                         <div ref={componentRef}>
                           <PDFSurveyors

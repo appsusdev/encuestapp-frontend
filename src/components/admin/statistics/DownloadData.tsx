@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { CSVLink } from "react-csv";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Box, Link } from "@material-ui/core";
@@ -30,12 +30,15 @@ interface IData {
 
 export const DownloadData = (props: Props) => {
   const classes = useStyles();
+  const intl = useIntl();
+
   const { citizens } = useSelector((state: AppState) => state.citizens);
   const dispatch = useDispatch();
   const { modalAssignOpen } = useSelector<AppState, AppState["ui"]>(
     (state) => state.ui
   );
   const { transmitted, surveyor, idCitizens } = props;
+  const componentRef = useRef() as React.MutableRefObject<HTMLDivElement>;
   const csvLinkHome = useRef<
     CSVLink & HTMLAnchorElement & { link: HTMLAnchorElement }
   >(null);
@@ -278,27 +281,24 @@ export const DownloadData = (props: Props) => {
 
         <CustomizedDialogPDF
           open={modalAssignOpen}
+          componentRef={componentRef}
           onConfirm={onDeny}
           onDeny={onDeny}
           title={transmitted[0].name}
+          titlePDF={`${intl.formatMessage({ id: "Dictionary" })}_${
+            transmitted[0].name
+          }`}
           content={
-            <DictionaryQuestions
-              title={transmitted[0].name}
-              questions={data.questions}
-            />
+            <div ref={componentRef}>
+              <DictionaryQuestions
+                title={transmitted[0].name}
+                questions={data.questions}
+              />
+            </div>
           }
           textButton="Download"
         />
       </React.Fragment>
-
-      {/* <div style={{ display: "none" }}>
-        <div ref={componentRef}>
-          <DictionaryQuestions
-            title={transmitted[0].name}
-            questions={data.questions}
-          />
-        </div>
-      </div> */}
 
       <MyAlert
         open={data.home.length === 0 && load.home}

@@ -154,6 +154,7 @@ export const FormAddQuestion = () => {
                         await dispatch( startNewQuestion(data, survey.idSurvey) );
                         resetForm({});
                     }
+                    setOptions([]);
                     setSubmitting(false);
                 }}>
                 {({ values, isSubmitting, handleChange, handleSubmit }) => (
