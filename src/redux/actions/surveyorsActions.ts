@@ -328,34 +328,11 @@ export const startLoadingMicrodata = (data: any) => {
         idSurveys.push(survey.idEncuesta);
         idResponsibleCitizen.push(survey.id);
       });
-      dispatch(setIdResponsibleCitizens(idResponsibleCitizen));
-      console.log(surveys)
-      
+      dispatch(setIdResponsibleCitizens(idResponsibleCitizen));    
       const newSurveys = surveys.filter(
         (survey: Partial<Survey>) =>
         survey.idSurvey && idSurveys.includes(survey.idSurvey)
         );
-    
-      console.log(newSurveys)
-      console.log(idResponsibleCitizen)
-     
-     /*  for (let i = 0; i < resp.length; i++) {
-        const surveysTransmitted = resp[i].formatoAutorizacion;
-        const idSurvey = resp[i].id;
-        newSurveys[i].authorizationFormats = surveysTransmitted;
-        newSurveys[i].code = idSurvey;
-        newSurveys[i].citizenResponsable = resp[i].idCiudadanoResponsable;
-      } */
-
-     /*  for (let i = 0; i < resp.length; i++) {
-        const idSurvey = resp[i].id;
-     
-        newSurveys[i].code = idSurvey;
- 
-      } */
- 
-      console.log(newSurveys)
-
       const array = getCopyArrayOrObject(newSurveys);
       const surveysWithAnswers = array.map((survey: Survey) => {
         survey.chapters.map((chapter) => {
