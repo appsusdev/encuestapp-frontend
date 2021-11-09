@@ -4,8 +4,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 
 import {
   Divider,
@@ -35,6 +33,8 @@ import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { PDFSurveyors } from "./PDFSurveyors";
 import { CustomizedDialogPDF } from "../../custom/CustomizedDialogPDF";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 interface Props {
   transmitted: Survey[];
 }
@@ -419,6 +419,9 @@ export const Surveyors = (props: Props) => {
                       onConfirm={onDownloadDocument}
                       onDeny={onDeny}
                       title={transmitted[0].name}
+                      titlePDF={`${intl.formatMessage({ id: "Survey" })}${
+                        dataSurvey.codeSurvey
+                      }`}
                       content={
                         <div ref={componentRef}>
                           <PDFSurveyors

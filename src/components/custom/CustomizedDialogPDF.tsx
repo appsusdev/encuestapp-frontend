@@ -12,6 +12,36 @@ import { FormattedMessage } from "react-intl";
 import { TransitionProps } from "@material-ui/core/transitions";
 import Slide from "@material-ui/core/Slide";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import ReactToPrint from "react-to-print";
+
+const pageStyle = `
+@media all {
+  .page-break {
+    display: none;
+  }
+}
+
+@media print {
+  html, body {
+    height: initial !important;
+    overflow: initial !important;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+@media print {
+  .page-break {
+    margin-top: 1rem;
+    display: block;
+    page-break-before: auto;
+  }
+}
+
+@page {
+  size: auto;
+  margin: 20mm;
+}
+`;
 
 interface ConfirmationDialogProps {
   width?: boolean;
@@ -22,6 +52,8 @@ interface ConfirmationDialogProps {
   loading?: boolean;
   onDeny: () => void;
   onConfirm?: () => void;
+  titlePDF?: string;
+  componentRef?: React.MutableRefObject<HTMLDivElement>;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -45,8 +77,17 @@ const Transition = React.forwardRef(function Transition(
 
 export const CustomizedDialogPDF = (props: ConfirmationDialogProps) => {
   const classes = useStyles();
-  const { open, title, content, onDeny, onConfirm, textButton, loading } =
-    props;
+  const {
+    open,
+    title,
+    content,
+    onDeny,
+    onConfirm,
+    textButton,
+    loading,
+    titlePDF,
+    componentRef,
+  } = props;
   return (
     <Dialog
       fullScreen
@@ -68,9 +109,22 @@ export const CustomizedDialogPDF = (props: ConfirmationDialogProps) => {
             {title}
           </Typography>
           {textButton && !loading ? (
-            <Button autoFocus color="inherit" onClick={onConfirm}>
-              <FormattedMessage id={`${textButton}`} />
-            </Button>
+            textButton === "Download" && componentRef ? (
+              <ReactToPrint
+                trigger={() => (
+                  <Button autoFocus color="inherit">
+                    <FormattedMessage id={`${textButton}`} />
+                  </Button>
+                )}
+                content={() => componentRef.current}
+                pageStyle={pageStyle}
+                documentTitle={titlePDF}
+              />
+            ) : (
+              <Button autoFocus color="inherit" onClick={onConfirm}>
+                <FormattedMessage id={`${textButton}`} />
+              </Button>
+            )
           ) : (
             <Button autoFocus color="inherit" onClick={onConfirm}>
               <FormattedMessage id="Save" />
