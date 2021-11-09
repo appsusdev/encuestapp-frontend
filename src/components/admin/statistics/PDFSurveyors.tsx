@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import {
   Box,
   Card,
-  CardMedia,
   createMuiTheme,
   Grid,
   Link,
@@ -73,7 +72,6 @@ export const PDFSurveyors = (props: Props) => {
   const citizensSurveyeds: any[] = citizens.filter((citezen) =>
     idSurveyeds.includes(citezen.identificacion)
   );
-
 
   return (
     <Box mt={2} m={5}>
@@ -219,7 +217,8 @@ export const PDFSurveyors = (props: Props) => {
                         xs={
                           question.type === TypeQuestion.TEXT_AREA ||
                           question.type === TypeQuestion.PICTURE ||
-                          question.type === TypeQuestion.FILE
+                          question.type === TypeQuestion.FILE ||
+                          question.type === TypeQuestion.GEOLOCATION
                             ? 12
                             : 8
                         }
@@ -263,39 +262,32 @@ export const PDFSurveyors = (props: Props) => {
 
                         {question.type === TypeQuestion.PICTURE && (
                           <>
-                            <Grid container>
-                              <Grid item xs={12}>
-                                {answer && (
-                                  /*  <AsyncImage  src={answer.respuesta.value}  className={classes.media}/> */
+                            {answer && (
+                              <Box
+                                display="flex"
+                                justifyContent="center"
+                                width={1}
+                              >
+                                <Card
+                                  className={classes.cardPDF}
+                                  style={{
+                                    marginBottom: "15px",
+                                  }}
+                                >
                                   <img
                                     loading="lazy"
                                     src={answer.respuesta.value}
                                     alt="ImageAnswer"
                                     className={classes.media}
                                   />
-                                  /*  <Card
-                                      className={classes.cardPDF}
-                                      style={{
-                                        marginBottom: "15px",
-                                      }}
-                                    >
-                                      <CardMedia
-                                        className={classes.media}
-                                        image={
-                                          answer.respuesta &&
-                                          answer.respuesta.value
-                                        }
-                                        title="Answer"
-                                      />
-                                    </Card> */
-                                )}
-                                {indexAnswer % 2 === 0 && (
-                                  <>
-                                    <div style={{ pageBreakAfter: "always" }} />
-                                  </>
-                                )}
-                              </Grid>
-                            </Grid>
+                                </Card>
+                              </Box>
+                            )}
+                            {indexAnswer % 2 === 0 && (
+                              <>
+                                <div style={{ pageBreakAfter: "always" }} />
+                              </>
+                            )}
                           </>
                         )}
                         {question.options &&
@@ -338,19 +330,21 @@ export const PDFSurveyors = (props: Props) => {
                               )
                           )}
                         {question.type === TypeQuestion.GEOLOCATION && (
-                          <>
-                            <Grid container style={{ marginBottom: "5vh" }}>
-                              <Grid item xs={12}>
-                                <Card className={classes.mapPDF}>
-                                  <CardMedia
-                                    className={classes.media}
-                                    image={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
-                                    title="Map"
-                                  />
-                                </Card>
-                              </Grid>
-                            </Grid>
-                          </>
+                          <Box display="flex" justifyContent="center" width={1}>
+                            <Card
+                              className={classes.cardPDF}
+                              style={{
+                                marginBottom: "15px",
+                              }}
+                            >
+                              <img
+                                loading="lazy"
+                                src={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
+                                alt="ImageAnswer"
+                                className={classes.media}
+                              />
+                            </Card>
+                          </Box>
                         )}
                         {question.type === TypeQuestion.FILE && (
                           <Box mt={1}>
@@ -376,14 +370,21 @@ export const PDFSurveyors = (props: Props) => {
           <h1>
             <FormattedMessage id="AuthorizationFormat" />
           </h1>
-          <Grid item xs={12} className={classes.cardPDF}>
-            <img
-              style={{ position: "absolute" }}
-              className={classes.media}
-              src={authorizationFormat}
-              alt="Authorization Format"
-            />
-          </Grid>
+          <Box display="flex" justifyContent="center" width={1}>
+            <Card
+              className={classes.cardPDF}
+              style={{
+                marginBottom: "15px",
+              }}
+            >
+              <img
+                loading="lazy"
+                src={authorizationFormat}
+                alt="ImageAnswer"
+                className={classes.media}
+              />
+            </Card>
+          </Box>
         </Grid>
       </Box>
 

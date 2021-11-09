@@ -70,8 +70,9 @@ export const useStyles = makeStyles((theme: Theme) => ({
     minWidth: 500,
   },
   media: {
-    width: 400,
-    height: 400,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
   },
   card: {
     height: "247px !important",
@@ -80,8 +81,8 @@ export const useStyles = makeStyles((theme: Theme) => ({
     //pageBreakAfter: "always",
   },
   cardPDF: {
-    height: "60vh",
-    width: "100%",
+    height: "80vh",
+    width: "65%",
     objectFit: "cover",
     objectPosition: "center center",
     pageBreakAfter: "always",
