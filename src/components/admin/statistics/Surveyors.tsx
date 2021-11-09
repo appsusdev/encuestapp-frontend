@@ -35,8 +35,6 @@ import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { PDFSurveyors } from "./PDFSurveyors";
 import { CustomizedDialogPDF } from "../../custom/CustomizedDialogPDF";
-//@ts-ignore
-import { useScreenshot } from "use-react-screenshot";
 interface Props {
   transmitted: Survey[];
 }
@@ -86,8 +84,7 @@ export const Surveyors = (props: Props) => {
 
   let list: Survey[] = surveys;
 
-  const [image, takeScreenshot] = useScreenshot();
-
+  
   useEffect(() => {
     setSurveysAssign(
       list.filter((survey: Survey) =>
@@ -221,13 +218,13 @@ export const Surveyors = (props: Props) => {
     dispatch(uiOpenModalAssign());
     console.log(typeof componentRef.current);
   };
-
   const onDeny = () => {
     dispatch(uiCloseModalAssign());
   };
 
   const onDownloadDocument = async () => {
-    await html2canvas(componentRef.current).then((canvas) => {
+   
+    await html2canvas(componentRef.current,{allowTaint:false,useCORS:true,proxy:"/"}).then((canvas) => {
       const imgData = canvas.toDataURL("image/jpeg");
       const imgWidth = 210;
       const pageHeight = 295;
@@ -245,7 +242,8 @@ export const Surveyors = (props: Props) => {
         doc.addImage(imgData, "jpeg", 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
       }
-        doc.save("file.pdf");
+     
+      doc.save("file.pdf");
     });
   };
 
