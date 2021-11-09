@@ -215,7 +215,6 @@ export const Surveyors = (props: Props) => {
     });
     setNewList(filter);
     dispatch(uiOpenModalAssign());
-    console.log(typeof componentRef.current);
   };
   const onDeny = () => {
     dispatch(uiCloseModalAssign());

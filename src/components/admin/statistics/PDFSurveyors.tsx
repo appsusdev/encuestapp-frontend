@@ -191,9 +191,6 @@ export const PDFSurveyors = (props: Props) => {
 
             {chapter.questions.map((question, index) => (
               <Box m={1} mb={1} key={question.id}>
-                {chapter.questions[index].type === TypeQuestion.GEOLOCATION && (
-                  <div style={{ pageBreakAfter: "always" }} />
-                )}
                 <Grid container>
                   <Grid item xs={1}>
                     {question.directedTo === "PreguntasIndividual" ? (
@@ -223,7 +220,6 @@ export const PDFSurveyors = (props: Props) => {
                             : 8
                         }
                       >
-                        {/*  <h5>BREAK ANSWER {indexAnswer}</h5> */}
                         {(question.type === TypeQuestion.TEXT_INPUT ||
                           question.type === TypeQuestion.NUMBER ||
                           question.type === TypeQuestion.DEPARTMENT ||
@@ -259,7 +255,6 @@ export const PDFSurveyors = (props: Props) => {
                             }
                           />
                         )}
-
                         {question.type === TypeQuestion.PICTURE && (
                           <>
                             {answer && (
@@ -282,11 +277,6 @@ export const PDFSurveyors = (props: Props) => {
                                   />
                                 </Card>
                               </Box>
-                            )}
-                            {indexAnswer % 2 === 0 && (
-                              <>
-                                <div style={{ pageBreakAfter: "always" }} />
-                              </>
                             )}
                           </>
                         )}
@@ -392,7 +382,7 @@ export const PDFSurveyors = (props: Props) => {
         <Box display="flex" justifyContent="center" alignContent="flex-end">
           <Grid>
             <img
-              style={{ height: "400px", objectFit: "cover" }}
+              style={{ height: "300px", objectFit: "cover" }}
               src={logo}
               alt="Logo Encuestapp"
             />

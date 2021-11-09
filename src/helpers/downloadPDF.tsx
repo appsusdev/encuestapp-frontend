@@ -1,33 +1,19 @@
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+// @ts-ignore
+import html2pdf from "html2pdf.js";
 
 export const downloadPDF = async (
   componentRef: React.MutableRefObject<HTMLDivElement>,
   name: string
 ) => {
-  await html2canvas(componentRef.current, {
-    allowTaint: false,
-    useCORS: true,
-    proxy: "/",
-  }).then((canvas) => {
-    const imgData = canvas.toDataURL("image/jpeg");
-    const imgWidth = 210;
-    const pageHeight = 295;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    let heightLeft = imgHeight;
-    const doc = new jsPDF("p", "mm");
-    let position = 0;
+  const element = componentRef.current;
+  const opt = {
+    filename: `${name}.pdf`,
+    margin: [0.3, 0, 0.1, 0],
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2, allowTaint: false, useCORS: true, proxy: "/" },
+    jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    pagebreak: { mode: ["avoid-all", "css"] },
+  };
 
-    doc.addImage(imgData, "jpeg", 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-
-    while (heightLeft >= 0) {
-      position = heightLeft - imgHeight;
-      doc.addPage();
-      doc.addImage(imgData, "jpeg", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-    }
-
-    doc.save(`${name}.pdf`);
-  });
+  await html2pdf().set(opt).from(element).save();
 };
