@@ -179,9 +179,8 @@ export const PDFSurveyors = (props: Props) => {
       {/* ----------------- RESPUESTAS DE CIUDADANOS ENCUESTADOS ------------------- */}
 
       {list &&
-        list.map((chapter, indexChapter) => (
+        list.map((chapter) => (
           <Box key={chapter.id} mt={2}>
-            {indexChapter > 0 && <div style={{ pageBreakAfter: "always" }} />}
             <Typography
               className={clsx(classes.titlePDF, classes.capitalize)}
               variant="h6"
