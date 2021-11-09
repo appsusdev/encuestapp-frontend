@@ -12,6 +12,7 @@ import { TypeQuestion } from "../../../enums/enums";
 import { MyAlert } from "../../custom/MyAlert";
 import { CustomizedDialogPDF } from "../../custom/CustomizedDialogPDF";
 import { AppState } from "../../../redux/reducers/rootReducer";
+import { downloadPDF } from "../../../helpers/downloadPDF";
 import {
   uiCloseModalAssign,
   uiOpenModalAssign,
@@ -51,6 +52,7 @@ export const DownloadData = (props: Props) => {
     ind: [],
     questions: [],
   });
+  const [startDownload, setStartDownload] = useState(false);
 
   let arrayQuestionsHome: any[] = [];
   let arrayQuestionsInd: any[] = [];
@@ -236,6 +238,16 @@ export const DownloadData = (props: Props) => {
     dispatch(uiCloseModalAssign());
   };
 
+  const onDownload = async () => {
+    setStartDownload(true);
+    await downloadPDF(
+      componentRef,
+      `${intl.formatMessage({ id: "Dictionary" })}_${transmitted[0].name}`
+    );
+
+    setStartDownload(false);
+  };
+
   return (
     <Box
       m={2}
@@ -281,8 +293,7 @@ export const DownloadData = (props: Props) => {
 
         <CustomizedDialogPDF
           open={modalAssignOpen}
-          componentRef={componentRef}
-          onConfirm={onDeny}
+          onConfirm={onDownload}
           onDeny={onDeny}
           title={transmitted[0].name}
           titlePDF={`${intl.formatMessage({ id: "Dictionary" })}_${
@@ -296,6 +307,7 @@ export const DownloadData = (props: Props) => {
               />
             </div>
           }
+          loading={startDownload}
           textButton="Download"
         />
       </React.Fragment>

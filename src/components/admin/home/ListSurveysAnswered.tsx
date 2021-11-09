@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage, useIntl } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Box, CircularProgress, Link } from "@material-ui/core";
@@ -15,6 +15,7 @@ import {
   uiCloseModalAssign,
 } from "../../../redux/actions/uiActions";
 import { PDFSurveys } from "./PDFSurveys";
+import { downloadPDF } from "../../../helpers/downloadPDF";
 interface Props {
   answered: Survey[];
 }
@@ -45,6 +46,7 @@ export const ListSurveysAnswered = (props: Props) => {
     nameSurveyor: "",
     surveyeds: [],
   });
+  const [startDownload, setStartDownload] = useState(false);
   const citizen: ICitizen = activeCitizen;
   const listSurveyors: Surveyor[] = surveyors;
   const infoTransmitted: any[] = infoSurveysTransmitted;
@@ -94,6 +96,16 @@ export const ListSurveysAnswered = (props: Props) => {
     dispatch(uiCloseModalAssign());
   };
 
+  const onDownload = async () => {
+    setStartDownload(true);
+    await downloadPDF(
+      componentRef,
+      `${intl.formatMessage({ id: "Survey" })}${dataSurvey.codeSurvey}`
+    );
+
+    setStartDownload(false);
+  };
+
   return (
     <Box m={2}>
       {loading ? (
@@ -121,11 +133,12 @@ export const ListSurveysAnswered = (props: Props) => {
 
               <CustomizedDialogPDF
                 open={modalAssignOpen}
-                componentRef={componentRef}
-                onConfirm={onDeny}
+                onConfirm={onDownload}
                 onDeny={onDeny}
                 title={dataSurvey.title}
-                titlePDF={`${intl.formatMessage({id: "Survey"})}${dataSurvey.codeSurvey}`}
+                titlePDF={`${intl.formatMessage({ id: "Survey" })}${
+                  dataSurvey.codeSurvey
+                }`}
                 content={
                   <div ref={componentRef}>
                     <PDFSurveys
@@ -139,6 +152,7 @@ export const ListSurveysAnswered = (props: Props) => {
                     />
                   </div>
                 }
+                loading={startDownload}
                 textButton="Download"
               />
             </React.Fragment>
