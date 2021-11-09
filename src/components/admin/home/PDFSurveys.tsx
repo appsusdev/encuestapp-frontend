@@ -196,9 +196,6 @@ export const PDFSurveys = (props: Props) => {
 
             {chapter.questions.map((question, index) => (
               <Box m={1} mb={1} key={question.id}>
-                {chapter.questions[index].type === TypeQuestion.GEOLOCATION && (
-                  <div style={{ pageBreakAfter: "always" }} />
-                )}
                 <Grid container>
                   <Grid item xs={1}>
                     {question.directedTo === "PreguntasIndividual" ? (
