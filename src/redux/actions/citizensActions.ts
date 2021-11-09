@@ -38,6 +38,7 @@ export const startLoadingSurveysAnswered = (idCitizen: string) => {
     const idSurveysCitizen: string[] = [];
 
     const resp = await getTransmittedSurveysByCitizen(town, idCitizen, nit);
+
     resp.forEach((survey) => {
       idSurveys.push(survey.idEncuesta);
       idSurveysCitizen.push(survey.id);
@@ -53,15 +54,17 @@ export const startLoadingSurveysAnswered = (idCitizen: string) => {
       const idSurvey = resp[i].id;
       newSurveys[i].authorizationFormats = surveysTransmitted;
       newSurveys[i].code = idSurvey;
+      newSurveys[i].citizenResponsable = resp[i].idCiudadanoResponsable;
     }
-
     // Obtener respuestas de ciudadano con su núcleo familiar
     const array = getCopyArrayOrObject(newSurveys);
     const surveysWithAnswers = array.map((survey: Survey) => {
       survey.chapters.map((chapter) => {
         chapter.questions.map(async (question: SurveyQuestion) => {
           if (idSurveysCitizen.includes(survey.code)) {
-            const resp = await getAnswers(
+            let resp: any[] = [];
+
+            resp = await getAnswers(
               town,
               survey.idSurvey,
               chapter.id,
@@ -69,6 +72,7 @@ export const startLoadingSurveysAnswered = (idCitizen: string) => {
               question.id,
               survey.code
             );
+
             question.answers = resp;
             return question.answers;
           }

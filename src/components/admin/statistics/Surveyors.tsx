@@ -215,7 +215,6 @@ export const Surveyors = (props: Props) => {
     });
     setNewList(filter);
     dispatch(uiOpenModalAssign());
-    console.log(typeof componentRef.current);
   };
   const onDeny = () => {
     dispatch(uiCloseModalAssign());
@@ -249,6 +248,8 @@ export const Surveyors = (props: Props) => {
                 data.surveyor = surveyorSelected;
                 data.survey = surveySelected;
                 setSubmitting(true);
+                
+               
                 await dispatch(startLoadingMicrodata(data));
                 setSubmitting(false);
                 dispatch(finishLoading());

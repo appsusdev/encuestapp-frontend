@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import {
   Box,
   Card,
-  CardMedia,
   createMuiTheme,
   Link,
   Grid,

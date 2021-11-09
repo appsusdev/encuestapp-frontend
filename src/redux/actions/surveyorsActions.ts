@@ -321,16 +321,40 @@ export const startLoadingMicrodata = (data: any) => {
     );
 
     if (resp.length > 0) {
+    
       dispatch(setInfoTransmittedSurveys(resp));
-      resp.forEach((survey) => {
+   
+      resp.forEach((survey,index) => {
         idSurveys.push(survey.idEncuesta);
         idResponsibleCitizen.push(survey.id);
       });
       dispatch(setIdResponsibleCitizens(idResponsibleCitizen));
+      console.log(surveys)
+      
       const newSurveys = surveys.filter(
         (survey: Partial<Survey>) =>
-          survey.idSurvey && idSurveys.includes(survey.idSurvey)
-      );
+        survey.idSurvey && idSurveys.includes(survey.idSurvey)
+        );
+    
+      console.log(newSurveys)
+      console.log(idResponsibleCitizen)
+     
+     /*  for (let i = 0; i < resp.length; i++) {
+        const surveysTransmitted = resp[i].formatoAutorizacion;
+        const idSurvey = resp[i].id;
+        newSurveys[i].authorizationFormats = surveysTransmitted;
+        newSurveys[i].code = idSurvey;
+        newSurveys[i].citizenResponsable = resp[i].idCiudadanoResponsable;
+      } */
+
+     /*  for (let i = 0; i < resp.length; i++) {
+        const idSurvey = resp[i].id;
+     
+        newSurveys[i].code = idSurvey;
+ 
+      } */
+ 
+      console.log(newSurveys)
 
       const array = getCopyArrayOrObject(newSurveys);
       const surveysWithAnswers = array.map((survey: Survey) => {
@@ -342,8 +366,10 @@ export const startLoadingMicrodata = (data: any) => {
               chapter.id,
               question.directedTo,
               question.id,
-              surveyor
+              surveyor,
+            
             );
+        
             question.answers = resp;
             return question;
           });
@@ -351,6 +377,7 @@ export const startLoadingMicrodata = (data: any) => {
         });
         return survey;
       });
+     
       await dispatch(setTransmittedSurveys(surveysWithAnswers));
     }
   };
