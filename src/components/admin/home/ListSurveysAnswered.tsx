@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { FormattedMessage } from "react-intl";
+import React, { useRef, useState } from "react";
+import { FormattedMessage, useIntl } from 'react-intl';
 import { useDispatch, useSelector } from "react-redux";
 
 import { Box, CircularProgress, Link } from "@material-ui/core";
@@ -21,7 +21,9 @@ interface Props {
 export const ListSurveysAnswered = (props: Props) => {
   const { answered } = props;
   const classes = useStyles();
+  const intl = useIntl();
   const dispatch = useDispatch();
+  const componentRef = useRef() as React.MutableRefObject<HTMLDivElement>;
 
   const { surveysAnswered, activeCitizen } = useSelector<
     AppState,
@@ -119,19 +121,23 @@ export const ListSurveysAnswered = (props: Props) => {
 
               <CustomizedDialogPDF
                 open={modalAssignOpen}
+                componentRef={componentRef}
                 onConfirm={onDeny}
                 onDeny={onDeny}
                 title={dataSurvey.title}
+                titlePDF={`${intl.formatMessage({id: "Survey"})}${dataSurvey.codeSurvey}`}
                 content={
-                  <PDFSurveys
-                    data={newList}
-                    title={dataSurvey.title}
-                    surveyCode={dataSurvey.codeSurvey}
-                    dateSurvey={dataSurvey.dateSurvey}
-                    authorizationFormat={dataSurvey.authorizationFormat}
-                    nameSurveyor={dataSurvey.nameSurveyor}
-                    idSurveyeds={dataSurvey.surveyeds}
-                  />
+                  <div ref={componentRef}>
+                    <PDFSurveys
+                      data={newList}
+                      title={dataSurvey.title}
+                      surveyCode={dataSurvey.codeSurvey}
+                      dateSurvey={dataSurvey.dateSurvey}
+                      authorizationFormat={dataSurvey.authorizationFormat}
+                      nameSurveyor={dataSurvey.nameSurveyor}
+                      idSurveyeds={dataSurvey.surveyeds}
+                    />
+                  </div>
                 }
                 textButton="Download"
               />

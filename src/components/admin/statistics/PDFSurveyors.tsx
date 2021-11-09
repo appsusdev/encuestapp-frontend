@@ -38,6 +38,7 @@ interface Props {
   nameSurveyor: string;
   responsibleCitizen: string;
   authorizationFormat: string;
+  onFinishLoad?(): void;
 }
 
 const theme = createMuiTheme({
@@ -58,7 +59,6 @@ export const PDFSurveyors = (props: Props) => {
     responsibleCitizen,
     authorizationFormat,
   } = props;
-
   const classes = useStyles();
 
   const list: Chapter[] = getCopyArrayOrObject(data);
@@ -73,6 +73,7 @@ export const PDFSurveyors = (props: Props) => {
   const citizensSurveyeds: any[] = citizens.filter((citezen) =>
     idSurveyeds.includes(citezen.identificacion)
   );
+
 
   return (
     <Box mt={2} m={5}>
@@ -180,8 +181,9 @@ export const PDFSurveyors = (props: Props) => {
       {/* ----------------- RESPUESTAS DE CIUDADANOS ENCUESTADOS ------------------- */}
 
       {list &&
-        list.map((chapter) => (
+        list.map((chapter, indexChapter) => (
           <Box key={chapter.id} mt={2}>
+            {indexChapter > 0 && <div style={{ pageBreakAfter: "always" }} />}
             <Typography
               className={clsx(classes.titlePDF, classes.capitalize)}
               variant="h6"
@@ -263,23 +265,33 @@ export const PDFSurveyors = (props: Props) => {
                           <>
                             <Grid container>
                               <Grid item xs={12}>
-                                <Card
-                                  className={classes.cardPDF}
-                                  style={{
-                                    marginBottom: "15px",
-                                  }}
-                                >
-                                  <CardMedia
+                                {answer && (
+                                  /*  <AsyncImage  src={answer.respuesta.value}  className={classes.media}/> */
+                                  <img
+                                    loading="lazy"
+                                    src={answer.respuesta.value}
+                                    alt="ImageAnswer"
                                     className={classes.media}
-                                    image={
-                                      answer.respuesta && answer.respuesta.value
-                                    }
-                                    title="Answer"
                                   />
-                                </Card>
+                                  /*  <Card
+                                      className={classes.cardPDF}
+                                      style={{
+                                        marginBottom: "15px",
+                                      }}
+                                    >
+                                      <CardMedia
+                                        className={classes.media}
+                                        image={
+                                          answer.respuesta &&
+                                          answer.respuesta.value
+                                        }
+                                        title="Answer"
+                                      />
+                                    </Card> */
+                                )}
                                 {indexAnswer % 2 === 0 && (
                                   <>
-                                    <div style={{ pageBreakAfter: "auto" }} />
+                                    <div style={{ pageBreakAfter: "always" }} />
                                   </>
                                 )}
                               </Grid>
