@@ -33,7 +33,8 @@ import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { PDFSurveyors } from "./PDFSurveyors";
 import { CustomizedDialogPDF } from "../../custom/CustomizedDialogPDF";
-import { downloadPDF } from "../../../helpers/downloadPDF";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 interface Props {
   transmitted: Survey[];
 }
@@ -78,12 +79,12 @@ export const Surveyors = (props: Props) => {
   });
   const [show, setShow] = useState(false);
   const [newList, setNewList] = useState<Chapter[]>([]);
-  const [startDownload, setStartDownload] = useState(false);
   const infoTransmitted: any[] = infoSurveysTransmitted;
   const surveyorsList: Surveyor[] = surveyors;
 
   let list: Survey[] = surveys;
 
+  
   useEffect(() => {
     setSurveysAssign(
       list.filter((survey: Survey) =>
@@ -201,7 +202,7 @@ export const Surveyors = (props: Props) => {
 
     // Filtro para obtener las respuestas correspondientes a la encuesta seleccionada
     const list: Chapter[] = getCopyArrayOrObject(transmitted[0].chapters);
-
+    console.log(transmitted)
     const filter = list?.map((chapter) => {
       chapter.questions.map((question) => {
         question.answers = question.answers?.filter(
@@ -215,19 +216,35 @@ export const Surveyors = (props: Props) => {
     });
     setNewList(filter);
     dispatch(uiOpenModalAssign());
+    console.log(typeof componentRef.current);
   };
   const onDeny = () => {
     dispatch(uiCloseModalAssign());
   };
 
-  const onDownload = async () => {
-    setStartDownload(true);
-    await downloadPDF(
-      componentRef,
-      `${intl.formatMessage({ id: "Survey" })}${dataSurvey.codeSurvey}`
-    );
+  const onDownloadDocument = async () => {
+   
+    await html2canvas(componentRef.current,{allowTaint:false,useCORS:true,proxy:"/"}).then((canvas) => {
+      const imgData = canvas.toDataURL("image/jpeg");
+      const imgWidth = 210;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      const doc = new jsPDF("p", "mm");
+      let position = 0;
 
-    setStartDownload(false);
+      doc.addImage(imgData, "jpeg", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        doc.addPage();
+        doc.addImage(imgData, "jpeg", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+     
+      doc.save("file.pdf");
+    });
   };
 
   return (
@@ -248,8 +265,6 @@ export const Surveyors = (props: Props) => {
                 data.surveyor = surveyorSelected;
                 data.survey = surveySelected;
                 setSubmitting(true);
-                
-               
                 await dispatch(startLoadingMicrodata(data));
                 setSubmitting(false);
                 dispatch(finishLoading());
@@ -401,7 +416,7 @@ export const Surveyors = (props: Props) => {
 
                     <CustomizedDialogPDF
                       open={modalAssignOpen}
-                      onConfirm={onDownload}
+                      onConfirm={onDownloadDocument}
                       onDeny={onDeny}
                       title={transmitted[0].name}
                       titlePDF={`${intl.formatMessage({ id: "Survey" })}${
@@ -421,7 +436,6 @@ export const Surveyors = (props: Props) => {
                           />
                         </div>
                       }
-                      loading={startDownload}
                       textButton="Download"
                     />
                   </React.Fragment>
