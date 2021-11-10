@@ -322,29 +322,47 @@ export const startLoadingMicrodata = (data: any) => {
 
     if (resp.length > 0) {
       dispatch(setInfoTransmittedSurveys(resp));
-      resp.forEach((survey) => {
+
+      resp.forEach((survey, index) => {
         idSurveys.push(survey.idEncuesta);
         idResponsibleCitizen.push(survey.id);
       });
       dispatch(setIdResponsibleCitizens(idResponsibleCitizen));
+
       const newSurveys = surveys.filter(
         (survey: Partial<Survey>) =>
           survey.idSurvey && idSurveys.includes(survey.idSurvey)
       );
-
       const array = getCopyArrayOrObject(newSurveys);
       const surveysWithAnswers = array.map((survey: Survey) => {
         survey.chapters.map((chapter) => {
           chapter.questions.map(async (question) => {
-            const resp = await getAnswersBySurveyor(
-              town,
-              survey.idSurvey,
-              chapter.id,
-              question.directedTo,
-              question.id,
-              surveyor
-            );
-            question.answers = resp;
+            if (question.directedTo === "PreguntasHogar") {
+              let questions: any[] = [];
+              for (const idCitizen of idResponsibleCitizen) {
+                const resp = await getAnswersBySurveyor(
+                  town,
+                  survey.idSurvey,
+                  chapter.id,
+                  question.directedTo,
+                  question.id,
+                  surveyor,
+                  idCitizen
+                );
+                questions.push(resp[0]);
+              }
+              question.answers = questions;
+            } else {
+              const resp = await getAnswersBySurveyor(
+                town,
+                survey.idSurvey,
+                chapter.id,
+                question.directedTo,
+                question.id,
+                surveyor
+              );
+              question.answers = resp;
+            }
             return question;
           });
           return chapter;

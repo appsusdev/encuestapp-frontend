@@ -72,25 +72,23 @@ export const useStyles = makeStyles((theme: Theme) => ({
   media: {
     width: "100%",
     height: "100%",
+    objectFit: "cover",
   },
   card: {
     height: "247px !important",
     marginTop: "12px",
     maxWidth: 345,
-    //pageBreakAfter: "always",
   },
   cardPDF: {
-    height: "50vh",
-    width: "100%",
+    height: "70vh",
+    width: "65%",
     objectFit: "cover",
     objectPosition: "center center",
-    pageBreakAfter: "always",
     position: "relative",
   },
   mapPDF: {
     height: "50vh",
     width: "90vw",
-    //pageBreakAfter:'always'
   },
   page: {
     pageBreakAfter: "always",

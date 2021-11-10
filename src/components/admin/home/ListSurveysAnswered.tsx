@@ -1,7 +1,6 @@
-import { useRef, useState } from "react";
-import { FormattedMessage } from "react-intl";
-import { useSelector } from "react-redux";
-import ReactToPrint from "react-to-print";
+import React, { useRef, useState } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Box, CircularProgress, Link } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
@@ -9,44 +8,23 @@ import { ICitizen } from "../../../interfaces/Citizens";
 import { Survey, Chapter } from "../../../interfaces/Survey";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
-import { PDFSurveys } from "./PDFSurveys";
 import { Surveyor } from "../../../interfaces/Surveyor";
-
-const pageStyle = `
-@media all {
-  .page-break {
-     display: none;
-  }
-}
-
-@media print {
-  .page-break {
-      display: block;
-      page-break-before: auto;
-    }
-}
-@media print {
-  html, body {
-    height: initial !important;
-    overflow: initial !important;
-    -webkit-print-color-adjust: exact;
-  };
-}
-
-@page {
-  size: auto;
-  margin: 5vw;
-  padding:25vw
-}
-`;
-
+import { CustomizedDialogPDF } from "../../custom/CustomizedDialogPDF";
+import {
+  uiOpenModalAssign,
+  uiCloseModalAssign,
+} from "../../../redux/actions/uiActions";
+import { PDFSurveys } from "./PDFSurveys";
+import { downloadPDF } from "../../../helpers/downloadPDF";
 interface Props {
   answered: Survey[];
 }
 export const ListSurveysAnswered = (props: Props) => {
   const { answered } = props;
   const classes = useStyles();
-  const componentRef = useRef<HTMLDivElement>(null);
+  const intl = useIntl();
+  const dispatch = useDispatch();
+  const componentRef = useRef() as React.MutableRefObject<HTMLDivElement>;
 
   const { surveysAnswered, activeCitizen } = useSelector<
     AppState,
@@ -56,7 +34,7 @@ export const ListSurveysAnswered = (props: Props) => {
     AppState,
     AppState["surveyor"]
   >((state) => state.surveyor);
-  const { loading } = useSelector<AppState, AppState["ui"]>(
+  const { loading, modalAssignOpen } = useSelector<AppState, AppState["ui"]>(
     (state) => state.ui
   );
   const [newList, setNewList] = useState<Chapter[]>([]);
@@ -68,6 +46,7 @@ export const ListSurveysAnswered = (props: Props) => {
     nameSurveyor: "",
     surveyeds: [],
   });
+  const [startDownload, setStartDownload] = useState(false);
   const citizen: ICitizen = activeCitizen;
   const listSurveyors: Surveyor[] = surveyors;
   const infoTransmitted: any[] = infoSurveysTransmitted;
@@ -110,6 +89,21 @@ export const ListSurveysAnswered = (props: Props) => {
       return chapter;
     });
     setNewList(filter);
+    dispatch(uiOpenModalAssign());
+  };
+
+  const onDeny = () => {
+    dispatch(uiCloseModalAssign());
+  };
+
+  const onDownload = async () => {
+    setStartDownload(true);
+    await downloadPDF(
+      componentRef,
+      `${intl.formatMessage({ id: "Survey" })}${dataSurvey.codeSurvey}`
+    );
+
+    setStartDownload(false);
   };
 
   return (
@@ -127,33 +121,40 @@ export const ListSurveysAnswered = (props: Props) => {
           </Box>
 
           {surveysAnswered.map((survey: Partial<Survey>, index: number) => (
-            <div key={index}>
-              <ReactToPrint
-                onBeforeGetContent={async () => await getData(survey.idSurvey)}
-                trigger={() => (
-                  <Link className={classes.typography} component="button">
-                    {index + 1}. {survey.name}
-                  </Link>
-                )}
-                content={() => componentRef.current}
-                documentTitle={`${survey.name}_${activeCitizen.identificacion}`}
-                pageStyle={pageStyle}
-              />
+            <React.Fragment key={index}>
+              <Link
+                className={classes.typography}
+                component="button"
+                onClick={() => getData(survey.idSurvey)}
+              >
+                {index + 1}. {survey.name}
+              </Link>
 
-              <div style={{ display: "none" }}>
-                <div ref={componentRef}>
-                  <PDFSurveys
-                    data={newList}
-                    title={dataSurvey.title}
-                    surveyCode={dataSurvey.codeSurvey}
-                    dateSurvey={dataSurvey.dateSurvey}
-                    authorizationFormat={dataSurvey.authorizationFormat}
-                    nameSurveyor={dataSurvey.nameSurveyor}
-                    idSurveyeds={dataSurvey.surveyeds}
-                  />
-                </div>
-              </div>
-            </div>
+              <CustomizedDialogPDF
+                open={modalAssignOpen}
+                onConfirm={onDownload}
+                onDeny={onDeny}
+                title={dataSurvey.title}
+                titlePDF={`${intl.formatMessage({ id: "Survey" })}${
+                  dataSurvey.codeSurvey
+                }`}
+                content={
+                  <div ref={componentRef}>
+                    <PDFSurveys
+                      data={newList}
+                      title={dataSurvey.title}
+                      surveyCode={dataSurvey.codeSurvey}
+                      dateSurvey={dataSurvey.dateSurvey}
+                      authorizationFormat={dataSurvey.authorizationFormat}
+                      nameSurveyor={dataSurvey.nameSurveyor}
+                      idSurveyeds={dataSurvey.surveyeds}
+                    />
+                  </div>
+                }
+                loading={startDownload}
+                textButton="Download"
+              />
+            </React.Fragment>
           ))}
         </>
       ) : (

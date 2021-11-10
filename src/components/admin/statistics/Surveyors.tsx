@@ -3,7 +3,6 @@ import { Formik, Form } from "formik";
 import React, { useEffect, useState, useRef } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
-import ReactToPrint from "react-to-print";
 import * as yup from "yup";
 
 import {
@@ -24,27 +23,17 @@ import { getCopyArrayOrObject } from "../../../helpers/getCopyArrayOrObject";
 import { Surveyor } from "../../../interfaces/Surveyor";
 import { Survey, Chapter } from "../../../interfaces/Survey";
 import { startLoadingMicrodata } from "../../../redux/actions/surveyorsActions";
-import { startLoading, finishLoading } from "../../../redux/actions/uiActions";
+import {
+  startLoading,
+  finishLoading,
+  uiCloseModalAssign,
+  uiOpenModalAssign,
+} from "../../../redux/actions/uiActions";
 import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { PDFSurveyors } from "./PDFSurveyors";
-
-const pageStyle = `
-@media all {
-  .page-break {
-    display: none;
-  }
-}
-@media print {
-  html, body {
-    -webkit-print-color-adjust: exact;
-  }
-}
-@page {
-  size: auto;
-}
-`;
-
+import { CustomizedDialogPDF } from "../../custom/CustomizedDialogPDF";
+import { downloadPDF } from "../../../helpers/downloadPDF";
 interface Props {
   transmitted: Survey[];
 }
@@ -54,8 +43,12 @@ export const Surveyors = (props: Props) => {
   const classes = useStyles();
   const intl = useIntl();
   const dispatch = useDispatch();
-  const componentRef = useRef<HTMLDivElement>(null);
+  const componentRef = useRef() as React.MutableRefObject<HTMLDivElement>;
 
+  useEffect(() => {
+    dispatch(uiCloseModalAssign());
+    // eslint-disable-next-line
+  }, []);
   const { surveys } = useSelector<AppState, AppState["survey"]>(
     (state) => state.survey
   );
@@ -63,7 +56,7 @@ export const Surveyors = (props: Props) => {
     AppState,
     AppState["surveyor"]
   >((state) => state.surveyor);
-  const { loading } = useSelector<AppState, AppState["ui"]>(
+  const { loading, modalAssignOpen } = useSelector<AppState, AppState["ui"]>(
     (state) => state.ui
   );
   const { citizens } = useSelector<AppState, AppState["citizens"]>(
@@ -75,6 +68,7 @@ export const Surveyors = (props: Props) => {
   const [errorSurveyor, setErrorSurveyor] = useState(false);
   const [errorSurvey, setErrorSurvey] = useState(false);
   const [valid, setValid] = useState({ survey: false, surveyor: false });
+  const [startDownload, setStartDownload] = useState(false);
   const [dataSurvey, setDataSurvey] = useState({
     surveyeds: [],
     codeSurvey: "",
@@ -85,8 +79,6 @@ export const Surveyors = (props: Props) => {
   });
   const [show, setShow] = useState(false);
   const [newList, setNewList] = useState<Chapter[]>([]);
-  // const transmitted: Partial<Survey>[] =
-  //   getCopyArrayOrObject(surveysTransmitted);
   const infoTransmitted: any[] = infoSurveysTransmitted;
   const surveyorsList: Surveyor[] = surveyors;
 
@@ -209,7 +201,6 @@ export const Surveyors = (props: Props) => {
 
     // Filtro para obtener las respuestas correspondientes a la encuesta seleccionada
     const list: Chapter[] = getCopyArrayOrObject(transmitted[0].chapters);
-
     const filter = list?.map((chapter) => {
       chapter.questions.map((question) => {
         question.answers = question.answers?.filter(
@@ -222,6 +213,19 @@ export const Surveyors = (props: Props) => {
       return chapter;
     });
     setNewList(filter);
+    dispatch(uiOpenModalAssign());
+  };
+  const onDeny = () => {
+    dispatch(uiCloseModalAssign());
+  };
+
+  const onDownload = async () => {
+    setStartDownload(true);
+    await downloadPDF(
+      componentRef,
+      `${intl.formatMessage({ id: "Survey" })}${dataSurvey.codeSurvey}`
+    );
+    setStartDownload(false);
   };
 
   return (
@@ -378,40 +382,44 @@ export const Surveyors = (props: Props) => {
               <Grid container spacing={1}>
                 {newData.map((survey, index) => (
                   <React.Fragment key={index}>
-                    <ReactToPrint
-                      onBeforeGetContent={async () => {
-                        await getData(survey.surveyCode);
-                      }}
-                      trigger={() => (
-                        <Grid item xs={4}>
-                          <Link component="button">
-                            {survey.name} ({survey.surveyCode})
-                          </Link>
-                        </Grid>
-                      )}
-                      content={() => componentRef.current}
-                      documentTitle={`${survey.name} (${survey.surveyCode})`}
-                      pageStyle={pageStyle}
-                    />
+                    <Grid item xs={4}>
+                      <Link
+                        component="button"
+                        onClick={() => getData(survey.surveyCode)}
+                      >
+                        {survey.name} ({survey.surveyCode})
+                      </Link>
+                    </Grid>
 
                     <Grid item xs={8}>
                       {survey.date}
                     </Grid>
 
-                    <div style={{ display: "none" }}>
-                      <div ref={componentRef}>
-                        <PDFSurveyors
-                          data={newList}
-                          title={transmitted[0].name}
-                          surveyCode={dataSurvey.codeSurvey}
-                          idSurveyeds={dataSurvey.surveyeds}
-                          dateSurvey={dataSurvey.dateSurvey}
-                          nameSurveyor={dataSurvey.surveyor}
-                          responsibleCitizen={dataSurvey.responsibleCitizen}
-                          authorizationFormat={dataSurvey.authorizationFormat}
-                        />
-                      </div>
-                    </div>
+                    <CustomizedDialogPDF
+                      open={modalAssignOpen}
+                      onConfirm={onDownload}
+                      onDeny={onDeny}
+                      title={transmitted[0].name}
+                      titlePDF={`${intl.formatMessage({ id: "Survey" })}${
+                        dataSurvey.codeSurvey
+                      }`}
+                      content={
+                        <div ref={componentRef}>
+                          <PDFSurveyors
+                            data={newList}
+                            title={transmitted[0].name}
+                            surveyCode={dataSurvey.codeSurvey}
+                            idSurveyeds={dataSurvey.surveyeds}
+                            dateSurvey={dataSurvey.dateSurvey}
+                            nameSurveyor={dataSurvey.surveyor}
+                            responsibleCitizen={dataSurvey.responsibleCitizen}
+                            authorizationFormat={dataSurvey.authorizationFormat}
+                          />
+                        </div>
+                      }
+                      loading={startDownload}
+                      textButton="Download"
+                    />
                   </React.Fragment>
                 ))}
               </Grid>

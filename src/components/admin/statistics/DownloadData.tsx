@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { CSVLink } from "react-csv";
-import { FormattedMessage } from "react-intl";
-import ReactToPrint from "react-to-print";
+import { FormattedMessage, useIntl } from "react-intl";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Box, Link } from "@material-ui/core";
 
@@ -10,35 +10,13 @@ import { ISurveyAnswers, Survey, Chapter } from "../../../interfaces/Survey";
 import { DictionaryQuestions } from "./DictionaryQuestions";
 import { TypeQuestion } from "../../../enums/enums";
 import { MyAlert } from "../../custom/MyAlert";
-
-const pageStyle = `
-@media all {
-  .page-break {
-     display: none;
-  }
-}
-
-@media print {
-  .page-break {
-      display: block;
-      page-break-before: auto;
-    }
-}
-@media print {
-  html, body {
-    height: initial !important;
-    overflow: initial !important;
-    -webkit-print-color-adjust: exact;
-  };
-}
-
-@page {
-  size: auto;
-  margin: 5vw;
-  padding:25vw
-}
-`;
-
+import { CustomizedDialogPDF } from "../../custom/CustomizedDialogPDF";
+import { AppState } from "../../../redux/reducers/rootReducer";
+import { downloadPDF } from "../../../helpers/downloadPDF";
+import {
+  uiCloseModalAssign,
+  uiOpenModalAssign,
+} from "../../../redux/actions/uiActions";
 interface Props {
   transmitted: Survey[];
   surveyor: string;
@@ -53,20 +31,28 @@ interface IData {
 
 export const DownloadData = (props: Props) => {
   const classes = useStyles();
+  const intl = useIntl();
+
+  const { citizens } = useSelector((state: AppState) => state.citizens);
+  const dispatch = useDispatch();
+  const { modalAssignOpen } = useSelector<AppState, AppState["ui"]>(
+    (state) => state.ui
+  );
   const { transmitted, surveyor, idCitizens } = props;
+  const componentRef = useRef() as React.MutableRefObject<HTMLDivElement>;
   const csvLinkHome = useRef<
     CSVLink & HTMLAnchorElement & { link: HTMLAnchorElement }
   >(null);
   const csvLinkInd = useRef<
     CSVLink & HTMLAnchorElement & { link: HTMLAnchorElement }
   >(null);
-  const componentRef = useRef<HTMLDivElement>(null);
   const [load, setLoad] = useState({ home: false, ind: false });
   const [data, setData] = useState<IData>({
     home: [],
     ind: [],
     questions: [],
   });
+  const [startDownload, setStartDownload] = useState(false);
 
   let arrayQuestionsHome: any[] = [];
   let arrayQuestionsInd: any[] = [];
@@ -107,7 +93,13 @@ export const DownloadData = (props: Props) => {
     );
 
     setData({ ...data, questions: questionsData });
+    dispatch(uiOpenModalAssign());
   };
+  const getInfoCitizen = (id: string) => {
+    const citizen = citizens.find((cit) => cit.identificacion === id);
+    return citizen;
+  };
+
   const getData = async (flag: boolean) => {
     setLoad({ home: false, ind: false });
     transmitted[0].chapters.forEach((chapter: Chapter) => {
@@ -151,27 +143,34 @@ export const DownloadData = (props: Props) => {
       const homeData: any[] = [];
       arrayQuestionsHome.forEach((question, index) => {
         question.answers.forEach((answer: ISurveyAnswers) => {
-          homeData.push({
-            Codigo_encuesta: transmitted[0].idSurvey,
-            Codigo_pregunta: `PreguntaHog${index + 1}`,
-            ID_ciudadano_responsable: answer.idEncuestaCiudadano,
-            ID_ciudadano_encuestado: answer.citizen,
-            Respuesta:
-              question.type === TypeQuestion.RADIO ||
-              question.type === TypeQuestion.SELECT
-                ? question.options.map((option: any) =>
-                    option.value === answer.respuesta.value ? option.label : ""
-                  )
-                : question.type === TypeQuestion.CHECK
-                ? question.options.map((option: any) =>
-                    option.value === answer.respuesta[0].value
-                      ? option.label
-                      : ""
-                  )
-                : question.type === TypeQuestion.GEOLOCATION
-                ? `Latitud: ${answer.respuesta.value.coords.latitude}, Longitud: ${answer.respuesta.value.coords.longitude}`
-                : answer.respuesta.value,
-          });
+          const indexRow = homeData.findIndex(
+            (el) => el.ID_ciudadano_responsable === answer.idEncuestaCiudadano
+          );
+          const answerValue =
+            question.type === TypeQuestion.RADIO ||
+            question.type === TypeQuestion.SELECT
+              ? question.options.map((option: any) =>
+                  option.value === answer.respuesta.value ? option.label : ""
+                )
+              : question.type === TypeQuestion.CHECK
+              ? question.options.map((option: any) =>
+                  option.value === answer.respuesta[0].value ? option.label : ""
+                )
+              : question.type === TypeQuestion.GEOLOCATION
+              ? `Latitud: ${answer.respuesta.value.coords.latitude}, Longitud: ${answer.respuesta.value.coords.longitude}`
+              : answer.respuesta.value;
+          if (indexRow >= 0) {
+            homeData[indexRow][`PreguntaHog${index + 1}`] = answerValue;
+          } else {
+            let objHomeData: any = {
+              Codigo_encuesta: transmitted[0].idSurvey,
+
+              ID_ciudadano_responsable: answer.idEncuestaCiudadano,
+            };
+            objHomeData[`PreguntaHog${index + 1}`] = answerValue;
+
+            homeData.push(objHomeData);
+          }
         });
       });
 
@@ -183,12 +182,14 @@ export const DownloadData = (props: Props) => {
       const indData: any[] = [];
       arrayQuestionsInd.forEach((question, index) => {
         question.answers.forEach((answer: ISurveyAnswers) => {
-          indData.push({
-            Codigo_encuesta: transmitted[0].idSurvey,
-            Codigo_pregunta: `PreguntaInd${index + 1}`,
-            ID_ciudadano_responsable: answer.idEncuestaCiudadano,
-            ID_ciudadano_encuestado: answer.citizen,
-            Respuesta:
+          const citizenInfo = getInfoCitizen(answer.citizen);
+          if (citizenInfo) {
+            const indexRow = indData.findIndex(
+              (el) =>
+                el.ID_ciudadano_responsable === answer.idEncuestaCiudadano &&
+                el.ID_ciudadano_encuestado === answer.citizen
+            );
+            const answerValue =
               question.type === TypeQuestion.RADIO ||
               question.type === TypeQuestion.SELECT
                 ? question.options.map((option: any) =>
@@ -202,14 +203,49 @@ export const DownloadData = (props: Props) => {
                   )
                 : question.type === TypeQuestion.GEOLOCATION
                 ? `Latitud: ${answer.respuesta.value.coords.latitude}, Longitud: ${answer.respuesta.value.coords.longitude}`
-                : answer.respuesta.value,
-          });
+                : answer.respuesta.value;
+            if (indexRow >= 0) {
+              indData[indexRow][`PreguntaInd${index + 1}`] = answerValue;
+            } else {
+              const objIndData: any = {
+                Codigo_encuesta: transmitted[0].idSurvey,
+                ID_ciudadano_responsable: answer.idEncuestaCiudadano,
+                ID_ciudadano_encuestado: answer.citizen,
+                PrimerNombre: citizenInfo.primerNombre,
+                SegundoNombre: citizenInfo.segundoNombre,
+                PrimerApellido: citizenInfo.primerApellido,
+                SegundoApellido: citizenInfo.segundoApellido,
+                Tipo_Documento: citizenInfo.tipoIdentificacion,
+                Numero_Documento: citizenInfo.identificacion,
+                Telefono: citizenInfo.telefono,
+                Correo: citizenInfo.correo,
+                Fecha_Nacimiento: citizenInfo.fechaNacimiento,
+                Genero: citizenInfo.genero,
+              };
+              objIndData[`PreguntaInd${index + 1}`] = answerValue;
+              indData.push(objIndData);
+            }
+          }
         });
       });
       setLoad({ ...load, ind: true });
       await setData({ ...data, ind: indData });
       csvLinkInd.current?.link.click();
     }
+  };
+
+  const onDeny = () => {
+    dispatch(uiCloseModalAssign());
+  };
+
+  const onDownload = async () => {
+    setStartDownload(true);
+    await downloadPDF(
+      componentRef,
+      `${intl.formatMessage({ id: "Dictionary" })}_${transmitted[0].name}`
+    );
+
+    setStartDownload(false);
   };
 
   return (
@@ -246,26 +282,35 @@ export const DownloadData = (props: Props) => {
         />
       )}
 
-      <ReactToPrint
-        onBeforeGetContent={async () => await getQuestions()}
-        trigger={() => (
-          <Link className={classes.typography} component="button">
-            <FormattedMessage id="DictionaryQuestions" />
-          </Link>
-        )}
-        content={() => componentRef.current}
-        documentTitle={`Diccionario_encuesta_${transmitted[0].idSurvey}`}
-        pageStyle={pageStyle}
-      />
+      <React.Fragment>
+        <Link
+          className={classes.typography}
+          component="button"
+          onClick={() => getQuestions()}
+        >
+          <FormattedMessage id="DictionaryQuestions" />
+        </Link>
 
-      <div style={{ display: "none" }}>
-        <div ref={componentRef}>
-          <DictionaryQuestions
-            title={transmitted[0].name}
-            questions={data.questions}
-          />
-        </div>
-      </div>
+        <CustomizedDialogPDF
+          open={modalAssignOpen}
+          onConfirm={onDownload}
+          onDeny={onDeny}
+          title={transmitted[0].name}
+          titlePDF={`${intl.formatMessage({ id: "Dictionary" })}_${
+            transmitted[0].name
+          }`}
+          content={
+            <div ref={componentRef}>
+              <DictionaryQuestions
+                title={transmitted[0].name}
+                questions={data.questions}
+              />
+            </div>
+          }
+          loading={startDownload}
+          textButton="Download"
+        />
+      </React.Fragment>
 
       <MyAlert
         open={data.home.length === 0 && load.home}
