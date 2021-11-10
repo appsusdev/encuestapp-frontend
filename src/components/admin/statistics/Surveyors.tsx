@@ -33,8 +33,6 @@ import { AppState } from "../../../redux/reducers/rootReducer";
 import { useStyles } from "../../../shared/styles/useStyles";
 import { PDFSurveyors } from "./PDFSurveyors";
 import { CustomizedDialogPDF } from "../../custom/CustomizedDialogPDF";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import { downloadPDF } from "../../../helpers/downloadPDF";
 interface Props {
   transmitted: Survey[];
@@ -203,7 +201,6 @@ export const Surveyors = (props: Props) => {
 
     // Filtro para obtener las respuestas correspondientes a la encuesta seleccionada
     const list: Chapter[] = getCopyArrayOrObject(transmitted[0].chapters);
-    console.log(transmitted);
     const filter = list?.map((chapter) => {
       chapter.questions.map((question) => {
         question.answers = question.answers?.filter(
@@ -217,13 +214,12 @@ export const Surveyors = (props: Props) => {
     });
     setNewList(filter);
     dispatch(uiOpenModalAssign());
-    console.log(typeof componentRef.current);
   };
   const onDeny = () => {
     dispatch(uiCloseModalAssign());
   };
 
-  const onDownload= async () => {
+  const onDownload = async () => {
     setStartDownload(true);
     await downloadPDF(
       componentRef,

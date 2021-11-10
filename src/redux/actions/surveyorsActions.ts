@@ -38,7 +38,6 @@ import {
   deleteUserFirebase,
   getAnswersBySurveyor,
 } from "../../services/firebase/surveyors";
-import { toEntries } from "../../helpers/toEntries";
 
 // Agregar nuevo encuestador
 export const startNewSurveyor = (surveyor: Partial<Surveyor>) => {
@@ -329,70 +328,48 @@ export const startLoadingMicrodata = (data: any) => {
         idResponsibleCitizen.push(survey.id);
       });
       dispatch(setIdResponsibleCitizens(idResponsibleCitizen));
-      const finalSurveysAnswered: Survey[] = [];
-      for (const idCitizen of idResponsibleCitizen) {
-        const newSurvey = surveys.filter(
-          (survey: Partial<Survey>) =>
-            survey.idSurvey && idSurveys.includes(survey.idSurvey)
-        );
-        const newSurveyCopy: Survey[] = getCopyArrayOrObject(newSurvey);
-        for (const [indexS, survey] of toEntries(newSurveyCopy)) {
-          for (const [indexC, chapter] of toEntries(survey.chapters)) {
-            for (const [indexQ, question] of toEntries(chapter.questions)) {
+
+      const newSurveys = surveys.filter(
+        (survey: Partial<Survey>) =>
+          survey.idSurvey && idSurveys.includes(survey.idSurvey)
+      );
+      const array = getCopyArrayOrObject(newSurveys);
+      const surveysWithAnswers = array.map((survey: Survey) => {
+        survey.chapters.map((chapter) => {
+          chapter.questions.map(async (question) => {
+            if (question.directedTo === "PreguntasHogar") {
+              let questions: any[] = [];
+              for (const idCitizen of idResponsibleCitizen) {
+                const resp = await getAnswersBySurveyor(
+                  town,
+                  survey.idSurvey,
+                  chapter.id,
+                  question.directedTo,
+                  question.id,
+                  surveyor,
+                  idCitizen
+                );
+                questions.push(resp[0]);
+              }
+              question.answers = questions;
+            } else {
               const resp = await getAnswersBySurveyor(
                 town,
                 survey.idSurvey,
                 chapter.id,
                 question.directedTo,
                 question.id,
-                surveyor,
-                idCitizen
+                surveyor
               );
-          
-
-              newSurveyCopy[indexS].chapters[indexC].questions[indexQ].answers =
-                resp;
+              question.answers = resp;
             }
-          }
-          finalSurveysAnswered.push({
-            ...newSurveyCopy[indexS],
-          });
-        }
-
-    
-      }
-      console.log(finalSurveysAnswered);
-      await dispatch(setTransmittedSurveys(finalSurveysAnswered));
-
-  /*        const newSurveys = surveys.filter(
-        (survey: Partial<Survey>) =>
-        survey.idSurvey && idSurveys.includes(survey.idSurvey)
-        );
-      const array = getCopyArrayOrObject(newSurveys);
-      const surveysWithAnswers = array.map((survey: Survey) => {
-        console.log(survey)
-        survey.chapters.map((chapter) => {
-          chapter.questions.map(async (question) => {
-            const resp = await getAnswersBySurveyor(
-              town,
-              survey.idSurvey,
-              chapter.id,
-              question.directedTo,
-              question.id,
-              surveyor,
-              
-            
-            );
-        
-            question.answers = resp;
             return question;
           });
           return chapter;
         });
         return survey;
       });
-      //console.log(surveysWithAnswers)
-      await dispatch(setTransmittedSurveys(surveysWithAnswers)); */
+      await dispatch(setTransmittedSurveys(surveysWithAnswers));
     }
   };
 };
