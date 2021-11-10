@@ -121,9 +121,8 @@ export const ListSurveysAnswered = (props: Props) => {
           </Box>
 
           {surveysAnswered.map((survey: Partial<Survey>, index: number) => (
-            <React.Fragment>
+            <React.Fragment key={index}>
               <Link
-                key={index}
                 className={classes.typography}
                 component="button"
                 onClick={() => getData(survey.idSurvey)}

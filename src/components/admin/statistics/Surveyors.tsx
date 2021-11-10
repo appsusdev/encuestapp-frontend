@@ -68,6 +68,7 @@ export const Surveyors = (props: Props) => {
   const [errorSurveyor, setErrorSurveyor] = useState(false);
   const [errorSurvey, setErrorSurvey] = useState(false);
   const [valid, setValid] = useState({ survey: false, surveyor: false });
+  const [startDownload, setStartDownload] = useState(false);
   const [dataSurvey, setDataSurvey] = useState({
     surveyeds: [],
     codeSurvey: "",
@@ -78,7 +79,6 @@ export const Surveyors = (props: Props) => {
   });
   const [show, setShow] = useState(false);
   const [newList, setNewList] = useState<Chapter[]>([]);
-  const [startDownload, setStartDownload] = useState(false);
   const infoTransmitted: any[] = infoSurveysTransmitted;
   const surveyorsList: Surveyor[] = surveyors;
 
@@ -201,7 +201,6 @@ export const Surveyors = (props: Props) => {
 
     // Filtro para obtener las respuestas correspondientes a la encuesta seleccionada
     const list: Chapter[] = getCopyArrayOrObject(transmitted[0].chapters);
-
     const filter = list?.map((chapter) => {
       chapter.questions.map((question) => {
         question.answers = question.answers?.filter(
@@ -215,7 +214,6 @@ export const Surveyors = (props: Props) => {
     });
     setNewList(filter);
     dispatch(uiOpenModalAssign());
-    console.log(typeof componentRef.current);
   };
   const onDeny = () => {
     dispatch(uiCloseModalAssign());
@@ -227,7 +225,6 @@ export const Surveyors = (props: Props) => {
       componentRef,
       `${intl.formatMessage({ id: "Survey" })}${dataSurvey.codeSurvey}`
     );
-
     setStartDownload(false);
   };
 

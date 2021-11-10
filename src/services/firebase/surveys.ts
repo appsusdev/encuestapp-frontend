@@ -420,32 +420,33 @@ export const getAnswers = async (
   idQuestion: string,
   idCitizen?: string
 ) => {
+  const docRef = db
+    .collection("Municipios")
+    .doc(town)
+    .collection("Encuestas")
+    .doc(idSurvey)
+    .collection("Capitulos")
+    .doc(idChapter)
+    .collection(typeQuestion)
+    .doc(idQuestion)
+    .collection("Respuestas");
   let answersRef;
-
-  idCitizen
-    ? (answersRef = await db
-        .collection("Municipios")
-        .doc(town)
-        .collection("Encuestas")
-        .doc(idSurvey)
-        .collection("Capitulos")
-        .doc(idChapter)
-        .collection(typeQuestion)
-        .doc(idQuestion)
-        .collection("Respuestas")
+  if (idCitizen) {
+    if (typeQuestion === "PreguntasHogar") {
+      answersRef = await docRef.where("idEncuestaCiudadano", "==", idCitizen).limit(1).get()
+    } else {
+      answersRef = await docRef
+        .where("idEncuestaCiudadano", "==", idCitizen)
+        .get();
+    }
+  } else {
+    answersRef = await docRef.get();
+  }
+  /*  idCitizen
+    ? (answersRef = await docRef
         .where("idEncuestaCiudadano", "==", idCitizen)
         .get())
-    : (answersRef = await db
-        .collection("Municipios")
-        .doc(town)
-        .collection("Encuestas")
-        .doc(idSurvey)
-        .collection("Capitulos")
-        .doc(idChapter)
-        .collection(typeQuestion)
-        .doc(idQuestion)
-        .collection("Respuestas")
-        .get());
+    : (answersRef = await docRef.get()); */
 
   const answers: any[] = [];
   answersRef.forEach((resp: any) => {

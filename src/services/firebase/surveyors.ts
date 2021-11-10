@@ -227,34 +227,33 @@ export const getAnswersBySurveyor = async (
   idChapter: string,
   typeQuestion: string,
   idQuestion: string,
-  idSurveyor: string
+  idSurveyor: string,
+  idResponsibleCitizens?:string
 ) => {
+  const docRef = db
+    .collection("Municipios")
+    .doc(town)
+    .collection("Encuestas")
+    .doc(idSurvey)
+    .collection("Capitulos")
+    .doc(idChapter)
+    .collection(typeQuestion)
+    .doc(idQuestion)
+    .collection("Respuestas");
   let answersRef;
-
-  idSurveyor === "Todos"
-    ? (answersRef = await db
-        .collection("Municipios")
-        .doc(town)
-        .collection("Encuestas")
-        .doc(idSurvey)
-        .collection("Capitulos")
-        .doc(idChapter)
-        .collection(typeQuestion)
-        .doc(idQuestion)
-        .collection("Respuestas")
-        .get())
-    : (answersRef = await db
-        .collection("Municipios")
-        .doc(town)
-        .collection("Encuestas")
-        .doc(idSurvey)
-        .collection("Capitulos")
-        .doc(idChapter)
-        .collection(typeQuestion)
-        .doc(idQuestion)
-        .collection("Respuestas")
-        .where("idEncuestador", "==", idSurveyor)
-        .get());
+  if (typeQuestion === "PreguntasHogar" && idResponsibleCitizens) {
+    answersRef = await docRef
+    .where("idEncuestador", "==", idSurveyor)
+    .where("idEncuestaCiudadano","==",idResponsibleCitizens)
+    .limit(1)
+    .get();
+  } else {
+    idSurveyor === "Todos"
+      ? (answersRef = await docRef.get())
+      : (answersRef = await docRef
+          .where("idEncuestador", "==", idSurveyor)
+          .get());
+  }
 
   const answers: any[] = [];
   answersRef.forEach((resp: any) => {

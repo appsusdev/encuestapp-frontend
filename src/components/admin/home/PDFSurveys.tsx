@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import {
   Box,
   Card,
-  CardMedia,
   createMuiTheme,
   Link,
   Grid,
@@ -185,9 +184,8 @@ export const PDFSurveys = (props: Props) => {
       {/* ----------------- RESPUESTAS DE CIUDADANOS ENCUESTADOS ------------------- */}
 
       {data &&
-        data.map((chapter, indexChapter) => (
+        data.map((chapter) => (
           <Box key={chapter.id} mt={2}>
-            {indexChapter > 0 && <div style={{ pageBreakAfter: "always" }} />}
             <Typography
               className={clsx(classes.titlePDF, classes.capitalize)}
               variant="h6"
@@ -197,9 +195,6 @@ export const PDFSurveys = (props: Props) => {
 
             {chapter.questions.map((question, index) => (
               <Box m={1} mb={1} key={question.id}>
-                {chapter.questions[index].type === TypeQuestion.GEOLOCATION && (
-                  <div style={{ pageBreakAfter: "always" }} />
-                )}
                 <Grid container>
                   <Grid item xs={1}>
                     {question.directedTo === "PreguntasIndividual" ? (
@@ -384,7 +379,7 @@ export const PDFSurveys = (props: Props) => {
       <Box mt={1}>
         <Box display="flex" justifyContent="center" alignContent="flex-end">
           <Grid>
-            <img style={{ width: "600px" }} src={logo} alt="Logo Encuestapp" />
+            <img style={{ width: "350px" }} src={logo} alt="Logo Encuestapp" />
           </Grid>
         </Box>
       </Box>
