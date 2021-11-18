@@ -245,6 +245,7 @@ export const startNewQuestion = (question: any, idSurvey: string) => {
     question.directedTo === 0
       ? (typeQuestion = "PreguntasIndividual")
       : (typeQuestion = "PreguntasHogar");
+    question.questionNumber = getChapter[0].questions.length + 1;
 
     const questionToDB = preguntaDTO(question, typeQuestion);
     const questionToRedux = {
@@ -255,6 +256,7 @@ export const startNewQuestion = (question: any, idSurvey: string) => {
       chart: question.chart,
       options: question.options,
       answers: question.answers,
+      questionNumber: question.questionNumber,
     };
 
     try {
@@ -333,6 +335,7 @@ export const startEditQuestion = (
       chart: question.chart,
       options: question.options,
       answers: question.answers,
+      questionNumber: question.questionNumber,
     };
 
     try {
