@@ -65,6 +65,7 @@ export const preguntaDTO = (question: any, directedTo: string) => {
     tipo: question.type,
     graficar: question.chart,
     opciones: question.options,
+    numeroPregunta: question.questionNumber,
   };
 
   return questionToDB;
@@ -79,6 +80,7 @@ export const questionDTO = (question: any) => {
     chart: question.graficar,
     options: question.opciones,
     answers: question.answers,
+    questionNumber: question.numeroPregunta,
   };
 
   return questionFromDB;
