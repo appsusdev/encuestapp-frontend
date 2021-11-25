@@ -255,7 +255,8 @@ export const getQuestions = async (
   // Preguntas individuales
   const individualQuestionsRef = docChaptersRef
     .doc(idChapter)
-    .collection("PreguntasIndividual");
+    .collection("PreguntasIndividual")
+    .orderBy("numeroPregunta");
   const indQuestions = await individualQuestionsRef.get();
 
   indQuestions.forEach((snap) => {
@@ -269,7 +270,8 @@ export const getQuestions = async (
   // Preguntas hogar
   let homeQuestionsRef = docChaptersRef
     .doc(idChapter)
-    .collection("PreguntasHogar");
+    .collection("PreguntasHogar")
+    .orderBy("numeroPregunta");
   const homeQuestions = await homeQuestionsRef.get();
 
   homeQuestions.forEach((snap) => {
@@ -433,7 +435,10 @@ export const getAnswers = async (
   let answersRef;
   if (idCitizen) {
     if (typeQuestion === "PreguntasHogar") {
-      answersRef = await docRef.where("idEncuestaCiudadano", "==", idCitizen).limit(1).get()
+      answersRef = await docRef
+        .where("idEncuestaCiudadano", "==", idCitizen)
+        .limit(1)
+        .get();
     } else {
       answersRef = await docRef
         .where("idEncuestaCiudadano", "==", idCitizen)
