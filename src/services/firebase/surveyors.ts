@@ -228,7 +228,7 @@ export const getAnswersBySurveyor = async (
   typeQuestion: string,
   idQuestion: string,
   idSurveyor: string,
-  idResponsibleCitizens?:string
+  idResponsibleCitizens?: string
 ) => {
   const docRef = db
     .collection("Municipios")
@@ -242,11 +242,16 @@ export const getAnswersBySurveyor = async (
     .collection("Respuestas");
   let answersRef;
   if (typeQuestion === "PreguntasHogar" && idResponsibleCitizens) {
-    answersRef = await docRef
-    .where("idEncuestador", "==", idSurveyor)
-    .where("idEncuestaCiudadano","==",idResponsibleCitizens)
-    .limit(1)
-    .get();
+    idSurveyor === "Todos"
+      ? (answersRef = await docRef
+          .where("idEncuestaCiudadano", "==", idResponsibleCitizens)
+          .limit(1)
+          .get())
+      : (answersRef = await docRef
+          .where("idEncuestador", "==", idSurveyor)
+          .where("idEncuestaCiudadano", "==", idResponsibleCitizens)
+          .limit(1)
+          .get());
   } else {
     idSurveyor === "Todos"
       ? (answersRef = await docRef.get())

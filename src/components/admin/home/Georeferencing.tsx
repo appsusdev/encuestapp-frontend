@@ -24,7 +24,7 @@ import { startLoading, finishLoading } from "../../../redux/actions/uiActions";
 import { Chapter, Survey } from "../../../interfaces/Survey";
 import { TypeQuestion } from "../../../enums/enums";
 import { useMapbox } from "../../../hooks/useMapbox";
-import { getCopyArrayOrObject } from "../../../helpers/getCopyArrayOrObject";
+// import { getCopyArrayOrObject } from "../../../helpers/getCopyArrayOrObject";
 import { getAnswers } from "../../../services/firebase/surveys";
 
 const initialPoint = {
@@ -56,7 +56,7 @@ export const Georeferencing = () => {
   );
   const [show, setShow] = useState(false);
   const [array, setArray] = useState<any[]>([]);
-  const surveysList: any[] = surveys;
+  // const surveysList: any[] = surveys;
   const town: string | undefined = municipio;
 
   const initialValues = {
@@ -72,41 +72,40 @@ export const Georeferencing = () => {
   const getData = async (idSurvey: string) => {
     let answersArray: any[] = [];
 
-    const list = getCopyArrayOrObject(surveysList);
-    const newSurveys = list.filter(
+    // const list = getCopyArrayOrObject(surveysList);
+    const newSurveys = surveys.filter(
       (survey: Partial<Survey>) =>
         survey.idSurvey && survey.idSurvey === idSurvey
     );
 
-    const chapters: Chapter[] = newSurveys[0].chapters;
-
-    if (chapters) {
-      chapters.forEach((chapter) => {
-        chapter.questions.forEach(async (question) => {
-          if (town) {
-            const resp = await getAnswers(
-              town,
-              idSurvey,
-              chapter.id,
-              question.directedTo,
-              question.id
-            );
-            question.answers = resp;
-          }
-
-          if (question.type === TypeQuestion.GEOLOCATION) {
-            question.answers.forEach((answer) => {
-              answersArray.push({
-                lat: answer.respuesta.value.coords.latitude,
-                lng: answer.respuesta.value.coords.longitude,
+    if (newSurveys.length > 0) {
+      const chapters: Chapter[] = newSurveys[0].chapters;
+      if (chapters) {
+        chapters.forEach((chapter) => {
+          chapter.questions.forEach(async (question) => {
+            if (town) {
+              const resp = await getAnswers(
+                town,
+                idSurvey,
+                chapter.id,
+                question.directedTo,
+                question.id
+              );
+              question.answers = resp;
+            }
+            if (question.type === TypeQuestion.GEOLOCATION) {
+              question.answers.forEach((answer) => {
+                answersArray.push({
+                  lat: answer.respuesta.value.coords.latitude,
+                  lng: answer.respuesta.value.coords.longitude,
+                });
               });
-            });
-          }
-
-          answersArray.length > 0 ? setArray(answersArray) : setArray([]);
+            }
+            answersArray.length > 0 ? setArray(answersArray) : setArray([]);
+          });
         });
-      });
-      return array;
+        return array;
+      }
     }
   };
 
@@ -152,8 +151,8 @@ export const Georeferencing = () => {
                       select
                       variant="outlined"
                     >
-                      {surveysList.map((survey, index) => (
-                        <MenuItem key={index} value={survey.code}>
+                      {surveys.map((survey: any, index: number) => (
+                        <MenuItem key={index} value={survey.idSurvey}>
                           {survey.name}
                         </MenuItem>
                       ))}
