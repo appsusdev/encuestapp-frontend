@@ -291,7 +291,7 @@ export const Home = () => {
                     ))}
                     {emptyRows > 0 && (
                       <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6} />
+                        <TableCell colSpan={12} />
                       </TableRow>
                     )}
                   </TableBody>
@@ -299,7 +299,7 @@ export const Home = () => {
                     <TableRow>
                       <TablePagination
                         rowsPerPageOptions={[3]}
-                        colSpan={6}
+                        colSpan={12}
                         count={list.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
