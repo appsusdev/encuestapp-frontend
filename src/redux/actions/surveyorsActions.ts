@@ -321,7 +321,7 @@ export const startLoadingMicrodata = (data: any) => {
     );
 
     if (resp.length > 0) {
-      dispatch(setInfoTransmittedSurveys(resp));
+      await dispatch(setInfoTransmittedSurveys(resp));
 
       resp.forEach((survey, index) => {
         idSurveys.push(survey.idEncuesta);
