@@ -321,25 +321,22 @@ export const startLoadingMicrodata = (data: any) => {
     );
 
     if (resp.length > 0) {
-      await dispatch(setInfoTransmittedSurveys(resp));
-
       resp.forEach((survey, index) => {
         idSurveys.push(survey.idEncuesta);
         idResponsibleCitizen.push(survey.id);
       });
-      dispatch(setIdResponsibleCitizens(idResponsibleCitizen));
 
       const newSurveys = surveys.filter(
         (survey: Partial<Survey>) =>
           survey.idSurvey && idSurveys.includes(survey.idSurvey)
       );
       const array = getCopyArrayOrObject(newSurveys);
-      const surveysWithAnswers = array.map((survey: Survey) => {
-        survey.chapters.map((chapter) => {
+      let surveysWithAnswers = array.map(async (survey: Survey) => {
+        survey.chapters.map(async (chapter) => {
           chapter.questions.map(async (question) => {
             if (question.directedTo === "PreguntasHogar") {
               let questions: any[] = [];
-              for (const idCitizen of idResponsibleCitizen) {
+              for await (const idCitizen of idResponsibleCitizen) {
                 const resp = await getAnswersBySurveyor(
                   town,
                   survey.idSurvey,
@@ -349,6 +346,7 @@ export const startLoadingMicrodata = (data: any) => {
                   surveyor,
                   idCitizen
                 );
+                console.log("resp", resp);
                 questions.push(resp[0]);
               }
               question.answers = questions;
@@ -369,7 +367,13 @@ export const startLoadingMicrodata = (data: any) => {
         });
         return survey;
       });
+      surveysWithAnswers = await Promise.all(surveysWithAnswers);
+
+      console.log("Termino");
       await dispatch(setTransmittedSurveys(surveysWithAnswers));
+      await dispatch(setInfoTransmittedSurveys(resp));
+      dispatch(setIdResponsibleCitizens(idResponsibleCitizen));
+      console.log("FINNNNNNNNNNNNN");
     }
   };
 };
