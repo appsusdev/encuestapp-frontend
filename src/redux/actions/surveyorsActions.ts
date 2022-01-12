@@ -287,6 +287,11 @@ export const updateAssignedSurveys = (data: any) => ({
   type: types.surveyorsUpdatedAssignedSurveys,
   payload: data,
 });
+const wait = (timeout:number) =>{
+  return new Promise((resolve) => {
+    setTimeout(resolve, timeout);
+  });
+}
 
 // MICRODATA
 export const startLoadingMicrodata = (data: any) => {
@@ -319,6 +324,7 @@ export const startLoadingMicrodata = (data: any) => {
       startDate,
       endDate
     );
+    console.log(resp)
 
     if (resp.length > 0) {
       resp.forEach((survey, index) => {
@@ -330,13 +336,57 @@ export const startLoadingMicrodata = (data: any) => {
         (survey: Partial<Survey>) =>
           survey.idSurvey && idSurveys.includes(survey.idSurvey)
       );
-      const array = getCopyArrayOrObject(newSurveys);
-      let surveysWithAnswers = array.map(async (survey: Survey) => {
-        survey.chapters.map(async (chapter) => {
+      const array:Survey[] = getCopyArrayOrObject(newSurveys);
+
+      // LAS FUNCIONES ASINCRONAS DENTRO DE UN LOOP HAY QUE HACERLAS EN UN FOR NORMAL
+
+      for (const survey of array) {
+        for (const chapter of survey.chapters) {
+          for (const question of chapter.questions) {
+            if (question.directedTo === "PreguntasHogar") {
+              let questions: any[] = [];
+              for (const idCitizen of idResponsibleCitizen) {
+                const resp = await getAnswersBySurveyor(
+                  town,
+                  survey.idSurvey,
+                  chapter.id,
+                  question.directedTo,
+                  question.id,
+                  surveyor,
+                  idCitizen
+                );
+                
+                console.log("ENTRA PREGUNTAS HOGAR")
+               /*  console.log(idCitizen) */
+               questions.push(resp[0]);
+              }
+              question.answers = questions;
+            } else {
+              console.log("ENTRA PREGUNTAS INDIVIDUAL")
+              const resp = await getAnswersBySurveyor(
+                town,
+                survey.idSurvey,
+                chapter.id,
+                question.directedTo,
+                question.id,
+                surveyor
+              );
+              question.answers = resp;
+            }
+            
+          }
+
+          
+        }
+      }
+      console.log(array)
+
+      /* let surveysWithAnswers = array.map((survey: Survey) => {
+        survey.chapters.map((chapter) => {
           chapter.questions.map(async (question) => {
             if (question.directedTo === "PreguntasHogar") {
               let questions: any[] = [];
-              for await (const idCitizen of idResponsibleCitizen) {
+              for (const idCitizen of idResponsibleCitizen) {
                 const resp = await getAnswersBySurveyor(
                   town,
                   survey.idSurvey,
@@ -348,9 +398,15 @@ export const startLoadingMicrodata = (data: any) => {
                 );
                 console.log("resp", resp);
                 questions.push(resp[0]);
+                await wait(2000)
+                console.log("ENTRA PREGUNTAS HOGAR")
+                console.log(idCitizen)
               }
-              question.answers = questions;
+              question.answers = questions; 
+             
             } else {
+              console.log("ENTRA PREGUNTAS INDIVIDUAL")
+        
               const resp = await getAnswersBySurveyor(
                 town,
                 survey.idSurvey,
@@ -367,10 +423,10 @@ export const startLoadingMicrodata = (data: any) => {
         });
         return survey;
       });
-      surveysWithAnswers = await Promise.all(surveysWithAnswers);
+      surveysWithAnswers = await Promise.all(surveysWithAnswers); */
 
       console.log("Termino");
-      await dispatch(setTransmittedSurveys(surveysWithAnswers));
+      await dispatch(setTransmittedSurveys(array));
       await dispatch(setInfoTransmittedSurveys(resp));
       dispatch(setIdResponsibleCitizens(idResponsibleCitizen));
       console.log("FINNNNNNNNNNNNN");
