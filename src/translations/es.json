@@ -220,7 +220,7 @@
   "SurveyorDeleted": "Encuestador eliminado correctamente",
   "Surveyeds": "Encuestados",
   "ResponsibleForSurvey": "Responsable de la encuesta",
-  "NoInformationHome": "No information available on household microdata",
-  "NoInformationIndividual": "No information available on microdata on individuals",
+  "NoInformationHome": "No hay información disponible sobre los microdatos del hogar",
+  "NoInformationIndividual": "No hay información disponible sobre los microdatos de personas",
   "Download": "Descargar"
 }

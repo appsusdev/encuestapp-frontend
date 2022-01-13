@@ -321,55 +321,56 @@ export const startLoadingMicrodata = (data: any) => {
     );
 
     if (resp.length > 0) {
-      await dispatch(setInfoTransmittedSurveys(resp));
-
       resp.forEach((survey, index) => {
         idSurveys.push(survey.idEncuesta);
         idResponsibleCitizen.push(survey.id);
       });
-      dispatch(setIdResponsibleCitizens(idResponsibleCitizen));
 
       const newSurveys = surveys.filter(
         (survey: Partial<Survey>) =>
           survey.idSurvey && idSurveys.includes(survey.idSurvey)
       );
-      const array = getCopyArrayOrObject(newSurveys);
-      const surveysWithAnswers = array.map((survey: Survey) => {
-        survey.chapters.map((chapter) => {
-          chapter.questions.map(async (question) => {
+      const array: Survey[] = getCopyArrayOrObject(newSurveys);
+
+      // LAS FUNCIONES ASINCRONAS DENTRO DE UN LOOP HAY QUE HACERLAS EN UN FOR NORMAL
+
+      for (const survey of array) {
+        for (const chapter of survey.chapters) {
+          for (const question of chapter.questions) {
+            //HACER SOLO 1 CONSULTA PARA TRAER TODAS LAS RESPUESTA Y ACA FILTRARLAS
+
+            const resp = await getAnswersBySurveyor(
+              town,
+              survey.idSurvey,
+              chapter.id,
+              question.directedTo,
+              question.id,
+              surveyor
+            );
             if (question.directedTo === "PreguntasHogar") {
-              let questions: any[] = [];
+              const homeAnswers: any[] = [];
               for (const idCitizen of idResponsibleCitizen) {
-                const resp = await getAnswersBySurveyor(
-                  town,
-                  survey.idSurvey,
-                  chapter.id,
-                  question.directedTo,
-                  question.id,
-                  surveyor,
-                  idCitizen
-                );
-                questions.push(resp[0]);
+                resp.forEach((res) => {
+                  const idCitizenExist = homeAnswers.find(
+                    (el) => el.idEncuestaCiudadano === idCitizen
+                  );
+                  if (!idCitizenExist) {
+                    homeAnswers.push(res);
+                  }
+                });
               }
-              question.answers = questions;
+
+              question.answers = homeAnswers;
             } else {
-              const resp = await getAnswersBySurveyor(
-                town,
-                survey.idSurvey,
-                chapter.id,
-                question.directedTo,
-                question.id,
-                surveyor
-              );
               question.answers = resp;
             }
-            return question;
-          });
-          return chapter;
-        });
-        return survey;
-      });
-      await dispatch(setTransmittedSurveys(surveysWithAnswers));
+          }
+        }
+      }
+
+      await dispatch(setTransmittedSurveys(array));
+      await dispatch(setInfoTransmittedSurveys(resp));
+      dispatch(setIdResponsibleCitizens(idResponsibleCitizen));
     }
   };
 };
