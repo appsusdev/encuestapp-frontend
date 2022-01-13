@@ -139,7 +139,7 @@ export const getTransmittedSurveysBySurveyor = async (
         .where("idEncuesta", "==", idSurvey)
         .where("fechaDeCarga", ">", startDate)
         .where("fechaDeCarga", "<=", endDate)
-        .limit(8)
+        .limit(4)
         .get())
     : (surveysSnap = await db
         .collectionGroup("EncuestasTransmitidas")
@@ -148,8 +148,7 @@ export const getTransmittedSurveysBySurveyor = async (
         .where("idEncuestador", "==", idSurveyor)
         .where("fechaDeCarga", ">", startDate)
         .where("fechaDeCarga", "<=", endDate)
-        .limit(8)
-
+        .limit(4)
         .get());
 
   const surveys: any[] = [];

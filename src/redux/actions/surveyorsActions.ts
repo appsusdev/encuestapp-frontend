@@ -287,11 +287,6 @@ export const updateAssignedSurveys = (data: any) => ({
   type: types.surveyorsUpdatedAssignedSurveys,
   payload: data,
 });
-const wait = (timeout:number) =>{
-  return new Promise((resolve) => {
-    setTimeout(resolve, timeout);
-  });
-}
 
 // MICRODATA
 export const startLoadingMicrodata = (data: any) => {
@@ -324,7 +319,6 @@ export const startLoadingMicrodata = (data: any) => {
       startDate,
       endDate
     );
-    console.log(resp)
 
     if (resp.length > 0) {
       resp.forEach((survey, index) => {
@@ -336,100 +330,47 @@ export const startLoadingMicrodata = (data: any) => {
         (survey: Partial<Survey>) =>
           survey.idSurvey && idSurveys.includes(survey.idSurvey)
       );
-      const array:Survey[] = getCopyArrayOrObject(newSurveys);
+      const array: Survey[] = getCopyArrayOrObject(newSurveys);
 
       // LAS FUNCIONES ASINCRONAS DENTRO DE UN LOOP HAY QUE HACERLAS EN UN FOR NORMAL
 
       for (const survey of array) {
         for (const chapter of survey.chapters) {
           for (const question of chapter.questions) {
+            //HACER SOLO 1 CONSULTA PARA TRAER TODAS LAS RESPUESTA Y ACA FILTRARLAS
+
+            const resp = await getAnswersBySurveyor(
+              town,
+              survey.idSurvey,
+              chapter.id,
+              question.directedTo,
+              question.id,
+              surveyor
+            );
             if (question.directedTo === "PreguntasHogar") {
-              let questions: any[] = [];
+              const homeAnswers: any[] = [];
               for (const idCitizen of idResponsibleCitizen) {
-                const resp = await getAnswersBySurveyor(
-                  town,
-                  survey.idSurvey,
-                  chapter.id,
-                  question.directedTo,
-                  question.id,
-                  surveyor,
-                  idCitizen
-                );
-                
-                console.log("ENTRA PREGUNTAS HOGAR")
-               /*  console.log(idCitizen) */
-               questions.push(resp[0]);
+                resp.forEach((res) => {
+                  const idCitizenExist = homeAnswers.find(
+                    (el) => el.idEncuestaCiudadano === idCitizen
+                  );
+                  if (!idCitizenExist) {
+                    homeAnswers.push(res);
+                  }
+                });
               }
-              question.answers = questions;
+
+              question.answers = homeAnswers;
             } else {
-              console.log("ENTRA PREGUNTAS INDIVIDUAL")
-              const resp = await getAnswersBySurveyor(
-                town,
-                survey.idSurvey,
-                chapter.id,
-                question.directedTo,
-                question.id,
-                surveyor
-              );
               question.answers = resp;
             }
-            
           }
-
-          
         }
       }
-      console.log(array)
 
-      /* let surveysWithAnswers = array.map((survey: Survey) => {
-        survey.chapters.map((chapter) => {
-          chapter.questions.map(async (question) => {
-            if (question.directedTo === "PreguntasHogar") {
-              let questions: any[] = [];
-              for (const idCitizen of idResponsibleCitizen) {
-                const resp = await getAnswersBySurveyor(
-                  town,
-                  survey.idSurvey,
-                  chapter.id,
-                  question.directedTo,
-                  question.id,
-                  surveyor,
-                  idCitizen
-                );
-                console.log("resp", resp);
-                questions.push(resp[0]);
-                await wait(2000)
-                console.log("ENTRA PREGUNTAS HOGAR")
-                console.log(idCitizen)
-              }
-              question.answers = questions; 
-             
-            } else {
-              console.log("ENTRA PREGUNTAS INDIVIDUAL")
-        
-              const resp = await getAnswersBySurveyor(
-                town,
-                survey.idSurvey,
-                chapter.id,
-                question.directedTo,
-                question.id,
-                surveyor
-              );
-              question.answers = resp;
-            }
-            return question;
-          });
-          return chapter;
-        });
-        return survey;
-      });
-      surveysWithAnswers = await Promise.all(surveysWithAnswers); */
-
-      console.log("Termino");
       await dispatch(setTransmittedSurveys(array));
       await dispatch(setInfoTransmittedSurveys(resp));
       dispatch(setIdResponsibleCitizens(idResponsibleCitizen));
-      console.log("FINNNNNNNNNNNNN");
     }
   };
 };
