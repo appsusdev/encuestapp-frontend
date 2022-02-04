@@ -149,12 +149,32 @@ export const DownloadData = (props: Props) => {
           const answerValue =
             question.type === TypeQuestion.RADIO ||
             question.type === TypeQuestion.SELECT
-              ? question.options.map((option: any) =>
-                  option.value === answer.respuesta.value ? option.label : ""
-                )
+              ? question.options.map((option: any) => {
+                  const description = option.description
+                    ? `${option.textDescription}: `
+                    : "";
+                  const complement =
+                    option.description && answer.respuesta.description
+                      ? `${answer.respuesta.description}`
+                      : "";
+                  return option.value === answer.respuesta.value
+                    ? `${option.label} (${description} ${complement})`
+                    : "";
+                })
               : question.type === TypeQuestion.CHECK
               ? question.options.map((option: any) =>
-                  option.value === answer.respuesta[0].value ? option.label : ""
+                  answer.respuesta.map((resp: any) => {
+                    const description = option.description
+                      ? `${option.textDescription}: `
+                      : "";
+                    const complement =
+                      option.description && resp.description
+                        ? `${resp.description}`
+                        : "";
+                    return option.value === resp.value
+                      ? `${option.label} (${description} ${complement})`
+                      : "";
+                  })
                 )
               : question.type === TypeQuestion.GEOLOCATION
               ? `Latitud: ${answer.respuesta.value.coords.latitude}, Longitud: ${answer.respuesta.value.coords.longitude}`
@@ -192,14 +212,32 @@ export const DownloadData = (props: Props) => {
             const answerValue =
               question.type === TypeQuestion.RADIO ||
               question.type === TypeQuestion.SELECT
-                ? question.options.map((option: any) =>
-                    option.value === answer.respuesta.value ? option.label : ""
-                  )
+                ? question.options.map((option: any) => {
+                    const description = option.description
+                      ? `${option.textDescription}: `
+                      : "";
+                    const complement =
+                      option.description && answer.respuesta.description
+                        ? `${answer.respuesta.description}`
+                        : "";
+                    return option.value === answer.respuesta.value
+                      ? `${option.label} (${description} ${complement})`
+                      : "";
+                  })
                 : question.type === TypeQuestion.CHECK
                 ? question.options.map((option: any) =>
-                    option.value === answer.respuesta[0].value
-                      ? option.label
-                      : ""
+                    answer.respuesta.map((resp: any) => {
+                      const description = option.description
+                        ? `${option.textDescription}: `
+                        : "";
+                      const complement =
+                        option.description && resp.description
+                          ? `${resp.description}`
+                          : "";
+                      return option.value === resp.value
+                        ? `${option.label} (${description} ${complement})`
+                        : "";
+                    })
                   )
                 : question.type === TypeQuestion.GEOLOCATION
                 ? `Latitud: ${answer.respuesta.value.coords.latitude}, Longitud: ${answer.respuesta.value.coords.longitude}`
