@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import * as yup from "yup";
 import { useIntl, FormattedMessage } from "react-intl";
@@ -19,6 +19,8 @@ import { MyTextField } from "../custom/MyTextField";
 import { startLoginCorreoPassword } from "../../redux/actions/authActions";
 import { Colors } from "../../shared/constants/Colors";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { AppState } from "../../redux/reducers/rootReducer";
+import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: CremaTheme) => ({
   formRoot: {
@@ -56,6 +58,11 @@ const useStyles = makeStyles((theme: CremaTheme) => ({
   btnRootFull: {
     width: "100%",
   },
+  btnLoading: {
+    color: theme.palette.common.white,
+    height: "25px !important",
+    width: "25px !important",
+  },
   dividerRoot: {
     marginBottom: 16,
     marginLeft: -48,
@@ -85,6 +92,7 @@ export const LoginForm: FC<UserSigninProps> = (props) => {
   const classes = useStyles(props);
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
+  const { loading } = useSelector((state: AppState) => state.ui);
 
   const validationSchema = yup.object({
     email: yup
@@ -116,13 +124,13 @@ export const LoginForm: FC<UserSigninProps> = (props) => {
             password: "",
           }}
           validationSchema={validationSchema}
-          onSubmit={(data, { setSubmitting }) => {
+          onSubmit={async (data, { setSubmitting }) => {
             setSubmitting(true);
-            dispatch(startLoginCorreoPassword(data.email, data.password));
+            await dispatch(startLoginCorreoPassword(data.email, data.password));
             setSubmitting(false);
           }}
         >
-          {({ isSubmitting }) => (
+          {() => (
             <Form className={classes.formRoot} noValidate autoComplete="off">
               <Box mb={{ xs: 5, xl: 8 }}>
                 <MyTextField
@@ -188,15 +196,26 @@ export const LoginForm: FC<UserSigninProps> = (props) => {
                 alignItems={{ sm: "center" }}
                 justifyContent={{ sm: "space-between" }}
               >
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={classes.btnRoot}
-                >
-                  <FormattedMessage id="Login" />
-                </Button>
+                {!loading ? (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    disabled={loading}
+                    className={classes.btnRoot}
+                  >
+                    <FormattedMessage id="Login" />
+                  </Button>
+                ) : (
+                  <Button
+                    className={classes.btnRoot}
+                    autoFocus
+                    type="button"
+                    disabled={true}
+                  >
+                    <CircularProgress className={classes.btnLoading} />
+                  </Button>
+                )}
               </Box>
             </Form>
           )}
