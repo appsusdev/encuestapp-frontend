@@ -3,7 +3,6 @@ import {
   existsSurvey,
   addNewSurvey,
   editSurvey,
-  existsChapter,
   addNewChapter,
   deleteChapter,
   editChapter,
@@ -120,64 +119,57 @@ export const startNewChapter = (
     const town = auth.municipio;
     const { name, number } = chapter;
 
-    const existsChapterDB = await existsChapter(town, idSurvey, name);
-    const chapterToDB = capituloDTO(chapter);
-    chapter.id = `capitulo${number}-${Date.now()}`;
+    const existsChapterDB = survey.chapters.some(
+      (chapter: Chapter) =>
+        chapter.name.toLowerCase() === name?.toLowerCase() ||
+        chapter.number === Number(number)
+    );
 
-    if (existsChapterDB) {
-      if (action) {
+    const chapterToDB = capituloDTO(chapter);
+
+    if (action) {
+      if (existsChapterDB) {
         dispatch(uiOpenErrorAlert());
       } else {
-        if (name === activeChapter.name) {
-          // Editar capitulo
-          idChapter &&
-            (await editChapter(town, idSurvey, idChapter, chapterToDB));
-          dispatch(
-            chapterActive({ ...activeChapter, name: name, number: number })
-          );
-          dispatch(uiOpenSuccessAlert());
-
-          // Cambio del estado en el reducer
-          const updatedChapters = survey.chapters.map(
-            (data: Partial<Chapter>) => (data.id === idChapter ? chapter : data)
-          );
-          dispatch(activeSurvey({ ...survey, chapters: updatedChapters }));
-          dispatch(updateSurvey({ ...survey, chapters: updatedChapters }));
-        } else {
-          dispatch(uiOpenErrorAlert());
-        }
+        chapter.id = `capitulo${number}-${Date.now()}`;
+        // Crear capitulo
+        await addNewChapter(town, idSurvey, chapterToDB, chapter.id);
+        // Cambio del estado en el reducer
+        dispatch(
+          activeSurvey({ ...survey, chapters: [...survey.chapters, chapter] })
+        );
+        dispatch(
+          updateSurvey({ ...survey, chapters: [...survey.chapters, chapter] })
+        );
+        dispatch(uiOpenSuccessAlert());
       }
     } else {
-      try {
-        if (action) {
-          // Crear capitulo
-          await addNewChapter(town, idSurvey, chapterToDB, chapter.id);
-          // Cambio del estado en el reducer
-          dispatch(
-            activeSurvey({ ...survey, chapters: [...survey.chapters, chapter] })
-          );
-          dispatch(
-            updateSurvey({ ...survey, chapters: [...survey.chapters, chapter] })
-          );
-        } else {
-          // Editar capitulo
-          idChapter &&
-            (await editChapter(town, idSurvey, idChapter, chapterToDB));
-          // Cambio del estado en el reducer
-          dispatch(
-            chapterActive({ ...activeChapter, name: name, number: number })
-          );
-
-          // Cambio del estado en el reducer
-          const updatedChapters = survey.chapters.map(
-            (data: Partial<Chapter>) => (data.id === idChapter ? chapter : data)
-          );
-          dispatch(activeSurvey({ ...survey, chapters: updatedChapters }));
-          dispatch(updateSurvey({ ...survey, chapters: updatedChapters }));
-        }
+      const existsNumber = survey.chapters.some(
+        (chapter: Chapter) => chapter.number === Number(number)
+      );
+      const existsName = survey.chapters.some(
+        (chapter: Chapter) => chapter.name.toLowerCase() === name?.toLowerCase()
+      );
+      if (
+        (number !== activeChapter.number && existsNumber) ||
+        (name !== activeChapter.name && existsName)
+      ) {
+        dispatch(uiOpenErrorAlert());
+      } else {
+        // Editar capitulo
+        idChapter &&
+          (await editChapter(town, idSurvey, idChapter, chapterToDB));
+        dispatch(
+          chapterActive({ ...activeChapter, name: name, number: number })
+        );
         dispatch(uiOpenSuccessAlert());
-      } catch (error: any) {
-        throw new Error(error);
+
+        // Cambio del estado en el reducer
+        const updatedChapters = survey.chapters.map((data: Partial<Chapter>) =>
+          data.id === idChapter ? chapter : data
+        );
+        dispatch(activeSurvey({ ...survey, chapters: updatedChapters }));
+        dispatch(updateSurvey({ ...survey, chapters: updatedChapters }));
       }
     }
   };

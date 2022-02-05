@@ -1,5 +1,5 @@
 import { db } from "../../config/firebase/firebase-config";
-import { Survey, Chapter } from "../../interfaces/Survey";
+import { Survey } from "../../interfaces/Survey";
 import { questionDTO, chapterDTO, surveyDTO } from "../../helpers/surveyDTO";
 
 // Verificar si existe encuesta
@@ -88,30 +88,6 @@ export const editSurvey = async (survey: Partial<Survey>, town: string) => {
     .collection("Encuestas")
     .doc(code)
     .set({ titulo: name, fechaCreacion: creationDate }, { merge: true });
-};
-
-// Verificar si existe capitulo
-export const existsChapter = (
-  town: string,
-  idSurvey: string,
-  name?: string
-): Promise<Chapter> => {
-  return db
-    .collection("Municipios")
-    .doc(town)
-    .collection("Encuestas")
-    .doc(idSurvey)
-    .collection("Capitulos")
-    .where("titulo", "==", name)
-    .get()
-    .then((snapShot) => {
-      let chapter: any;
-      snapShot.forEach((doc: any) => {
-        chapter = doc.data() as Chapter;
-      });
-      return chapter;
-    })
-    .catch((err) => console.log(err));
 };
 
 // Crear capitulo

@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 
@@ -72,6 +73,19 @@ export const PDFSurveyors = (props: Props) => {
   const citizensSurveyeds: any[] = citizens.filter((citezen) =>
     idSurveyeds.includes(citezen.identificacion)
   );
+
+  const getUsername = (idUser: string) => {
+    const findUser = citizensSurveyeds.find(
+      (el) => el.identificacion === idUser
+    );
+    if (!findUser) {
+      return "";
+    }
+    return `${findUser.primerNombre.toLowerCase()} 
+    ${findUser.segundoNombre.toLowerCase()}
+    ${findUser.primerApellido.toLowerCase()}
+    ${findUser.segundoApellido.toLowerCase()}`;
+  };
 
   return (
     <Box mt={2} m={5}>
@@ -207,142 +221,227 @@ export const PDFSurveyors = (props: Props) => {
 
                   {question.answers.map(
                     (answer: ISurveyAnswers, indexAnswer: number) => (
-                      <Grid
-                        key={indexAnswer}
-                        item
-                        xs={
-                          question.type === TypeQuestion.TEXT_AREA ||
-                          question.type === TypeQuestion.PICTURE ||
-                          question.type === TypeQuestion.FILE ||
-                          question.type === TypeQuestion.GEOLOCATION
-                            ? 12
-                            : 8
-                        }
-                      >
-                        {(question.type === TypeQuestion.TEXT_INPUT ||
-                          question.type === TypeQuestion.NUMBER ||
-                          question.type === TypeQuestion.DEPARTMENT ||
-                          question.type === TypeQuestion.TOWN) && (
-                          <TextField
-                            name="input"
-                            variant="outlined"
-                            className={classes.myTextFieldRoot}
-                            size="small"
-                            value={answer.respuesta && answer.respuesta.value}
-                          />
-                        )}
-                        {question.type === TypeQuestion.TEXT_AREA && (
-                          <TextField
-                            name="input"
-                            variant="outlined"
-                            className={classes.myTextFieldRoot}
-                            multiline
-                            rows={3}
-                            value={answer.respuesta && answer.respuesta.value}
-                          />
-                        )}
-                        {question.type === TypeQuestion.DATE && (
-                          <TextField
-                            name="date"
-                            variant="outlined"
-                            className={classes.myTextFieldRoot}
-                            type="date"
-                            size="small"
-                            value={
-                              answer.respuesta &&
-                              convertDateDash(answer.respuesta.value)
-                            }
-                          />
-                        )}
-                        {question.type === TypeQuestion.PICTURE && (
-                          <>
-                            {answer && (
-                              <Box
-                                display="flex"
-                                justifyContent="center"
-                                width={1}
-                              >
-                                <Card
-                                  className={classes.cardPDF}
-                                  style={{
-                                    marginBottom: "15px",
-                                  }}
+                      <Fragment key={indexAnswer}>
+                        <Grid item xs={12}>
+                          <p
+                            style={{ marginTop: "10px" }}
+                            className={classes.capitalize}
+                          >
+                            {getUsername(answer.citizen)}:
+                          </p>
+                        </Grid>
+                        <Grid
+                          item
+                          xs={
+                            question.type === TypeQuestion.TEXT_AREA ||
+                            question.type === TypeQuestion.PICTURE ||
+                            question.type === TypeQuestion.FILE ||
+                            question.type === TypeQuestion.GEOLOCATION ||
+                            question.type === TypeQuestion.SELECT ||
+                            question.type === TypeQuestion.CHECK ||
+                            question.type === TypeQuestion.RADIO
+                              ? 12
+                              : 8
+                          }
+                        >
+                          {(question.type === TypeQuestion.TEXT_INPUT ||
+                            question.type === TypeQuestion.NUMBER ||
+                            question.type === TypeQuestion.DEPARTMENT ||
+                            question.type === TypeQuestion.TOWN) && (
+                            <TextField
+                              name="input"
+                              variant="outlined"
+                              className={classes.myTextFieldRoot}
+                              size="small"
+                              value={answer.respuesta && answer.respuesta.value}
+                            />
+                          )}
+                          {question.type === TypeQuestion.TEXT_AREA && (
+                            <TextField
+                              name="input"
+                              variant="outlined"
+                              className={classes.myTextFieldRoot}
+                              multiline
+                              rows={3}
+                              value={answer.respuesta && answer.respuesta.value}
+                            />
+                          )}
+                          {question.type === TypeQuestion.DATE && (
+                            <TextField
+                              name="date"
+                              variant="outlined"
+                              className={classes.myTextFieldRoot}
+                              type="date"
+                              size="small"
+                              value={
+                                answer.respuesta &&
+                                convertDateDash(answer.respuesta.value)
+                              }
+                            />
+                          )}
+                          {question.type === TypeQuestion.PICTURE && (
+                            <>
+                              {answer && (
+                                <Box
+                                  display="flex"
+                                  justifyContent="center"
+                                  width={1}
                                 >
-                                  <img
-                                    loading="lazy"
-                                    src={answer.respuesta.value}
-                                    alt="ImageAnswer"
-                                    className={classes.media}
-                                  />
-                                </Card>
-                              </Box>
+                                  <Card
+                                    className={classes.cardPDF}
+                                    style={{
+                                      marginBottom: "15px",
+                                    }}
+                                  >
+                                    <img
+                                      loading="lazy"
+                                      src={answer.respuesta.value}
+                                      alt="ImageAnswer"
+                                      className={classes.media}
+                                    />
+                                  </Card>
+                                </Box>
+                              )}
+                            </>
+                          )}
+                          {question.options &&
+                            question.type === TypeQuestion.CHECK &&
+                            question.options.map((option) =>
+                              answer.respuesta.map(
+                                (resp: any, indexResp: number) =>
+                                  option.value === resp.value && (
+                                    <Box
+                                      key={indexResp}
+                                      display={"flex"}
+                                      justifyContent={"space-between"}
+                                      width={"100%"}
+                                    >
+                                      <Box width={"45%"}>
+                                        <TextField
+                                          name="input"
+                                          variant="outlined"
+                                          className={classes.myTextFieldRoot}
+                                          size="small"
+                                          value={
+                                            option.value === resp.value
+                                              ? option.label
+                                              : ""
+                                          }
+                                        />
+                                      </Box>
+
+                                      <Box width={"50%"}>
+                                        {option.description && (
+                                          <Box
+                                            display={"flex"}
+                                            justifyContent={"space-between"}
+                                          >
+                                            <p>{option.textDescription}:</p>
+
+                                            <TextField
+                                              name="input"
+                                              variant="outlined"
+                                              className={
+                                                classes.myTextFieldRoot
+                                              }
+                                              size="small"
+                                              value={
+                                                resp.description
+                                                  ? resp.description
+                                                  : ""
+                                              }
+                                            />
+                                          </Box>
+                                        )}
+                                      </Box>
+                                    </Box>
+                                  )
+                              )
                             )}
-                          </>
-                        )}
-                        {question.options &&
-                          question.type === TypeQuestion.CHECK &&
-                          question.options.map(
-                            (option, index) =>
-                              option.value === answer.respuesta[0].value && (
-                                <TextField
-                                  key={index}
-                                  name="input"
-                                  variant="outlined"
-                                  className={classes.myTextFieldRoot}
-                                  size="small"
-                                  value={
-                                    option.value === answer.respuesta[0].value
-                                      ? option.label
-                                      : ""
-                                  }
-                                />
-                              )
-                          )}
-                        {(question.type === TypeQuestion.RADIO ||
-                          question.type === TypeQuestion.SELECT) &&
-                          question.options &&
-                          question.options.map(
-                            (option, index) =>
-                              option.value === answer.respuesta.value && (
-                                <TextField
-                                  key={index}
-                                  name="input"
-                                  variant="outlined"
-                                  className={classes.myTextFieldRoot}
-                                  size="small"
-                                  value={
-                                    option.value === answer.respuesta.value
-                                      ? option.label
-                                      : ""
-                                  }
-                                />
-                              )
-                          )}
-                        {question.type === TypeQuestion.GEOLOCATION && (
-                          <Box display="flex" justifyContent="center" width={1}>
-                            <Card
-                              className={classes.cardPDF}
-                              style={{
-                                marginBottom: "15px",
-                              }}
+                          {(question.type === TypeQuestion.RADIO ||
+                            question.type === TypeQuestion.SELECT) &&
+                            question.options &&
+                            question.options.map(
+                              (option, index) =>
+                                option.value === answer.respuesta.value && (
+                                  <Box
+                                    key={index}
+                                    display={"flex"}
+                                    justifyContent={"space-between"}
+                                    width={"100%"}
+                                  >
+                                    <Box width={"45%"}>
+                                      <TextField
+                                        name="input"
+                                        variant="outlined"
+                                        className={classes.myTextFieldRoot}
+                                        size="small"
+                                        value={
+                                          option.value ===
+                                          answer.respuesta.value
+                                            ? option.label
+                                            : ""
+                                        }
+                                      />
+                                    </Box>
+                                    <Box width={"50%"}>
+                                      {option.description && (
+                                        <Box
+                                          display={"flex"}
+                                          justifyContent={"space-between"}
+                                        >
+                                          <p>{option.textDescription}:</p>
+
+                                          <TextField
+                                            name="input"
+                                            variant="outlined"
+                                            className={classes.myTextFieldRoot}
+                                            size="small"
+                                            value={
+                                              answer.respuesta.description
+                                                ? answer.respuesta.description
+                                                : ""
+                                            }
+                                          />
+                                        </Box>
+                                      )}
+                                    </Box>
+                                  </Box>
+                                )
+                            )}
+                          {question.type === TypeQuestion.GEOLOCATION && (
+                            <Box
+                              display="flex"
+                              justifyContent="center"
+                              width={1}
                             >
-                              <img
-                                loading="lazy"
-                                src={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
-                                alt="ImageAnswer"
-                                className={classes.media}
-                              />
-                            </Card>
-                          </Box>
-                        )}
-                        {question.type === TypeQuestion.FILE && (
-                          <Box mt={1}>
-                            <Link href={answer.respuesta.value} target="_blank">
-                              {answer.respuesta.value}
-                            </Link>
-                          </Box>
-                        )}
-                      </Grid>
+                              <Card
+                                className={classes.cardPDF}
+                                style={{
+                                  marginBottom: "15px",
+                                }}
+                              >
+                                <img
+                                  loading="lazy"
+                                  src={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
+                                  alt="ImageAnswer"
+                                  className={classes.media}
+                                />
+                              </Card>
+                            </Box>
+                          )}
+                          {question.type === TypeQuestion.FILE && (
+                            <Box mt={1}>
+                              <Link
+                                href={answer.respuesta.value}
+                                target="_blank"
+                              >
+                                {answer.respuesta.value}
+                              </Link>
+                            </Box>
+                          )}
+                        </Grid>
+                      </Fragment>
                     )
                   )}
                 </Grid>
