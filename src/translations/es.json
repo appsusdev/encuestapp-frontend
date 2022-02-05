@@ -128,7 +128,7 @@
   "EditChapter": "Editar capítulo",
   "EditChapterMessage": "Edite el capítulo seleccionado:",
   "ChapterName": "Nombre capítulo",
-  "MessageExistsChapter": "Ya existe un capítulo con el nombre ingresado",
+  "MessageExistsChapter": "Ya existe un capítulo con los datos ingresados",
   "ChapterAddSuccess": "Capítulo agregado correctamente",
   "ChapterEditSuccess": "Capítulo editado correctamente",
   "ChapterDeletedSuccess": "Capítulo eliminado correctamente",

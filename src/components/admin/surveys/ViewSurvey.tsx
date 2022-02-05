@@ -272,21 +272,73 @@ export const ViewSurvey = () => {
                       question.type !== TypeQuestion.SELECT &&
                       question.options.map((option, index) => (
                         <Grid container key={index}>
-                          <Grid item xs={6}>
+                          <Grid item xs={12}>
                             {question.type === TypeQuestion.RADIO && (
-                              <FormControlLabel
-                                value={option.label}
-                                control={<Radio />}
-                                label={option.label}
-                              />
+                              <Box display={"flex"}>
+                                <Box width={"50%"}>
+                                  <FormControlLabel
+                                    value={option.label}
+                                    control={<Radio />}
+                                    label={option.label}
+                                  />
+                                </Box>
+
+                                <Box display={"flex"}>
+                                  {option.description && (
+                                    <>
+                                      <p
+                                        style={{
+                                          marginTop: "10px",
+                                          marginRight: "10px",
+                                        }}
+                                      >
+                                        {option.textDescription}
+                                      </p>
+                                      <TextField
+                                        name="input"
+                                        variant="outlined"
+                                        className={classes.myTextFieldRoot}
+                                        size="small"
+                                        disabled={true}
+                                      />
+                                    </>
+                                  )}
+                                </Box>
+                              </Box>
                             )}
                             {question.type === TypeQuestion.CHECK && (
-                              <>
-                                <Checkbox color="default" />
-                                <label className="form-text">
-                                  {option.label}
-                                </label>
-                              </>
+                              <Box
+                                display={"flex"}
+                                justifyContent={"space-between"}
+                              >
+                                <Box width={"50%"}>
+                                  <Checkbox color="default" />
+                                  <label className="form-text">
+                                    {option.label}
+                                  </label>
+                                </Box>
+                                <Box display={"flex"}>
+                                  {option.description && (
+                                    <>
+                                      <p
+                                        style={{
+                                          marginTop: "10px",
+                                          marginRight: "10px",
+                                        }}
+                                      >
+                                        {option.textDescription}
+                                      </p>
+                                      <TextField
+                                        name="input"
+                                        variant="outlined"
+                                        className={classes.myTextFieldRoot}
+                                        size="small"
+                                        disabled={true}
+                                      />
+                                    </>
+                                  )}
+                                </Box>
+                              </Box>
                             )}
                           </Grid>
                         </Grid>
