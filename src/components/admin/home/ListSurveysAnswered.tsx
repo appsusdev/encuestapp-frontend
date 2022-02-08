@@ -80,7 +80,10 @@ export const ListSurveysAnswered = (props: Props) => {
     });
 
     const filter = listFilter[0].chapters.map((chapter) => {
-      chapter.questions.map((question) => {
+      const questionsAsc = chapter.questions.sort(function (a, b) {
+        return a.questionNumber - b.questionNumber;
+      });
+      questionsAsc.map((question) => {
         question.answers = question.answers?.filter(
           (answer) => answer.idEncuestaCiudadano === listFilter[0].code
         );

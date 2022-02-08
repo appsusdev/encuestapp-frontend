@@ -202,7 +202,10 @@ export const Surveyors = (props: Props) => {
     // Filtro para obtener las respuestas correspondientes a la encuesta seleccionada
     const list: Chapter[] = getCopyArrayOrObject(transmitted[0].chapters);
     const filter = list?.map((chapter) => {
-      chapter.questions.map((question) => {
+      const questionsAsc = chapter.questions.sort(function (a, b) {
+        return a.questionNumber - b.questionNumber;
+      });
+      questionsAsc.map((question) => {
         question.answers = question.answers?.filter(
           (answer) =>
             answer.idEncuestaCiudadano === surveyCode &&
