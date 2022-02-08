@@ -227,17 +227,25 @@ export const startNewQuestion = (question: any, idSurvey: string) => {
     const town = auth.municipio;
     const idChapter = question.chapter;
 
-    const getChapter = survey.chapters.filter(
-      (chapter: Partial<Chapter>) => chapter.id === question.chapter
+    const getChapter = survey.chapters
+      ? survey.chapters.filter(
+          (chapter: Partial<Chapter>) => chapter.id === question.chapter
+        )[0]
+      : [];
+
+    let numbers: number[] = [];
+    getChapter.questions.forEach((question: SurveyQuestion) =>
+      numbers.push(question.questionNumber)
     );
-    const idQuestion = `pregunta${
-      getChapter[0].questions.length + 1
-    }_${Date.now()}`;
+
+    const questionNumber = numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
+    const idQuestion = `pregunta${questionNumber}_${Date.now()}`;
+
     let typeQuestion: string = "";
     question.directedTo === 0
       ? (typeQuestion = "PreguntasIndividual")
       : (typeQuestion = "PreguntasHogar");
-    question.questionNumber = getChapter[0].questions.length + 1;
+    question.questionNumber = questionNumber;
 
     const questionToDB = preguntaDTO(question, typeQuestion);
     const questionToRedux = {
@@ -248,7 +256,7 @@ export const startNewQuestion = (question: any, idSurvey: string) => {
       chart: question.chart,
       options: question.options,
       answers: question.answers,
-      questionNumber: question.questionNumber,
+      questionNumber,
     };
 
     try {
@@ -266,13 +274,13 @@ export const startNewQuestion = (question: any, idSurvey: string) => {
       const updatedChapters = survey.chapters.map(
         (chapter: Partial<Chapter>) => {
           if (chapter.id === question.chapter) {
-            chapter.questions = [...getChapter[0].questions, questionToRedux];
+            chapter.questions = [...getChapter.questions, questionToRedux];
           }
           return chapter;
         }
       );
-      dispatch(activeSurvey({ ...survey, chapters: updatedChapters }));
-      dispatch(updateSurvey({ ...survey, chapters: updatedChapters }));
+      await dispatch(activeSurvey({ ...survey, chapters: updatedChapters }));
+      await dispatch(updateSurvey({ ...survey, chapters: updatedChapters }));
     } catch (error: any) {
       throw new Error(error);
     }
@@ -310,7 +318,7 @@ export const startEditQuestion = (
     const town = auth.municipio;
     const idChapter = question.chapter;
     const getChapter = survey.chapters.filter(
-      (chapter: Partial<Chapter>) => chapter.id === question.chapter
+      (chapter: Partial<Chapter>) => chapter.id === idChapter
     );
 
     let typeQuestion: string = "";
@@ -343,7 +351,7 @@ export const startEditQuestion = (
 
       // Cambio de estado en el reducer
       const updatedChapters = survey.chapters.map((chapter: Chapter) => {
-        if (chapter.id === question.chapter) {
+        if (chapter.id === idChapter) {
           chapter.questions = getChapter[0].questions.map((question) =>
             question.id === idQuestion ? questionToRedux : question
           );

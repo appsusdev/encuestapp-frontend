@@ -21,6 +21,7 @@ export interface SurveyQuestion {
   type: TypeQuestion;
   options?: QuestionOptions[] | null;
   answers: ISurveyAnswers[];
+  questionNumber: number;
   othersAnswers?: any[] | ISurveyAnswers[] | ISurveyAnswers;
 }
 export interface QuestionOptions {

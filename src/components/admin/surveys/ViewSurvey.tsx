@@ -58,6 +58,7 @@ export const ViewSurvey = () => {
     (state) => state.ui
   );
   const list: Chapter[] = chapters;
+
   const survey: Survey = activeSurvey;
 
   useEffect(() => {
@@ -92,120 +93,107 @@ export const ViewSurvey = () => {
           <FormattedMessage id="EmptySurvey" />
         </Alert>
       ) : (
-        list.map((chapter) => (
-          <div key={chapter.id}>
-            <Typography className={classes.title} variant="h6">
-              {chapter.number}. {chapter.name}
-            </Typography>
+        list.map((chapter) => {
+          const questionsAsc = chapter.questions.sort(function (a, b) {
+            return a.questionNumber - b.questionNumber;
+          });
 
-            {chapter.questions.map((question, index) => (
-              <Box m={1} mb={1} key={question.id}>
-                <Grid container>
-                  <Grid item xs={1}>
-                    {question.directedTo === "PreguntasIndividual" ? (
-                      <PersonIcon
-                        fontSize="small"
-                        style={{ marginTop: "2px" }}
-                      />
-                    ) : (
-                      <HomeIcon fontSize="small" style={{ marginTop: "2px" }} />
-                    )}
-                  </Grid>
-                  <Grid item xs={11} style={{ marginLeft: "-10px" }}>
-                    {chapter.number}.{index + 1} {question.question}
-                    <Tooltip
-                      title={`${intl.formatMessage({ id: "Edit" })}`}
-                      style={{
-                        marginLeft: "5px",
-                        marginTop: "-5px",
-                        color: grey[800],
-                      }}
-                      color="default"
-                    >
-                      <IconButton
-                        size="small"
-                        onClick={() =>
-                          editQuestion(question, chapter.id, chapter.name)
-                        }
-                      >
-                        <EditOutlinedIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip
-                      title={`${intl.formatMessage({ id: "Delete" })}`}
-                      style={{ marginTop: "-5px", color: red[600] }}
-                      color="secondary"
-                    >
-                      <IconButton
-                        size="small"
-                        onClick={() => deleteQuestion(question, chapter.id)}
-                      >
-                        <DeleteOutlineOutlinedIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </Grid>
+          return (
+            <div key={chapter.id}>
+              <Typography className={classes.title} variant="h6">
+                {chapter.number}. {chapter.name}
+              </Typography>
 
-                  <Grid
-                    item
-                    xs={
-                      question.type === TypeQuestion.TEXT_AREA ||
-                      question.type === TypeQuestion.PICTURE ||
-                      question.type === TypeQuestion.FILE
-                        ? 12
-                        : 8
-                    }
-                  >
-                    {(question.type === TypeQuestion.TEXT_INPUT ||
-                      question.type === TypeQuestion.NUMBER) && (
-                      <TextField
-                        name="input"
-                        variant="outlined"
-                        className={classes.myTextFieldRoot}
-                        size="small"
-                        disabled={true}
-                      />
-                    )}
-                    {question.type === TypeQuestion.TEXT_AREA && (
-                      <TextField
-                        name="input"
-                        variant="outlined"
-                        className={classes.myTextFieldRoot}
-                        multiline
-                        rows={3}
-                        disabled={true}
-                      />
-                    )}
-                    {question.type === TypeQuestion.DATE && (
-                      <TextField
-                        name="date"
-                        variant="outlined"
-                        className={classes.myTextFieldRoot}
-                        type="date"
-                        size="small"
-                      />
-                    )}
-                    {question.type === TypeQuestion.DEPARTMENT && (
-                      <TextField
-                        size="small"
-                        name="deparment"
-                        value=""
-                        variant="outlined"
-                        label={`${intl.formatMessage({ id: "Department" })}`}
-                        InputLabelProps={{ shrink: false }}
-                        select
-                        className={classes.myTextFieldRoot}
+              {questionsAsc.map((question, index) => (
+                <Box m={1} mb={1} key={question.id}>
+                  <Grid container>
+                    <Grid item xs={1}>
+                      {question.directedTo === "PreguntasIndividual" ? (
+                        <PersonIcon
+                          fontSize="small"
+                          style={{ marginTop: "2px" }}
+                        />
+                      ) : (
+                        <HomeIcon
+                          fontSize="small"
+                          style={{ marginTop: "2px" }}
+                        />
+                      )}
+                    </Grid>
+                    <Grid item xs={11} style={{ marginLeft: "-10px" }}>
+                      {chapter.number}.{index + 1} {question.question}
+                      <Tooltip
+                        title={`${intl.formatMessage({ id: "Edit" })}`}
+                        style={{
+                          marginLeft: "5px",
+                          marginTop: "-5px",
+                          color: grey[800],
+                        }}
+                        color="default"
                       >
-                        <MenuItem key={index} value=""></MenuItem>
-                      </TextField>
-                    )}
-                    {question.type === TypeQuestion.TOWN && (
-                      <>
-                        <label
-                          className="form-text"
-                          style={{ fontSize: "11px" }}
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            editQuestion(question, chapter.id, chapter.name)
+                          }
                         >
-                          <FormattedMessage id="FilterTownMessage" />
-                        </label>
+                          <EditOutlinedIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip
+                        title={`${intl.formatMessage({ id: "Delete" })}`}
+                        style={{ marginTop: "-5px", color: red[600] }}
+                        color="secondary"
+                      >
+                        <IconButton
+                          size="small"
+                          onClick={() => deleteQuestion(question, chapter.id)}
+                        >
+                          <DeleteOutlineOutlinedIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Grid>
+
+                    <Grid
+                      item
+                      xs={
+                        question.type === TypeQuestion.TEXT_AREA ||
+                        question.type === TypeQuestion.PICTURE ||
+                        question.type === TypeQuestion.FILE
+                          ? 12
+                          : 8
+                      }
+                    >
+                      {(question.type === TypeQuestion.TEXT_INPUT ||
+                        question.type === TypeQuestion.NUMBER) && (
+                        <TextField
+                          name="input"
+                          variant="outlined"
+                          className={classes.myTextFieldRoot}
+                          size="small"
+                          disabled={true}
+                        />
+                      )}
+                      {question.type === TypeQuestion.TEXT_AREA && (
+                        <TextField
+                          name="input"
+                          variant="outlined"
+                          className={classes.myTextFieldRoot}
+                          multiline
+                          rows={3}
+                          disabled={true}
+                        />
+                      )}
+                      {question.type === TypeQuestion.DATE && (
+                        <TextField
+                          name="date"
+                          variant="outlined"
+                          className={classes.myTextFieldRoot}
+                          type="date"
+                          size="small"
+                        />
+                      )}
+                      {question.type === TypeQuestion.DEPARTMENT && (
                         <TextField
                           size="small"
                           name="deparment"
@@ -218,169 +206,195 @@ export const ViewSurvey = () => {
                         >
                           <MenuItem key={index} value=""></MenuItem>
                         </TextField>
+                      )}
+                      {question.type === TypeQuestion.TOWN && (
+                        <>
+                          <label
+                            className="form-text"
+                            style={{ fontSize: "11px" }}
+                          >
+                            <FormattedMessage id="FilterTownMessage" />
+                          </label>
+                          <TextField
+                            size="small"
+                            name="deparment"
+                            value=""
+                            variant="outlined"
+                            label={`${intl.formatMessage({
+                              id: "Department",
+                            })}`}
+                            InputLabelProps={{ shrink: false }}
+                            select
+                            className={classes.myTextFieldRoot}
+                          >
+                            <MenuItem key={index} value=""></MenuItem>
+                          </TextField>
+                          <TextField
+                            size="small"
+                            name="town"
+                            value=""
+                            variant="outlined"
+                            label={`${intl.formatMessage({ id: "Town" })}`}
+                            InputLabelProps={{ shrink: false }}
+                            select
+                            className={classes.myTextFieldRoot}
+                          >
+                            <MenuItem key={index} value=""></MenuItem>
+                          </TextField>
+                        </>
+                      )}
+                      {(question.type === TypeQuestion.FILE ||
+                        question.type === TypeQuestion.PICTURE) && (
+                        <>
+                          <Grid container>
+                            <Grid item xs={8}>
+                              <TextField
+                                type="file"
+                                id="icon-button-file"
+                                style={{ display: "none" }}
+                              />
+                              <TextField
+                                disabled={true}
+                                variant="outlined"
+                                name="hola"
+                                size="small"
+                                className={classes.myTextFieldRoot}
+                              />
+                            </Grid>
+                            <Grid item xs={2}>
+                              <Tooltip
+                                title={`${intl.formatMessage({
+                                  id: "Attach",
+                                })}`}
+                              >
+                                <label htmlFor="icon-button-file">
+                                  <IconButton component="span">
+                                    {question.type === TypeQuestion.PICTURE ? (
+                                      <PhotoCamera />
+                                    ) : (
+                                      <AttachFileIcon />
+                                    )}
+                                  </IconButton>
+                                </label>
+                              </Tooltip>
+                            </Grid>
+                          </Grid>
+                        </>
+                      )}
+                      {question.options &&
+                        question.type !== TypeQuestion.SELECT &&
+                        question.options.map((option, index) => (
+                          <Grid container key={index}>
+                            <Grid item xs={12}>
+                              {question.type === TypeQuestion.RADIO && (
+                                <Box display={"flex"}>
+                                  <Box width={"50%"}>
+                                    <FormControlLabel
+                                      value={option.label}
+                                      control={<Radio />}
+                                      label={option.label}
+                                    />
+                                  </Box>
+
+                                  <Box display={"flex"}>
+                                    {option.description && (
+                                      <>
+                                        <p
+                                          style={{
+                                            marginTop: "10px",
+                                            marginRight: "10px",
+                                          }}
+                                        >
+                                          {option.textDescription}
+                                        </p>
+                                        <TextField
+                                          name="input"
+                                          variant="outlined"
+                                          className={classes.myTextFieldRoot}
+                                          size="small"
+                                          disabled={true}
+                                        />
+                                      </>
+                                    )}
+                                  </Box>
+                                </Box>
+                              )}
+                              {question.type === TypeQuestion.CHECK && (
+                                <Box
+                                  display={"flex"}
+                                  justifyContent={"space-between"}
+                                >
+                                  <Box width={"50%"}>
+                                    <Checkbox color="default" />
+                                    <label className="form-text">
+                                      {option.label}
+                                    </label>
+                                  </Box>
+                                  <Box display={"flex"}>
+                                    {option.description && (
+                                      <>
+                                        <p
+                                          style={{
+                                            marginTop: "10px",
+                                            marginRight: "10px",
+                                          }}
+                                        >
+                                          {option.textDescription}
+                                        </p>
+                                        <TextField
+                                          name="input"
+                                          variant="outlined"
+                                          className={classes.myTextFieldRoot}
+                                          size="small"
+                                          disabled={true}
+                                        />
+                                      </>
+                                    )}
+                                  </Box>
+                                </Box>
+                              )}
+                            </Grid>
+                          </Grid>
+                        ))}
+                      {question.type === TypeQuestion.SELECT && (
                         <TextField
                           size="small"
-                          name="town"
+                          name="question"
                           value=""
                           variant="outlined"
-                          label={`${intl.formatMessage({ id: "Town" })}`}
+                          label={`${intl.formatMessage({ id: "InputSelect" })}`}
                           InputLabelProps={{ shrink: false }}
                           select
                           className={classes.myTextFieldRoot}
                         >
-                          <MenuItem key={index} value=""></MenuItem>
+                          {question.options?.map((option, index) => (
+                            <MenuItem key={index} value={option.label}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
                         </TextField>
-                      </>
-                    )}
-                    {(question.type === TypeQuestion.FILE ||
-                      question.type === TypeQuestion.PICTURE) && (
-                      <>
-                        <Grid container>
-                          <Grid item xs={8}>
-                            <TextField
-                              type="file"
-                              id="icon-button-file"
-                              style={{ display: "none" }}
-                            />
-                            <TextField
-                              disabled={true}
-                              variant="outlined"
-                              name="hola"
-                              size="small"
-                              className={classes.myTextFieldRoot}
-                            />
-                          </Grid>
-                          <Grid item xs={2}>
-                            <Tooltip
-                              title={`${intl.formatMessage({ id: "Attach" })}`}
-                            >
-                              <label htmlFor="icon-button-file">
-                                <IconButton component="span">
-                                  {question.type === TypeQuestion.PICTURE ? (
-                                    <PhotoCamera />
-                                  ) : (
-                                    <AttachFileIcon />
-                                  )}
-                                </IconButton>
-                              </label>
-                            </Tooltip>
-                          </Grid>
-                        </Grid>
-                      </>
-                    )}
-                    {question.options &&
-                      question.type !== TypeQuestion.SELECT &&
-                      question.options.map((option, index) => (
-                        <Grid container key={index}>
-                          <Grid item xs={12}>
-                            {question.type === TypeQuestion.RADIO && (
-                              <Box display={"flex"}>
-                                <Box width={"50%"}>
-                                  <FormControlLabel
-                                    value={option.label}
-                                    control={<Radio />}
-                                    label={option.label}
-                                  />
-                                </Box>
-
-                                <Box display={"flex"}>
-                                  {option.description && (
-                                    <>
-                                      <p
-                                        style={{
-                                          marginTop: "10px",
-                                          marginRight: "10px",
-                                        }}
-                                      >
-                                        {option.textDescription}
-                                      </p>
-                                      <TextField
-                                        name="input"
-                                        variant="outlined"
-                                        className={classes.myTextFieldRoot}
-                                        size="small"
-                                        disabled={true}
-                                      />
-                                    </>
-                                  )}
-                                </Box>
-                              </Box>
-                            )}
-                            {question.type === TypeQuestion.CHECK && (
-                              <Box
-                                display={"flex"}
-                                justifyContent={"space-between"}
-                              >
-                                <Box width={"50%"}>
-                                  <Checkbox color="default" />
-                                  <label className="form-text">
-                                    {option.label}
-                                  </label>
-                                </Box>
-                                <Box display={"flex"}>
-                                  {option.description && (
-                                    <>
-                                      <p
-                                        style={{
-                                          marginTop: "10px",
-                                          marginRight: "10px",
-                                        }}
-                                      >
-                                        {option.textDescription}
-                                      </p>
-                                      <TextField
-                                        name="input"
-                                        variant="outlined"
-                                        className={classes.myTextFieldRoot}
-                                        size="small"
-                                        disabled={true}
-                                      />
-                                    </>
-                                  )}
-                                </Box>
-                              </Box>
-                            )}
-                          </Grid>
-                        </Grid>
-                      ))}
-                    {question.type === TypeQuestion.SELECT && (
-                      <TextField
-                        size="small"
-                        name="question"
-                        value=""
-                        variant="outlined"
-                        label={`${intl.formatMessage({ id: "InputSelect" })}`}
-                        InputLabelProps={{ shrink: false }}
-                        select
-                        className={classes.myTextFieldRoot}
-                      >
-                        {question.options?.map((option, index) => (
-                          <MenuItem key={index} value={option.label}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    )}
-                    {question.type === TypeQuestion.GEOLOCATION && (
-                      <Button
-                        style={{
-                          marginTop: "10px",
-                          textTransform: "uppercase",
-                        }}
-                        className={clsx(classes.btnAction, classes.save)}
-                        size="medium"
-                        component="span"
-                      >
-                        <LocationOnIcon />
-                        <FormattedMessage id="GetPosition" />
-                      </Button>
-                    )}
+                      )}
+                      {question.type === TypeQuestion.GEOLOCATION && (
+                        <Button
+                          style={{
+                            marginTop: "10px",
+                            textTransform: "uppercase",
+                          }}
+                          className={clsx(classes.btnAction, classes.save)}
+                          size="medium"
+                          component="span"
+                        >
+                          <LocationOnIcon />
+                          <FormattedMessage id="GetPosition" />
+                        </Button>
+                      )}
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Box>
-            ))}
-          </div>
-        ))
+                </Box>
+              ))}
+            </div>
+          );
+        })
       )}
 
       <CustomizedDialog
