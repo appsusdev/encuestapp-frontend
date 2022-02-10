@@ -9,8 +9,13 @@ export const downloadPDF = async (
   const opt = {
     filename: `${name}.pdf`,
     margin: [0.3, 0, 0.1, 0],
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { scale: 2, allowTaint: false, useCORS: true, proxy: "/" },
+    image: { type: "jpeg", quality: 0.95 },
+    html2canvas: {
+      scale: 2,
+      allowTaint: false,
+      useCORS: true,
+      proxy: "/",
+    },
     jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
     pagebreak: { mode: ["avoid-all", "css"] },
   };
