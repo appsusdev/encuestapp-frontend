@@ -205,35 +205,45 @@ export const PDFSurveyors = (props: Props) => {
             {chapter.questions.map((question, index) => (
               <Box m={1} mb={1} key={question.id}>
                 <Grid container>
-                  <Grid item xs={1}>
-                    {question.directedTo === "PreguntasIndividual" ? (
-                      <PersonIcon
-                        fontSize="small"
-                        style={{ marginTop: "2px" }}
-                      />
-                    ) : (
-                      <HomeIcon fontSize="small" style={{ marginTop: "2px" }} />
-                    )}
-                  </Grid>
-                  <Grid item xs={11} style={{ marginLeft: "-10px" }}>
-                    {chapter.number}.{index + 1} {question.question}
+                  <Grid item xs={12}>
+                    <Box display={"flex"}>
+                      {question.directedTo === "PreguntasIndividual" ? (
+                        <PersonIcon
+                          fontSize="small"
+                          style={{ marginTop: "2px" }}
+                        />
+                      ) : (
+                        <HomeIcon
+                          fontSize="small"
+                          style={{ marginTop: "2px" }}
+                        />
+                      )}
+                      <Box ml={1}>
+                        {chapter.number}.{index + 1} {question.question}
+                      </Box>
+                    </Box>
                   </Grid>
 
                   {question.answers.map(
                     (answer: ISurveyAnswers, indexAnswer: number) => (
                       <Fragment key={indexAnswer}>
-                        <Grid item xs={12}>
-                          <p
-                            style={{ marginTop: "10px" }}
-                            className={classes.capitalize}
-                          >
-                            {getUsername(answer.citizen)}:
-                          </p>
-                        </Grid>
+                        {question.directedTo === "PreguntasIndividual" &&
+                          getUsername(answer.citizen) !== "" && (
+                            <Grid item xs={12}>
+                              <p
+                                style={{
+                                  marginTop: "10px",
+                                  fontWeight: "bold",
+                                }}
+                                className={classes.capitalize}
+                              >
+                                {getUsername(answer.citizen)}:
+                              </p>
+                            </Grid>
+                          )}
                         <Grid
                           item
                           xs={
-                            question.type === TypeQuestion.TEXT_AREA ||
                             question.type === TypeQuestion.PICTURE ||
                             question.type === TypeQuestion.FILE ||
                             question.type === TypeQuestion.GEOLOCATION ||
@@ -241,7 +251,7 @@ export const PDFSurveyors = (props: Props) => {
                             question.type === TypeQuestion.CHECK ||
                             question.type === TypeQuestion.RADIO
                               ? 12
-                              : 8
+                              : 6
                           }
                         >
                           {(question.type === TypeQuestion.TEXT_INPUT ||
@@ -277,6 +287,7 @@ export const PDFSurveyors = (props: Props) => {
                                 answer.respuesta &&
                                 convertDateDash(answer.respuesta.value)
                               }
+                              disabled
                             />
                           )}
                           {question.type === TypeQuestion.PICTURE && (
@@ -316,7 +327,7 @@ export const PDFSurveyors = (props: Props) => {
                                       justifyContent={"space-between"}
                                       width={"100%"}
                                     >
-                                      <Box width={"45%"}>
+                                      <Box width={"51%"}>
                                         <TextField
                                           name="input"
                                           variant="outlined"
@@ -330,13 +341,15 @@ export const PDFSurveyors = (props: Props) => {
                                         />
                                       </Box>
 
-                                      <Box width={"50%"}>
+                                      <Box width={"49%"} ml={2}>
                                         {option.description && (
                                           <Box
                                             display={"flex"}
                                             justifyContent={"space-between"}
                                           >
-                                            <p>{option.textDescription}:</p>
+                                            <Box width={1 / 2} mt={2}>
+                                              <p>{option.textDescription}:</p>
+                                            </Box>
 
                                             <TextField
                                               name="input"
@@ -370,7 +383,7 @@ export const PDFSurveyors = (props: Props) => {
                                     justifyContent={"space-between"}
                                     width={"100%"}
                                   >
-                                    <Box width={"45%"}>
+                                    <Box width={"51%"}>
                                       <TextField
                                         name="input"
                                         variant="outlined"
@@ -384,13 +397,15 @@ export const PDFSurveyors = (props: Props) => {
                                         }
                                       />
                                     </Box>
-                                    <Box width={"50%"}>
+                                    <Box width={"49%"} ml={2}>
                                       {option.description && (
                                         <Box
                                           display={"flex"}
                                           justifyContent={"space-between"}
                                         >
-                                          <p>{option.textDescription}:</p>
+                                          <Box width={1 / 2} mt={2}>
+                                            <p>{option.textDescription}:</p>
+                                          </Box>
 
                                           <TextField
                                             name="input"
