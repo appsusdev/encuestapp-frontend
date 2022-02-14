@@ -5,11 +5,9 @@ import { useSelector } from "react-redux";
 
 import {
   Box,
-  Card,
   createMuiTheme,
   Link,
   Grid,
-  TextField,
   Typography,
   ThemeProvider,
   Table,
@@ -83,7 +81,7 @@ export const PDFSurveys = (props: Props) => {
   };
 
   return (
-    <Box m={8} mt={3}>
+    <Box m={5} mt={2}>
       <Box display="flex" justifyContent="center" className={classes.titlePDF}>
         {entityTitle}
       </Box>
@@ -262,38 +260,18 @@ export const PDFSurveys = (props: Props) => {
                           {(question.type === TypeQuestion.TEXT_INPUT ||
                             question.type === TypeQuestion.NUMBER ||
                             question.type === TypeQuestion.DEPARTMENT ||
-                            question.type === TypeQuestion.TOWN) && (
-                            <TextField
-                              name="input"
-                              variant="outlined"
-                              className={classes.myTextFieldRoot}
-                              size="small"
-                              value={answer.respuesta && answer.respuesta.value}
-                            />
+                            question.type === TypeQuestion.TOWN ||
+                            question.type === TypeQuestion.TEXT_AREA) && (
+                            <Box m={1}>
+                              {answer.respuesta && answer.respuesta.value}
+                            </Box>
                           )}
-                          {question.type === TypeQuestion.TEXT_AREA && (
-                            <TextField
-                              name="input"
-                              variant="outlined"
-                              className={classes.myTextFieldRoot}
-                              multiline
-                              rows={3}
-                              value={answer.respuesta && answer.respuesta.value}
-                            />
-                          )}
+
                           {question.type === TypeQuestion.DATE && (
-                            <TextField
-                              name="date"
-                              variant="outlined"
-                              className={classes.myTextFieldRoot}
-                              type="date"
-                              size="small"
-                              value={
-                                answer.respuesta &&
-                                convertDateDash(answer.respuesta.value)
-                              }
-                              disabled
-                            />
+                            <Box m={1}>
+                              {answer.respuesta &&
+                                convertDateDash(answer.respuesta.value)}
+                            </Box>
                           )}
 
                           {question.type === TypeQuestion.PICTURE && (
@@ -302,19 +280,16 @@ export const PDFSurveys = (props: Props) => {
                               justifyContent="center"
                               width={1}
                             >
-                              <Card
-                                className={classes.cardPDF}
+                              <img
                                 style={{
-                                  marginBottom: "15px",
+                                  height: "70vh",
+                                  width: "65%",
+                                  objectFit: "cover",
                                 }}
-                              >
-                                <img
-                                  loading="lazy"
-                                  src={answer.respuesta.value}
-                                  alt="ImageAnswer"
-                                  className={classes.media}
-                                />
-                              </Card>
+                                src={answer.respuesta.value}
+                                alt="ImageAnswer"
+                                className={classes.media}
+                              />
                             </Box>
                           )}
                           {(question.type === TypeQuestion.RADIO ||
@@ -329,20 +304,12 @@ export const PDFSurveys = (props: Props) => {
                                     justifyContent={"space-between"}
                                     width={"100%"}
                                   >
-                                    <Box width={"51%"}>
-                                      <TextField
-                                        name="input"
-                                        variant="outlined"
-                                        className={classes.myTextFieldRoot}
-                                        size="small"
-                                        value={
-                                          option.value ===
-                                          answer.respuesta.value
-                                            ? option.label
-                                            : ""
-                                        }
-                                      />
+                                    <Box width={"51%"} m={1}>
+                                      {option.value === answer.respuesta.value
+                                        ? option.label
+                                        : ""}
                                     </Box>
+
                                     <Box width={"49%"} ml={2}>
                                       {option.description && (
                                         <Box
@@ -353,17 +320,11 @@ export const PDFSurveys = (props: Props) => {
                                             <p>{option.textDescription}:</p>
                                           </Box>
 
-                                          <TextField
-                                            name="input"
-                                            variant="outlined"
-                                            className={classes.myTextFieldRoot}
-                                            size="small"
-                                            value={
-                                              answer.respuesta.description
-                                                ? answer.respuesta.description
-                                                : ""
-                                            }
-                                          />
+                                          <Box m={1} mt={1}>
+                                            {answer.respuesta.description
+                                              ? answer.respuesta.description
+                                              : ""}
+                                          </Box>
                                         </Box>
                                       )}
                                     </Box>
@@ -383,18 +344,10 @@ export const PDFSurveys = (props: Props) => {
                                       justifyContent={"space-between"}
                                       width={"100%"}
                                     >
-                                      <Box width={"51%"}>
-                                        <TextField
-                                          name="input"
-                                          variant="outlined"
-                                          className={classes.myTextFieldRoot}
-                                          size="small"
-                                          value={
-                                            option.value === resp.value
-                                              ? option.label
-                                              : ""
-                                          }
-                                        />
+                                      <Box width={"51%"} m={1}>
+                                        {option.value === resp.value
+                                          ? option.label
+                                          : ""}
                                       </Box>
 
                                       <Box width={"49%"} ml={2}>
@@ -407,19 +360,11 @@ export const PDFSurveys = (props: Props) => {
                                               <p>{option.textDescription}:</p>
                                             </Box>
 
-                                            <TextField
-                                              name="input"
-                                              variant="outlined"
-                                              className={
-                                                classes.myTextFieldRoot
-                                              }
-                                              size="small"
-                                              value={
-                                                resp.description
-                                                  ? resp.description
-                                                  : ""
-                                              }
-                                            />
+                                            <Box m={1} mt={1}>
+                                              {resp.description
+                                                ? resp.description
+                                                : ""}
+                                            </Box>
                                           </Box>
                                         )}
                                       </Box>
@@ -433,19 +378,16 @@ export const PDFSurveys = (props: Props) => {
                               justifyContent="center"
                               width={1}
                             >
-                              <Card
-                                className={classes.cardPDF}
+                              <img
                                 style={{
-                                  marginBottom: "15px",
+                                  height: "70vh",
+                                  width: "65%",
+                                  objectFit: "cover",
                                 }}
-                              >
-                                <img
-                                  loading="lazy"
-                                  src={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
-                                  alt="ImageAnswer"
-                                  className={classes.media}
-                                />
-                              </Card>
+                                src={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
+                                alt="ImageAnswer"
+                                className={classes.media}
+                              />
                             </Box>
                           )}
                           {question.type === TypeQuestion.FILE && (
@@ -478,26 +420,27 @@ export const PDFSurveys = (props: Props) => {
             <FormattedMessage id="AuthorizationFormat" />
           </h1>
           <Box display="flex" justifyContent="center" width={1}>
-            <Card
-              className={classes.cardPDF}
+            <img
               style={{
-                marginBottom: "15px",
+                height: "70vh",
+                width: "65%",
+                objectFit: "cover",
               }}
-            >
-              <img
-                loading="lazy"
-                src={authorizationFormat}
-                alt="ImageAnswer"
-                className={classes.media}
-              />
-            </Card>
+              src={authorizationFormat}
+              alt="ImageAnswer"
+              className={classes.media}
+            />
           </Box>
         </Grid>
       </Box>
       <Box mt={1}>
         <Box display="flex" justifyContent="center" alignContent="flex-end">
           <Grid>
-            <img style={{ width: "350px" }} src={logo} alt="Logo Encuestapp" />
+            <img
+              style={{ height: "300px", objectFit: "cover" }}
+              src={logo}
+              alt="Logo Encuestapp"
+            />
           </Grid>
         </Box>
       </Box>

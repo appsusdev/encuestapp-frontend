@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 
 import {
   Box,
-  Card,
   createMuiTheme,
   Grid,
   Link,
@@ -14,7 +13,6 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TextField,
   ThemeProvider,
   Typography,
 } from "@material-ui/core";
@@ -218,7 +216,12 @@ export const PDFSurveyors = (props: Props) => {
                           style={{ marginTop: "2px" }}
                         />
                       )}
-                      <Box ml={1}>
+                      <Box
+                        ml={1}
+                        style={{
+                          fontWeight: "bold",
+                        }}
+                      >
                         {chapter.number}.{index + 1} {question.question}
                       </Box>
                     </Box>
@@ -233,7 +236,6 @@ export const PDFSurveyors = (props: Props) => {
                               <p
                                 style={{
                                   marginTop: "10px",
-                                  fontWeight: "bold",
                                 }}
                                 className={classes.capitalize}
                               >
@@ -257,38 +259,18 @@ export const PDFSurveyors = (props: Props) => {
                           {(question.type === TypeQuestion.TEXT_INPUT ||
                             question.type === TypeQuestion.NUMBER ||
                             question.type === TypeQuestion.DEPARTMENT ||
-                            question.type === TypeQuestion.TOWN) && (
-                            <TextField
-                              name="input"
-                              variant="outlined"
-                              className={classes.myTextFieldRoot}
-                              size="small"
-                              value={answer.respuesta && answer.respuesta.value}
-                            />
+                            question.type === TypeQuestion.TOWN ||
+                            question.type === TypeQuestion.TEXT_AREA) && (
+                            <Box m={1}>
+                              {answer.respuesta && answer.respuesta.value}
+                            </Box>
                           )}
-                          {question.type === TypeQuestion.TEXT_AREA && (
-                            <TextField
-                              name="input"
-                              variant="outlined"
-                              className={classes.myTextFieldRoot}
-                              multiline
-                              rows={3}
-                              value={answer.respuesta && answer.respuesta.value}
-                            />
-                          )}
+
                           {question.type === TypeQuestion.DATE && (
-                            <TextField
-                              name="date"
-                              variant="outlined"
-                              className={classes.myTextFieldRoot}
-                              type="date"
-                              size="small"
-                              value={
-                                answer.respuesta &&
-                                convertDateDash(answer.respuesta.value)
-                              }
-                              disabled
-                            />
+                            <Box m={1}>
+                              {answer.respuesta &&
+                                convertDateDash(answer.respuesta.value)}
+                            </Box>
                           )}
                           {question.type === TypeQuestion.PICTURE && (
                             <>
@@ -298,19 +280,16 @@ export const PDFSurveyors = (props: Props) => {
                                   justifyContent="center"
                                   width={1}
                                 >
-                                  <Card
-                                    className={classes.cardPDF}
+                                  <img
                                     style={{
-                                      marginBottom: "15px",
+                                      height: "70vh",
+                                      width: "65%",
+                                      objectFit: "cover",
                                     }}
-                                  >
-                                    <img
-                                      loading="lazy"
-                                      src={answer.respuesta.value}
-                                      alt="ImageAnswer"
-                                      className={classes.media}
-                                    />
-                                  </Card>
+                                    src={answer.respuesta.value}
+                                    alt="ImageAnswer"
+                                    className={classes.media}
+                                  />
                                 </Box>
                               )}
                             </>
@@ -327,18 +306,10 @@ export const PDFSurveyors = (props: Props) => {
                                       justifyContent={"space-between"}
                                       width={"100%"}
                                     >
-                                      <Box width={"51%"}>
-                                        <TextField
-                                          name="input"
-                                          variant="outlined"
-                                          className={classes.myTextFieldRoot}
-                                          size="small"
-                                          value={
-                                            option.value === resp.value
-                                              ? option.label
-                                              : ""
-                                          }
-                                        />
+                                      <Box width={"51%"} m={1}>
+                                        {option.value === resp.value
+                                          ? option.label
+                                          : ""}
                                       </Box>
 
                                       <Box width={"49%"} ml={2}>
@@ -351,19 +322,11 @@ export const PDFSurveyors = (props: Props) => {
                                               <p>{option.textDescription}:</p>
                                             </Box>
 
-                                            <TextField
-                                              name="input"
-                                              variant="outlined"
-                                              className={
-                                                classes.myTextFieldRoot
-                                              }
-                                              size="small"
-                                              value={
-                                                resp.description
-                                                  ? resp.description
-                                                  : ""
-                                              }
-                                            />
+                                            <Box m={1} mt={1}>
+                                              {resp.description
+                                                ? resp.description
+                                                : ""}
+                                            </Box>
                                           </Box>
                                         )}
                                       </Box>
@@ -383,19 +346,10 @@ export const PDFSurveyors = (props: Props) => {
                                     justifyContent={"space-between"}
                                     width={"100%"}
                                   >
-                                    <Box width={"51%"}>
-                                      <TextField
-                                        name="input"
-                                        variant="outlined"
-                                        className={classes.myTextFieldRoot}
-                                        size="small"
-                                        value={
-                                          option.value ===
-                                          answer.respuesta.value
-                                            ? option.label
-                                            : ""
-                                        }
-                                      />
+                                    <Box width={"51%"} m={1}>
+                                      {option.value === answer.respuesta.value
+                                        ? option.label
+                                        : ""}
                                     </Box>
                                     <Box width={"49%"} ml={2}>
                                       {option.description && (
@@ -407,17 +361,11 @@ export const PDFSurveyors = (props: Props) => {
                                             <p>{option.textDescription}:</p>
                                           </Box>
 
-                                          <TextField
-                                            name="input"
-                                            variant="outlined"
-                                            className={classes.myTextFieldRoot}
-                                            size="small"
-                                            value={
-                                              answer.respuesta.description
-                                                ? answer.respuesta.description
-                                                : ""
-                                            }
-                                          />
+                                          <Box m={1} mt={1}>
+                                            {answer.respuesta.description
+                                              ? answer.respuesta.description
+                                              : ""}
+                                          </Box>
                                         </Box>
                                       )}
                                     </Box>
@@ -430,19 +378,16 @@ export const PDFSurveyors = (props: Props) => {
                               justifyContent="center"
                               width={1}
                             >
-                              <Card
-                                className={classes.cardPDF}
+                              <img
                                 style={{
-                                  marginBottom: "15px",
+                                  height: "70vh",
+                                  width: "65%",
+                                  objectFit: "cover",
                                 }}
-                              >
-                                <img
-                                  loading="lazy"
-                                  src={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
-                                  alt="ImageAnswer"
-                                  className={classes.media}
-                                />
-                              </Card>
+                                src={`https://maps.googleapis.com/maps/api/staticmap?center=${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&zoom=13&size=400x400&&markers=color:red%7C${answer.respuesta.value.coords.latitude},${answer.respuesta.value.coords.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_APIKEY}`}
+                                alt="ImageAnswer"
+                                className={classes.media}
+                              />
                             </Box>
                           )}
                           {question.type === TypeQuestion.FILE && (
@@ -474,19 +419,12 @@ export const PDFSurveyors = (props: Props) => {
             <FormattedMessage id="AuthorizationFormat" />
           </h1>
           <Box display="flex" justifyContent="center" width={1}>
-            <Card
-              className={classes.cardPDF}
-              style={{
-                marginBottom: "15px",
-              }}
-            >
-              <img
-                loading="lazy"
-                src={authorizationFormat}
-                alt="ImageAnswer"
-                className={classes.media}
-              />
-            </Card>
+            <img
+              style={{ height: "70vh", width: "65%", objectFit: "cover" }}
+              src={authorizationFormat}
+              alt="ImageAnswer"
+              className={classes.media}
+            />
           </Box>
         </Grid>
       </Box>
@@ -495,7 +433,7 @@ export const PDFSurveyors = (props: Props) => {
         <Box display="flex" justifyContent="center" alignContent="flex-end">
           <Grid>
             <img
-              style={{ height: "350px", objectFit: "cover" }}
+              style={{ height: "300px", objectFit: "cover" }}
               src={logo}
               alt="Logo Encuestapp"
             />
