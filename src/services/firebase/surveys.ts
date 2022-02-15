@@ -294,7 +294,7 @@ export const deleteQuestion = async (
   typeQuestion: string,
   idQuestion: string
 ) => {
-  await db
+  const questionRef = db
     .collection("Municipios")
     .doc(town)
     .collection("Encuestas")
@@ -302,8 +302,17 @@ export const deleteQuestion = async (
     .collection("Capitulos")
     .doc(idChapter)
     .collection(typeQuestion)
-    .doc(idQuestion)
-    .delete();
+    .doc(idQuestion);
+
+  let answers = await questionRef.collection("Respuestas").get();
+
+  answers.forEach(async (snapResp) => {
+    // Eliminar respuestas
+    await snapResp.ref.delete();
+  });
+
+  await questionRef.delete();
+  // .delete();
 };
 
 // Eliminar encuesta: (Se eliminan respuestas, preguntas y capitulos)

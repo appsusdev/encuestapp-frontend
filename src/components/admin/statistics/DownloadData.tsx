@@ -150,29 +150,25 @@ export const DownloadData = (props: Props) => {
             question.type === TypeQuestion.RADIO ||
             question.type === TypeQuestion.SELECT
               ? question.options.map((option: any) => {
-                  const description = option.description
-                    ? `${option.textDescription}: `
-                    : "";
-                  const complement =
+                  const description =
                     option.description && answer.respuesta.description
-                      ? `${answer.respuesta.description}`
+                      ? `(${option.textDescription}: ${answer.respuesta.description})`
                       : "";
+
                   return option.value === answer.respuesta.value
-                    ? `${option.label} (${description} ${complement})`
+                    ? `${option.label} ${description}`
                     : "";
                 })
               : question.type === TypeQuestion.CHECK
               ? question.options.map((option: any) =>
                   answer.respuesta.map((resp: any) => {
-                    const description = option.description
-                      ? `${option.textDescription}: `
-                      : "";
-                    const complement =
+                    const description =
                       option.description && resp.description
-                        ? `${resp.description}`
+                        ? `(${option.textDescription}: ${resp.description})`
                         : "";
+
                     return option.value === resp.value
-                      ? `${option.label} (${description} ${complement})`
+                      ? `${option.label} ${description}`
                       : "";
                   })
                 )
@@ -213,29 +209,25 @@ export const DownloadData = (props: Props) => {
               question.type === TypeQuestion.RADIO ||
               question.type === TypeQuestion.SELECT
                 ? question.options.map((option: any) => {
-                    const description = option.description
-                      ? `${option.textDescription}: `
-                      : "";
-                    const complement =
+                    const description =
                       option.description && answer.respuesta.description
-                        ? `${answer.respuesta.description}`
+                        ? `(${option.textDescription}: ${answer.respuesta.description})`
                         : "";
+
                     return option.value === answer.respuesta.value
-                      ? `${option.label} (${description} ${complement})`
+                      ? `${option.label} ${description}`
                       : "";
                   })
                 : question.type === TypeQuestion.CHECK
                 ? question.options.map((option: any) =>
                     answer.respuesta.map((resp: any) => {
-                      const description = option.description
-                        ? `${option.textDescription}: `
-                        : "";
-                      const complement =
+                      const description =
                         option.description && resp.description
-                          ? `${resp.description}`
+                          ? `(${option.textDescription}: ${resp.description})`
                           : "";
+
                       return option.value === resp.value
-                        ? `${option.label} (${description} ${complement})`
+                        ? `${option.label} ${description}`
                         : "";
                     })
                   )
