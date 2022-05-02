@@ -129,7 +129,7 @@ export const getTransmittedSurveysBySurveyor = async (
   idSurveyor: string,
   startDate: any,
   endDate: any
-):Promise<any[]> => {
+): Promise<any[]> => {
   let surveysSnap;
 
   idSurveyor === "Todos"
@@ -139,7 +139,6 @@ export const getTransmittedSurveysBySurveyor = async (
         .where("idEncuesta", "==", idSurvey)
         .where("fechaDeCarga", ">", startDate)
         .where("fechaDeCarga", "<=", endDate)
-        .limit(4)
         .get())
     : (surveysSnap = await db
         .collectionGroup("EncuestasTransmitidas")
@@ -148,7 +147,6 @@ export const getTransmittedSurveysBySurveyor = async (
         .where("idEncuestador", "==", idSurveyor)
         .where("fechaDeCarga", ">", startDate)
         .where("fechaDeCarga", "<=", endDate)
-        .limit(4)
         .get());
 
   const surveys: any[] = [];

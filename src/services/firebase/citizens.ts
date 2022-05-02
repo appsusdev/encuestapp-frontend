@@ -1,5 +1,6 @@
 import { db } from "../../config/firebase/firebase-config";
-import { ICitizen } from "../../interfaces/Citizens";
+import { ICitizen, CitizensType } from "../../interfaces/Citizens";
+import { setCitizens } from "../../redux/actions/citizensActions";
 
 export const addCitizen = (citizen: ICitizen) => {
   const { identificacion, tipoIdentificacion } = citizen;
@@ -15,14 +16,16 @@ export const addJsonCitizens = (jsonStr: string, nit: string) => {
   return docRef.set({ ciudadanos: jsonStr }, { merge: true });
 };
 
-export const getCitizens = async (nit: string) => {
-  const citizensRef = db.collection("Entidades").doc(nit);
-
-  const citizens = await citizensRef.get().then((snapShot) => {
-    return snapShot.data();
-  });
-
-  return citizens;
+export const listenerGetCitizens = (nit: string, callback: Function) => {
+  db.collection("Entidades")
+    .doc(nit)
+    .onSnapshot((snap) => {
+      const jsonResponse = snap.data();
+      if (jsonResponse && jsonResponse.ciudadanos) {
+        const parseJson = JSON.parse(jsonResponse.ciudadanos) as CitizensType;
+        callback(setCitizens(parseJson));
+      }
+    });
 };
 
 export const getTransmittedSurveysByCitizen = async (
