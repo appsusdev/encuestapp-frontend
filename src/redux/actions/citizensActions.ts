@@ -1,5 +1,5 @@
 import {
-  getCitizens,
+  listenerGetCitizens,
   getTransmittedSurveysByCitizen,
   getMapData,
 } from "../../services/firebase/citizens";
@@ -14,12 +14,7 @@ export const startLoadingCitizens = () => {
   return async (dispatch: Function, getState: Function) => {
     const { nit } = getState().auth;
 
-    const jsonResponse: any = await getCitizens(nit);
-
-    if (jsonResponse.ciudadanos) {
-      const parseJson = JSON.parse(jsonResponse.ciudadanos);
-      dispatch(setCitizens(parseJson));
-    }
+    listenerGetCitizens(nit, dispatch);
   };
 };
 
