@@ -23,7 +23,8 @@ export const excelToJson = (file: File,callback:Function): Promise<string> => {
     reader.readAsBinaryString(file);
   });
 };
-const convertToJson = (csv: any,onProgress:Function) => {
+const timer = (ms:number) => new Promise(res => setTimeout(res, ms))
+const convertToJson = async (csv: any,onProgress:Function) => {
   const lines = csv.split("\n");
   const result = [];
 
@@ -42,6 +43,7 @@ const convertToJson = (csv: any,onProgress:Function) => {
     result.push(obj);
     totalParse+=1;
     onProgress(totalParse,lines.length)
+    await timer(8)
   }
 
   //return result; //JavaScript object

@@ -16,6 +16,7 @@ export const addJsonCitizens = (jsonStr: string, nit: string) => {
   return docRef.set({ ciudadanos: jsonStr }, { merge: true });
 };
 
+
 export const listenerGetCitizens = (nit: string, callback: Function) => {
   db.collection("Entidades")
     .doc(nit)
