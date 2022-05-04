@@ -104,7 +104,7 @@ export const updateCredentialsEntity = (
 };
 
 export const uploadFileAsync = async (
-  file: File,
+  file: File | Blob,
   fileName: string
 ): Promise<string> => {
   return new Promise(async (res, rej) => {
