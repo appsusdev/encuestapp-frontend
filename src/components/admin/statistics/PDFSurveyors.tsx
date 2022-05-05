@@ -64,6 +64,7 @@ export const PDFSurveyors = (props: Props) => {
   const { citizens } = useSelector<AppState, AppState["citizens"]>(
     (state) => state.citizens
   );
+
   const { razonSocial: entityTitle } = useSelector<AppState, AppState["auth"]>(
     (state) => state.auth
   );

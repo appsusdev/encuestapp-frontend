@@ -34,6 +34,7 @@ export const DownloadData = (props: Props) => {
   const intl = useIntl();
 
   const { citizens } = useSelector((state: AppState) => state.citizens);
+
   const dispatch = useDispatch();
   const { modalAssignOpen } = useSelector<AppState, AppState["ui"]>(
     (state) => state.ui

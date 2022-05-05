@@ -6,7 +6,7 @@ import { setCitizens } from "../../redux/actions/citizensActions";
 
 export const addCitizen = (citizen: ICitizen) => {
   const { identificacion, tipoIdentificacion } = citizen;
-  //console.log(identificacion,'=>', tipoIdentificacion);
+
   let docRef = db
     .collection("Ciudadanos")
     .doc(`${tipoIdentificacion}-${identificacion}`);
@@ -18,33 +18,35 @@ export const addJsonCitizens = (jsonStr: string, nit: string) => {
   return docRef.set({ ciudadanos: jsonStr }, { merge: true });
 };
 
-export const listenerGetCitizens = async (nit: string, callback: Function) => {
+export const getCitizens = async (nit: string, callback: Function) => {
   const jsonStorage = await getJsonCitizenStorage(nit);
+  const jsonFirestore = await getCitizensFirestore(nit);
 
-  db.collection("Entidades")
-    .doc(nit)
-    .onSnapshot((snap) => {
-      const jsonResponse = snap.data();
-      if (jsonResponse && jsonResponse.ciudadanos) {
-        const parseJson = JSON.parse(jsonResponse.ciudadanos) as CitizensType;
+  if (jsonFirestore && jsonFirestore.ciudadanos) {
+    const parseJson = JSON.parse(jsonFirestore.ciudadanos) as CitizensType;
+    let totalCitizens = jsonStorage ? parseJson.concat(jsonStorage) : parseJson;
 
-        let totalCitizens = jsonStorage
-          ? parseJson.concat(jsonStorage)
-          : parseJson;
-
-        const result = totalCitizens.filter((item, index) => {
-          return (
-            totalCitizens.findIndex(
-              (el) => el.identificacion === item.identificacion
-            ) === index
-          );
-        });
-
-        callback(setCitizens(result));
-      } else if (jsonStorage) {
-        callback(setCitizens(jsonStorage));
-      }
+    const result = totalCitizens.filter((item, index) => {
+      return (
+        totalCitizens.findIndex(
+          (el) => el.identificacion === item.identificacion
+        ) === index
+      );
     });
+
+    callback(setCitizens(result));
+  } else if (jsonStorage) {
+    callback(setCitizens(jsonStorage));
+  }
+};
+
+export const getCitizensFirestore = async (nit: string) => {
+  const citizensRef = db.collection("Entidades").doc(nit);
+
+  const citizens = await citizensRef.get().then((snapShot) => {
+    return snapShot.data();
+  });
+  return citizens;
 };
 
 export const getJsonCitizenStorage = async (nit: string) => {

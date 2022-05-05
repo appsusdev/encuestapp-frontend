@@ -1,5 +1,5 @@
 import {
-  listenerGetCitizens,
+  getCitizens,
   getTransmittedSurveysByCitizen,
   getMapData,
 } from "../../services/firebase/citizens";
@@ -14,7 +14,7 @@ export const startLoadingCitizens = () => {
   return async (dispatch: Function, getState: Function) => {
     const { nit } = getState().auth;
 
-    await listenerGetCitizens(nit, dispatch);
+    await getCitizens(nit, dispatch);
   };
 };
 
@@ -45,20 +45,24 @@ export const startLoadingSurveysAnswered = (idCitizen: string) => {
     );
 
     for (let i = 0; i < resp.length; i++) {
-      const surveysTransmitted = resp[i].formatoAutorizacion;
-      const idSurvey = resp[i].id;
-      newSurveys[i].authorizationFormats = surveysTransmitted;
-      newSurveys[i].code = idSurvey;
-      newSurveys[i].citizenResponsable = resp[i].idCiudadanoResponsable;
+      for (let j = 0; j < newSurveys.length; j++) {
+        if (resp[i].idEncuesta === newSurveys[j].idSurvey) {
+          const surveysTransmitted = resp[i].formatoAutorizacion;
+          const idSurvey = resp[i].id;
+          newSurveys[j].authorizationFormats = surveysTransmitted;
+          newSurveys[j].code = idSurvey;
+          newSurveys[j].citizenResponsable = resp[i].idCiudadanoResponsable;
+        }
+      }
     }
-    // Obtener respuestas de ciudadano con su núcleo familiar
+
+    // // Obtener respuestas de ciudadano con su núcleo familiar
     const array = getCopyArrayOrObject(newSurveys);
     const surveysWithAnswers = array.map((survey: Survey) => {
       survey.chapters.map((chapter) => {
         chapter.questions.map(async (question: SurveyQuestion) => {
           if (idSurveysCitizen.includes(survey.code)) {
             let resp: any[] = [];
-
             resp = await getAnswers(
               town,
               survey.idSurvey,
@@ -67,7 +71,6 @@ export const startLoadingSurveysAnswered = (idCitizen: string) => {
               question.id,
               survey.code
             );
-
             question.answers = resp;
             return question.answers;
           }
