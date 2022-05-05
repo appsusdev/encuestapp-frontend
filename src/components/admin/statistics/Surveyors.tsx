@@ -62,6 +62,7 @@ export const Surveyors = (props: Props) => {
   const { citizens } = useSelector<AppState, AppState["citizens"]>(
     (state) => state.citizens
   );
+
   const [surveyorSelected, setSurveyorSelected] = useState("");
   const [surveySelected, setSurveySelected] = useState("");
   const [surveysAssign, setSurveysAssign] = useState<Survey[]>([]);
