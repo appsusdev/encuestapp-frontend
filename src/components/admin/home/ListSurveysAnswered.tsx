@@ -125,13 +125,15 @@ export const ListSurveysAnswered = (props: Props) => {
 
           {surveysAnswered.map((survey: Partial<Survey>, index: number) => (
             <React.Fragment key={index}>
-              <Link
-                className={classes.typography}
-                component="button"
-                onClick={() => getData(survey.idSurvey)}
-              >
-                {index + 1}. {survey.name}
-              </Link>
+              <Box display="flex" mb={1}>
+                <Link
+                  className={classes.typography}
+                  component="button"
+                  onClick={() => getData(survey.idSurvey)}
+                >
+                  {index + 1}. {survey.name}
+                </Link>
+              </Box>
 
               <CustomizedDialogPDF
                 open={modalAssignOpen}

@@ -14,7 +14,7 @@ export const startLoadingCitizens = () => {
   return async (dispatch: Function, getState: Function) => {
     const { nit } = getState().auth;
 
-    listenerGetCitizens(nit, dispatch);
+    await listenerGetCitizens(nit, dispatch);
   };
 };
 
