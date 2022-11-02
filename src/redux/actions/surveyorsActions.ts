@@ -322,7 +322,8 @@ export const startLoadingMicrodata = (data: any) => {
 
     if (resp.length > 0) {
       resp.forEach((survey, index) => {
-        idSurveys.push(survey.idEncuesta);
+        !idSurveys.includes(survey.idEncuesta) &&
+          idSurveys.push(survey.idEncuesta);
         idResponsibleCitizen.push(survey.id);
       });
 
@@ -332,7 +333,7 @@ export const startLoadingMicrodata = (data: any) => {
       );
       const array: Survey[] = getCopyArrayOrObject(newSurveys);
 
-      // LAS FUNCIONES ASINCRONAS DENTRO DE UN LOOP HAY QUE HACERLAS EN UN FOR NORMAL
+      //   // LAS FUNCIONES ASINCRONAS DENTRO DE UN LOOP HAY QUE HACERLAS EN UN FOR NORMAL
 
       for (const survey of array) {
         for (const chapter of survey.chapters) {
@@ -347,6 +348,7 @@ export const startLoadingMicrodata = (data: any) => {
               question.id,
               surveyor
             );
+
             if (question.directedTo === "PreguntasHogar") {
               const homeAnswers: any[] = [];
               for (const idCitizen of idResponsibleCitizen) {
@@ -354,7 +356,10 @@ export const startLoadingMicrodata = (data: any) => {
                   const idCitizenExist = homeAnswers.find(
                     (el) => el.idEncuestaCiudadano === idCitizen
                   );
-                  if (!idCitizenExist) {
+                  if (
+                    !idCitizenExist &&
+                    idCitizen === res.idEncuestaCiudadano
+                  ) {
                     homeAnswers.push(res);
                   }
                 });
@@ -362,7 +367,15 @@ export const startLoadingMicrodata = (data: any) => {
 
               question.answers = homeAnswers;
             } else {
-              question.answers = resp;
+              const individualAnswers: any[] = [];
+              for (const idCitizen of idResponsibleCitizen) {
+                resp.forEach((res) => {
+                  if (idCitizen === res.idEncuestaCiudadano) {
+                    individualAnswers.push(res);
+                  }
+                });
+              }
+              question.answers = individualAnswers;
             }
           }
         }
