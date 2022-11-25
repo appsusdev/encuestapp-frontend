@@ -322,7 +322,8 @@ export const startLoadingMicrodata = (data: any) => {
 
     if (resp.length > 0) {
       resp.forEach((survey, index) => {
-        idSurveys.push(survey.idEncuesta);
+        !idSurveys.includes(survey.idEncuesta) &&
+          idSurveys.push(survey.idEncuesta);
         idResponsibleCitizen.push(survey.id);
       });
 
@@ -332,7 +333,7 @@ export const startLoadingMicrodata = (data: any) => {
       );
       const array: Survey[] = getCopyArrayOrObject(newSurveys);
 
-      // LAS FUNCIONES ASINCRONAS DENTRO DE UN LOOP HAY QUE HACERLAS EN UN FOR NORMAL
+      //   // LAS FUNCIONES ASINCRONAS DENTRO DE UN LOOP HAY QUE HACERLAS EN UN FOR NORMAL
 
       for (const survey of array) {
         for (const chapter of survey.chapters) {
@@ -345,25 +346,47 @@ export const startLoadingMicrodata = (data: any) => {
               chapter.id,
               question.directedTo,
               question.id,
-              surveyor
+              surveyor,
+              idResponsibleCitizen
             );
-            if (question.directedTo === "PreguntasHogar") {
-              const homeAnswers: any[] = [];
-              for (const idCitizen of idResponsibleCitizen) {
-                resp.forEach((res) => {
-                  const idCitizenExist = homeAnswers.find(
-                    (el) => el.idEncuestaCiudadano === idCitizen
-                  );
-                  if (!idCitizenExist) {
-                    homeAnswers.push(res);
-                  }
-                });
-              }
 
-              question.answers = homeAnswers;
-            } else {
-              question.answers = resp;
-            }
+            question.answers = resp;
+            /****** Esta es la vieja forma de hacerlo *******/
+            // }
+            //  if (question.directedTo === "PreguntasHogar") {
+            //   const homeAnswers: any[] = [];
+            //   homeAnswers.push(resp);
+            // }
+            // question.answers = homeAnswers;
+
+            // if (question.directedTo === "PreguntasHogar") {
+            //   const homeAnswers: any[] = [];
+            //   for (const idCitizen of idResponsibleCitizen) {
+            //     resp.forEach((res) => {
+            //       const idCitizenExist = homeAnswers.find(
+            //         (el) => el.idEncuestaCiudadano === idCitizen
+            //       );
+            //       if (
+            //         !idCitizenExist &&
+            //         idCitizen === res.idEncuestaCiudadano
+            //       ) {
+            //         homeAnswers.push(res);
+            //       }
+            //     });
+            //   }
+
+            //   question.answers = homeAnswers;
+            // } else {
+            //   const individualAnswers: any[] = [];
+            //   for (const idCitizen of idResponsibleCitizen) {
+            //     resp.forEach((res) => {
+            //       if (idCitizen === res.idEncuestaCiudadano) {
+            //         individualAnswers.push(res);
+            //       }
+            //     });
+            //   }
+            //   question.answers = individualAnswers;
+            // }
           }
         }
       }
