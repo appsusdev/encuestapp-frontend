@@ -228,7 +228,7 @@ export const getAnswersBySurveyor = async (
   typeQuestion: string,
   idQuestion: string,
   idSurveyor: string,
-  idResponsibleCitizens?: string
+  idResponsibleCitizens: string[]
 ) => {
   const docRef = db
     .collection("Municipios")
@@ -240,30 +240,62 @@ export const getAnswersBySurveyor = async (
     .collection(typeQuestion)
     .doc(idQuestion)
     .collection("Respuestas");
+
+  /* FORMA VIEJA */
+  // if (typeQuestion === "PreguntasHogar" && idResponsibleCitizens) {
+  //   idSurveyor === "Todos"
+  //     ? (answersRef = await docRef
+  //         .where("idEncuestaCiudadano", "==", idResponsibleCitizens)
+  //         .limit(1)
+  //         .get())
+  //     : (answersRef = await docRef
+  //         .where("idEncuestador", "==", idSurveyor)
+  //         .where("idEncuestaCiudadano", "==", idResponsibleCitizens)
+  //         .limit(1)
+  //         .get());
+  // } else {
+  // idSurveyor === "Todos"
+  //   ? (answersRef = await docRef.get())
+  //   : (answersRef = await docRef
+  //       .where("idEncuestador", "==", idSurveyor)
+  //       .get());
+  // }
+
+  /* ULTIMA FORMA */
   let answersRef;
-  if (typeQuestion === "PreguntasHogar" && idResponsibleCitizens) {
-    idSurveyor === "Todos"
-      ? (answersRef = await docRef
-          .where("idEncuestaCiudadano", "==", idResponsibleCitizens)
-          .limit(1)
-          .get())
-      : (answersRef = await docRef
-          .where("idEncuestador", "==", idSurveyor)
-          .where("idEncuestaCiudadano", "==", idResponsibleCitizens)
-          .limit(1)
-          .get());
-  } else {
-    idSurveyor === "Todos"
-      ? (answersRef = await docRef.get())
-      : (answersRef = await docRef
-          .where("idEncuestador", "==", idSurveyor)
-          .get());
-  }
+
+  idSurveyor === "Todos"
+    ? (answersRef = await docRef.get())
+    : (answersRef = await docRef
+        .where("idEncuestador", "==", idSurveyor)
+        .get());
 
   const answers: any[] = [];
   answersRef.forEach((resp: any) => {
     answers.push({ citizen: resp.id, ...resp.data() });
   });
 
-  return answers;
+  const answersFilter = answers.filter((answer) =>
+    idResponsibleCitizens.includes(answer.idEncuestaCiudadano)
+  );
+
+  let finalData;
+  if (typeQuestion === "PreguntasHogar") {
+    const homeAnswers: any[] = [];
+    for (const idCitizen of idResponsibleCitizens) {
+      answersFilter.forEach((res) => {
+        const idCitizenExist = homeAnswers.find(
+          (el) => el.idEncuestaCiudadano === idCitizen
+        );
+        if (!idCitizenExist && idCitizen === res.idEncuestaCiudadano) {
+          homeAnswers.push(res);
+        }
+      });
+    }
+    finalData = homeAnswers;
+  } else {
+    finalData = answersFilter;
+  }
+
+  return finalData;
 };

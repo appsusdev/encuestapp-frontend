@@ -346,37 +346,47 @@ export const startLoadingMicrodata = (data: any) => {
               chapter.id,
               question.directedTo,
               question.id,
-              surveyor
+              surveyor,
+              idResponsibleCitizen
             );
 
-            if (question.directedTo === "PreguntasHogar") {
-              const homeAnswers: any[] = [];
-              for (const idCitizen of idResponsibleCitizen) {
-                resp.forEach((res) => {
-                  const idCitizenExist = homeAnswers.find(
-                    (el) => el.idEncuestaCiudadano === idCitizen
-                  );
-                  if (
-                    !idCitizenExist &&
-                    idCitizen === res.idEncuestaCiudadano
-                  ) {
-                    homeAnswers.push(res);
-                  }
-                });
-              }
+            question.answers = resp;
+            /****** Esta es la vieja forma de hacerlo *******/
+            // }
+            //  if (question.directedTo === "PreguntasHogar") {
+            //   const homeAnswers: any[] = [];
+            //   homeAnswers.push(resp);
+            // }
+            // question.answers = homeAnswers;
 
-              question.answers = homeAnswers;
-            } else {
-              const individualAnswers: any[] = [];
-              for (const idCitizen of idResponsibleCitizen) {
-                resp.forEach((res) => {
-                  if (idCitizen === res.idEncuestaCiudadano) {
-                    individualAnswers.push(res);
-                  }
-                });
-              }
-              question.answers = individualAnswers;
-            }
+            // if (question.directedTo === "PreguntasHogar") {
+            //   const homeAnswers: any[] = [];
+            //   for (const idCitizen of idResponsibleCitizen) {
+            //     resp.forEach((res) => {
+            //       const idCitizenExist = homeAnswers.find(
+            //         (el) => el.idEncuestaCiudadano === idCitizen
+            //       );
+            //       if (
+            //         !idCitizenExist &&
+            //         idCitizen === res.idEncuestaCiudadano
+            //       ) {
+            //         homeAnswers.push(res);
+            //       }
+            //     });
+            //   }
+
+            //   question.answers = homeAnswers;
+            // } else {
+            //   const individualAnswers: any[] = [];
+            //   for (const idCitizen of idResponsibleCitizen) {
+            //     resp.forEach((res) => {
+            //       if (idCitizen === res.idEncuestaCiudadano) {
+            //         individualAnswers.push(res);
+            //       }
+            //     });
+            //   }
+            //   question.answers = individualAnswers;
+            // }
           }
         }
       }
